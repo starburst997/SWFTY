@@ -1,5 +1,7 @@
 package;
 
+import file.save.FileSave;
+
 import openfl.display.Bitmap;
 import openfl.display.BitmapData;
 import openfl.display.Sprite;
@@ -31,7 +33,7 @@ class Main extends Sprite {
 			trace('Parsed SWF: ${haxe.Timer.stamp() - timer}');
 
 			// Save file for test
-			
+			FileSave.saveClickBytes(zip, 'Test.swfty');
 
 			// Showing Tilemap for fun
 			var tilemap = exporter.getTilemap();

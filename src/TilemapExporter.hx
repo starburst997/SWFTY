@@ -91,7 +91,7 @@ class TilemapExporter {
                 var tile = tiles[i];
                 var bmpd = bmpds[i];
                 bitmapData.copyPixels(bmpd, bmpd.rect, new Point(tile.x, tile.y));
-                bmpd.dispose();
+                //bmpd.dispose();
             };
 
             // Trim final texture

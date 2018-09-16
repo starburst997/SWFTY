@@ -8,6 +8,7 @@
 	
 	<source path="src" />
 	<source path="submodules/haxe-zip/src" />
+	<source path="submodules/haxe-file-save/src" />
 	<source path="submodules/format" />
 	<source path="submodules/Rectangle-Bin-Packing" />
 	<source path="submodules/openfl/scripts" />
