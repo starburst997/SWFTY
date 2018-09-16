@@ -5,8 +5,6 @@ import openfl.display.BitmapData;
 import openfl.display.Sprite;
 import openfl.Assets;
 
-import format.SWF;
-
 class Main extends Sprite {
 	
 	public function new() {	
@@ -35,11 +33,7 @@ class Main extends Sprite {
 		.onComplete(function(bytes) {
 			trace('Loaded ${bytes.length}');
 
-			var swf = new SWF(bytes);
-
-			
-
-			trace(swf);
+			var exporter = new SWFTileExporter(bytes);
 		});
 	}
 }

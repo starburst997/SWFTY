@@ -4,12 +4,12 @@
 	<meta title="SWFTile" package="jd.boivin.swftile" version="1.0.0" company="Jean-Denis Boivin" />
 	<app main="Main" path="bin" file="SWFTile" />
 	
+	<haxelib name="openfl" />
+	
 	<source path="src" />
+	<source path="submodules/format" />
 	<source path="submodules/openfl/scripts" />
 	
-	<haxelib name="openfl" />
-	<haxelib name="format" />
-
 	<assets path="res" embed="false" />
 	
 </project>

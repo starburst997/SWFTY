@@ -20,6 +20,8 @@ Layers on a project could look like that (top is rendered first, bottom last):
 
 The idea is to use one FLA per "layer", so whenever you don't need a layer, you can dispose of it reclaiming some memory. Only what we need is loaded and nothing else.
 
+Many things are not supported right now, like Buttons, Sounds, Frames, Timeline, Animation, etc. See this as being more like a description on where a bunch of bitmap are being positioned (for now, more functionality could be added, but this is more of a UI builder).
+
 If you need to load "external" images (like icons) that aren't part of the FLA, you can create placeholder that are the same dimension as those and then you can replace them in the texture and add the placeholder Sprite and it would display that icon, the icon will be part of the Spritesheet and so we keep the draw call to 1 for that layer. You do need to know beforehand as well how much you will be displaying on screen at once.
 
 Adobe Animate is an amazing IDE to create compelling UI and this library does put a lot of constraints but I felt like it is very easy to create unoptimized FLA and those can become a real issue especially on lower-end device and on game that make heavy usage of UI, even what seems like simple UI can bubble up to hundreds of draw calls, mobile device needs to be optimized to provide a smooth experience but also to bring the battery usage down to a minimum (and RAM down).
