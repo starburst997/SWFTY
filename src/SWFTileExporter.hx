@@ -1,5 +1,7 @@
 package;
 
+import zip.ZipWriter;
+
 import haxe.ds.StringMap;
 import haxe.ds.IntMap;
 import haxe.io.Bytes;
@@ -167,7 +169,11 @@ class SWFTileExporter {
         var tilemap = getTilemap();
         var png = getPNG(tilemap.bitmapData);
 
-        
+        var zip = new ZipWriter();
+        zip.addBytes(png, 'tilemap.png', false);
+        zip.addString(json, 'definitions.json', true);
+
+        return zip.finalize();
     }
 
     function getTransform(matrix:Matrix):Transform {
@@ -478,8 +484,6 @@ class SWFTileExporter {
 
             var definition = movieClips.get(symbol.tagId);
             definition.name = symbol.name;
-
-            trace('MC', definition);
         }
     }
 

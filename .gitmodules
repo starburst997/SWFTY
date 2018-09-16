@@ -13,3 +13,6 @@
 [submodule "submodules/Rectangle-Bin-Packing"]
 	path = submodules/Rectangle-Bin-Packing
 	url = git@github.com:Tw1ddle/Rectangle-Bin-Packing.git
+[submodule "submodules/haxe-zip"]
+	path = submodules/haxe-zip
+	url = git@github.com:starburst997/haxe-zip.git

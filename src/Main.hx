@@ -26,15 +26,18 @@ class Main extends Sprite {
 			var timer = haxe.Timer.stamp();
 
 			var exporter = new SWFTileExporter(bytes);
-			var tilemap = exporter.getTilemap();
+			var zip = exporter.getSwfty();
 
 			trace('Parsed SWF: ${haxe.Timer.stamp() - timer}');
 
+			// Save file for test
+			
+
+			// Showing Tilemap for fun
+			var tilemap = exporter.getTilemap();
 			var bmp = new Bitmap(tilemap.bitmapData);
 			bmp.y = 0;
 			addChild(bmp);
-
-			trace(bmp, bmp.width, bmp.height);
 		});
 	}
 }
