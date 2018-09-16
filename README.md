@@ -1,6 +1,6 @@
 # SWFTY
 
-![SWFTY](https://github.com/starburst997/SWFTile/raw/master/ref/swfty.gif)
+![SWFTY](https://github.com/starburst997/SWFTY/raw/master/ref/swfty.gif)
 
 **WIP** *Not to be used in production yet, PRs, issues, etc. are very much welcome*
 
@@ -17,13 +17,13 @@ The JSON look like that:
       "name": "Test",
       "children": [
         {
-          "id": 2,
+          "id": 3,
           "name": null,
-          "x": 0,
-          "y": 0,
-          "scaleX": 1,
-          "scaleY": 1,
-          "rotation": 0,
+          "x": -77.10000000000001,
+          "y": -5.65,
+          "scaleX": 1.4877630099449886,
+          "scaleY": 1.7703821837418336,
+          "rotation": -33.24528761197778,
           "visible": true,
           "shapes": [
             {
@@ -85,3 +85,8 @@ Adobe Animate is an amazing IDE to create compelling UI and this library does pu
 This project has two part, one the tool to generate the SWFTile based file format from SWF file exported by Adobe Animate, second is render code to load and display / manipulate MovieClip from those generated file.
 
 Includes example to use in OpenFL (eventually Heaps).
+
+## Copyright
+Powered by OpenFL
+
+MIT license and copyright 2018 JD, blablabla
