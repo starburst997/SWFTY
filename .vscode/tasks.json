@@ -1,0 +1,38 @@
+{
+    "version": "2.0.0",
+    "command": "bash",
+    "isShellCommand": true,
+    "showOutput": "always",
+    "tasks": [
+        {
+            "command": "openfl",
+            "taskName": "build",
+            "isBuildCommand": true,
+            "args": [
+                "build", "html5", "-v"
+            ],
+            "presentation": {
+                "echo": false,
+                "focus": false,
+                "panel": "dedicated",
+                "reveal": "silent"
+            }
+        }
+        /*{
+            "type": "hxml",
+            "label": "Build",
+            "file": "build.hxml",
+            "problemMatcher": [
+                "$haxe-absolute",
+                "$haxe",
+                "$haxe-error",
+                "$haxe-trace"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }*/
+    ],
+    "problemMatcher": "$haxe"
+}

@@ -2,6 +2,8 @@
 
 **WIP** *Not to be used in production yet, PRs, issues, etc. are very much welcome*
 
+*Warning: Wall of text! Will clean it up eventually and provide GIFs and what's not*
+
 Convert `.swf` files created by Adobe Animate into `.swft` which is essentially a ZIP container that include one texture file encompassing all bitmaps and JSON files defining all MovieClips (optionally including scale down version of the texture for different screen size minimizing memory / gpu usage).
 
 The main motivation behind this project is to provide tile-based SWF rendering and add a bit more constraints to FLA authoring to makes sure they perform well on lower-end device by having only one texture. It forces the developper to think in terms of layer, one layer takes one draw calls, each layers should be it's own SWF. Text's font can be embed as part of the Texture (usefull for numbers or if you don't care about localization), otherwise the text rendering is done on top of the layer (using OpenFL's TextField if using OpenFL or Bitmap Fonts when using Heaps).

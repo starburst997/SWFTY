@@ -1,0 +1,10 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+    
+    "workbench.editor.enablePreviewFromQuickOpen": false,
+    "workbench.editor.enablePreview": false,
+    "search.exclude": {
+        "bin":true
+    },
+    "terminal.integrated.shell.windows": "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+}
