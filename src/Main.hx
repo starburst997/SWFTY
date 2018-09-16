@@ -36,6 +36,9 @@ class Main extends Sprite {
 			trace('Loaded ${bytes.length}');
 
 			var swf = new SWF(bytes);
+
+			
+
 			trace(swf);
 		});
 	}

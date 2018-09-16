@@ -10,6 +10,8 @@ The main motivation behind this project is to provide tile-based SWF rendering a
 
 Currently "graphics" are not used, only bitmaps from FLA, this is to keep the conversion as fast as possible (keep your graphics as guided layer and then use convert to bitmap on a non-guide layer). This can be a bit of pain and I'll definitely explore other path, we could always have the SWF run afterward and then "screenshot" each individual Sprite but that would add more processing time everytime we do a modification on the FLA and need to test it (or simply use OpenFL rendering which should make thing a bit faster). Maybe have a debug mode that use a plain-old SWF file?
 
+You should always use Lossless instead of JPEG since everything will be added to one Texture (instead of having a .jpg and then an alpha png for it)
+
 Layers on a project could look like that (top is rendered first, bottom last):
 * Custom Layer (your custom game render, do not use SWF, ideally you should be using Tilemaps, GL, whatever fits your need)
 * SWFTile Layer, UI.fla (your main UI for the game, aka "HUD", ideally no popups since texts are rendered on top)
