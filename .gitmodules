@@ -7,3 +7,6 @@
 [submodule "submodules/hxp"]
 	path = submodules/hxp
 	url = git@github.com:openfl/hxp.git
+[submodule "submodules/format"]
+	path = submodules/format
+	url = git@github.com:HaxeFoundation/format.git
