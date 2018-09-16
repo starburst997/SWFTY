@@ -43,6 +43,8 @@ import format.swf.SWFRoot;
 import format.swf.SWFTimelineContainer;
 import format.SWF;
 
+using Lambda;
+
 typedef Transform = {
     x: Float,
 	y: Float,
@@ -80,7 +82,8 @@ typedef MovieClipDefinition = {
 }
 
 typedef SWFTileJson = {
-	definitions: Array<String>
+	definitions: Array<MovieClipDefinition>,
+    tiles: Array<BitmapDefinition>
 }
 
 class SWFTileExporter {
@@ -106,9 +109,12 @@ class SWFTileExporter {
         
         movieClips = new IntMap();
         shapes = new IntMap();
+        bitmaps = new IntMap();
+        bitmapDatas = new IntMap();
 
         var json:SWFTileJson = {
-            definitions: []
+            definitions: [],
+            tiles: []
         };
 
         // TODO: Process root?
@@ -120,11 +126,48 @@ class SWFTileExporter {
                 }
             }   
         }
+    }
 
+    public function getTilemap() {
         // Create Tilemap based on all bitmapDatas
-        for (id in bitmapDatas.keys()) {
+        var bmpds = [for (bmpd in bitmapDatas) bmpd];
+        var tilemap = TilemapExporter.pack(bmpds);
+
+        var keys = [for (key in bitmapDatas.keys()) key];
+        for (i in 0...keys.length) {
+            var key = keys[i];
+
+            var bitmap = bitmaps.get(key);
+            var tile = tilemap.tiles[i];
             
+            bitmap.x = tile.x;
+            bitmap.y = tile.y;
         }
+
+        return tilemap;
+    }
+
+    public function getJSON() {
+        var definition:SWFTileJson = {
+            definitions: [for (mc in movieClips) mc],
+            tiles: [for (bmp in bitmaps) bmp]
+        }
+
+        return haxe.Json.stringify(definition);
+    }
+
+    public function getPNG(bmpd:BitmapData) {
+        return bmpd.encode(bmpd.rect, new PNGEncoderOptions());
+    }
+
+    public function getSwfty() {
+        // TODO: Change this library name to Swfty so I can name this function getSwfty
+
+        var json = getJSON();
+        var tilemap = getTilemap();
+        var png = getPNG(tilemap.bitmapData);
+
+        
     }
 
     function getTransform(matrix:Matrix):Transform {

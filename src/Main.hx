@@ -10,16 +10,6 @@ class Main extends Sprite {
 	public function new() {	
 		super();
 		
-		Assets
-		.loadBitmapData('res/ren.jpg')
-		.onError(function(error) {
-			trace('Error!!!', error);
-		})
-		.onComplete(function(bitmapData) {
-			var bitmap = new Bitmap(bitmapData);
-			addChild(bitmap);
-		});
-
 		// Process SWF
 		processSWF('res/Test.swf');
 	}
@@ -33,7 +23,18 @@ class Main extends Sprite {
 		.onComplete(function(bytes) {
 			trace('Loaded ${bytes.length}');
 
+			var timer = haxe.Timer.stamp();
+
 			var exporter = new SWFTileExporter(bytes);
+			var tilemap = exporter.getTilemap();
+
+			trace('Parsed SWF: ${haxe.Timer.stamp() - timer}');
+
+			var bmp = new Bitmap(tilemap.bitmapData);
+			bmp.y = 0;
+			addChild(bmp);
+
+			trace(bmp, bmp.width, bmp.height);
 		});
 	}
 }

@@ -13,4 +13,6 @@
 	
 	<assets path="res" embed="false" />
 	
+	<haxedef name="trim" />
+
 </project>
