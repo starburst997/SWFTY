@@ -1,0 +1,9 @@
+[submodule "submodules/openfl"]
+	path = submodules/openfl
+	url = git@github.com:openfl/openfl.git
+[submodule "submodules/lime"]
+	path = submodules/lime
+	url = git@github.com:openfl/lime.git
+[submodule "submodules/hxp"]
+	path = submodules/hxp
+	url = git@github.com:openfl/hxp.git
