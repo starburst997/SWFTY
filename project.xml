@@ -5,8 +5,10 @@
 	<app main="Main" path="bin" file="SWFTile" />
 	
 	<source path="src" />
+	<source path="submodules/openfl/scripts" />
 	
 	<haxelib name="openfl" />
+	<haxelib name="format" />
 
 	<assets path="res" embed="false" />
 	
