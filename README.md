@@ -1,13 +1,15 @@
-# SWFTile
+# SWFTY
+
+![SWFTY](https://raw.githubusercontent.com/starburst997/SWFTile/master/swfty.gif)
 
 **WIP** *Not to be used in production yet, PRs, issues, etc. are very much welcome*
 
 ## TODO
 
-Currently there is a POC export working that will output a `.swfty` from a `.swf` file that is basically a `.zip` file containing a `.png` texture and a `.json` file containing the definitions of all the Sprite / MovieClip.
+Currently there is a POC export working that will output a `.swfty` (*pronounced schwifty*) from a `.swf` file that is basically a `.zip` file containing a `.png` texture and a `.json` file containing the definitions of all the Sprite / MovieClip.
 
 The JSON look like that:
-```
+```json
 {
   "definitions": [
     {
