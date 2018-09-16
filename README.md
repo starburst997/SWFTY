@@ -2,6 +2,60 @@
 
 **WIP** *Not to be used in production yet, PRs, issues, etc. are very much welcome*
 
+## TODO
+
+Currently there is a POC export working that will output a `.swfty` from a `.swf` file that is basically a `.zip` file containing a `.png` texture and a `.json` file containing the definitions of all the Sprite / MovieClip.
+
+The JSON look like that:
+```
+{
+  "definitions": [
+    {
+      "id": 3,
+      "name": "Test",
+      "children": [
+        {
+          "id": 2,
+          "name": null,
+          "x": 0,
+          "y": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "visible": true,
+          "shapes": [
+            {
+              "id": 0,
+              "bitmap": 1,
+              "x": 0,
+              "y": 0,
+              "scaleX": 1,
+              "scaleY": 1,
+              "rotation": 0
+            }
+          ]
+        }
+      ]
+    },
+    ...
+  ],
+  "tiles": [
+    {
+      "id": 1,
+      "x": 0,
+      "y": 0,
+      "width": 90,
+      "height": 93
+    },
+    ...
+  ]
+}
+```
+
+A POC renderer is the next step as well as having the exporter available in command-line form.
+
+## Preface
+
 *Warning: Wall of text! Will clean it up eventually and provide GIFs and what's not*
 
 Convert `.swf` files created by Adobe Animate into `.swft` which is essentially a ZIP container that include one texture file encompassing all bitmaps and JSON files defining all MovieClips (optionally including scale down version of the texture for different screen size minimizing memory / gpu usage).
