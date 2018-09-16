@@ -10,3 +10,6 @@
 [submodule "submodules/format"]
 	path = submodules/format
 	url = git@github.com:HaxeFoundation/format.git
+[submodule "submodules/Rectangle-Bin-Packing"]
+	path = submodules/Rectangle-Bin-Packing
+	url = git@github.com:Tw1ddle/Rectangle-Bin-Packing.git

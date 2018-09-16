@@ -111,12 +111,19 @@ class SWFTileExporter {
             definitions: []
         };
 
+        // TODO: Process root?
+
         for (tag in data.tags) {
             if (Std.is(tag, TagSymbolClass)) {
                 for (symbol in cast (tag, TagSymbolClass).symbols) {
                     processSymbol(symbol);
                 }
             }   
+        }
+
+        // Create Tilemap based on all bitmapDatas
+        for (id in bitmapDatas.keys()) {
+            
         }
     }
 
@@ -138,12 +145,11 @@ class SWFTileExporter {
                 var point = new Point(0, 0);
                 var m = matrix.clone();
                 var point2 = m.transformPoint(point);
-                m.translate( -point2.x, -point2.y);
+                m.translate(-point2.x, -point2.y);
 
                 // extract (uniform) scale...
                 point.x = 1; point.y = 0;
                 point = m.transformPoint(point);
-                var scale = point.length;
 
                 // ...and rotation
                 Math.atan2(point.y, point.x) * 180/Math.PI;
@@ -407,9 +413,16 @@ class SWFTileExporter {
 		}
 		
 		if (bitmapData != null) {
-			
-			trace('Got a bitmap!!!', bitmapData.width, bitmapData.height);
+            var definition:BitmapDefinition = {
+                id: tag.characterId,
+                x: 0,
+                y: 0,
+                width: bitmapData.width,
+                height: bitmapData.height
+            };
 
+            bitmaps.set(tag.characterId, definition);
+            bitmapDatas.set(tag.characterId, bitmapData);
 		}
     }
 
