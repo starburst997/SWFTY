@@ -14,6 +14,8 @@ import openfl.geom.Point;
 import openfl.utils.ByteArray;
 
 import lime.graphics.Image;
+import lime.graphics.ImageChannel;
+import lime.math.Vector2;
 
 import format.png.Data;
 import format.png.Writer;
@@ -438,7 +440,7 @@ class SWFTileExporter {
 				var png = new List();
 				png.add(CHeader( { width: image.width, height: image.height, colbits: 8, color: ColIndexed, interlaced: false } ));
 				png.add(CPalette(alphaPalette));
-				png.add(CData(Deflate.run (values)));
+				png.add(CData(Deflate.run(values)));
 				png.add(CEnd);
 				
 				var output = new BytesOutput();
@@ -449,8 +451,15 @@ class SWFTileExporter {
                 var bitmapDataJPEG = BitmapData.fromImage(image);
 
                 bitmapData = new BitmapData(image.width, image.height, true, 0x00000000);
-                bitmapData.copyPixels(bitmapDataJPEG, bitmapDataJPEG.rect, new Point(0, 0), bitmapDataAlpha, new Point(0, 0), true);
+                
+                var alpha = Image.fromBitmapData(bitmapDataAlpha);
+                bitmapData.copyPixels(bitmapDataJPEG, bitmapDataJPEG.rect, new Point(0, 0));
+                
+                var jpeg = Image.fromBitmapData(bitmapData);
+                jpeg.copyChannel(alpha, alpha.rect, new Vector2(), ImageChannel.RED, ImageChannel.ALPHA);
 				
+                bitmapData = BitmapData.fromImage(jpeg);
+
 			} else {
 				bitmapData = BitmapData.fromBytes(data.bitmapData);
 			}

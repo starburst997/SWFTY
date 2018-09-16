@@ -13,7 +13,7 @@ class Main extends Sprite {
 		super();
 		
 		// Process SWF
-		processSWF('res/Test.swf');
+		processSWF('res/Test2.swf');
 	}
 
 	function processSWF(path:String) {
@@ -33,7 +33,7 @@ class Main extends Sprite {
 			trace('Parsed SWF: ${haxe.Timer.stamp() - timer}');
 
 			// Save file for test
-			FileSave.saveClickBytes(zip, 'Test.swfty');
+			FileSave.saveClickBytes(zip, 'Test2.swfty');
 
 			// Showing Tilemap for fun
 			var tilemap = exporter.getTilemap();
