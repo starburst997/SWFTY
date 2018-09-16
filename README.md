@@ -1,6 +1,6 @@
 # SWFTY
 
-![SWFTY](https://raw.githubusercontent.com/starburst997/SWFTile/master/swfty.gif)
+![SWFTY](https://github.com/starburst997/SWFTile/raw/master/ref/swfty.gif)
 
 **WIP** *Not to be used in production yet, PRs, issues, etc. are very much welcome*
 
