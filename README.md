@@ -54,6 +54,8 @@ The JSON look like that:
 }
 ```
 
+I might changed it from JSON to a binary format, altho having an easy to read JSON makes it very easy to port and use in other language, will see...
+
 A POC renderer is the next step as well as having the exporter available in command-line form.
 
 ## Preface
