@@ -19,3 +19,6 @@
 [submodule "submodules/haxe-file-save"]
 	path = submodules/haxe-file-save
 	url = git@github.com:starburst997/haxe-file-save.git
+[submodule "submodules/mcli"]
+	path = submodules/mcli
+	url = git@github.com:waneck/mcli.git
