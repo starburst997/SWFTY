@@ -105,7 +105,11 @@ class SWFTileExporter {
 
     var alphaPalette:Bytes;
 
-    public function new(bytes:Bytes) {
+    public static function create(bytes:Bytes, onComplete:SWFTileExporter->Void) {
+        return new SWFTileExporter(bytes, onComplete);
+    }
+
+    public function new(bytes:Bytes, onComplete:SWFTileExporter->Void) {
         swf = new SWF(bytes);
         data = swf.data;
 
@@ -123,13 +127,29 @@ class SWFTileExporter {
 
         // TODO: Process root?
 
-        for (tag in data.tags) {
+        function process(i) {
+            var tag = data.tags[i];
+        
+            function complete() {
+                if (i + 1 < data.tags.length) process(i + 1) else onComplete(this);
+            }
+
             if (Std.is(tag, TagSymbolClass)) {
-                for (symbol in cast (tag, TagSymbolClass).symbols) {
-                    processSymbol(symbol);
+                var symbols = cast (tag, TagSymbolClass).symbols;
+                
+                function process2(j) {
+                    var symbol = symbols[j];
+                    processSymbol(symbol, () -> {
+                        if (j + 1 < symbols.length) process2(j + 1) else complete();                        
+                    });
                 }
-            }   
+
+                if (symbols.length > 0) process2(0) else complete();
+            } else {
+                complete();
+            }
         }
+        if (data.tags.length > 0) process(0) else onComplete(this);
     }
 
     public function getTilemap() {
@@ -208,7 +228,7 @@ class SWFTileExporter {
         }
     }
 
-    function addSprite(tag:SWFTimelineContainer, root:Bool = false):MovieClipDefinition {
+    function addSprite(tag:SWFTimelineContainer, root:Bool = false, ?onComplete:Void->Void):MovieClipDefinition {
         
         var id = if (Std.is (tag, IDefinitionTag)) {
 			untyped tag.characterId;
@@ -225,69 +245,78 @@ class SWFTileExporter {
 
         movieClips.set(id, definition);
 
-        for (frameData in tag.frames) {
-            for (object in frameData.getObjectsSortedByDepth()) {
+        function process(i) {
+            var frameData = tag.frames[i];
+            var objects = frameData.getObjectsSortedByDepth();
+
+            function process2(j) {
+                var object = objects[j];
 
                 var childTag = cast data.getCharacter(object.characterId);
-                processTag(childTag);
+                processTag(childTag, () -> {
+                    var placeTag:TagPlaceObject = cast tag.tags[object.placedAtIndex];
 
-                var placeTag:TagPlaceObject = cast tag.tags[object.placedAtIndex];
+                    var matrix = if (placeTag.matrix != null) {
+                        var matrix = placeTag.matrix.matrix;
+                        matrix.tx *= (1 / 20);
+                        matrix.ty *= (1 / 20);
+                        matrix;
+                    } else {
+                        new Matrix();
+                    }
 
-                var matrix = if (placeTag.matrix != null) {
-					var matrix = placeTag.matrix.matrix;
-					matrix.tx *= (1 / 20);
-					matrix.ty *= (1 / 20);
-                    matrix;
-				} else {
-                    new Matrix();
-                }
+                    if (placeTag.colorTransform != null) {
+                        // TODO: ColorTransform
+                    }
 
-                if (placeTag.colorTransform != null) {
-                    // TODO: ColorTransform
-                }
+                    if (placeTag.hasFilterList) {
+                        // TODO: Filters list
+                    }
 
-                if (placeTag.hasFilterList) {
-                    // TODO: Filters list
-                }
+                    var visible = if (placeTag.hasVisible) {
+                        placeTag.visible != 0;
+                    } else {
+                        true;
+                    }
 
-                var visible = if (placeTag.hasVisible) {
-                    placeTag.visible != 0;
-                } else {
-                    true;
-                }
+                    if (placeTag.hasBlendMode) {
+                        // TODO: Blend mode
+                    }
 
-                if (placeTag.hasBlendMode) {
-                    // TODO: Blend mode
-                }
+                    if (placeTag.hasCacheAsBitmap) {
+                        // TODO: Cache as Bitmap
+                    }
 
-                if (placeTag.hasCacheAsBitmap) {
-                    // TODO: Cache as Bitmap
-                }
+                    var transform = getTransform(matrix);
+                    var definition:SpriteDefinition = {
+                        id: object.characterId,
+                        name: placeTag.instanceName,
+                        x: transform.x,
+                        y: transform.y,
+                        scaleX: transform.scaleX,
+                        scaleY: transform.scaleY,
+                        rotation: transform.rotation,
+                        visible: visible,
+                        shapes: shapes.exists(object.characterId) ? shapes.get(object.characterId) : []
+                    }
 
-                var transform = getTransform(matrix);
-                var definition:SpriteDefinition = {
-                    id: object.characterId,
-                    name: placeTag.instanceName,
-                    x: transform.x,
-                    y: transform.y,
-                    scaleX: transform.scaleX,
-                    scaleY: transform.scaleY,
-                    rotation: transform.rotation,
-                    visible: visible,
-                    shapes: shapes.exists(object.characterId) ? shapes.get(object.characterId) : []
-                }
+                    children.push(definition);
 
-                children.push(definition);
+                    if (j + 1 < objects.length) process2(j + 1) 
+                    // TODO: Only process 1 frame for now...
+                    //else if (i + 1 < tag.frames.length) process(i + 1) 
+                    else onComplete();
+                });
             }
 
-            // TODO: Only support one frame for now
-            break;
+            if (objects.length > 0) process2(0) else onComplete();
         }
+        if (tag.frames.length > 0) process(0) else onComplete();
 
         return definition;
     }
 
-    function addShape(tag:TagDefineShape) {
+    function addShape(tag:TagDefineShape, onComplete:Void->Void) {
         var handler = new ShapeCommandExporter(data);
 		tag.export(handler);
 
@@ -296,55 +325,80 @@ class SWFTileExporter {
         var shapes = [];
 
         if (bitmaps != null) {
-            for (i in 0...bitmaps.length) {
+            //for (i in 0...bitmaps.length) {
+
+            function process(i) {  
                 var bitmap = bitmaps[i];
 
-                processTag(cast data.getCharacter(bitmap.id));
+                processTag(cast data.getCharacter(bitmap.id), () -> {
+                    var transform = getTransform(bitmap.transform);
+                    var definition:ShapeDefinition = {
+                        id: i,
+                        bitmap: bitmap.id,
+                        x: transform.x,
+                        y: transform.y,
+                        scaleX: transform.scaleX,
+                        scaleY: transform.scaleY,
+                        rotation: transform.rotation
+                    }
 
-                var transform = getTransform(bitmap.transform);
-                var definition:ShapeDefinition = {
-                    id: i,
-                    bitmap: bitmap.id,
-                    x: transform.x,
-                    y: transform.y,
-                    scaleX: transform.scaleX,
-                    scaleY: transform.scaleY,
-                    rotation: transform.rotation
-                }
+                    shapes.push(definition);
 
-                shapes.push(definition);
+                    if (i + 1 < bitmaps.length) process(i + 1) else onComplete();
+                });
             }
+
+            if (bitmaps.length > 0) process(0) else onComplete();
         } else {
-            for (i in 0...handler.commands.length) {
-				var command = handler.commands[i];
+            function process(i) {
+                var command = handler.commands[i];
                 switch(command) {
 					case BeginBitmapFill(bitmapID, _, _, _):
-						processTag(cast data.getCharacter(bitmapID));
+						processTag(cast data.getCharacter(bitmapID), () -> {
+                            var definition:ShapeDefinition = {
+                                id: i,
+                                bitmap: bitmapID,
+                                x: 0.0,
+                                y: 0.0,
+                                scaleX: 1.0,
+                                scaleY: 1.0,
+                                rotation: 0.0
+                            }
 
-                        var definition:ShapeDefinition = {
-                            id: i,
-                            bitmap: bitmapID,
-                            x: 0.0,
-                            y: 0.0,
-                            scaleX: 1.0,
-                            scaleY: 1.0,
-                            rotation: 0.0
-                        }
+                            shapes.push(definition);
 
-                        shapes.push(definition);
-
+                            if (i + 1 < handler.commands.length) process(i + 1) else onComplete();
+                        });
 					default:
+                        if (i + 1 < handler.commands.length) process(i + 1) else onComplete();
 				}
-			}
+            }
+            if (handler.commands.length > 0) process(0) else onComplete();
         }
 
         this.shapes.set(tag.characterId, shapes);
     }
 
-    function addBitmap(tag:IDefinitionTag) {
-
-        var bitmapData = null;
+    function addBitmap(tag:IDefinitionTag, onComplete:Void->Void) {
+        var bitmapData:BitmapData = null;
 		
+        function complete() {
+            if (bitmapData != null) {
+                var definition:BitmapDefinition = {
+                    id: tag.characterId,
+                    x: 0,
+                    y: 0,
+                    width: bitmapData.width,
+                    height: bitmapData.height
+                };
+
+                bitmaps.set(tag.characterId, definition);
+                bitmapDatas.set(tag.characterId, bitmapData);
+            }
+
+            onComplete();
+        }
+
 		if (Std.is(tag, TagDefineBitsLossless)) {
 			
 			var data:TagDefineBitsLossless = cast tag;
@@ -384,15 +438,23 @@ class SWFTileExporter {
 				png.add(CHeader( { width: data.bitmapWidth, height: data.bitmapHeight, colbits: 8, color: ColIndexed, interlaced: false } ));
 				png.add(CPalette(palette));
 				if (transparent) png.add(CUnknown("tRNS", alpha));
-				png.add(CData(Deflate.run(values)));
-				png.add(CEnd);
+				
+                var bytes = zip.Zip.compress(values);
+                png.add(CData(bytes));
+                png.add(CEnd);
 				
 				var output = new BytesOutput();
 				var writer = new Writer(output);
 				writer.write(png);
 				
-                bitmapData = BitmapData.fromBytes(output.getBytes());
-
+                #if sync
+                ({var bmpd = BitmapData.fromBytes(output.getBytes());
+                #else
+                BitmapData.loadFromBytes(output.getBytes()).onComplete((bmpd) -> {
+                #end
+                    bitmapData = bmpd;
+                    complete();
+                });
 			} else {
 
 				bitmapData = new BitmapData(data.bitmapWidth, data.bitmapHeight, transparent);
@@ -402,6 +464,7 @@ class SWFTileExporter {
 				bitmapData.image.buffer.premultiplied = true;
 				bitmapData.image.premultiplied = false;
 				
+                complete();
 			}
 			
 		} else if (Std.is(tag, TagDefineBitsJPEG2)) {
@@ -425,115 +488,140 @@ class SWFTileExporter {
 					}
 				}
 				
-				var image = Image.fromBytes(data.bitmapData);
-				
-				var values = Bytes.alloc((image.width + 1) * image.height);
-				var index = 0;
-				
-				for (y in 0...image.height) {
-					values.set(index++, 0);
-					values.blit(index, alpha, alpha.position, image.width);
-					index += image.width;
-					alpha.position += image.width;
-				}
-				
-				var png = new List();
-				png.add(CHeader( { width: image.width, height: image.height, colbits: 8, color: ColIndexed, interlaced: false } ));
-				png.add(CPalette(alphaPalette));
-				png.add(CData(Deflate.run(values)));
-				png.add(CEnd);
-				
-				var output = new BytesOutput();
-				var writer = new Writer(output);
-				writer.write(png);
-				
-                var bitmapDataAlpha = BitmapData.fromBytes(output.getBytes());
-                var bitmapDataJPEG = BitmapData.fromImage(image);
+                #if sync
+				({var image = Image.fromBytes(data.bitmapData);
+                #else
+                Image.loadFromBytes(data.bitmapData).onComplete(function(image) {
+                #end
+                    var values = Bytes.alloc((image.width + 1) * image.height);
+                    var index = 0;
+                    
+                    for (y in 0...image.height) {
+                        values.set(index++, 0);
+                        values.blit(index, alpha, alpha.position, image.width);
+                        index += image.width;
+                        alpha.position += image.width;
+                    }
+                    
+                    var png = new List();
+                    png.add(CHeader( { width: image.width, height: image.height, colbits: 8, color: ColIndexed, interlaced: false } ));
+                    png.add(CPalette(alphaPalette));
+                    
+                    var bytes = zip.Zip.compress(values);
+                    png.add(CData(bytes));
+                    png.add(CEnd);
+                    
+                    var output = new BytesOutput();
+                    var writer = new Writer(output);
+                    writer.write(png);
+                    
+                    #if sync
+                    ({var bitmapDataAlpha = BitmapData.fromBytes(output.getBytes());
+                    #else
+                    BitmapData.loadFromBytes(output.getBytes()).onComplete(function(bitmapDataAlpha) {
+                    #end
+                        var bitmapDataJPEG = BitmapData.fromImage(image);
+                        bitmapData = new BitmapData(image.width, image.height, true, 0x00000000);
 
-                bitmapData = new BitmapData(image.width, image.height, true, 0x00000000);
-                
-                var alpha = Image.fromBitmapData(bitmapDataAlpha);
-                bitmapData.copyPixels(bitmapDataJPEG, bitmapDataJPEG.rect, new Point(0, 0));
-                
-                var jpeg = Image.fromBitmapData(bitmapData);
-                jpeg.copyChannel(alpha, alpha.rect, new Vector2(), ImageChannel.RED, ImageChannel.ALPHA);
-				
-                bitmapData = BitmapData.fromImage(jpeg);
-
+                        var alpha = Image.fromBitmapData(bitmapDataAlpha);
+                        bitmapData.copyPixels(bitmapDataJPEG, bitmapDataJPEG.rect, new Point(0, 0));
+                        
+                        var jpeg = Image.fromBitmapData(bitmapData);
+                        jpeg.copyChannel(alpha, alpha.rect, new Vector2(), ImageChannel.RED, ImageChannel.ALPHA);
+                        
+                        bitmapData = BitmapData.fromImage(jpeg);
+                        complete();
+                    });
+                });
 			} else {
-				bitmapData = BitmapData.fromBytes(data.bitmapData);
+                #if sync
+                ({var bmpd = BitmapData.fromBytes(data.bitmapData);
+                #else
+                BitmapData.loadFromBytes(data.bitmapData).onComplete(function(bmpd) {
+                #end
+                    bitmapData = bmpd;
+                    complete();
+                });
 			}
 			
 		} else if (Std.is(tag, TagDefineBits)) {
 			
             var data:TagDefineBits = cast tag;
-            bitmapData = BitmapData.fromBytes(data.bitmapData);
-		}
-		
-		if (bitmapData != null) {
-            var definition:BitmapDefinition = {
-                id: tag.characterId,
-                x: 0,
-                y: 0,
-                width: bitmapData.width,
-                height: bitmapData.height
-            };
-
-            bitmaps.set(tag.characterId, definition);
-            bitmapDatas.set(tag.characterId, bitmapData);
+            #if sync
+            ({var bmpd = BitmapData.fromBytes(data.bitmapData);
+            #else
+            BitmapData.loadFromBytes(data.bitmapData).onComplete(function(bmpd) {
+            #end
+                bitmapData = bmpd;
+                complete();
+            });
 		}
     }
 
-    function processSymbol(symbol:SWFSymbol) {
+    function processSymbol(symbol:SWFSymbol, onComplete:Void->Void) {
         var tag = cast data.getCharacter(symbol.tagId);
 
         // Only process Sprite Symbol
         if (Std.is(tag, TagDefineSprite)) {
-            processTag(tag);
+            processTag(tag, () -> {
+                var definition = movieClips.get(symbol.tagId);
+                definition.name = symbol.name;
 
-            var definition = movieClips.get(symbol.tagId);
-            definition.name = symbol.name;
+                onComplete();
+            });
+        } else {
+            onComplete();
         }
     }
 
-    function processTag(tag:IDefinitionTag) {
+    function processTag(tag:IDefinitionTag, onComplete:Void->Void) {
         // Stop if exists or null
-        if (tag == null || definitions.exists(tag.characterId)) return;
+        if (tag == null || definitions.exists(tag.characterId)) {
+            onComplete();
+            return;
+        }
 
         definitions.set(tag.characterId, true);
 
         if (Std.is(tag, TagDefineSprite)) {
             
-            addSprite(cast tag);
+            addSprite(cast tag, onComplete);
 
         } else if (Std.is(tag, TagDefineBits) || Std.is(tag, TagDefineBitsJPEG2) || Std.is(tag, TagDefineBitsLossless)) {
             
-            addBitmap(cast tag);
+            addBitmap(cast tag, onComplete);
             
         } else if (Std.is(tag, TagDefineButton) || Std.is(tag, TagDefineButton2)) {
             
             // Will not support
+            onComplete();
             
         } else if (Std.is(tag, TagDefineEditText)) {
             
             // TODO: Dynamic Text
+            onComplete();
             
         } else if (Std.is(tag, TagDefineText)) {
             
             // TODO: Static Text
+            onComplete();
             
         } else if (Std.is(tag, TagDefineShape)) {
             
-            addShape(cast tag);
+            addShape(cast tag, onComplete);
             
         } else if (Std.is(tag, TagDefineFont) || Std.is(tag, TagDefineFont4)) {
             
             // Will not support
+            onComplete();
             
         } else if (Std.is(tag, TagDefineSound)) {
 
             // Will not support
+            onComplete();
 
+        } else {
+            onComplete();
         }
     }
 }

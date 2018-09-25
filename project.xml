@@ -12,9 +12,10 @@
 	<source path="submodules/format" />
 	<source path="submodules/Rectangle-Bin-Packing" />
 	<source path="submodules/openfl/scripts" />
-	
+
 	<assets path="res" embed="false" />
 	
+    <haxedef name="sync" unless="html5" />
 	<haxedef name="trim" />
 
 </project>
