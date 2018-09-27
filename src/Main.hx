@@ -45,6 +45,8 @@ class CLI extends mcli.CommandLine {
                 FileSave.writeBytes(zip, output);
                 trace('Done!');
                 Sys.exit(0);
+            }, error -> {
+                Sys.exit(0);
             });
         }
 	}
@@ -71,15 +73,18 @@ class Main extends Sprite {
 
             // Save file for test
             FileSave.saveClickBytes(zip, 'Test2.swfty');
+        }, error -> {
+
         });
         #end
 	}
 
-	public static function processSWF(path:String, onComplete:SWFTileExporter->Void) {
+	public static function processSWF(path:String, onComplete:SWFTileExporter->Void, onError:Dynamic->Void) {
 		Assets
 		.loadBytes(path)
 		.onError(function(error) {
 			trace('Error!!!', error);
+            onError(error);
 		})
 		.onComplete(function(bytes) {
 			trace('Loaded ${bytes.length}');

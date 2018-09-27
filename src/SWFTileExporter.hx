@@ -1,9 +1,12 @@
 package;
 
+import TilemapExporter;
+
 import zip.ZipWriter;
 
 import haxe.ds.StringMap;
 import haxe.ds.IntMap;
+import haxe.ds.Option;
 import haxe.io.Bytes;
 import haxe.io.BytesOutput;
 
@@ -105,6 +108,8 @@ class SWFTileExporter {
 
     var alphaPalette:Bytes;
 
+    var tilemap:Option<TilePack> = None;
+
     public static function create(bytes:Bytes, onComplete:SWFTileExporter->Void) {
         return new SWFTileExporter(bytes, onComplete);
     }
@@ -153,22 +158,29 @@ class SWFTileExporter {
     }
 
     public function getTilemap() {
-        // Create Tilemap based on all bitmapDatas
-        var bmpds = [for (bmpd in bitmapDatas) bmpd];
-        var tilemap = TilemapExporter.pack(bmpds);
+        return switch(tilemap) {
+            case Some(tilemap) : tilemap;
+            case None : 
+                // Create Tilemap based on all bitmapDatas
+                var bmpds = [for (bmpd in bitmapDatas) bmpd];
+                var tilemap = TilemapExporter.pack(bmpds);
 
-        var keys = [for (key in bitmapDatas.keys()) key];
-        for (i in 0...keys.length) {
-            var key = keys[i];
+                trace('Tilemap is ${tilemap.bitmapData.width}x${tilemap.bitmapData.height}');
 
-            var bitmap = bitmaps.get(key);
-            var tile = tilemap.tiles[i];
-            
-            bitmap.x = tile.x;
-            bitmap.y = tile.y;
+                var keys = [for (key in bitmapDatas.keys()) key];
+                for (i in 0...keys.length) {
+                    var key = keys[i];
+
+                    var bitmap = bitmaps.get(key);
+                    var tile = tilemap.tiles[i];
+                    
+                    bitmap.x = tile.x;
+                    bitmap.y = tile.y;
+                }
+
+                this.tilemap = Some(Tilemap);
+                tilemap;
         }
-
-        return tilemap;
     }
 
     public function getJSON() {
@@ -187,8 +199,8 @@ class SWFTileExporter {
     public function getSwfty() {
         // TODO: Change this library name to Swfty so I can name this function getSwfty
 
-        var json = getJSON();
         var tilemap = getTilemap();
+        var json = getJSON();
         var png = getPNG(tilemap.bitmapData);
 
         var zip = new ZipWriter();
