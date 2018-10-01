@@ -27,11 +27,8 @@ class SWFTYSprite extends TileContainer {
 
         switch(this.definition) {
             case Some(definition) :
-                trace(definition);
-
                 // Create children
                 for (child in definition.children) {
-                    trace(layer.getDefinition(child.id));
                     var sprite:SWFTYSprite = create(layer, layer.getDefinition(child.id));
                     if (child.name != null) {
                         sprite.name = child.name;
@@ -46,8 +43,7 @@ class SWFTYSprite extends TileContainer {
                     sprite.visible = child.visible;
 
                     for (shape in child.shapes) {
-                        trace(shape.bitmap, shape.id);
-                        var tile = new Tile(shape.bitmap, shape.x, shape.y, shape.scaleX, shape.scaleY, shape.rotation, 0, 0);
+                        var tile = new Tile(layer.getTile(shape.bitmap), shape.x, shape.y, shape.scaleX, shape.scaleY, shape.rotation, 0, 0);
                         sprite.addTile(tile);
                     }
 

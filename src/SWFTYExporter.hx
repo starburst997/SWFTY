@@ -134,6 +134,7 @@ class SWFTYExporter {
 
         function process(i) {
             var tag = data.tags[i];
+
         
             function complete() {
                 if (i + 1 < data.tags.length) process(i + 1) else onComplete(this);
@@ -141,6 +142,8 @@ class SWFTYExporter {
 
             if (Std.is(tag, TagSymbolClass)) {
                 var symbols = cast (tag, TagSymbolClass).symbols;
+                
+                //trace('TAG: ${tag.name} ${tag.toString()}');
                 
                 function process2(j) {
                     var symbol = symbols[j];
@@ -263,6 +266,7 @@ class SWFTYExporter {
                 var object = objects[j];
 
                 var childTag = cast data.getCharacter(object.characterId);
+                
                 processTag(childTag, () -> {
                     var placeTag:TagPlaceObject = cast tag.tags[object.placedAtIndex];
 
@@ -316,6 +320,8 @@ class SWFTYExporter {
                     // TODO: Only process 1 frame for now...
                     //else if (i + 1 < tag.frames.length) process(i + 1) 
                     else onComplete();
+
+                    //if (j + 1 >= objects.length) onComplete();
                 });
             }
 
@@ -333,6 +339,7 @@ class SWFTYExporter {
         var bitmaps = ShapeBitmapExporter.process(handler);
 
         var shapes = [];
+        this.shapes.set(tag.characterId, shapes);
 
         if (bitmaps != null) {
             //for (i in 0...bitmaps.length) {
@@ -385,8 +392,6 @@ class SWFTYExporter {
             }
             if (handler.commands.length > 0) process(0) else onComplete();
         }
-
-        this.shapes.set(tag.characterId, shapes);
     }
 
     function addBitmap(tag:IDefinitionTag, onComplete:Void->Void) {
