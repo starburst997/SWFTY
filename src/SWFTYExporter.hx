@@ -88,12 +88,12 @@ typedef MovieClipDefinition = {
 	children: Array<SpriteDefinition>
 }
 
-typedef SWFTileJson = {
+typedef SWFTYJson = {
 	definitions: Array<MovieClipDefinition>,
     tiles: Array<BitmapDefinition>
 }
 
-class SWFTileExporter {
+class SWFTYExporter {
 
     var definitions:IntMap<Bool>;
     
@@ -110,11 +110,11 @@ class SWFTileExporter {
 
     var tilemap:Option<TilePack> = None;
 
-    public static function create(bytes:Bytes, onComplete:SWFTileExporter->Void) {
-        return new SWFTileExporter(bytes, onComplete);
+    public static function create(bytes:Bytes, onComplete:SWFTYExporter->Void) {
+        return new SWFTYExporter(bytes, onComplete);
     }
 
-    public function new(bytes:Bytes, onComplete:SWFTileExporter->Void) {
+    public function new(bytes:Bytes, onComplete:SWFTYExporter->Void) {
         swf = new SWF(bytes);
         data = swf.data;
 
@@ -125,7 +125,7 @@ class SWFTileExporter {
         bitmaps = new IntMap();
         bitmapDatas = new IntMap();
 
-        var json:SWFTileJson = {
+        var json:SWFTYJson = {
             definitions: [],
             tiles: []
         };
@@ -178,13 +178,13 @@ class SWFTileExporter {
                     bitmap.y = tile.y;
                 }
 
-                this.tilemap = Some(Tilemap);
+                this.tilemap = Some(tilemap);
                 tilemap;
         }
     }
 
     public function getJSON() {
-        var definition:SWFTileJson = {
+        var definition:SWFTYJson = {
             definitions: [for (mc in movieClips) mc],
             tiles: [for (bmp in bitmaps) bmp]
         }
@@ -197,8 +197,6 @@ class SWFTileExporter {
     }
 
     public function getSwfty() {
-        // TODO: Change this library name to Swfty so I can name this function getSwfty
-
         var tilemap = getTilemap();
         var json = getJSON();
         var png = getPNG(tilemap.bitmapData);

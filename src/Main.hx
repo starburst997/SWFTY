@@ -9,78 +9,27 @@ import openfl.Assets;
 
 using StringTools;
 
-#if sys
-/**
-	Convert .SWF to .SWFTY
-	Draw all shapes and bitmaps into one Spritesheet and save all symbol's 
-    definitions into an easy to read .JSON, the two files are then combined
-    into a .ZIP file with the .SWFTY extension.
-**/
-class CLI extends mcli.CommandLine {
-
-    /**
-		Path of the SWFTY to save
-        @alias o 
-	**/
-	public var output:String = null;
-
-	/**
-		Show this message.
-	**/
-	public function help() {
-		trace(this.showUsage());
-		Sys.exit(0);
-	}
-
-	public function runDefault(?path:String) {
-		if(path == null) {
-            trace('Please specify a .SWF to convert!');
-            Sys.exit(0);
-        } else {
-            trace('Converting: $path...');
-            Main.processSWF(path, exporter -> {
-                var zip = exporter.getSwfty();
-                var output = this.output == null ? path.replace('.swf', '.swfty') : this.output;
-                trace('Saving: $output...');
-                FileSave.writeBytes(zip, output);
-                trace('Done!');
-                Sys.exit(0);
-            }, error -> {
-                Sys.exit(0);
-            });
-        }
-	}
-}
-#end
-
 class Main extends Sprite {
 
 	public function new() {	
 		super();
 
-        #if sys
-        new mcli.Dispatch(Sys.args()).dispatch(new CLI());
-        #else
 		// Process SWF
-		processSWF('res/Test2.swf', exporter -> {
-            var zip = exporter.getSwfty();
+		var layer = renderSWFTY('res/Test2.swfty', layer -> {
+            
+            trace('Yay loading finished!');
 
-            // Showing Tilemap for fun
-            var tilemap = exporter.getTilemap();
-            var bmp = new Bitmap(tilemap.bitmapData);
-            bmp.y = 0;
-            addChild(bmp);
-
-            // Save file for test
-            FileSave.saveClickBytes(zip, 'Test2.swfty');
         }, error -> {
-
+            trace('Error: $error');
         });
-        #end
+
+        addChild(layer);
 	}
 
-	public static function processSWF(path:String, onComplete:SWFTileExporter->Void, onError:Dynamic->Void) {
-		Assets
+	public function renderSWFTY(path:String, onComplete:SWFTYLayer->Void, onError:Dynamic->Void) {
+		var layer = SWFTYLayer.create(stage.stageWidth, stage.stageHeight);
+        
+        Assets
 		.loadBytes(path)
 		.onError(function(error) {
 			trace('Error!!!', error);
@@ -90,10 +39,14 @@ class Main extends Sprite {
 			trace('Loaded ${bytes.length}');
 
 			var timer = haxe.Timer.stamp();
-			SWFTileExporter.create(bytes, function(exporter) {
-                trace('Parsed SWF: ${haxe.Timer.stamp() - timer}');
-                onComplete(exporter);
-            });
+			
+            layer.load(bytes, () -> onComplete(layer), () -> onError('Cannot load!'));
+            
+            trace('Parsed SWFTY: ${haxe.Timer.stamp() - timer}');
+            
+            onComplete(layer);
 		});
+
+        return layer;
 	}
 }
