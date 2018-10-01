@@ -45,7 +45,7 @@ class SWFTYLayer extends Tilemap {
         ids = new IntMap();
         mcs = new StringMap();
 
-        addEventListener(Event.ENTER_FRAME, render);
+        /*addEventListener(Event.ENTER_FRAME, render);
 
         #if html5
         // Weird OpenFL html5 bug with tilemap...
@@ -55,7 +55,7 @@ class SWFTYLayer extends Tilemap {
                 x -= 0.00000001;
             });
         });
-        #end
+        #end*/
     }
 
     public function dispose() {
@@ -149,6 +149,8 @@ class SWFTYLayer extends Tilemap {
                 }
 
                 var tileset = new Tileset(bmpd, rects);
+
+                trace('Tilemap: ${bmpd.width}, ${bmpd.height}');
 
                 onComplete(tileset, json);
             #if release

@@ -39,17 +39,20 @@ class Main extends Sprite {
             function spawn() {
                 haxe.Timer.delay(() -> {
                     var name = names[Std.int(Math.random() * names.length)];
-                    trace('Spawning: $name');
 
                     var sprite = layer.get(name);
                     
                     var speedX = Math.random() * 50 - 25;
                     var speedY = Math.random() * 50 - 25;
                     var speedRotation = Math.random() * 50 - 25;
-                    var speedAlpha = Math.random() * 1 + 0.5;
+                    var speedAlpha = Math.random() * 0.75 + 0.25;
 
-                    sprite.x = Math.random() * stage.stageWidth * 0.5 + stage.stageWidth / 4;
-                    sprite.y = Math.random() * stage.stageHeight * 0.5 + stage.stageHeight / 4;
+                    sprite.x = Math.random() * stage.stageWidth * 0.75;// + stage.stageWidth / 4;
+                    sprite.y = Math.random() * stage.stageHeight * 0.75;// + stage.stageHeight / 4;
+
+                    var scale = Math.random() * 0.25 + 0.35;
+                    sprite.scaleX = scale;
+                    sprite.scaleY = scale;
 
                     var render = null;
                     render = (e) -> {
