@@ -9,3 +9,4 @@ haxelib dev lime lime
 haxelib dev openfl openfl
 haxelib dev binpacking Rectangle-Bin-Packing
 haxelib dev mcli mcli
+haxelib dev hxcpp hxcpp

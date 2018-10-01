@@ -25,6 +25,10 @@ class Main extends Sprite {
 	public function new() {	
 		super();
 
+        var fps:openfl.display.FPS = new openfl.display.FPS();
+        fps.textColor = 0x000000;
+        this.addChild(fps);
+
 		// Process SWF
 		//var layer = renderSWFTY('res/Test2.swfty', layer -> {
         //var layer = processSWF('res/Test1.swf', layer -> {
@@ -34,7 +38,7 @@ class Main extends Sprite {
             var names = layer.getAllNames();
             trace(names);
 
-            addChild(layer);
+            addChildAt(layer, 0);
 
             function spawn() {
                 haxe.Timer.delay(() -> {

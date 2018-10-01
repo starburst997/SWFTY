@@ -6,3 +6,4 @@ haxelib dev binpacking submodules/Rectangle-Bin-Packing
 haxelib dev mcli submodules/mcli
 haxelib dev haxe-file-save submodules/haxe-file-save
 haxelib dev haxe-zip submodules/haxe-zip
+haxelib dev hxcpp submodules/hxcpp
