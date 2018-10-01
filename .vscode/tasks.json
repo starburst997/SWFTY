@@ -9,7 +9,7 @@
             "taskName": "build",
             "isBuildCommand": true,
             "args": [
-                "build", "html5", "-v"
+                "build", "html5", "-debug", "-v"
             ],
             "presentation": {
                 "echo": false,
