@@ -19,6 +19,16 @@ class Main extends Sprite {
             
             trace('Yay loading finished!');
 
+            trace(layer.getAllNames());
+
+            var sprite = layer.get('SquareE');
+
+            layer.addTile(sprite);
+            //layer.
+
+            //var bitmap = new Bitmap(layer.tileset.bitmapData);
+            //addChild(bitmap);
+
         }, error -> {
             trace('Error: $error');
         });
@@ -43,8 +53,6 @@ class Main extends Sprite {
             layer.load(bytes, () -> onComplete(layer), () -> onError('Cannot load!'));
             
             trace('Parsed SWFTY: ${haxe.Timer.stamp() - timer}');
-            
-            onComplete(layer);
 		});
 
         return layer;
