@@ -2,7 +2,7 @@
 <project>
 	
 	<meta title="SWFTY" package="jd.boivin.swfty" version="1.0.0" company="Jean-Denis Boivin" />
-	<app main="Main" path="bin" file="SWFTY" />
+	<app main="openfl.Main" path="bin" file="SWFTY" />
     <window hidden="true" unless="html5" if="cli" />
 	
 	<haxelib name="openfl" />
