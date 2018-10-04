@@ -1,13 +1,10 @@
-package;
+package openfl;
 
 import file.save.FileSave;
 
 import openfl.display.Bitmap;
-import openfl.display.BitmapData;
 import openfl.display.Sprite;
 import openfl.Assets;
-
-using StringTools;
 
 #if sys
 /**
@@ -15,6 +12,12 @@ using StringTools;
 	Draw all shapes and bitmaps into one Spritesheet and save all symbol's 
     definitions into an easy to read .JSON, the two files are then combined
     into a .ZIP file with the .SWFTY extension.
+
+    TODO:
+    - [ ] Create a watcher that watch every SWF inside a folder and auto-export
+    - [ ] Generate multiple version (low res, medium res, high res)
+    - [ ] Add config json to specify target max resolution and auto scale down
+
 **/
 class CLI extends mcli.CommandLine {
 
@@ -79,7 +82,7 @@ class Exporter extends Sprite {
         #end
 	}
 
-	public static function processSWF(path:String, onComplete:SWFTYExporter->Void, onError:Dynamic->Void) {
+	public static function processSWF(path:String, onComplete:swfty.Exporter->Void, onError:Dynamic->Void) {
 		Assets
 		.loadBytes(path)
 		.onError(function(error) {
@@ -90,7 +93,7 @@ class Exporter extends Sprite {
 			trace('Loaded ${bytes.length}');
 
 			var timer = haxe.Timer.stamp();
-			SWFTYExporter.create(bytes, function(exporter) {
+			swfty.Exporter.create(bytes, function(exporter) {
                 trace('Parsed SWF: ${haxe.Timer.stamp() - timer}');
                 onComplete(exporter);
             });

@@ -1,4 +1,4 @@
-package;
+package swfty.openfl;
 
 import openfl.display.BitmapData;
 import openfl.geom.Point;

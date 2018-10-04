@@ -1,24 +1,19 @@
+package swfty.openfl;
 
 import haxe.ds.IntMap;
 import haxe.ds.StringMap;
 import haxe.io.Bytes;
 
-import SWFTYExporter;
-
 import zip.Zip;
 import zip.ZipReader;
-import zip.ZipEntry;
 
 import openfl.geom.Rectangle;
 import openfl.display.Tileset;
 import openfl.display.BitmapData;
-import openfl.display.TileContainer;
 import openfl.display.Tilemap;
 import openfl.events.Event;
 
-using Lambda;
-
-class SWFTYLayer extends Tilemap {
+class Layer extends Tilemap {
 
     var afterFrames:Array<Void->Void> = [];
 
@@ -27,10 +22,10 @@ class SWFTYLayer extends Tilemap {
     var mcs:StringMap<MovieClipDefinition>;
 
     public static inline function create(width:Int, height:Int, ?tileset) {
-        return new SWFTYLayer(width, height, tileset);
+        return new Layer(width, height, tileset);
     }
 
-    public static inline function createAsync(width:Int, height:Int, bytes:Bytes, onComplete:SWFTYLayer->Void, onError:Dynamic->Void) {
+    public static inline function createAsync(width:Int, height:Int, bytes:Bytes, onComplete:Layer->Void, onError:Dynamic->Void) {
         loadTileset(bytes, (tileset, json) -> {
             var layer = create(width, height, tileset);
             layer.loadJson(json);
@@ -100,12 +95,12 @@ class SWFTYLayer extends Tilemap {
 
     }
 
-    public function get(linkage:String):SWFTYSprite {
+    public function get(linkage:String):Sprite {
         return if (!mcs.exists(linkage)) {
             Log.warn('Linkage: $linkage does not exists!');
-            SWFTYSprite.create(this);
+            Sprite.create(this);
         } else {
-            var sprite = SWFTYSprite.create(this, mcs.get(linkage));
+            var sprite = Sprite.create(this, mcs.get(linkage));
             sprite;
         }
     }

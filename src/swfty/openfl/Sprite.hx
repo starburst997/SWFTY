@@ -1,24 +1,24 @@
-import openfl.display.Tile;
+package swfty.openfl;
+
 import haxe.ds.Option;
 import haxe.ds.StringMap;
 
-import SWFTYExporter;
-
+import openfl.display.Tile;
 import openfl.display.TileContainer;
 
-class SWFTYSprite extends TileContainer {
+class Sprite extends TileContainer {
 
     public var name:String;
-    public var layer:SWFTYLayer;
+    public var layer:Layer;
 
-    var _childs:StringMap<SWFTYSprite>;
+    var _childs:StringMap<Sprite>;
     var definition:Option<MovieClipDefinition> = None;
 
-    public static inline function create(layer:SWFTYLayer, ?definition:MovieClipDefinition) {
-        return new SWFTYSprite(layer, definition);
+    public static inline function create(layer:Layer, ?definition:MovieClipDefinition) {
+        return new Sprite(layer, definition);
     }
 
-    public function new(layer:SWFTYLayer, definition:MovieClipDefinition) {
+    public function new(layer:Layer, definition:MovieClipDefinition) {
         super();
 
         this.layer = layer;
@@ -29,7 +29,7 @@ class SWFTYSprite extends TileContainer {
             case Some(definition) :
                 // Create children
                 for (child in definition.children) {
-                    var sprite:SWFTYSprite = create(layer, layer.getDefinition(child.id));
+                    var sprite:Sprite = create(layer, layer.getDefinition(child.id));
                     if (child.name != null) {
                         sprite.name = child.name;
                         _childs.set(child.name, sprite);
@@ -61,7 +61,7 @@ class SWFTYSprite extends TileContainer {
         }
     }
 
-    public function get(name:String):SWFTYSprite {
+    public function get(name:String):Sprite {
         return if (_childs.exists(name)) {
             _childs.get(name);
         } else {

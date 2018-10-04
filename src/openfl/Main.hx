@@ -1,23 +1,19 @@
-package;
+package openfl;
+
+import swfty.Exporter;
 
 import file.save.FileSave;
 
-import openfl.display.Bitmap;
-import openfl.display.BitmapData;
 import openfl.display.Sprite;
-import openfl.display.Tile;
-import openfl.display.TileContainer;
 import openfl.events.Event;
 import openfl.Assets;
-
-using StringTools;
 
 class Main extends Sprite {
 
     var afterFrames:Array<Void->Void> = [];
 
-    var layer:SWFTYLayer;
-    var sprites:Array<SWFTYSprite> = [];
+    var layer:Layer;
+    var sprites:Array<Sprite> = [];
 
     var dt = 0.0;
     var timer = 0.0;
@@ -95,7 +91,7 @@ class Main extends Sprite {
         timer = haxe.Timer.stamp();
     }
 
-	public function renderSWFTYAsync(path:String, onComplete:SWFTYLayer->Void, onError:Dynamic->Void) {
+	public function renderSWFTYAsync(path:String, onComplete:Layer->Void, onError:Dynamic->Void) {
 		Assets
 		.loadBytes(path)
 		.onError(function(error) {
@@ -108,14 +104,14 @@ class Main extends Sprite {
 			var timer = haxe.Timer.stamp();
 			
             trace(stage.stageWidth, stage.stageHeight);
-            SWFTYLayer.createAsync(stage.stageWidth, stage.stageHeight, bytes, layer -> onComplete(layer), (e) -> onError('Cannot load: $e!'));
+            Layer.createAsync(stage.stageWidth, stage.stageHeight, bytes, layer -> onComplete(layer), (e) -> onError('Cannot load: $e!'));
             
             trace('Parsed SWFTY: ${haxe.Timer.stamp() - timer}');
 		});
 	}
 
-    public function renderSWFTY(path:String, onComplete:SWFTYLayer->Void, onError:Dynamic->Void) {
-		var layer = SWFTYLayer.create(stage.stageWidth, stage.stageHeight);
+    public function renderSWFTY(path:String, onComplete:Layer->Void, onError:Dynamic->Void) {
+		var layer = Layer.create(stage.stageWidth, stage.stageHeight);
         
         Assets
 		.loadBytes(path)
@@ -136,8 +132,8 @@ class Main extends Sprite {
         return layer;
 	}
 
-    public function processSWF(path:String, onComplete:SWFTYLayer->Void, onError:Dynamic->Void) {
-		var layer = SWFTYLayer.create(stage.stageWidth, stage.stageHeight);
+    public function processSWF(path:String, onComplete:Layer->Void, onError:Dynamic->Void) {
+		var layer = Layer.create(stage.stageWidth, stage.stageHeight);
 
         Assets
 		.loadBytes(path)
@@ -149,7 +145,7 @@ class Main extends Sprite {
 			trace('Loaded ${bytes.length}');
 
 			var timer = haxe.Timer.stamp();
-			SWFTYExporter.create(bytes, function(exporter) {
+			Exporter.create(bytes, function(exporter) {
                 // TODO: Could be more optimized by getting the tilemap + definition straigt from exporter object
                 //       and passing it down to layer
                 var bytes = exporter.getSwfty();

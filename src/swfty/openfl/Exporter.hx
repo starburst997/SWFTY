@@ -1,6 +1,6 @@
-package;
+package swfty.openfl;
 
-import TilemapExporter;
+import swfty.openfl.TilemapExporter;
 
 import zip.ZipWriter;
 
@@ -52,49 +52,7 @@ import format.SWF;
 
 using Lambda;
 
-typedef Transform = {
-    a: Float,
-	b: Float,
-	c: Float,
-	d: Float,
-	tx: Float,
-	ty: Float,
-}
-
-typedef ShapeDefinition = {
-    > Transform,
-    id: Int,
-    bitmap: Int,
-}
-
-typedef SpriteDefinition = {
-	> Transform,
-    id: Int,
-    shapes: Array<ShapeDefinition>,
-	name: String,
-    visible: Bool
-}
-
-typedef BitmapDefinition = {
-	id: Int,
-	x: Int,
-	y: Int,
-	width: Int,
-	height: Int
-}
-
-typedef MovieClipDefinition = {
-	id: Int,
-    name: String,
-	children: Array<SpriteDefinition>
-}
-
-typedef SWFTYJson = {
-	definitions: Array<MovieClipDefinition>,
-    tiles: Array<BitmapDefinition>
-}
-
-class SWFTYExporter {
+class Exporter {
 
     var definitions:IntMap<Bool>;
     
@@ -111,11 +69,11 @@ class SWFTYExporter {
 
     var tilemap:Option<TilePack> = None;
 
-    public static function create(bytes:Bytes, onComplete:SWFTYExporter->Void) {
-        return new SWFTYExporter(bytes, onComplete);
+    public static function create(bytes:Bytes, onComplete:Exporter->Void) {
+        return new Exporter(bytes, onComplete);
     }
 
-    public function new(bytes:Bytes, onComplete:SWFTYExporter->Void) {
+    public function new(bytes:Bytes, onComplete:Exporter->Void) {
         swf = new SWF(bytes);
         data = swf.data;
 
