@@ -35,15 +35,23 @@ class SWFTYSprite extends TileContainer {
                         _childs.set(child.name, sprite);
                     }
 
-                    sprite.x = child.x;
-                    sprite.y = child.y;
-                    sprite.scaleX = child.scaleX;
-                    sprite.scaleY = child.scaleY;
-                    sprite.rotation = child.rotation;
+                    sprite.matrix.a = child.a;
+                    sprite.matrix.b = child.b;
+                    sprite.matrix.c = child.c;
+                    sprite.matrix.d = child.d;
+                    sprite.matrix.tx = child.tx;
+                    sprite.matrix.ty = child.ty;
                     sprite.visible = child.visible;
 
                     for (shape in child.shapes) {
-                        var tile = new Tile(layer.getTile(shape.bitmap), shape.x, shape.y, shape.scaleX, shape.scaleY, shape.rotation, 0, 0);
+                        var tile = new Tile(layer.getTile(shape.bitmap));
+                        tile.matrix.a = shape.a;
+                        tile.matrix.b = shape.b;
+                        tile.matrix.c = shape.c;
+                        tile.matrix.d = shape.d;
+                        tile.matrix.tx = shape.tx;
+                        tile.matrix.ty = shape.ty;
+
                         sprite.addTile(tile);
                     }
 

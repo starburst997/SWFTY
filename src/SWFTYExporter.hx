@@ -53,11 +53,12 @@ import format.SWF;
 using Lambda;
 
 typedef Transform = {
-    x: Float,
-	y: Float,
-	scaleX: Float,
-	scaleY: Float,
-	rotation: Float,
+    a: Float,
+	b: Float,
+	c: Float,
+	d: Float,
+	tx: Float,
+	ty: Float,
 }
 
 typedef ShapeDefinition = {
@@ -212,32 +213,13 @@ class SWFTYExporter {
     }
 
     function getTransform(matrix:Matrix):Transform {
-        // TODO: Should we save the matrix instead? Easier to debug with those, since this is what we see in flash IDE
-        var translation = {
-            var offsetPoint:Point = new Point(0, 0);
-            var transformedOffset:Point = matrix.deltaTransformPoint(offsetPoint);
-            new Point(matrix.tx + transformedOffset.x, matrix.ty + transformedOffset.y);
-        }
-
         return {
-            x: translation.x,
-            y: translation.y,
-            scaleX: Math.sqrt(matrix.a*matrix.a + matrix.b*matrix.b),
-            scaleY: Math.sqrt(matrix.c*matrix.c + matrix.d*matrix.d),
-            rotation: {
-                // extract translation
-                var point = new Point(0, 0);
-                var m = matrix.clone();
-                var point2 = m.transformPoint(point);
-                m.translate(-point2.x, -point2.y);
-
-                // extract (uniform) scale...
-                point.x = 1; point.y = 0;
-                point = m.transformPoint(point);
-
-                // ...and rotation
-                Math.atan2(point.y, point.x) * 180/Math.PI;
-            }
+            a: matrix.a,
+            b: matrix.b,
+            c: matrix.c,
+            d: matrix.d,
+            tx: matrix.tx,
+            ty: matrix.ty
         }
     }
 
@@ -305,11 +287,12 @@ class SWFTYExporter {
                     var definition:SpriteDefinition = {
                         id: object.characterId,
                         name: placeTag.instanceName,
-                        x: transform.x,
-                        y: transform.y,
-                        scaleX: transform.scaleX,
-                        scaleY: transform.scaleY,
-                        rotation: transform.rotation,
+                        a: transform.a,
+                        b: transform.b,
+                        c: transform.c,
+                        d: transform.d,
+                        tx: transform.tx,
+                        ty: transform.ty,
                         visible: visible,
                         shapes: shapes.exists(object.characterId) ? shapes.get(object.characterId) : []
                     }
@@ -352,11 +335,12 @@ class SWFTYExporter {
                     var definition:ShapeDefinition = {
                         id: i,
                         bitmap: bitmap.id,
-                        x: transform.x,
-                        y: transform.y,
-                        scaleX: transform.scaleX,
-                        scaleY: transform.scaleY,
-                        rotation: transform.rotation
+                        a: transform.a,
+                        b: transform.b,
+                        c: transform.c,
+                        d: transform.d,
+                        tx: transform.tx,
+                        ty: transform.ty
                     }
 
                     shapes.push(definition);
@@ -375,11 +359,12 @@ class SWFTYExporter {
                             var definition:ShapeDefinition = {
                                 id: i,
                                 bitmap: bitmapID,
-                                x: 0.0,
-                                y: 0.0,
-                                scaleX: 1.0,
-                                scaleY: 1.0,
-                                rotation: 0.0
+                                a: 0.0,
+                                b: 0.0,
+                                c: 0.0,
+                                d: 0.0,
+                                tx: 0.0,
+                                ty: 0.0
                             }
 
                             shapes.push(definition);

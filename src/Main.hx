@@ -31,7 +31,7 @@ class Main extends Sprite {
 
 		// Process SWF
 		//var layer = renderSWFTY('res/Test2.swfty', layer -> {
-        //var layer = processSWF('res/Test1.swf', layer -> {
+        //processSWF('res/Test1.swf', layer -> {
         renderSWFTYAsync('res/Test1.swfty', layer -> {
             trace('Yay loading finished!');
 
@@ -156,7 +156,7 @@ class Main extends Sprite {
                 layer.load(bytes, () -> onComplete(layer), (e) -> onError('Cannot load $e!'));
                 
                 // Save file for test
-                FileSave.saveClickBytes(bytes, 'Test2.swfty');
+                FileSave.saveClickBytes(bytes, 'Test3.swfty');
 
                 trace('Parsed SWF: ${haxe.Timer.stamp() - timer}');
             });
