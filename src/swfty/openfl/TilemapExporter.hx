@@ -50,7 +50,11 @@ class TilemapExporter {
                 for (i in 0...bmpds.length) {
                     var bmpd = bmpds[i];
                     var padding = 1;
-                    var rect = pack.insert(bmpd.width + padding * 2, bmpd.height + padding * 2);
+                    var rect = if (bmpd != null)
+                        pack.insert(bmpd.width + padding * 2, bmpd.height + padding * 2)
+                    else 
+                        pack.insert(1, 1);
+
                     if (rect == null) {
                         throw 'Not enough space';
                     } else {
@@ -90,7 +94,7 @@ class TilemapExporter {
             for (i in 0...tiles.length) {
                 var tile = tiles[i];
                 var bmpd = bmpds[i];
-                bitmapData.copyPixels(bmpd, bmpd.rect, new Point(tile.x, tile.y));
+                if (bmpd != null) bitmapData.copyPixels(bmpd, bmpd.rect, new Point(tile.x, tile.y));
                 //bmpd.dispose();
             };
 

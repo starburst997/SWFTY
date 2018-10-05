@@ -63,6 +63,7 @@ class Exporter {
     var processShapes:Array<TagDefineShape>;
 
     var bitmaps:IntMap<BitmapDefinition>;
+    var bitmapKeeps:IntMap<Bool>;
     public var bitmapDatas:IntMap<BitmapData>;
 
     var swf:SWF;
@@ -87,6 +88,7 @@ class Exporter {
         bitmaps = new IntMap();
         bitmapDatas = new IntMap();
 
+        bitmapKeeps = new IntMap();
         processShapes = [];
 
         // TODO: Process root?
@@ -118,6 +120,8 @@ class Exporter {
 
                         bitmaps.set(id, definition);
                         bitmapDatas.set(id, bitmapData);
+
+                        bitmapKeeps.set(id, true);
                     }
 
                     onComplete(this);
@@ -149,20 +153,22 @@ class Exporter {
             case Some(tilemap) : tilemap;
             case None : 
                 // Create Tilemap based on all bitmapDatas
-                var bmpds = [for (bmpd in bitmapDatas) bmpd];
+                var keys = [for (key in bitmapDatas.keys()) key];
+                var bmpds = keys.map(key -> bitmapKeeps.exists(key) ? bitmapDatas.get(key) : null);
                 var tilemap = TilemapExporter.pack(bmpds);
 
                 trace('Tilemap is ${tilemap.bitmapData.width}x${tilemap.bitmapData.height}');
 
-                var keys = [for (key in bitmapDatas.keys()) key];
                 for (i in 0...keys.length) {
                     var key = keys[i];
 
                     var bitmap = bitmaps.get(key);
                     var tile = tilemap.tiles[i];
                     
-                    bitmap.x = tile.x;
-                    bitmap.y = tile.y;
+                    if (tile != null) {
+                        bitmap.x = tile.x;
+                        bitmap.y = tile.y;
+                    }
                 }
 
                 this.tilemap = Some(tilemap);
@@ -324,6 +330,7 @@ class Exporter {
                         ty: transform.ty
                     }
 
+                    bitmapKeeps.set(bitmap.id, true);
                     shapes.push(definition);
 
                     if (i + 1 < bitmaps.length) process(i + 1) else onComplete();
