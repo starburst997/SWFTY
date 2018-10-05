@@ -1,0 +1,8 @@
+# TODO
+- [ ] Write report tool
+- [x] "Screenshot" shapes to embed them in spritesheet
+- [ ] Embed text font (optional)
+- [x] config json: targeted dimension, font embed, font targeted dimension
+- [ ] Create a watcher that watch every SWF inside a folder and auto-export
+- [ ] Generate multiple version (low res, medium res, high res)
+- [x] Add config json to specify target max resolution and auto scale down

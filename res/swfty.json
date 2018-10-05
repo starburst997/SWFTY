@@ -1,0 +1,17 @@
+{
+    "watch": true,
+    "files": [
+        {
+            "name": "Test1.swf",
+            "maxDimension": {
+                "width": 4096,
+                "height": 4096
+            },
+            "fontEnabled": true,
+            "maxFontDimension": {
+                "width": 512,
+                "height": 512
+            }
+        }
+    ]
+}
