@@ -1,5 +1,6 @@
 package swfty.openfl;
 
+import swfty.openfl.Shape;
 import swfty.openfl.TilemapExporter;
 
 import zip.ZipWriter;
@@ -59,8 +60,10 @@ class Exporter {
     var movieClips:IntMap<MovieClipDefinition>;
     var shapes:IntMap<Array<ShapeDefinition>>;
 
+    var processShapes:Array<TagDefineShape>;
+
     var bitmaps:IntMap<BitmapDefinition>;
-    var bitmapDatas:IntMap<BitmapData>;
+    public var bitmapDatas:IntMap<BitmapData>;
 
     var swf:SWF;
     var data:SWFRoot;
@@ -69,11 +72,11 @@ class Exporter {
 
     var tilemap:Option<TilePack> = None;
 
-    public static function create(bytes:Bytes, onComplete:Exporter->Void) {
+    public static function create(bytes:ByteArray, onComplete:Exporter->Void) {
         return new Exporter(bytes, onComplete);
     }
 
-    public function new(bytes:Bytes, onComplete:Exporter->Void) {
+    public function new(bytes:ByteArray, onComplete:Exporter->Void) {
         swf = new SWF(bytes);
         data = swf.data;
 
@@ -84,10 +87,7 @@ class Exporter {
         bitmaps = new IntMap();
         bitmapDatas = new IntMap();
 
-        var json:SWFTYJson = {
-            definitions: [],
-            tiles: []
-        };
+        processShapes = [];
 
         // TODO: Process root?
 
@@ -96,7 +96,32 @@ class Exporter {
 
         
             function complete() {
-                if (i + 1 < data.tags.length) process(i + 1) else onComplete(this);
+                if (i + 1 < data.tags.length) {
+                    process(i + 1);
+                } else {
+                    // TODO: This could be moved to addShape...
+                    for (i in 0...processShapes.length) {
+                        var id = -(i + 1);
+                        var tag = processShapes[i];
+                        var shape = new Shape(this, data, tag);
+
+                        var bitmapData = new BitmapData(Std.int(shape.width), Std.int(shape.height), true, 0x00000000);
+                        bitmapData.draw(shape);
+
+                        var definition:BitmapDefinition = {
+                            id: id,
+                            x: 0,
+                            y: 0,
+                            width: bitmapData.width,
+                            height: bitmapData.height
+                        };
+
+                        bitmaps.set(id, definition);
+                        bitmapDatas.set(id, bitmapData);
+                    }
+
+                    onComplete(this);
+                }
             }
 
             if (Std.is(tag, TagSymbolClass)) {
@@ -281,10 +306,8 @@ class Exporter {
 
         var shapes = [];
         this.shapes.set(tag.characterId, shapes);
-
+    
         if (bitmaps != null) {
-            //for (i in 0...bitmaps.length) {
-
             function process(i) {  
                 var bitmap = bitmaps[i];
 
@@ -309,24 +332,28 @@ class Exporter {
 
             if (bitmaps.length > 0) process(0) else onComplete();
         } else {
+            
+            processShapes.push(tag);
+            //onComplete();
+
+            var definition:ShapeDefinition = {
+                id: 0,
+                bitmap: -processShapes.length,
+                a: 0.0,
+                b: 0.0,
+                c: 0.0,
+                d: 0.0,
+                tx: 0.0,
+                ty: 0.0
+            }
+
+            shapes.push(definition);
+
             function process(i) {
                 var command = handler.commands[i];
                 switch(command) {
 					case BeginBitmapFill(bitmapID, _, _, _):
 						processTag(cast data.getCharacter(bitmapID), () -> {
-                            var definition:ShapeDefinition = {
-                                id: i,
-                                bitmap: bitmapID,
-                                a: 0.0,
-                                b: 0.0,
-                                c: 0.0,
-                                d: 0.0,
-                                tx: 0.0,
-                                ty: 0.0
-                            }
-
-                            shapes.push(definition);
-
                             if (i + 1 < handler.commands.length) process(i + 1) else onComplete();
                         });
 					default:

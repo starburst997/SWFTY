@@ -28,8 +28,10 @@ class Main extends Sprite {
 		// Process SWF
 		//var layer = renderSWFTY('res/Test2.swfty', layer -> {
         //processSWF('res/Test1.swf', layer -> {
-        renderSWFTYAsync('res/Test1.swfty', layer -> {
+        renderSWFTYAsync('res/Test3.swfty', layer -> {
             trace('Yay loading finished!');
+
+            //return;
 
             var names = layer.getAllNames();
             trace(names);

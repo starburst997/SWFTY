@@ -9,7 +9,7 @@ typedef Transform = {
 	ty: Float,
 }
 
-typedef ShapeDefinition = {
+@:structInit typedef ShapeDefinition = {
     > Transform,
     id: Int,
     bitmap: Int,
@@ -40,4 +40,19 @@ typedef MovieClipDefinition = {
 typedef SWFTYJson = {
 	definitions: Array<MovieClipDefinition>,
     tiles: Array<BitmapDefinition>
+}
+
+typedef Rectangle = {
+    width: Int,
+    height: Int
+}
+
+typedef Config = {
+    ?watch: Bool,
+    ?files: Array<{
+        name: String,
+        ?maxDimension: Rectangle,
+        ?fontEnabled: Bool,
+        ?maxFontDimension: Rectangle
+    }>,
 }
