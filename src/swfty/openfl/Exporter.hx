@@ -60,7 +60,8 @@ class Exporter {
     var movieClips:IntMap<MovieClipDefinition>;
     var shapes:IntMap<Array<ShapeDefinition>>;
 
-    var processShapes:Array<TagDefineShape>;
+    var processShapes:IntMap<{tag: TagDefineShape, definition: ShapeDefinition}>;
+    var processShapesId = 0;
 
     var bitmaps:IntMap<BitmapDefinition>;
     var bitmapKeeps:IntMap<Bool>;
@@ -89,7 +90,7 @@ class Exporter {
         bitmapDatas = new IntMap();
 
         bitmapKeeps = new IntMap();
-        processShapes = [];
+        processShapes = new IntMap();
 
         // TODO: Process root?
 
@@ -102,10 +103,14 @@ class Exporter {
                     process(i + 1);
                 } else {
                     // TODO: This could be moved to addShape...
-                    for (i in 0...processShapes.length) {
-                        var id = -(i + 1);
-                        var tag = processShapes[i];
+                    for (id in processShapes.keys()) {
+                        var val = processShapes.get(id);
+                        var tag = val.tag;
                         var shape = new Shape(this, data, tag);
+
+                        var bounds = shape.getBounds(shape);
+                        val.definition.tx = bounds.x;
+                        val.definition.ty = bounds.y;
 
                         var bitmapData = new BitmapData(Std.int(shape.width), Std.int(shape.height), true, 0x00000000);
                         bitmapData.draw(shape);
@@ -340,12 +345,13 @@ class Exporter {
             if (bitmaps.length > 0) process(0) else onComplete();
         } else {
             
-            processShapes.push(tag);
+            //processShapes.push(tag);
             //onComplete();
 
+            var id = --processShapesId;
             var definition:ShapeDefinition = {
                 id: 0,
-                bitmap: -processShapes.length,
+                bitmap: id,
                 a: 0.0,
                 b: 0.0,
                 c: 0.0,
@@ -354,6 +360,7 @@ class Exporter {
                 ty: 0.0
             }
 
+            processShapes.set(id, {tag: tag, definition: definition});
             shapes.push(definition);
 
             function process(i) {
