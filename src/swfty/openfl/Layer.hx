@@ -120,7 +120,7 @@ class Layer extends Tilemap {
         }
 
         for (definition in json.definitions) {
-            if (definition.name != null) mcs.set(definition.name, definition);
+            if (definition.name != null && definition.name != '') mcs.set(definition.name, definition);
             ids.set(definition.id, definition);
         }
     }

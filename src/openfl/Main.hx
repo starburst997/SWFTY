@@ -4,6 +4,7 @@ import swfty.Exporter;
 
 import file.save.FileSave;
 
+import openfl.display.Bitmap;
 import openfl.display.Sprite;
 import openfl.events.Event;
 import openfl.Assets;
@@ -27,11 +28,14 @@ class Main extends Sprite {
 
 		// Process SWF
 		//var layer = renderSWFTY('res/Test2.swfty', layer -> {
-        //processSWF('res/Test1.swf', layer -> {
-        renderSWFTYAsync('res/Test3.swfty', layer -> {
+        processSWF('res/Test2.swf', layer -> {
+        //renderSWFTYAsync('res/Test3.swfty', layer -> {
             trace('Yay loading finished!');
 
             //return;
+
+            /*var bmp = new Bitmap(layer.tileset.bitmapData);
+            addChild(bmp);*/
 
             var names = layer.getAllNames();
             trace(names);
@@ -41,9 +45,8 @@ class Main extends Sprite {
             function spawn() {
                 haxe.Timer.delay(() -> {
                     var name = names[Std.int(Math.random() * names.length)];
-
                     var sprite = layer.get(name);
-                    
+
                     var speedX = Math.random() * 50 - 25;
                     var speedY = Math.random() * 50 - 25;
                     var speedRotation = Math.random() * 50 - 25;
@@ -68,7 +71,7 @@ class Main extends Sprite {
                             layer.removeEventListener(Event.ENTER_FRAME, render);
                         }
                     }
-                    
+
                     layer.addEventListener(Event.ENTER_FRAME, render);
                     //sprites.push(sprite);
 

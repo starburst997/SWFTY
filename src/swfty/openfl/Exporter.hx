@@ -352,10 +352,10 @@ class Exporter {
             var definition:ShapeDefinition = {
                 id: 0,
                 bitmap: id,
-                a: 0.0,
+                a: 1.0,
                 b: 0.0,
                 c: 0.0,
-                d: 0.0,
+                d: 1.0,
                 tx: 0.0,
                 ty: 0.0
             }
