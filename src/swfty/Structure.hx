@@ -53,7 +53,7 @@ typedef TextDefinition = {
     font: Int,
     align: Align,
     size: Float,
-    color: Int,
+    color: UInt,
     text: String,
     html: String,
     leftMargin: Float,
