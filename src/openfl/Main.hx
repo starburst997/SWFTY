@@ -1,6 +1,7 @@
 package openfl;
 
 import swfty.Exporter;
+import swfty.openfl.FontExporter;
 
 import file.save.FileSave;
 
@@ -26,6 +27,15 @@ class Main extends Sprite {
         fps.textColor = 0x000000;
         this.addChild(fps);
 
+        /*var font = FontExporter.export('Bango', 24, false, false, iso8859_1);
+        var bmp = new Bitmap(font.bitmapData);
+
+        addChild(bmp);*/
+
+        process();
+    }
+
+    function process() {
 		// Process SWF
 		//var layer = renderSWFTY('res/Test2.swfty', layer -> {
         processSWF('res/Test2.swf', layer -> {

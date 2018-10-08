@@ -1,5 +1,12 @@
 package swfty;
 
+enum abstract Align(String) to String {
+    var Left;
+    var Right;
+    var Center;
+    var Justify;
+}
+
 typedef Transform = {
     a: Float,
 	b: Float,
@@ -7,20 +14,6 @@ typedef Transform = {
 	d: Float,
 	tx: Float,
 	ty: Float,
-}
-
-@:structInit typedef ShapeDefinition = {
-    > Transform,
-    id: Int,
-    bitmap: Int,
-}
-
-typedef SpriteDefinition = {
-	> Transform,
-    id: Int,
-    shapes: Array<ShapeDefinition>,
-	name: String,
-    visible: Bool
 }
 
 typedef BitmapDefinition = {
@@ -31,6 +24,57 @@ typedef BitmapDefinition = {
 	height: Int
 }
 
+typedef Character = {
+    > BitmapDefinition,
+    tx: Float,
+    ty: Float
+}
+
+typedef FontDefinition = {
+    id: Int,
+    name: String,
+    size: Float,
+    bold: Bool,
+    italic: Bool,
+    bitmap: Int,
+    ascent: Float,
+    descent: Float,
+    leading: Float,
+    characters: Array<Character>
+}
+
+typedef ShapeDefinition = {
+    > Transform,
+    id: Int,
+    bitmap: Int,
+}
+
+typedef TextDefinition = {
+    font: Int,
+    align: Align,
+    size: Float,
+    color: Int,
+    text: String,
+    html: String,
+    leftMargin: Float,
+    rightMargin: Float,
+    leading: Float,
+    indent: Float,
+    x: Float,
+    y: Float,
+    width: Float,
+    height: Float
+}
+
+typedef SpriteDefinition = {
+	> Transform,
+    id: Int,
+    shapes: Array<ShapeDefinition>,
+    ?text: TextDefinition,
+	name: String,
+    visible: Bool
+}
+
 typedef MovieClipDefinition = {
 	id: Int,
     name: String,
@@ -39,7 +83,8 @@ typedef MovieClipDefinition = {
 
 typedef SWFTYJson = {
 	definitions: Array<MovieClipDefinition>,
-    tiles: Array<BitmapDefinition>
+    tiles: Array<BitmapDefinition>,
+    fonts: Array<FontDefinition>
 }
 
 typedef Rectangle = {

@@ -5,7 +5,6 @@ import swfty.openfl.TilemapExporter;
 
 import zip.ZipWriter;
 
-import haxe.ds.StringMap;
 import haxe.ds.IntMap;
 import haxe.ds.Option;
 import haxe.io.Bytes;
@@ -23,12 +22,10 @@ import lime.math.Vector2;
 
 import format.png.Data;
 import format.png.Writer;
-import format.tools.Deflate;
 
 import format.swf.exporters.ShapeBitmapExporter;
 import format.swf.exporters.ShapeCommandExporter;
 import format.swf.data.consts.BitmapFormat;
-import format.swf.data.consts.BlendMode;
 import format.swf.data.SWFSymbol;
 import format.swf.tags.IDefinitionTag;
 import format.swf.tags.TagDefineBits;
@@ -51,14 +48,16 @@ import format.swf.SWFRoot;
 import format.swf.SWFTimelineContainer;
 import format.SWF;
 
-using Lambda;
-
 class Exporter {
+
+    var maxId:Int = -1;
 
     var definitions:IntMap<Bool>;
     
     var movieClips:IntMap<MovieClipDefinition>;
     var shapes:IntMap<Array<ShapeDefinition>>;
+    var texts:IntMap<TextDefinition>;
+    var fonts:IntMap<FontDefinition>;
 
     var processShapes:IntMap<{tag: TagDefineShape, definition: ShapeDefinition}>;
     var processShapesId = 0;
@@ -86,6 +85,8 @@ class Exporter {
         
         movieClips = new IntMap();
         shapes = new IntMap();
+        texts = new IntMap();
+        fonts = new IntMap();
         bitmaps = new IntMap();
         bitmapDatas = new IntMap();
 
@@ -97,7 +98,6 @@ class Exporter {
         function process(i) {
             var tag = data.tags[i];
 
-        
             function complete() {
                 if (i + 1 < data.tags.length) {
                     process(i + 1);
@@ -112,8 +112,13 @@ class Exporter {
                         val.definition.tx = bounds.x;
                         val.definition.ty = bounds.y;
 
-                        var bitmapData = new BitmapData(Std.int(shape.width), Std.int(shape.height), true, 0x00000000);
-                        bitmapData.draw(shape);
+                        var bitmapData = new BitmapData(Math.ceil(bounds.width), Math.ceil(bounds.height), true, 0x00000000);
+                        
+                        var m = new Matrix();
+                        m.tx = -bounds.x;
+                        m.ty = -bounds.y;
+                        
+                        bitmapData.draw(shape, m);
 
                         var definition:BitmapDefinition = {
                             id: id,
@@ -125,8 +130,37 @@ class Exporter {
 
                         bitmaps.set(id, definition);
                         bitmapDatas.set(id, bitmapData);
-
                         bitmapKeeps.set(id, true);
+
+                        if (id > maxId) maxId = id;
+                    }
+
+                    // Process fonts by snapshoting the biggest size
+                    for (text in texts) {
+                        var font = fonts.get(text.font);
+                        if (font != null && text.size > font.size) {
+                            font.size = text.size;
+                        }
+                    }
+
+                    for (font in fonts) {
+                        var fontTilemap = FontExporter.export(font.name, font.size, font.bold, font.italic);
+
+                        var id = ++maxId;
+                        var definition:BitmapDefinition = {
+                            id: id,
+                            x: 0,
+                            y: 0,
+                            width: fontTilemap.bitmapData.width,
+                            height: fontTilemap.bitmapData.height
+                        };
+
+                        bitmaps.set(id, definition);
+                        bitmapDatas.set(id, fontTilemap.bitmapData);
+                        bitmapKeeps.set(id, true);
+
+                        font.bitmap = id;
+                        font.characters = fontTilemap.characters;
                     }
 
                     onComplete(this);
@@ -184,7 +218,8 @@ class Exporter {
     public function getJSON() {
         var definition:SWFTYJson = {
             definitions: [for (mc in movieClips) mc],
-            tiles: [for (bmp in bitmaps) bmp]
+            tiles: [for (bmp in bitmaps) bmp],
+            fonts: [for (font in fonts) font]
         }
 
         return haxe.Json.stringify(definition);
@@ -288,6 +323,7 @@ class Exporter {
                         tx: transform.tx,
                         ty: transform.ty,
                         visible: visible,
+                        text: texts.exists(object.characterId) ? texts.get(object.characterId) : null,
                         shapes: shapes.exists(object.characterId) ? shapes.get(object.characterId) : []
                     }
 
@@ -393,6 +429,8 @@ class Exporter {
 
                 bitmaps.set(tag.characterId, definition);
                 bitmapDatas.set(tag.characterId, bitmapData);
+
+                if (tag.characterId > maxId) maxId = tag.characterId;
             }
 
             onComplete();
@@ -557,6 +595,108 @@ class Exporter {
 		}
     }
 
+    function addFont(tag:IDefinitionTag, onComplete:Void->Void) {
+		
+		if (Std.is(tag, TagDefineFont2)) {
+			var defineFont:TagDefineFont2 = cast tag;
+			
+            var definition:FontDefinition = {
+                id: tag.characterId,
+                name: 'Arial',
+                size: 12,
+                bold: false,
+                italic: false,
+                ascent: 0,
+                descent: 0,
+                leading: 0,
+                bitmap: 0,
+                characters: []
+            };
+
+			//symbol.advances = cast defineFont.fontAdvanceTable.copy();
+			definition.ascent = defineFont.ascent;
+			definition.bold = defineFont.bold;
+			definition.descent = defineFont.descent;
+			definition.italic = defineFont.italic;
+			definition.leading = defineFont.leading;
+			definition.name = defineFont.fontName;
+
+			fonts.set(tag.characterId, definition);
+		}
+
+        onComplete();
+	}
+
+    function addDynamicText(tag:TagDefineEditText, onComplete:Void->Void) {
+		
+        var definition:TextDefinition = {
+            font: 0,
+            align: Left,
+            size: 12,
+            color: 0x000000,
+            text: '',
+            html: '',
+            leftMargin: 0,
+            rightMargin: 0,
+            indent: 0,
+            leading: 0,
+            x: 0,
+            y: 0,
+            width: 0,
+            height: 0,
+        };
+
+		if (tag.hasTextColor) definition.color = tag.textColor;
+		if (tag.hasText) definition.html = tag.initialText;
+        
+        var r = ~/<[^<]*>/g;
+        definition.text = r.replace(definition.html.replace('</p>', '\n'), '');
+        
+        // Always have a new line at the end, remove
+        definition.text = definition.text.substr(0, definition.text.length - 1);
+
+        definition.size = tag.fontHeight / 20.0;
+
+        if (tag.hasLayout) {
+			switch (tag.align) {
+				case 0: definition.align = Left;
+				case 1: definition.align = Right;
+				case 2: definition.align = Center;
+				case 3: definition.align = Justify;
+			}
+			
+			definition.leftMargin = tag.leftMargin;
+			definition.rightMargin = tag.rightMargin;
+			definition.indent = tag.indent;
+			definition.leading = tag.leading;
+		}
+
+		if (tag.hasFont) {
+			var font:TagDefineFont2 = cast data.getCharacter(tag.fontId);
+			if (font != null) processTag(font, function() {});
+			
+            definition.font = tag.fontId;
+
+            if (font == null) {
+                Log.warn('Font not found!');
+            }
+		}
+		
+		if (tag.hasFontClass) {
+			//definition.font = tag.fontClass;
+		}
+
+        var bounds = tag.bounds.rect;
+		definition.x = bounds.x;
+		definition.y = bounds.y;
+		definition.width = bounds.width;
+		definition.height = bounds.height;
+
+        texts.set(tag.characterId, definition);
+
+        onComplete();
+	}
+
     function processSymbol(symbol:SWFSymbol, onComplete:Void->Void) {
         var tag = cast data.getCharacter(symbol.tagId);
 
@@ -597,8 +737,7 @@ class Exporter {
             
         } else if (Std.is(tag, TagDefineEditText)) {
             
-            // TODO: Dynamic Text
-            onComplete();
+            addDynamicText(cast tag, onComplete);
             
         } else if (Std.is(tag, TagDefineText)) {
             
@@ -611,8 +750,7 @@ class Exporter {
             
         } else if (Std.is(tag, TagDefineFont) || Std.is(tag, TagDefineFont4)) {
             
-            // Will not support
-            onComplete();
+            addFont(cast tag, onComplete);
             
         } else if (Std.is(tag, TagDefineSound)) {
 
