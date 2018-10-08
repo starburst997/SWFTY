@@ -19,6 +19,7 @@ class Layer extends Tilemap {
 
     var tiles:IntMap<Int>;
     var ids:IntMap<MovieClipDefinition>;
+    var fonts:IntMap<Font>;
     var mcs:StringMap<MovieClipDefinition>;
 
     public static inline function create(width:Int, height:Int, ?tileset) {
@@ -26,9 +27,9 @@ class Layer extends Tilemap {
     }
 
     public static inline function createAsync(width:Int, height:Int, bytes:Bytes, onComplete:Layer->Void, onError:Dynamic->Void) {
-        loadTileset(bytes, (tileset, json) -> {
+        loadTileset(bytes, (tileset, json, characters) -> {
             var layer = create(width, height, tileset);
-            layer.loadJson(json);
+            layer.loadJson(json, characters);
             onComplete(layer);
         }, onError);
     }
@@ -38,6 +39,7 @@ class Layer extends Tilemap {
 
         tiles = new IntMap();
         ids = new IntMap();
+        fonts = new IntMap();
         mcs = new StringMap();
 
         /*addEventListener(Event.ENTER_FRAME, render);
@@ -79,6 +81,14 @@ class Layer extends Tilemap {
         } 
     }
 
+    public inline function getFont(id:Int) {
+        return fonts.get(id);
+    }
+
+    public inline function hasFont(id:Int) {
+        return fonts.exists(id);
+    }
+
     public inline function getDefinition(id:Int):MovieClipDefinition {
         return ids.get(id);
     }
@@ -106,14 +116,14 @@ class Layer extends Tilemap {
     }
 
     public function load(bytes:Bytes, onComplete:Void->Void, onError:Dynamic->Void) {
-        loadTileset(bytes, (tileset, json) -> {
+        loadTileset(bytes, (tileset, json, characters) -> {
             this.tileset = tileset;
-            loadJson(json);
+            loadJson(json, characters);
             onComplete();
         }, onError);
     }
 
-    public function loadJson(json:SWFTYJson) {
+    public function loadJson(json:SWFTYJson, characters:IntMap<IntMap<Int>>) {
         for (i in 0...json.tiles.length) {
             var tile = json.tiles[i];
             tiles.set(tile.id, i);
@@ -123,9 +133,14 @@ class Layer extends Tilemap {
             if (definition.name != null && definition.name != '') mcs.set(definition.name, definition);
             ids.set(definition.id, definition);
         }
+
+        for (font in json.fonts) if (characters.exists(font.id)) {
+            var obj = Font.create(this, font, characters.get(font.id));
+            fonts.set(font.id, obj);
+        }
     }
 
-    public static function loadTileset(bytes:Bytes, onComplete:Tileset->SWFTYJson->Void, onError:Dynamic->Void) {
+    public static function loadTileset(bytes:Bytes, onComplete:Tileset->SWFTYJson->IntMap<IntMap<Int>>->Void, onError:Dynamic->Void) {
         var entries = ZipReader.getEntries(bytes);
 
         var tilemapBytes = Zip.getBytes(entries.get('tilemap.png'));
@@ -138,16 +153,34 @@ class Layer extends Tilemap {
                 var json:SWFTYJson = haxe.Json.parse(jsonString);
 
                 // Create tileset
+                var i = 0;
                 var rects = [];
+                var map = new IntMap();
                 for (tile in json.tiles) {
+                    map.set(tile.id, i++);
                     rects.push(new Rectangle(tile.x, tile.y, tile.width, tile.height));
+                }
+
+                // Fonts
+                var fontsCharacters = new IntMap();
+                for (font in json.fonts) if (map.exists(font.bitmap)) {
+                    var id = map.get(font.bitmap);
+                    var tile = rects[id];
+                    
+                    var characters = new IntMap();
+                    for (character in font.characters) {
+                        characters.set(character.id, i++);
+                        rects.push(new Rectangle(character.x + tile.x, character.y + tile.y, character.width, character.height));
+                    }
+
+                    fontsCharacters.set(font.id, characters);
                 }
 
                 var tileset = new Tileset(bmpd, rects);
 
                 trace('Tilemap: ${bmpd.width}, ${bmpd.height}');
 
-                onComplete(tileset, json);
+                onComplete(tileset, json, fontsCharacters);
             #if release
             } catch(e:Dynamic) {
                 onError(e);

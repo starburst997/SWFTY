@@ -53,7 +53,7 @@ class FontExporter {
         }
 
         // Transform to a Tilemap, this way we can easily replace the region for other language
-        var tilemap = TilemapExporter.pack([for (bmp in bitmaps) bmp]);
+        var tilemap = TilemapExporter.pack([for (definition in definitions) bitmaps.get(definition.id)]);
         for (i in 0...tilemap.tiles.length) {
             var definition = definitions[i];
             var tile = tilemap.tiles[i];

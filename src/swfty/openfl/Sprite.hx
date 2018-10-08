@@ -12,6 +12,7 @@ class Sprite extends TileContainer {
     public var layer:Layer;
 
     var _childs:StringMap<Sprite>;
+    var _texts:StringMap<Text>;
     var definition:Option<MovieClipDefinition> = None;
 
     public static inline function create(layer:Layer, ?definition:MovieClipDefinition) {
@@ -24,38 +25,58 @@ class Sprite extends TileContainer {
         this.layer = layer;
         this.definition = definition == null ? None : Some(definition);
         _childs = new StringMap();
+        _texts = new StringMap();
 
         switch(this.definition) {
             case Some(definition) :
                 // Create children
                 for (child in definition.children) {
-                    var sprite:Sprite = create(layer, layer.getDefinition(child.id));
-                    if (child.name != null) {
-                        sprite.name = child.name;
-                        _childs.set(child.name, sprite);
+                    if (child.text != null) {
+                        var text = Text.create(layer, child.text);
+
+                        text.matrix.a = child.a;
+                        text.matrix.b = child.b;
+                        text.matrix.c = child.c;
+                        text.matrix.d = child.d;
+                        text.matrix.tx = child.tx;
+                        text.matrix.ty = child.ty;
+                        text.visible = child.visible;
+
+                        if (child.name != null) {
+                            text.name = child.name;
+                            _texts.set(child.name, text);
+                        }
+
+                        addTile(text);
+                    } else {
+                        var sprite:Sprite = create(layer, layer.getDefinition(child.id));
+                        if (child.name != null) {
+                            sprite.name = child.name;
+                            _childs.set(child.name, sprite);
+                        }
+
+                        sprite.matrix.a = child.a;
+                        sprite.matrix.b = child.b;
+                        sprite.matrix.c = child.c;
+                        sprite.matrix.d = child.d;
+                        sprite.matrix.tx = child.tx;
+                        sprite.matrix.ty = child.ty;
+                        sprite.visible = child.visible;
+
+                        for (shape in child.shapes) {
+                            var tile = new Tile(layer.getTile(shape.bitmap));
+                            tile.matrix.a = shape.a;
+                            tile.matrix.b = shape.b;
+                            tile.matrix.c = shape.c;
+                            tile.matrix.d = shape.d;
+                            tile.matrix.tx = shape.tx;
+                            tile.matrix.ty = shape.ty;
+
+                            sprite.addTile(tile);
+                        }
+
+                        addTile(sprite);
                     }
-
-                    sprite.matrix.a = child.a;
-                    sprite.matrix.b = child.b;
-                    sprite.matrix.c = child.c;
-                    sprite.matrix.d = child.d;
-                    sprite.matrix.tx = child.tx;
-                    sprite.matrix.ty = child.ty;
-                    sprite.visible = child.visible;
-
-                    for (shape in child.shapes) {
-                        var tile = new Tile(layer.getTile(shape.bitmap));
-                        tile.matrix.a = shape.a;
-                        tile.matrix.b = shape.b;
-                        tile.matrix.c = shape.c;
-                        tile.matrix.d = shape.d;
-                        tile.matrix.tx = shape.tx;
-                        tile.matrix.ty = shape.ty;
-
-                        sprite.addTile(tile);
-                    }
-
-                    addTile(sprite);
                 }
             case None :  
         }
@@ -70,5 +91,9 @@ class Sprite extends TileContainer {
             _childs.set(name, sprite);
             sprite;
         }
+    }
+
+    public function setText(name:String, text:String) {
+
     }
 }
