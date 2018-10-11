@@ -41,7 +41,7 @@ class TilemapExporter {
         return {bmpd: trimed, rect: notAlphaBounds, originalWidth: originalWidth, originalHeight: originalHeight};
     }
 
-    public static function pack(bmpds:Array<BitmapData>, w:Int = 128, h:Int = 128) {
+    public static function pack(bmpds:Array<BitmapData>, w:Int = 128, h:Int = 128, ?trimBitmap = true) {
 
         function createPack(w:Int, h:Int) {
             var tiles:Array<Tile> = [];
@@ -99,14 +99,14 @@ class TilemapExporter {
             };
 
             // Trim final texture
-            #if trim
-            bitmapData.setPixel32(0, 0, 0xFF000000);
-            var trimmed = trim(bitmapData);
-            bitmapData.dispose();
-            bitmapData = trimmed.bmpd;
-            bitmapData.setPixel32(0, 0, 0x00000000);
-            #end
-
+            if (trimBitmap) {
+                bitmapData.setPixel32(0, 0, 0xFF000000);
+                var trimmed = trim(bitmapData);
+                bitmapData.dispose();
+                bitmapData = trimmed.bmpd;
+                bitmapData.setPixel32(0, 0, 0x00000000);
+            }
+            
             {tiles: tiles, bitmapData: bitmapData};
         } else {
             null;
