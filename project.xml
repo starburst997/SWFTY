@@ -3,6 +3,7 @@
 	
 	<meta title="SWFTY" package="jd.boivin.swfty" version="1.0.0" company="Jean-Denis Boivin" />
 	<app main="openfl.Main" path="bin" file="SWFTY" />
+    <window allowHighDPI="true" />
     <window hidden="true" unless="html5" if="cli" />
 	
 	<haxelib name="openfl" />
