@@ -146,7 +146,7 @@ class Layer extends Tilemap {
         var tilemapBytes = Zip.getBytes(entries.get('tilemap.png'));
         var jsonString = Zip.getString(entries.get('definitions.json'));
 
-        function complete(bmpd) {
+        function complete(bmpd:BitmapData) {
             #if release
             try {
             #end
