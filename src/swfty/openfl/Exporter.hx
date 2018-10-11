@@ -612,6 +612,12 @@ class Exporter {
                         
                         var jpeg = Image.fromBitmapData(bitmapData);
                         jpeg.copyChannel(alpha, alpha.rect, new Vector2(), ImageChannel.RED, ImageChannel.ALPHA);
+
+                        jpeg.buffer.premultiplied = true;
+		
+                        #if !sys
+                        jpeg.premultiplied = false;
+                        #end
                         
                         bitmapData = BitmapData.fromImage(jpeg);
                         complete();
