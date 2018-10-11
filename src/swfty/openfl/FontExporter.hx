@@ -9,9 +9,25 @@ import openfl.geom.Matrix;
 import openfl.text.TextFormat;
 import openfl.text.TextField;
 
+typedef Character = {
+    id: Int,
+    bitmap: Int,
+    x: Int,
+    y: Int, 
+    width: Int, 
+    height: Int, 
+    ty: Float, 
+    tx: Float
+}
+
+typedef FontTilemap = {
+    characters: Array<Character>,
+    bitmapData: BitmapData
+}
+
 class FontExporter {
 
-    public static function export(font:String, size:Float = 24, bold:Bool = false, italic:Bool = false, ?charSet:CharSet) {
+    public static function export(font:String, size:Float = 24, bold:Bool = false, italic:Bool = false, ?charSet:CharSet, getId:Void->Int):FontTilemap {
 
         if (charSet == null) charSet = ISO_8859_1;
 
@@ -46,6 +62,7 @@ class FontExporter {
 
                 definitions.push({
                     id: code,
+                    bitmap: getId(),
                     x: 0, y: 0, width: 0, height: 0,
                     tx: bounds.x, ty: bounds.y
                 });

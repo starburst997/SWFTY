@@ -38,11 +38,9 @@ class Main extends Sprite {
     function process() {
 		// Process SWF
 		//var layer = renderSWFTY('res/Test2.swfty', layer -> {
-        //processSWF('res/Test2.swf', layer -> {
+        //processSWF('res/Test1.swf', layer -> {
         renderSWFTYAsync('res/Test3.swfty', layer -> {
             trace('Yay loading finished!');
-
-            //return;
 
             /*var bmp = new Bitmap(layer.tileset.bitmapData);
             addChild(bmp);*/
@@ -51,6 +49,11 @@ class Main extends Sprite {
             trace(names);
 
             addChildAt(layer, 0);
+
+            var sprite = layer.get('MenuPopup');
+            layer.addTile(sprite);
+
+            return;
 
             function spawn() {
                 haxe.Timer.delay(() -> {

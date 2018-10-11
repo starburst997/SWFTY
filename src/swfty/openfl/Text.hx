@@ -46,23 +46,22 @@ class Text extends TileContainer {
             var code = text.charCodeAt(i);
 
             if (font.has(code)) {
-                var id = font.get(code);
+                var char = font.get(code);
+                var id = layer.getTile(char.bitmap);
 
                 var tile = new Tile(id);
                 tile.colorTransform = new ColorTransform(r/255, g/255, b/255, 1.0);
-                tile.x = x;
-                tile.y = y;
+                tile.x = x + char.tx;
+                tile.y = y + char.ty;
 
                 addTile(tile);
 
-                /*if (tile.rect != null) {
-                    x += tile.rect.width;
+                var rect = layer.tileset.getRect(id);
+                if (rect != null) {
+                    x += rect.width;
                     y += 0;
-                }*/
+                }
             }
-
-            x += 30;
-            y += 0;
         }
 
         return text;

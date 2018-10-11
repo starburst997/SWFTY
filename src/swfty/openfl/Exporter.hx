@@ -1,6 +1,7 @@
 package swfty.openfl;
 
 import swfty.openfl.Shape;
+import swfty.openfl.FontExporter;
 import swfty.openfl.TilemapExporter;
 
 import zip.ZipWriter;
@@ -12,6 +13,7 @@ import haxe.io.BytesOutput;
 
 import openfl.display.PNGEncoderOptions;
 import openfl.display.BitmapData;
+import openfl.events.Event;
 import openfl.geom.Matrix;
 import openfl.geom.Point;
 import openfl.utils.ByteArray;
@@ -73,6 +75,11 @@ class Exporter {
 
     var tilemap:Option<TilePack> = None;
 
+    var fontTilemaps:IntMap<FontTilemap>;
+
+    var processFrame = 0;
+    var nextFrames:Array<Void->Void> = [];
+
     public static function create(bytes:ByteArray, onComplete:Exporter->Void) {
         return new Exporter(bytes, onComplete);
     }
@@ -93,6 +100,17 @@ class Exporter {
         bitmapKeeps = new IntMap();
         processShapes = new IntMap();
 
+        fontTilemaps = new IntMap();
+
+        // TODO: Remove listener
+        openfl.Lib.current.addEventListener(Event.ENTER_FRAME, (_) -> {
+            var handlers = [for (f in nextFrames) f];
+            processFrame = 0;
+            nextFrames = [];
+
+            for (f in handlers) f();
+        });
+
         // TODO: Process root?
 
         function process(i) {
@@ -100,7 +118,12 @@ class Exporter {
 
             function complete() {
                 if (i + 1 < data.tags.length) {
-                    process(i + 1);
+                    // Process 250 tags per frame to prevent maximum call stack size
+                    if (processFrame++ < 250) {
+                        process(i + 1);
+                    } else {
+                        nextFrames.push(() -> process(i + 1));
+                    }
                 } else {
                     // TODO: This could be moved to addShape...
                     for (id in processShapes.keys()) {
@@ -144,7 +167,7 @@ class Exporter {
                     }
 
                     for (font in fonts) {
-                        var fontTilemap = FontExporter.export(font.name, font.size, font.bold, font.italic);
+                        var fontTilemap = FontExporter.export(font.name, font.size, font.bold, font.italic, () -> ++maxId);
 
                         var id = ++maxId;
                         var definition:BitmapDefinition = {
@@ -160,7 +183,14 @@ class Exporter {
                         bitmapKeeps.set(id, true);
 
                         font.bitmap = id;
-                        font.characters = fontTilemap.characters;
+                        font.characters = fontTilemap.characters.map(char -> {
+                            id: char.id,
+                            bitmap: char.bitmap,
+                            tx: char.tx,
+                            ty: char.ty
+                        });
+
+                        fontTilemaps.set(id, fontTilemap);
                     }
 
                     onComplete(this);
@@ -208,6 +238,23 @@ class Exporter {
                         bitmap.x = tile.x;
                         bitmap.y = tile.y;
                     }
+                }
+
+                for (key in fontTilemaps.keys()) {
+                    var font = fontTilemaps.get(key);
+                    var fontTile = bitmaps.get(key);
+                    font.characters.iter(char -> {
+                        var tile = {
+                            id: char.bitmap,
+                            x: fontTile.x + char.x,
+                            y: fontTile.y + char.y,
+                            width: char.width,
+                            height: char.height
+                        };
+
+                        bitmaps.set(char.bitmap, tile);
+                        tilemap.tiles.push(tile);
+                    });
                 }
 
                 this.tilemap = Some(tilemap);

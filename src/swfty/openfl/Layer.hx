@@ -27,9 +27,9 @@ class Layer extends Tilemap {
     }
 
     public static inline function createAsync(width:Int, height:Int, bytes:Bytes, onComplete:Layer->Void, onError:Dynamic->Void) {
-        loadTileset(bytes, (tileset, json, characters) -> {
+        loadBytes(bytes, (tileset, json) -> {
             var layer = create(width, height, tileset);
-            layer.loadJson(json, characters);
+            layer.loadJson(json);
             onComplete(layer);
         }, onError);
     }
@@ -116,14 +116,14 @@ class Layer extends Tilemap {
     }
 
     public function load(bytes:Bytes, onComplete:Void->Void, onError:Dynamic->Void) {
-        loadTileset(bytes, (tileset, json, characters) -> {
+        loadBytes(bytes, (tileset, json) -> {
             this.tileset = tileset;
-            loadJson(json, characters);
+            loadJson(json);
             onComplete();
         }, onError);
     }
 
-    public function loadJson(json:SWFTYJson, characters:IntMap<IntMap<Int>>) {
+    public function loadJson(json:SWFTYJson) {
         for (i in 0...json.tiles.length) {
             var tile = json.tiles[i];
             tiles.set(tile.id, i);
@@ -134,13 +134,13 @@ class Layer extends Tilemap {
             ids.set(definition.id, definition);
         }
 
-        for (font in json.fonts) if (characters.exists(font.id)) {
-            var obj = Font.create(this, font, characters.get(font.id));
+        for (font in json.fonts) {
+            var obj = Font.create(this, font);
             fonts.set(font.id, obj);
         }
     }
 
-    public static function loadTileset(bytes:Bytes, onComplete:Tileset->SWFTYJson->IntMap<IntMap<Int>>->Void, onError:Dynamic->Void) {
+    public static function loadBytes(bytes:Bytes, onComplete:Tileset->SWFTYJson->Void, onError:Dynamic->Void) {
         var entries = ZipReader.getEntries(bytes);
 
         var tilemapBytes = Zip.getBytes(entries.get('tilemap.png'));
@@ -161,26 +161,11 @@ class Layer extends Tilemap {
                     rects.push(new Rectangle(tile.x, tile.y, tile.width, tile.height));
                 }
 
-                // Fonts
-                var fontsCharacters = new IntMap();
-                for (font in json.fonts) if (map.exists(font.bitmap)) {
-                    var id = map.get(font.bitmap);
-                    var tile = rects[id];
-                    
-                    var characters = new IntMap();
-                    for (character in font.characters) {
-                        characters.set(character.id, i++);
-                        rects.push(new Rectangle(character.x + tile.x, character.y + tile.y, character.width, character.height));
-                    }
-
-                    fontsCharacters.set(font.id, characters);
-                }
-
                 var tileset = new Tileset(bmpd, rects);
 
                 trace('Tilemap: ${bmpd.width}, ${bmpd.height}');
 
-                onComplete(tileset, json, fontsCharacters);
+                onComplete(tileset, json);
             #if release
             } catch(e:Dynamic) {
                 onError(e);

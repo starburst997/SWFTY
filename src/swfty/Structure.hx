@@ -25,7 +25,8 @@ typedef BitmapDefinition = {
 }
 
 typedef Character = {
-    > BitmapDefinition,
+    id: Int,
+    bitmap: Int,
     tx: Float,
     ty: Float
 }
