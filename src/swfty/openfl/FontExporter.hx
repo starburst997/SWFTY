@@ -31,7 +31,7 @@ typedef FontTilemap = {
 @:access(openfl.text.Font)
 class FontExporter {
 
-    public static var path = 'res/fonts';
+    public static var path = 'ref/fonts';
 
     public static function export(font:String, size:Float = 24, bold:Bool = false, italic:Bool = false, ?charSet:Array<Int>, getId:Void->Int):FontTilemap {
 
@@ -40,11 +40,12 @@ class FontExporter {
         #if sys
         // Command line tools need the path to TTF
         var f = Font.fromFile(System.getPath('$path/$font.ttf'));
-        trace(System.getPath('$path/$font.ttf'));
         if (f != null) {
             Font.__registeredFonts.push(f);
             Font.__fontByName[font] = f;
             font = f.fontName;
+        } else {
+            Log.warn('Missing font: ${System.getPath('$path/$font.ttf')}');
         }
         #end
 
