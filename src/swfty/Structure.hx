@@ -34,6 +34,7 @@ typedef Character = {
 typedef FontDefinition = {
     id: Int,
     name: String,
+    cleanName: String,
     size: Float,
     bold: Bool,
     italic: Bool,

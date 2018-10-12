@@ -1,5 +1,7 @@
 package swfty.openfl;
 
+import openfl.utils.ByteArray;
+import haxe.Utf8;
 import swfty.Exporter;
 
 import haxe.ds.IntMap;
@@ -8,6 +10,7 @@ import openfl.display.BitmapData;
 import openfl.geom.Matrix;
 import openfl.text.TextFormat;
 import openfl.text.TextField;
+import openfl.text.Font;
 
 typedef Character = {
     id: Int,
@@ -25,11 +28,25 @@ typedef FontTilemap = {
     bitmapData: BitmapData
 }
 
+@:access(openfl.text.Font)
 class FontExporter {
 
-    public static function export(font:String, size:Float = 24, bold:Bool = false, italic:Bool = false, ?charSet:CharSet, getId:Void->Int):FontTilemap {
+    public static var path = 'res/fonts';
 
-        if (charSet == null) charSet = ISO_8859_1;
+    public static function export(font:String, size:Float = 24, bold:Bool = false, italic:Bool = false, ?charSet:Array<Int>, getId:Void->Int):FontTilemap {
+
+        if (charSet == null) charSet = CharSet.ISO_8859_1;
+
+        #if sys
+        // Command line tools need the path to TTF
+        var f = Font.fromFile(System.getPath('$path/$font.ttf'));
+        trace(System.getPath('$path/$font.ttf'));
+        if (f != null) {
+            Font.__registeredFonts.push(f);
+            Font.__fontByName[font] = f;
+            font = f.fontName;
+        }
+        #end
 
         var characters = [];
         var textField = new TextField();
@@ -39,12 +56,16 @@ class FontExporter {
 
         var bitmaps = new IntMap<BitmapData>();
         var definitions = [];
-        var text:String = charSet;
+        var text = charSet;
 
         // One char at a time, we could do one screenshot of all chars, would that be faster?
         for (i in 0...text.length) {
-            var char = text.charAt(i);
-            var code = text.charCodeAt(i);
+            var code = text[i];
+            
+            var utf8 = new Utf8();
+            utf8.addChar(code);
+
+            var char = utf8.toString();
             textField.text = char;
 
             var bounds = textField.getCharBoundaries(0);

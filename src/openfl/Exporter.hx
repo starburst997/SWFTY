@@ -21,6 +21,12 @@ class CLI extends mcli.CommandLine {
 	**/
 	public var output:String = null;
 
+    /**
+		Path of the font directory
+        @alias f
+	**/
+	public var fontPath:String = null;
+
 	/**
 		Show this message.
 	**/
