@@ -15,6 +15,8 @@ import openfl.events.Event;
 
 class Layer extends Tilemap {
 
+    public var json:SWFTYJson;
+
     var afterFrames:Array<Void->Void> = [];
 
     var tiles:IntMap<Int>;
@@ -124,6 +126,8 @@ class Layer extends Tilemap {
     }
 
     public function loadJson(json:SWFTYJson) {
+        this.json = json;
+
         for (i in 0...json.tiles.length) {
             var tile = json.tiles[i];
             tiles.set(tile.id, i);

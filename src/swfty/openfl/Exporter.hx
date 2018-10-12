@@ -264,6 +264,16 @@ class Exporter {
 
     public function getJSON() {
         var definition:SWFTYJson = {
+            tilemap: switch(tilemap) {
+                case Some(tilemap) : {
+                    width: tilemap.bitmapData.width,
+                    height: tilemap.bitmapData.height
+                }
+                case None : {
+                    width: 0,
+                    height: 0
+                }
+            },
             definitions: [for (mc in movieClips) mc],
             tiles: [for (bmp in bitmaps) bmp],
             fonts: [for (font in fonts) font]
@@ -674,6 +684,9 @@ class Exporter {
 			definition.leading = defineFont.leading;
 			definition.name = defineFont.fontName;
 
+            // TODO: HTML5 only?
+            definition.name = definition.name.replace(' Bold', '').replace(' Semibold', '').replace(' Italic', '');
+
 			fonts.set(tag.characterId, definition);
 		}
 
@@ -703,7 +716,7 @@ class Exporter {
 		if (tag.hasText) definition.html = tag.initialText;
         
         var r = ~/<[^<]*>/g;
-        definition.text = r.replace(definition.html.replace('</p>', '\n'), '');
+        definition.text = r.replace(definition.html.replace('</p>', '\n').replace('&apos;', '\''), '');
         
         // Always have a new line at the end, remove
         definition.text = definition.text.substr(0, definition.text.length - 1);

@@ -83,6 +83,10 @@ typedef MovieClipDefinition = {
 }
 
 typedef SWFTYJson = {
+    tilemap: {
+        width: Int,
+        height: Int
+    },
 	definitions: Array<MovieClipDefinition>,
     tiles: Array<BitmapDefinition>,
     fonts: Array<FontDefinition>
@@ -95,6 +99,7 @@ typedef Rectangle = {
 
 typedef Config = {
     ?watch: Bool,
+    ?sharedFonts:Bool,
     ?files: Array<{
         name: String,
         ?maxDimension: Rectangle,

@@ -48,12 +48,14 @@ class Main extends Sprite {
             var names = layer.getAllNames();
             trace(names);
 
+            trace(Report.getReport(layer.json));
+
             addChildAt(layer, 0);
 
-            var sprite = layer.get('MenuPopup');
+            var sprite = layer.get('VipPopup');
             layer.addTile(sprite);
 
-            return;
+            //return;
 
             function spawn() {
                 haxe.Timer.delay(() -> {
@@ -92,7 +94,7 @@ class Main extends Sprite {
 
                     spawn();
 
-                }, Std.int(DateTools.seconds(0.01)));
+                }, Std.int(DateTools.seconds(1.01)));
             }
 
             spawn();
