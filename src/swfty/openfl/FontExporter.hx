@@ -60,6 +60,7 @@ class FontExporter {
         var text = charSet;
 
         // One char at a time, we could do one screenshot of all chars, would that be faster?
+        // Also Lime Font has all the tool already, but meh not the slowest part of the export, low priority to optimize
         for (i in 0...text.length) {
             var code = text[i];
             

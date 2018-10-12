@@ -102,6 +102,8 @@ class Exporter {
 
         fontTilemaps = new IntMap();
 
+        BitmapData.premultipliedDefault = false;
+
         // TODO: Remove listener
         openfl.Lib.current.addEventListener(Event.ENTER_FRAME, (_) -> {
             var handlers = [for (f in nextFrames) f];
@@ -225,6 +227,9 @@ class Exporter {
                 var keys = [for (key in bitmapDatas.keys()) key];
                 var bmpds = keys.map(key -> bitmapKeeps.exists(key) ? bitmapDatas.get(key) : null);
                 var tilemap = TilemapExporter.pack(bmpds);
+
+                // We're done, so go back to default
+                BitmapData.premultipliedDefault = true;
 
                 trace('Tilemap is ${tilemap.bitmapData.width}x${tilemap.bitmapData.height}');
 
