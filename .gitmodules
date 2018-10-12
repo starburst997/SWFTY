@@ -22,3 +22,6 @@
 [submodule "submodules/hxcpp"]
 	path = submodules/hxcpp
 	url = git@github.com:HaxeFoundation/hxcpp.git
+[submodule "submodules/openfl"]
+	path = submodules/openfl
+	url = git@github.com:starburst997/openfl.git
