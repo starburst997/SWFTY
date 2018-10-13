@@ -37,9 +37,9 @@ class Main extends Sprite {
 
     function process() {
 		// Process SWF
-		//var layer = renderSWFTY('res/Test2.swfty', layer -> {
-        processSWF('res/Test1.swf', layer -> {
-        //renderSWFTYAsync('res/Test3.swfty', layer -> {
+		//var layer = renderSWFTY('res/Popup.swfty', layer -> {
+        processSWF('res/Popup.swf', layer -> {
+        //renderSWFTYAsync('res/Popup.swfty', layer -> {
             trace('Yay loading finished!');
 
             /*var bmp = new Bitmap(layer.tileset.bitmapData);
@@ -52,10 +52,11 @@ class Main extends Sprite {
 
             addChildAt(layer, 0);
 
-            var sprite = layer.get('VipPopup');
+            var sprite = layer.get('PopupShop');
+            sprite.x += 408;
             layer.addTile(sprite);
 
-            //return;
+            return;
 
             function spawn() {
                 haxe.Timer.delay(() -> {
@@ -172,7 +173,7 @@ class Main extends Sprite {
                 layer.load(bytes, () -> onComplete(layer), (e) -> onError('Cannot load $e!'));
                 
                 // Save file for test
-                FileSave.saveClickBytes(bytes, 'Test3.swfty');
+                FileSave.saveClickBytes(bytes, path.substring(path.lastIndexOf('/') + 1, path.length - 1).replace('.swf', '.swfty'));
 
                 trace('Parsed SWF: ${haxe.Timer.stamp() - timer}');
             });

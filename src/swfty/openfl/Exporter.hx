@@ -691,7 +691,7 @@ class Exporter {
 			definition.name = defineFont.fontName;
 
             // TODO: HTML5 only?
-            definition.cleanName = definition.name.replace(' Bold', '').replace(' Semibold', '').replace(' Italic', '');
+            definition.cleanName = definition.name.replace(' Bold', '').replace(' Semibold', '').replace(' Italic', '').replace('-Bold', '').replace('-Semibold', '').replace('-Italic', '');
 
 			fonts.set(tag.characterId, definition);
 		}
