@@ -101,9 +101,11 @@ typedef Rectangle = {
 
 typedef Config = {
     ?watch: Bool,
+    ?pngquant: Bool,
     ?sharedFonts:Bool,
     ?files: Array<{
         name: String,
+        ?pngquant: Bool,
         ?maxDimension: Rectangle,
         ?fontEnabled: Bool,
         ?maxFontDimension: Rectangle

@@ -1,8 +1,9 @@
 {
     "watch": true,
+    "pngquant": true,
     "files": [
         {
-            "name": "Test1.swf",
+            "name": "Popup.swf",
             "maxDimension": {
                 "width": 4096,
                 "height": 4096

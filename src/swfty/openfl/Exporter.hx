@@ -288,6 +288,9 @@ class Exporter {
     }
 
     public function getPNG(bmpd:BitmapData) {
+        #if sys
+        // TODO: Run pngquant!!!
+        #end
         return bmpd.encode(bmpd.rect, new PNGEncoderOptions());
     }
 

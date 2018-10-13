@@ -6,3 +6,8 @@
 - [ ] Create a watcher that watch every SWF inside a folder and auto-export
 - [ ] Generate multiple version (low res, medium res, high res)
 - [x] Add config json to specify target max resolution and auto scale down
+- [ ] Calculate max scale if sprite is non-root (object that were scaled down will use less space in texture)
+- [ ] When calculating min/max scale also create version if necessary at every double size
+- [ ] pngquant (sys only)
+- [ ] support for converting the bitmapdata to other compressed texture format (especially for mobile)
+- [ ] support frame
