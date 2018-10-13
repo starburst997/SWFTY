@@ -1,6 +1,7 @@
 package swfty.openfl;
 
 import swfty.openfl.Shape;
+import swfty.openfl.MovieClip;
 import swfty.openfl.FontExporter;
 import swfty.openfl.TilemapExporter;
 
@@ -11,6 +12,7 @@ import haxe.ds.Option;
 import haxe.io.Bytes;
 import haxe.io.BytesOutput;
 
+import openfl.filters.*;
 import openfl.display.PNGEncoderOptions;
 import openfl.display.BitmapData;
 import openfl.events.Event;
@@ -25,6 +27,7 @@ import lime.math.Vector2;
 import format.png.Data;
 import format.png.Writer;
 
+import format.swf.timeline.FrameObject;
 import format.swf.exporters.ShapeBitmapExporter;
 import format.swf.exporters.ShapeCommandExporter;
 import format.swf.data.consts.BitmapFormat;
@@ -102,7 +105,7 @@ class Exporter {
 
         fontTilemaps = new IntMap();
 
-        BitmapData.premultipliedDefault = false;
+        BitmapData.premultipliedDefault = true;
 
         // TODO: Remove listener
         openfl.Lib.current.addEventListener(Event.ENTER_FRAME, (_) -> {
@@ -319,18 +322,18 @@ class Exporter {
 
     function addSprite(tag:SWFTimelineContainer, root:Bool = false, ?onComplete:Void->Void):MovieClipDefinition {
         
-        var id = if (Std.is (tag, IDefinitionTag)) {
+        var id:Int = if (Std.is(tag, IDefinitionTag)) {
 			untyped tag.characterId;
 		} else {
             -1;
-        }
+        };
 
-        var children = [];
+        var children:Array<SpriteDefinition> = [];
         var definition:MovieClipDefinition = {
             id: id,
             name: '',
             children: children
-        }
+        };
 
         movieClips.set(id, definition);
 
@@ -338,31 +341,141 @@ class Exporter {
             var frameData = tag.frames[i];
             var objects = frameData.getObjectsSortedByDepth();
 
+            var mask:FrameObject = null;
+            var maskDepth = 0;
+            var isMask = false;
+
             function process2(j) {
                 var object = objects[j];
 
                 var childTag = cast data.getCharacter(object.characterId);
                 
+                if (mask != null && mask.clipDepth < object.depth) {
+                    mask = null;
+                }
+
+                isMask = false;
+                if (object.clipDepth != 0 #if (neko || html5) && object.clipDepth != null #end) {
+                    // TODO: Eventually I would like to embed the mask as a simple "rect" instead, but having it as a Sprite also have it's advantages...
+                    mask = object;
+                    isMask = true;
+
+                    trace('Found mask: ${mask.clipDepth}');
+                }
+
                 processTag(childTag, () -> {
                     var placeTag:TagPlaceObject = cast tag.tags[object.placedAtIndex];
 
+                    var characterId = object.characterId;
                     var matrix = if (placeTag.matrix != null) {
                         var matrix = placeTag.matrix.matrix;
-                        matrix.tx *= (1 / 20);
-                        matrix.ty *= (1 / 20);
+                        matrix.tx *= (1 / 20.0);
+                        matrix.ty *= (1 / 20.0);
                         matrix;
                     } else {
                         new Matrix();
                     }
 
                     var alpha = if (placeTag.colorTransform != null) {
+                        // TODO: More than just "alpha" multiplier
                         placeTag.colorTransform.colorTransform.alphaMultiplier;
                     } else {
                         1.0;
                     }
 
-                    if (placeTag.hasFilterList) {
-                        // TODO: Filters list
+                    var blendMode:BlendMode = Normal;
+                    if (placeTag.hasBlendMode) {
+                        // Doesn't really work well...
+                        blendMode = format.swf.data.consts.BlendMode.toString(placeTag.blendMode);
+                    }
+
+                    if (placeTag.hasFilterList || (placeTag.hasCacheAsBitmap && placeTag.bitmapCache != 0) /*|| placeTag.hasBlendMode*/) {
+                        // TODO: Basically like cacheAsBitmap, take a screenshot of the MovieClip
+                        //       Create a unique ID to prevent duplicates
+
+                        if (Std.is(childTag, TagDefineSprite)) {
+                            var movieClip = new MovieClip(this, cast childTag);
+
+                            /*if (placeTag.hasBlendMode) {
+                                // Doesn't really work well...
+                                var blendMode = BlendMode.toString(placeTag.blendMode);
+                                movieClip.blendMode = blendMode;
+                            }*/
+
+                            // TODO: OpenFL doesn't support inner / knockout !!
+                            if (placeTag.hasFilterList) {
+                                var filters:Array<BitmapFilter> = [];
+                                for (surfaceFilter in placeTag.surfaceFilterList) {
+                                    var type = surfaceFilter.type;
+                                    if (type != null) {
+                                        switch (type) {
+                                            case BlurFilter (blurX, blurY, quality):
+                                                filters.push (new BlurFilter (blurX, blurY, quality));
+                                            
+                                            case ColorMatrixFilter (matrix):
+                                                filters.push (new ColorMatrixFilter (matrix));
+                                            
+                                            case DropShadowFilter (distance, angle, color, alpha, blurX, blurY, strength, quality, inner, knockout, hideObject):
+                                                filters.push (new DropShadowFilter (distance, angle, color, alpha, blurX, blurY, strength, quality, inner, knockout, hideObject));
+                                            
+                                            case GlowFilter (color, alpha, blurX, blurY, strength, quality, inner, knockout):
+                                                filters.push (new GlowFilter (color, alpha, blurX, blurY, strength, quality, inner, knockout));   
+                                        }
+                                    }
+                                }
+                                
+                                movieClip.filters = filters;
+                            }
+
+                            // We're essentially creating a unique baked copy with all filters / blendMode applied to it
+                            characterId = --processShapesId;
+
+                            var id = --processShapesId;
+                            var shape:ShapeDefinition = {
+                                id: 0,
+                                bitmap: id,
+                                a: 1.0,
+                                b: 0.0,
+                                c: 0.0,
+                                d: 1.0,
+                                tx: 0.0,
+                                ty: 0.0
+                            };
+
+                            var bounds = movieClip.getBounds(movieClip);
+                            shape.tx = bounds.x;
+                            shape.ty = bounds.y;
+
+                            // TODO: Maybe add this as settings...
+                            var padding = 20;
+
+                            var bitmapData = new BitmapData(Math.ceil(bounds.width) + padding * 2, Math.ceil(bounds.height) + padding * 2, true, 0x00000000);
+
+                            var m = new Matrix();
+                            m.tx = -bounds.x + padding;
+                            m.ty = -bounds.y + padding;
+                            
+                            bitmapData.draw(movieClip, m);
+
+                            var trimmed = TilemapExporter.trim(bitmapData);
+
+                            shape.tx = bounds.x + trimmed.rect.x - padding;
+                            shape.ty = bounds.y + trimmed.rect.y - padding;
+
+                            var definition:BitmapDefinition = {
+                                id: id,
+                                x: 0,
+                                y: 0,
+                                width: trimmed.bmpd.width,
+                                height: trimmed.bmpd.height
+                            };
+
+                            bitmaps.set(id, definition);
+                            bitmapDatas.set(id, trimmed.bmpd);
+                            bitmapKeeps.set(id, true);
+
+                            shapes.set(characterId, [shape]);
+                        }
                     }
 
                     var visible = if (placeTag.hasVisible) {
@@ -371,17 +484,11 @@ class Exporter {
                         true;
                     }
 
-                    if (placeTag.hasBlendMode) {
-                        // TODO: Blend mode
-                    }
-
-                    if (placeTag.hasCacheAsBitmap) {
-                        // TODO: Cache as Bitmap
-                    }
+                    if (mask != null && !isMask) trace('Found a masked object');
 
                     var transform = getTransform(matrix);
                     var definition:SpriteDefinition = {
-                        id: object.characterId,
+                        id: characterId,
                         name: placeTag.instanceName,
                         a: transform.a,
                         b: transform.b,
@@ -389,12 +496,14 @@ class Exporter {
                         d: transform.d,
                         tx: transform.tx,
                         ty: transform.ty,
-                        visible: visible,
+                        mask: mask == null || isMask ? null : maskDepth,
+                        visible: !isMask && visible,
                         alpha: alpha,
-                        text: texts.exists(object.characterId) ? texts.get(object.characterId) : null,
-                        shapes: shapes.exists(object.characterId) ? shapes.get(object.characterId) : []
+                        text: texts.exists(characterId) ? texts.get(characterId) : null,
+                        shapes: shapes.exists(characterId) ? shapes.get(characterId) : []
                     }
 
+                    if (isMask) maskDepth = children.length;
                     children.push(definition);
 
                     if (j + 1 < objects.length) process2(j + 1) 

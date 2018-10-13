@@ -46,9 +46,9 @@ class Main extends Sprite {
             addChild(bmp);*/
 
             var names = layer.getAllNames();
-            trace(names);
-
-            trace(Report.getReport(layer.json));
+            
+            //trace(names);
+            //trace(Report.getReport(layer.json));
 
             addChildAt(layer, 0);
 

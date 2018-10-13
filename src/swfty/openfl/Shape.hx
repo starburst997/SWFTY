@@ -15,22 +15,22 @@ class Shape extends flash.display.Shape {
 		super ();
 		
 		if (tag != null) {
-			
 			var handler = new ShapeCommandExporter (data);
 			tag.export (handler);
 			
 			for (command in handler.commands) {
-				
+
 				switch (command) {
 					
 					case BeginFill (color, alpha):
 						
-						graphics.beginFill (color, alpha);
+                        graphics.beginFill (color, alpha);
 					
 					case BeginBitmapFill (bitmapID, matrix, repeat, smooth):
 						
+
                         var bmpd = exporter.bitmapDatas.get (bitmapID);
-						if (bmpd != null) {
+                        if (bmpd != null) {
 							
 							graphics.beginBitmapFill (bmpd, matrix, repeat, smooth);
 							

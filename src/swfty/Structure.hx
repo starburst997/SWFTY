@@ -1,5 +1,22 @@
 package swfty;
 
+enum abstract BlendMode(String) from String to String {
+    var Normal      = 'normal';
+    //var Layer       = 'layer';
+    var Multiply    = 'multiply';
+    var Screen      = 'screen';
+    var Lighten     = 'lighten';
+    var Darken      = 'darken';
+    var Difference  = 'difference';
+    var Add         = 'add';
+    var Subtract    = 'subtract';
+    var Invert      = 'invert';
+    var Alpha       = 'alpha';
+    var Erase       = 'erase';
+    var Overlay     = 'overlay';
+    var Hardlight   = 'hardlight';
+}
+
 enum abstract Align(String) to String {
     var Left;
     var Right;
@@ -16,12 +33,16 @@ typedef Transform = {
 	ty: Float,
 }
 
-typedef BitmapDefinition = {
-	id: Int,
-	x: Int,
+typedef Rect = {
+    x: Int,
 	y: Int,
 	width: Int,
 	height: Int
+}
+
+typedef BitmapDefinition = {
+	> Rect,
+    id: Int
 }
 
 typedef Character = {
@@ -68,11 +89,19 @@ typedef TextDefinition = {
     height: Float
 }
 
+typedef ColorTransform = {
+    alpha: Float,
+    r: Float,
+}
+
 typedef SpriteDefinition = {
 	> Transform,
     id: Int,
     shapes: Array<ShapeDefinition>,
+    ?mask: Int,
     ?text: TextDefinition,
+    ?blendMode: BlendMode,
+    ?color: ColorTransform,
     alpha: Float,
 	name: String,
     visible: Bool
