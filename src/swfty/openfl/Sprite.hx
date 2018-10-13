@@ -64,6 +64,9 @@ class Sprite extends TileContainer {
                         sprite.alpha = child.alpha;
                         sprite.visible = child.visible;
 
+                        // TODO: BlendMode
+                        // TODO: ColorTransform
+
                         for (shape in child.shapes) {
                             var tile = new Tile(layer.getTile(shape.bitmap));
                             tile.matrix.a = shape.a;

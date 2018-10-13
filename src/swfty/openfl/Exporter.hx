@@ -385,7 +385,6 @@ class Exporter {
 
                     var blendMode:BlendMode = Normal;
                     if (placeTag.hasBlendMode) {
-                        // Doesn't really work well...
                         blendMode = format.swf.data.consts.BlendMode.toString(placeTag.blendMode);
                     }
 
@@ -395,12 +394,6 @@ class Exporter {
 
                         if (Std.is(childTag, TagDefineSprite)) {
                             var movieClip = new MovieClip(this, cast childTag);
-
-                            /*if (placeTag.hasBlendMode) {
-                                // Doesn't really work well...
-                                var blendMode = BlendMode.toString(placeTag.blendMode);
-                                movieClip.blendMode = blendMode;
-                            }*/
 
                             // TODO: OpenFL doesn't support inner / knockout !!
                             if (placeTag.hasFilterList) {
@@ -488,6 +481,8 @@ class Exporter {
 
                     if (mask != null && !isMask) trace('Found a masked object');
 
+                    // TODO: Any property with default values should be ignored (for optional field)
+
                     var transform = getTransform(matrix);
                     var definition:SpriteDefinition = {
                         id: characterId,
@@ -498,6 +493,7 @@ class Exporter {
                         d: transform.d,
                         tx: transform.tx,
                         ty: transform.ty,
+                        blendMode: blendMode == Normal ? null : blendMode,
                         mask: mask == null || isMask ? null : maskDepth,
                         visible: !isMask && visible,
                         alpha: alpha,

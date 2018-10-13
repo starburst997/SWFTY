@@ -17,3 +17,5 @@
 - [ ] Do binary format with table of offset to look for id (bitmaps, sprites, fonts)
 - [ ] Zoom level on bitmap font (between 10-20 use font at 15)
 - [ ] Localization of fonts with reserve space on the texture (it would be transparent and so will be trimmed, filesize would be low, compressed in pngs and shared between all swftys, optional)
+- [ ] Add full colortransform support
+- [ ] Add blendMode support (screenshot was a failed, which is very obvious now)

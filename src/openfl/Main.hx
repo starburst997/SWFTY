@@ -95,7 +95,7 @@ class Main extends Sprite {
 
                     spawn();
 
-                }, Std.int(DateTools.seconds(0.02)));
+                }, Std.int(DateTools.seconds(0.01)));
             }
 
             spawn();
