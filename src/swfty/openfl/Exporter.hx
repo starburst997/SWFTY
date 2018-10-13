@@ -416,9 +416,11 @@ class Exporter {
                                                 filters.push (new ColorMatrixFilter (matrix));
                                             
                                             case DropShadowFilter (distance, angle, color, alpha, blurX, blurY, strength, quality, inner, knockout, hideObject):
+                                                if (inner || knockout) Log.warn('Inner / Knockout is not supported');
                                                 filters.push (new DropShadowFilter (distance, angle, color, alpha, blurX, blurY, strength, quality, inner, knockout, hideObject));
                                             
                                             case GlowFilter (color, alpha, blurX, blurY, strength, quality, inner, knockout):
+                                                if (inner || knockout) Log.warn('Inner / Knockout is not supported');
                                                 filters.push (new GlowFilter (color, alpha, blurX, blurY, strength, quality, inner, knockout));   
                                         }
                                     }
