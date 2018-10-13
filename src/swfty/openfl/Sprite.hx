@@ -61,6 +61,7 @@ class Sprite extends TileContainer {
                         sprite.matrix.d = child.d;
                         sprite.matrix.tx = child.tx;
                         sprite.matrix.ty = child.ty;
+                        sprite.alpha = child.alpha;
                         sprite.visible = child.visible;
 
                         for (shape in child.shapes) {

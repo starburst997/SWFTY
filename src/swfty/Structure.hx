@@ -73,6 +73,7 @@ typedef SpriteDefinition = {
     id: Int,
     shapes: Array<ShapeDefinition>,
     ?text: TextDefinition,
+    alpha: Float,
 	name: String,
     visible: Bool
 }

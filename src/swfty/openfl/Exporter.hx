@@ -352,8 +352,10 @@ class Exporter {
                         new Matrix();
                     }
 
-                    if (placeTag.colorTransform != null) {
-                        // TODO: ColorTransform
+                    var alpha = if (placeTag.colorTransform != null) {
+                        placeTag.colorTransform.colorTransform.alphaMultiplier;
+                    } else {
+                        1.0;
                     }
 
                     if (placeTag.hasFilterList) {
@@ -385,6 +387,7 @@ class Exporter {
                         tx: transform.tx,
                         ty: transform.ty,
                         visible: visible,
+                        alpha: alpha,
                         text: texts.exists(object.characterId) ? texts.get(object.characterId) : null,
                         shapes: shapes.exists(object.characterId) ? shapes.get(object.characterId) : []
                     }
@@ -720,7 +723,7 @@ class Exporter {
 
 		if (tag.hasTextColor) definition.color = tag.textColor;
 		if (tag.hasText) definition.html = tag.initialText;
-        
+
         var r = ~/<[^<]*>/g;
         definition.text = r.replace(definition.html.replace('</p>', '\n').replace('&apos;', '\''), '');
         
