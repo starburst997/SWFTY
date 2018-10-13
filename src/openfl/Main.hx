@@ -173,7 +173,7 @@ class Main extends Sprite {
                 layer.load(bytes, () -> onComplete(layer), (e) -> onError('Cannot load $e!'));
                 
                 // Save file for test
-                FileSave.saveClickBytes(bytes, path.substring(path.lastIndexOf('/') + 1, path.length - 1).replace('.swf', '.swfty'));
+                FileSave.saveClickBytes(bytes, path.substring(path.lastIndexOf('/') + 1, path.length).replace('.swf', '.swfty'));
 
                 trace('Parsed SWF: ${haxe.Timer.stamp() - timer}');
             });
