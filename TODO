@@ -11,3 +11,8 @@
 - [ ] pngquant (sys only)
 - [ ] support for converting the bitmapdata to other compressed texture format (especially for mobile)
 - [ ] support frame
+- [ ] Detect missing font
+- [ ] Rewrite IDs to be sequentials (starts at 1)
+- [ ] Do binary format with table of offset to look for id (bitmaps, sprites, fonts)
+- [ ] Zoom level on bitmap font (between 10-20 use font at 15)
+- [ ] Localization of fonts with reserve space on the texture (it would be transparent and so will be trimmed, filesize would be low, compressed in pngs and shared between all swftys, optional)
