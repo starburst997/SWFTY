@@ -6,10 +6,24 @@
     "tasks": [
         {
             "command": "openfl",
-            "taskName": "build",
+            "taskName": "build html5",
             "isBuildCommand": true,
             "args": [
-                "build", "html5", "-debug", "-v"
+                "build", "./openfl/project.xml", "html5", "-debug", "-v"
+            ],
+            "presentation": {
+                "echo": false,
+                "focus": false,
+                "panel": "dedicated",
+                "reveal": "silent"
+            }
+        },
+        {
+            "command": "sh",
+            "taskName": "build hl",
+            "isBuildCommand": true,
+            "args": [
+                "make.sh", "-D test"
             ],
             "presentation": {
                 "echo": false,

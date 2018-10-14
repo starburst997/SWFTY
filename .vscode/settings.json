@@ -7,7 +7,8 @@
         "bin":true
     },
     "haxe.displayConfigurations": [
-        ["bin/html5/haxe/debug.hxml"],
+        ["openfl/bin/html5/haxe/debug.hxml"],
+        ["heaps/build.hxml"],
     ],
     "haxe.enableCompilationServer": true,
     "haxe.buildCompletionCache": true,
