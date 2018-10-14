@@ -1,4 +1,4 @@
-package swfty.openfl;
+package swfty.renderer;
 
 import haxe.ds.IntMap;
 

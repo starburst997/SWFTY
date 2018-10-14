@@ -1,9 +1,9 @@
-package swfty.openfl;
+package swfty.openfl.exporter;
 
-import swfty.openfl.Shape;
-import swfty.openfl.MovieClip;
-import swfty.openfl.FontExporter;
-import swfty.openfl.TilemapExporter;
+import swfty.openfl.exporter.Shape;
+import swfty.openfl.exporter.MovieClip;
+import swfty.openfl.exporter.FontExporter;
+import swfty.openfl.exporter.TilemapExporter;
 
 import zip.ZipWriter;
 

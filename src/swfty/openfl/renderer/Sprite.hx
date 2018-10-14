@@ -1,4 +1,4 @@
-package swfty.openfl;
+package swfty.openfl.renderer;
 
 import haxe.ds.Option;
 import haxe.ds.StringMap;

@@ -1,8 +1,8 @@
-package swfty.openfl;
+package swfty.openfl.exporter;
 
-import openfl.utils.ByteArray;
 import haxe.Utf8;
-import swfty.Exporter;
+
+import swfty.exporter.Exporter;
 
 import haxe.ds.IntMap;
 
@@ -11,6 +11,7 @@ import openfl.geom.Matrix;
 import openfl.text.TextFormat;
 import openfl.text.TextField;
 import openfl.text.Font;
+import openfl.utils.ByteArray;
 
 typedef Character = {
     id: Int,

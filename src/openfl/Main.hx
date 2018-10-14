@@ -1,7 +1,7 @@
 package openfl;
 
-import swfty.Exporter;
-import swfty.openfl.FontExporter;
+import swfty.exporter.Exporter;
+import swfty.openfl.exporter.FontExporter;
 
 import file.save.FileSave;
 

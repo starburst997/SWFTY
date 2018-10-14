@@ -1,4 +1,4 @@
-package swfty.openfl;
+package swfty.openfl.exporter;
 
 import format.swf.instance.*;
 import format.swf.tags.TagDefineBits;
@@ -14,8 +14,8 @@ import format.swf.SWFTimelineContainer;
 import openfl.geom.Rectangle;
 import openfl.display.DisplayObject;
 
-import swfty.openfl.Bitmap;
-import swfty.openfl.Shape;
+import swfty.openfl.exporter.Bitmap;
+import swfty.openfl.exporter.Shape;
 
 class MovieClip extends format.swf.instance.MovieClip {
 	

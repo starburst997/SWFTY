@@ -1,4 +1,6 @@
-package swfty.openfl;
+package swfty.openfl.renderer;
+
+import swfty.renderer.Font;
 
 import openfl.geom.ColorTransform;
 import openfl.display.Tile;
