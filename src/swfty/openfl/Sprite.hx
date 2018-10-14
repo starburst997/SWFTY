@@ -65,8 +65,16 @@ class Sprite extends TileContainer {
                         sprite.alpha = child.alpha;
                         sprite.visible = child.visible;
 
-                        if (child.blendMode != Normal) sprite.blendMode = child.blendMode;
-                        if (child.color != null) sprite.colorTransform = new openfl.geom.ColorTransform(child.color.r, child.color.g, child.color.b, 1.0, child.color.rAdd, child.color.gAdd, child.color.bAdd, 0.0);
+                        // This will add drawCalls, so big no no unless you really want them
+                        #if allowBlendMode
+                        if (child.blendMode != Normal && child.blendMode != null) {
+                            sprite.blendMode = child.blendMode;
+                        }
+                        #end
+
+                        if (child.color != null) {
+                            sprite.colorTransform = new openfl.geom.ColorTransform(child.color.r, child.color.g, child.color.b, 1.0, child.color.rAdd, child.color.gAdd, child.color.bAdd, 0.0);
+                        }
 
                         for (shape in child.shapes) {
                             var tile = new Tile(layer.getTile(shape.bitmap));
