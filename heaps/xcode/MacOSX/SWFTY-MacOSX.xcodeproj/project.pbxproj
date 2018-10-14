@@ -1,0 +1,451 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 48;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		6D07D37020A8BBE40033DFDD /* vorbisfile.c in Sources */ = {isa = PBXBuildFile; fileRef = 6D07D36F20A8BBE40033DFDD /* vorbisfile.c */; };
+		6D59117920A8BA2000674147 /* libhl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D59117620A8B9F700674147 /* libhl.a */; };
+		6D59118020A8BA6800674147 /* openal.c in Sources */ = {isa = PBXBuildFile; fileRef = 6D59117F20A8BA6800674147 /* openal.c */; };
+		6D59118220A8BA7600674147 /* ui_stub.c in Sources */ = {isa = PBXBuildFile; fileRef = 6D59118120A8BA7600674147 /* ui_stub.c */; };
+		6D59118520A8BA8100674147 /* gl.c in Sources */ = {isa = PBXBuildFile; fileRef = 6D59118320A8BA8100674147 /* gl.c */; };
+		6D59118620A8BA8100674147 /* sdl.c in Sources */ = {isa = PBXBuildFile; fileRef = 6D59118420A8BA8100674147 /* sdl.c */; };
+		6D59118920A8BA8F00674147 /* fmt.c in Sources */ = {isa = PBXBuildFile; fileRef = 6D59118720A8BA8F00674147 /* fmt.c */; };
+		6D59118A20A8BA8F00674147 /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = 6D59118820A8BA8F00674147 /* sha1.c */; };
+		6D59118C20A8BAA000674147 /* _main.c in Sources */ = {isa = PBXBuildFile; fileRef = 6D59118B20A8BAA000674147 /* _main.c */; };
+		6DAE1C2220A739A6009812F8 /* libjpeg.8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DAE1C2120A739A6009812F8 /* libjpeg.8.dylib */; };
+		6DAE1C2620A739DD009812F8 /* libpng16.16.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DAE1C2520A739DD009812F8 /* libpng16.16.dylib */; };
+		6DAE1C2820A73A08009812F8 /* libopenal.1.18.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DAE1C2720A73A07009812F8 /* libopenal.1.18.2.dylib */; };
+		6DAE1C2A20A73A1B009812F8 /* libSDL2-2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DAE1C2920A73A1B009812F8 /* libSDL2-2.0.0.dylib */; };
+		6DAE1C3520A73C40009812F8 /* libogg.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DAE1C2D20A73A78009812F8 /* libogg.0.dylib */; };
+		6DAE1C3620A73C53009812F8 /* libvorbis.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DAE1C2B20A73A54009812F8 /* libvorbis.0.dylib */; };
+		6DF5F87D214DF54E00D6D734 /* libturbojpeg.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF5F87C214DF54D00D6D734 /* libturbojpeg.0.dylib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		6D59117520A8B9F700674147 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6D1E7B8620A75D4400C2FB60 /* libhl-MacOSX.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 6D11BCBB20A7593D004B6083;
+			remoteInfo = hl;
+		};
+		6D59117720A8BA1B00674147 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6D1E7B8620A75D4400C2FB60 /* libhl-MacOSX.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 6D11BCBA20A7593D004B6083;
+			remoteInfo = hl;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		6DAE0ADF20A643AD009812F8 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		6D07D36F20A8BBE40033DFDD /* vorbisfile.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vorbisfile.c; path = ../../../submodules/hashlink/include/vorbis/vorbisfile.c; sourceTree = "<group>"; };
+		6D11BFEC20A75AC9004B6083 /* libhl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libhl.a; path = "../../../../Library/Developer/Xcode/DerivedData/hl-fnlafmqtellvpbevuiocxfhusrxl/Build/Products/Debug/libhl.a"; sourceTree = "<group>"; };
+		6D1E7B8620A75D4400C2FB60 /* libhl-MacOSX.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = "libhl-MacOSX.xcodeproj"; sourceTree = "<group>"; };
+		6D59117F20A8BA6800674147 /* openal.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = openal.c; path = ../../../submodules/hashlink/libs/openal/openal.c; sourceTree = "<group>"; };
+		6D59118120A8BA7600674147 /* ui_stub.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ui_stub.c; path = ../../../submodules/hashlink/libs/ui/ui_stub.c; sourceTree = "<group>"; };
+		6D59118320A8BA8100674147 /* gl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gl.c; path = ../../../submodules/hashlink/libs/sdl/gl.c; sourceTree = "<group>"; };
+		6D59118420A8BA8100674147 /* sdl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sdl.c; path = ../../../submodules/hashlink/libs/sdl/sdl.c; sourceTree = "<group>"; };
+		6D59118720A8BA8F00674147 /* fmt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = fmt.c; path = ../../../submodules/hashlink/libs/fmt/fmt.c; sourceTree = "<group>"; };
+		6D59118820A8BA8F00674147 /* sha1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sha1.c; path = ../../../submodules/hashlink/libs/fmt/sha1.c; sourceTree = "<group>"; };
+		6D59118B20A8BAA000674147 /* _main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _main.c; path = ../../../submodules/hashlink/src/_main.c; sourceTree = "<group>"; };
+		6DAE0AE120A643AD009812F8 /* SWFTY */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SWFTY; sourceTree = BUILT_PRODUCTS_DIR; };
+		6DAE1C2120A739A6009812F8 /* libjpeg.8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libjpeg.8.dylib; path = "../../../../../../usr/local/Cellar/jpeg-turbo/1.5.3/lib/libjpeg.8.dylib"; sourceTree = "<group>"; };
+		6DAE1C2320A739B2009812F8 /* libturbojpeg.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libturbojpeg.0.dylib; path = "../../../../../../usr/local/Cellar/jpeg-turbo/1.5.3/lib/libturbojpeg.0.dylib"; sourceTree = "<group>"; };
+		6DAE1C2520A739DD009812F8 /* libpng16.16.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpng16.16.dylib; path = ../../../../../../usr/local/Cellar/libpng/1.6.34/lib/libpng16.16.dylib; sourceTree = "<group>"; };
+		6DAE1C2720A73A07009812F8 /* libopenal.1.18.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopenal.1.18.2.dylib; path = "../../../../../../usr/local/Cellar/openal-soft/1.18.2/lib/libopenal.1.18.2.dylib"; sourceTree = "<group>"; };
+		6DAE1C2920A73A1B009812F8 /* libSDL2-2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libSDL2-2.0.0.dylib"; path = "../../../../../../usr/local/Cellar/sdl2/2.0.8/lib/libSDL2-2.0.0.dylib"; sourceTree = "<group>"; };
+		6DAE1C2B20A73A54009812F8 /* libvorbis.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvorbis.0.dylib; path = ../../../../../../usr/local/Cellar/libvorbis/1.3.6/lib/libvorbis.0.dylib; sourceTree = "<group>"; };
+		6DAE1C2D20A73A78009812F8 /* libogg.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libogg.0.dylib; path = ../../../../../../usr/local/Cellar/libogg/1.3.3/lib/libogg.0.dylib; sourceTree = "<group>"; };
+		6DAE1C3820A73CC9009812F8 /* libmbedtls.2.9.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmbedtls.2.9.0.dylib; path = ../../../../../../usr/local/Cellar/mbedtls/2.9.0/lib/libmbedtls.2.9.0.dylib; sourceTree = "<group>"; };
+		6DAE1C3A20A73CDC009812F8 /* libmbedcrypto.2.9.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmbedcrypto.2.9.0.dylib; path = ../../../../../../usr/local/Cellar/mbedtls/2.9.0/lib/libmbedcrypto.2.9.0.dylib; sourceTree = "<group>"; };
+		6DAE1C3C20A73CFE009812F8 /* libmbedx509.2.9.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmbedx509.2.9.0.dylib; path = ../../../../../../usr/local/Cellar/mbedtls/2.9.0/lib/libmbedx509.2.9.0.dylib; sourceTree = "<group>"; };
+		6DF5F87C214DF54D00D6D734 /* libturbojpeg.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libturbojpeg.0.dylib; path = "../../../../../../opt/libjpeg-turbo/lib/libturbojpeg.0.dylib"; sourceTree = "<group>"; };
+		6DF5F880214DF6D700D6D734 /* res */ = {isa = PBXFileReference; lastKnownFileType = folder; name = res; path = ../../res; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		6DAE0ADE20A643AD009812F8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6D59117920A8BA2000674147 /* libhl.a in Frameworks */,
+				6DAE1C3620A73C53009812F8 /* libvorbis.0.dylib in Frameworks */,
+				6DAE1C3520A73C40009812F8 /* libogg.0.dylib in Frameworks */,
+				6DAE1C2A20A73A1B009812F8 /* libSDL2-2.0.0.dylib in Frameworks */,
+				6DAE1C2820A73A08009812F8 /* libopenal.1.18.2.dylib in Frameworks */,
+				6DAE1C2620A739DD009812F8 /* libpng16.16.dylib in Frameworks */,
+				6DF5F87D214DF54E00D6D734 /* libturbojpeg.0.dylib in Frameworks */,
+				6DAE1C2220A739A6009812F8 /* libjpeg.8.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		6D59117220A8B9F700674147 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6D59117620A8B9F700674147 /* libhl.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		6D59117C20A8BA4100674147 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				6D59117E20A8BA4A00674147 /* Libs */,
+				6D59118B20A8BAA000674147 /* _main.c */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		6D59117E20A8BA4A00674147 /* Libs */ = {
+			isa = PBXGroup;
+			children = (
+				6D07D36F20A8BBE40033DFDD /* vorbisfile.c */,
+				6D59118720A8BA8F00674147 /* fmt.c */,
+				6D59118820A8BA8F00674147 /* sha1.c */,
+				6D59118320A8BA8100674147 /* gl.c */,
+				6D59118420A8BA8100674147 /* sdl.c */,
+				6D59118120A8BA7600674147 /* ui_stub.c */,
+				6D59117F20A8BA6800674147 /* openal.c */,
+			);
+			name = Libs;
+			sourceTree = "<group>";
+		};
+		6DAE0AD520A642F9009812F8 = {
+			isa = PBXGroup;
+			children = (
+				6D1E7B8620A75D4400C2FB60 /* libhl-MacOSX.xcodeproj */,
+				6D59117C20A8BA4100674147 /* Source */,
+				6DF5F87F214DF6C700D6D734 /* Resources */,
+				6DAE0AE220A643AD009812F8 /* Products */,
+				6DAE1BC720A64D52009812F8 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		6DAE0AE220A643AD009812F8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6DAE0AE120A643AD009812F8 /* SWFTY */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		6DAE1BC720A64D52009812F8 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				6DF5F87C214DF54D00D6D734 /* libturbojpeg.0.dylib */,
+				6D11BFEC20A75AC9004B6083 /* libhl.a */,
+				6DAE1C3C20A73CFE009812F8 /* libmbedx509.2.9.0.dylib */,
+				6DAE1C3A20A73CDC009812F8 /* libmbedcrypto.2.9.0.dylib */,
+				6DAE1C3820A73CC9009812F8 /* libmbedtls.2.9.0.dylib */,
+				6DAE1C2D20A73A78009812F8 /* libogg.0.dylib */,
+				6DAE1C2B20A73A54009812F8 /* libvorbis.0.dylib */,
+				6DAE1C2920A73A1B009812F8 /* libSDL2-2.0.0.dylib */,
+				6DAE1C2720A73A07009812F8 /* libopenal.1.18.2.dylib */,
+				6DAE1C2520A739DD009812F8 /* libpng16.16.dylib */,
+				6DAE1C2320A739B2009812F8 /* libturbojpeg.0.dylib */,
+				6DAE1C2120A739A6009812F8 /* libjpeg.8.dylib */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		6DF5F87F214DF6C700D6D734 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				6DF5F880214DF6D700D6D734 /* res */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		6DAE0AE020A643AD009812F8 /* SWFTY */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6DAE0AE620A643AD009812F8 /* Build configuration list for PBXNativeTarget "SWFTY" */;
+			buildPhases = (
+				6DAE0ADD20A643AD009812F8 /* Sources */,
+				6DAE0ADE20A643AD009812F8 /* Frameworks */,
+				6DAE0ADF20A643AD009812F8 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6D59117820A8BA1B00674147 /* PBXTargetDependency */,
+			);
+			name = SWFTY;
+			productName = Test;
+			productReference = 6DAE0AE120A643AD009812F8 /* SWFTY */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		6DAE0AD620A642F9009812F8 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0920;
+				TargetAttributes = {
+					6DAE0AE020A643AD009812F8 = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 6DAE0AD920A642F9009812F8 /* Build configuration list for PBXProject "SWFTY-MacOSX" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 6DAE0AD520A642F9009812F8;
+			productRefGroup = 6DAE0AE220A643AD009812F8 /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 6D59117220A8B9F700674147 /* Products */;
+					ProjectRef = 6D1E7B8620A75D4400C2FB60 /* libhl-MacOSX.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				6DAE0AE020A643AD009812F8 /* SWFTY */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		6D59117620A8B9F700674147 /* libhl.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libhl.a;
+			remoteRef = 6D59117520A8B9F700674147 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXSourcesBuildPhase section */
+		6DAE0ADD20A643AD009812F8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6D59118A20A8BA8F00674147 /* sha1.c in Sources */,
+				6D59118020A8BA6800674147 /* openal.c in Sources */,
+				6D07D37020A8BBE40033DFDD /* vorbisfile.c in Sources */,
+				6D59118620A8BA8100674147 /* sdl.c in Sources */,
+				6D59118920A8BA8F00674147 /* fmt.c in Sources */,
+				6D59118C20A8BAA000674147 /* _main.c in Sources */,
+				6D59118220A8BA7600674147 /* ui_stub.c in Sources */,
+				6D59118520A8BA8100674147 /* gl.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		6D59117820A8BA1B00674147 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = hl;
+			targetProxy = 6D59117720A8BA1B00674147 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		6DAE0ADA20A642F9009812F8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		6DAE0ADB20A642F9009812F8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		6DAE0AE720A643AD009812F8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = ZYMM64BHCM;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = openal_soft;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../../submodules/hashlink/src",
+					/usr/local/include,
+					"/usr/local/opt/openal-soft/include",
+					"/usr/local/opt/libjpeg-turbo/include",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"/usr/local/Cellar/jpeg-turbo/1.5.3/lib",
+					/usr/local/Cellar/libpng/1.6.34/lib,
+					"/usr/local/Cellar/openal-soft/1.18.2/lib",
+					/usr/local/Cellar/sdl2/2.0.8/lib,
+					/usr/local/Cellar/libvorbis/1.3.6/lib,
+					/usr/local/Cellar/libogg/1.3.3/lib,
+					/usr/local/Cellar/mbedtls/2.9.0/lib,
+					"$(SRCROOT)/../../../submodules/hashlink",
+					"/opt/libjpeg-turbo/lib",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = SWFTY;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		6DAE0AE820A643AD009812F8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = ZYMM64BHCM;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = openal_soft;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../../submodules/hashlink/src",
+					/usr/local/include,
+					"/usr/local/opt/openal-soft/include",
+					"/usr/local/opt/libjpeg-turbo/include",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"/usr/local/Cellar/jpeg-turbo/1.5.3/lib",
+					/usr/local/Cellar/libpng/1.6.34/lib,
+					"/usr/local/Cellar/openal-soft/1.18.2/lib",
+					/usr/local/Cellar/sdl2/2.0.8/lib,
+					/usr/local/Cellar/libvorbis/1.3.6/lib,
+					/usr/local/Cellar/libogg/1.3.3/lib,
+					/usr/local/Cellar/mbedtls/2.9.0/lib,
+					"$(SRCROOT)/../../../submodules/hashlink",
+					"/opt/libjpeg-turbo/lib",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = SWFTY;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		6DAE0AD920A642F9009812F8 /* Build configuration list for PBXProject "SWFTY-MacOSX" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6DAE0ADA20A642F9009812F8 /* Debug */,
+				6DAE0ADB20A642F9009812F8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6DAE0AE620A643AD009812F8 /* Build configuration list for PBXNativeTarget "SWFTY" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6DAE0AE720A643AD009812F8 /* Debug */,
+				6DAE0AE820A643AD009812F8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 6DAE0AD620A642F9009812F8 /* Project object */;
+}

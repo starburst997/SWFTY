@@ -2,7 +2,7 @@
 package swfty.renderer;
 
 #if openfl
-typedef Layer = swfty.openfl.renderer.Layer;
+typedef Layer = openfl.swfty.renderer.Layer;
 #else
 #error 'Unsupported framework (please use OpenFL)'
 #end

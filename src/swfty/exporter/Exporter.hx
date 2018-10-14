@@ -6,7 +6,7 @@ class CharSet {
 }
 
 #if openfl
-typedef Exporter = swfty.openfl.exporter.Exporter;
+typedef Exporter = openfl.swfty.exporter.Exporter;
 #else
 #error 'Unsupported framework (please use OpenFL)'
 #end

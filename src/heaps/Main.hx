@@ -1,6 +1,0 @@
-package heaps;
-
-class Main {
-
-    
-}

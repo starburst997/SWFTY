@@ -1,3 +1,9 @@
+cd %~dp0
+
+haxelib.exe dev swfty .
+
+haxelib.exe install hashlink
+haxelib.exe install hscript
 haxelib.exe dev openfl submodules/openfl
 haxelib.exe dev lime submodules/lime
 haxelib.exe dev hxp submodules/hxp
@@ -7,3 +13,8 @@ haxelib.exe dev mcli submodules/mcli
 haxelib.exe dev haxe-file-save submodules/haxe-file-save
 haxelib.exe dev haxe-zip submodules/haxe-zip
 haxelib.exe dev hxcpp submodules/hxcpp
+haxelib.exe dev hxbit submodules/hxbit
+haxelib.exe dev heaps submodules/heaps
+haxelib.exe dev hldx submodules/hashlink/libs/directx
+haxelib.exe dev hlsdl submodules/hashlink/libs/sdl
+haxelib.exe dev hlopenal submodules/hashlink/libs/openal

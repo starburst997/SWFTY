@@ -1,0 +1,13 @@
+# class paths
+-cp src
+
+# entry point
+-main heaps.Main
+
+# libraries
+libs.hxml
+
+-D html5
+
+# output
+-js bin/SWFTY.js

@@ -1,0 +1,17 @@
+# class paths
+-cp src
+
+# entry point
+-main heaps.Main
+
+# libraries
+libs.hxml
+
+-lib hldx
+#-lib hlsdl
+
+-D windowSize=800x450
+-D hl_disable_mikkt
+
+# output
+-hl bin/SWFTY.hl
