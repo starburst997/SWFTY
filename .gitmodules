@@ -25,3 +25,12 @@
 [submodule "submodules/openfl"]
 	path = submodules/openfl
 	url = git@github.com:starburst997/openfl.git
+[submodule "submodules/heaps"]
+	path = submodules/heaps
+	url = git@github.com:starburst997/heaps.git
+[submodule "submodules/hashlink"]
+	path = submodules/hashlink
+	url = git@github.com:starburst997/hashlink.git
+[submodule "submodules/hxbit"]
+	path = submodules/hxbit
+	url = git@github.com:ncannasse/hxbit.git
