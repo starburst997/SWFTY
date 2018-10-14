@@ -1,0 +1,9 @@
+# Libraries
+-lib heaps
+-lib haxe-zip
+
+# Resource path
+#-D resourcesPath="../res/"
+
+# Defs
+-D hl_disable_mikkt

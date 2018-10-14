@@ -2,17 +2,15 @@
 -cp src
 
 # entry point
--main heaps.Main
+-main Main
 
 # libraries
-libs.hxml
+common.hxml
 
 #-lib hldx
 -lib hlsdl
 
 -D windowSize=800x450
-
--D hl_disable_mikkt
 
 # output
 -hl bin/SWFTY.hl

@@ -2,9 +2,9 @@
 -cp src
 
 # entry point
--main heaps.Main
+-main Main
 
-libs.hxml
+common.hxml
 
 # libraries
 #-lib hldx
@@ -13,4 +13,4 @@ libs.hxml
 -D hl_disable_mikkt
 
 # output
--hl submodules/hashlink/src/_main.c
+-hl ../submodules/hashlink/src/_main.c

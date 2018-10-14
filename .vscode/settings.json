@@ -12,7 +12,7 @@
     ],
     "haxe.enableCompilationServer": true,
     "haxe.buildCompletionCache": true,
-    "haxe.displayPort": 6002,
+    "haxe.displayPort": 6003,
     "haxe.displayServer": { // configuration for starting haxe completion server itself
         "haxePath": "haxe", // path to the executable (default: `haxe`)
         "arguments": ["v"], // arguments before --wait (-v is useful for debugging)

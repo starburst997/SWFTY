@@ -2,10 +2,10 @@
 -cp src
 
 # entry point
--main heaps.Main
+-main Main
 
 # libraries
-libs.hxml
+common.hxml
 
 -D html5
 

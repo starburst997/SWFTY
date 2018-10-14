@@ -23,7 +23,7 @@
             "taskName": "build hl",
             "isBuildCommand": true,
             "args": [
-                "make.sh", "-D test"
+                "heaps/make.sh", "-D test"
             ],
             "presentation": {
                 "echo": false,
