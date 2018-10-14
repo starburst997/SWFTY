@@ -56,6 +56,7 @@ typedef FontDefinition = {
     id: Int,
     name: String,
     cleanName: String,
+    color: Int,
     size: Float,
     bold: Bool,
     italic: Bool,
@@ -90,8 +91,12 @@ typedef TextDefinition = {
 }
 
 typedef ColorTransform = {
-    alpha: Float,
     r: Float,
+    g: Float,
+    b: Float,
+    rAdd: Float,
+    gAdd: Float,
+    bAdd: Float
 }
 
 typedef SpriteDefinition = {

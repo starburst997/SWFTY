@@ -442,7 +442,7 @@ class Exporter {
                             shape.ty = bounds.y;
 
                             // TODO: Maybe add this as settings...
-                            var padding = 20;
+                            var padding = 40;
 
                             var bitmapData = new BitmapData(Math.ceil(bounds.width) + padding * 2, Math.ceil(bounds.height) + padding * 2, true, 0x00000000);
 
@@ -493,6 +493,14 @@ class Exporter {
                         d: transform.d,
                         tx: transform.tx,
                         ty: transform.ty,
+                        color: if (placeTag.colorTransform != null) {
+                            r: placeTag.colorTransform.rMult,
+                            g: placeTag.colorTransform.gMult,
+                            b: placeTag.colorTransform.bMult,
+                            rAdd: placeTag.colorTransform.rAdd,
+                            gAdd: placeTag.colorTransform.gAdd,
+                            bAdd: placeTag.colorTransform.bAdd,
+                        } else null,
                         blendMode: blendMode == Normal ? null : blendMode,
                         mask: mask == null || isMask ? null : maskDepth,
                         visible: !isMask && visible,
@@ -785,6 +793,7 @@ class Exporter {
                 id: tag.characterId,
                 name: 'Arial',
                 cleanName: 'Arial',
+                color: 0xFFFFFF, // TODO: If we detect only one color, use that color so no colorTtransform is needed
                 size: 12,
                 bold: false,
                 italic: false,
