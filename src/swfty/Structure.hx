@@ -2,7 +2,7 @@ package swfty;
 
 enum abstract BlendMode(String) from String to String {
     var Normal      = 'normal';
-    //var Layer       = 'layer';
+    var LayerBlend  = 'layer';
     var Multiply    = 'multiply';
     var Screen      = 'screen';
     var Lighten     = 'lighten';

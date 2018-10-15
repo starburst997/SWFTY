@@ -15,9 +15,12 @@ class Layer extends h2d.TileGroup {
     
     public var json:SWFTYJson;
 
+    var tiles:IntMap<h2d.Tile>;
     var ids:IntMap<MovieClipDefinition>;
     var fonts:IntMap<Font>;
     var mcs:StringMap<MovieClipDefinition>;
+
+    var sprites:Array<Sprite>;
 
     public static inline function create(?tile:h2d.Tile, ?parent) {
         return new Layer(tile, parent);
@@ -26,9 +29,29 @@ class Layer extends h2d.TileGroup {
     public function new(?tile:h2d.Tile, ?parent) {
         super(tile, parent);
 
+        sprites = [];
+
+        tiles = new IntMap();
         ids = new IntMap();
         fonts = new IntMap();
         mcs = new StringMap();
+    }
+
+    public function getColor() {
+        return curColor;
+    } 
+
+    public function addTile(sprite:Sprite) {
+        sprites.push(sprite);
+    }
+
+    public inline function drawTile(x : Int, y : Int, sx : Float, sy : Float, r : Float, c : h3d.Vector, t : Tile) {
+		content.addTransform(x, y, sx, sy, r, c, t);
+	}
+
+    public function update(dt:Float) {
+        clear();
+        for (sprite in sprites) sprite.update(dt);
     }
 
     public inline function getFont(id:Int) {
@@ -51,6 +74,15 @@ class Layer extends h2d.TileGroup {
         return [for (key in mcs.keys()) key];
     }
 
+    public inline function getTile(id:Int):h2d.Tile {
+        return if (tiles.exists(id)) {
+            tiles.get(id);
+        } else {
+            Log.warn('Missing shape: $id');
+            tile.sub(0, 0, 1, 1);
+        } 
+    }
+
     public function get(linkage:String):Sprite {
         return if (!mcs.exists(linkage)) {
             Log.warn('Linkage: $linkage does not exists!');
@@ -70,10 +102,22 @@ class Layer extends h2d.TileGroup {
     }
 
     public function loadJson(json:SWFTYJson) {
-        add(0, 0, new Tile(tile.getTexture(), 0, 0, 500, 500));
-        add(0, 50, new Tile(tile.getTexture(), 100, 0, 300, 500));
-        add(0, 100, new Tile(tile.getTexture(), 0, 200, 500, 500));
-        add(0, 200, new Tile(tile.getTexture(), 300, 0, 250, 500));
+        this.json = json;
+
+        for (i in 0...json.tiles.length) {
+            var tile = json.tiles[i];
+            tiles.set(tile.id, this.tile.sub(tile.x, tile.y, tile.width, tile.height));
+        }
+
+        for (definition in json.definitions) {
+            if (definition.name != null && definition.name != '') mcs.set(definition.name, definition);
+            ids.set(definition.id, definition);
+        }
+
+        for (font in json.fonts) {
+            var obj = Font.create(this, font);
+            fonts.set(font.id, obj);
+        }
     }
 
     public static function createAsync(bytes:Bytes, ?parent, onComplete:Layer->Void, onError:Dynamic->Void) {

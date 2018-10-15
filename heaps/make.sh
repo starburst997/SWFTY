@@ -14,13 +14,13 @@ command_exists () {
 rm -f $FILE
 
 if command_exists haxe.exe ; then
-    haxe.exe build-win.hxml --connect 6003 --times -v "$@" # -dce full
+    haxe.exe build-win.hxml --connect 6004 --times -v $@ # -dce full
     
     if [ -f $FILE ]; then
         hl.exe $FILE
     fi
 else
-    haxe build.hxml --connect 6003 --times -v "$@" # -dce full
+    haxe build.hxml --connect 6004 --times -v $@ # -dce full
 
     if [ -f $FILE ]; then
         hl $FILE

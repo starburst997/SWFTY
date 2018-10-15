@@ -5,13 +5,21 @@ import swfty.renderer.Layer;
 class Main extends hxd.App {
 
     var debugInitialized = false;
-    
+
     var info1Text:h2d.Text;
     var info2Text:h2d.Text;
     var info3Text:h2d.Text;
 
+    var layers:Array<Layer>;
+
     // TODO: Hack until hxd.System.Platform works
     var isMobile = #if mobile true #else false #end;
+
+    function new() {
+        layers = [];
+        
+        super();
+    }
 
     override function setup() {
         #if mobile
@@ -32,7 +40,13 @@ class Main extends hxd.App {
         trace('Hello!');
 
         renderSWFTYAsync('Popup.swfty', layer -> {
+            layers.push(layer);
             s2d.addChild(layer);
+
+            var sprite = layer.get('PopupShop');
+            sprite.x += 408;
+            layer.addTile(sprite);
+
             trace('Done!');
         }, error -> {
             trace('Error: $error');
@@ -73,6 +87,8 @@ class Main extends hxd.App {
     override function update(dt:Float) {
         super.update(dt);
         
+        for (layer in layers) layer.update(dt);
+
         #if test
         printDebug();
         #end
@@ -107,7 +123,6 @@ class Main extends hxd.App {
             info1Text.setPosition(20.0, 20.0);
             info2Text.setPosition(20.0, 50.0);
             info3Text.setPosition(20.0, 80.0);
-
         }
         
         var engine = h3d.Engine.getCurrent();
