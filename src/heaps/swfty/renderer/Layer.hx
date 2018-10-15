@@ -71,6 +71,9 @@ class Layer extends h2d.TileGroup {
 
     public function loadJson(json:SWFTYJson) {
         add(0, 0, new Tile(tile.getTexture(), 0, 0, 500, 500));
+        add(0, 50, new Tile(tile.getTexture(), 100, 0, 300, 500));
+        add(0, 100, new Tile(tile.getTexture(), 0, 200, 500, 500));
+        add(0, 200, new Tile(tile.getTexture(), 300, 0, 250, 500));
     }
 
     public static function createAsync(bytes:Bytes, ?parent, onComplete:Layer->Void, onError:Dynamic->Void) {
