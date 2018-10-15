@@ -19,13 +19,12 @@ class Layer extends Tilemap {
 
     public var json:SWFTYJson;
 
-    var afterFrames:Array<Void->Void> = [];
-
-    var tiles:IntMap<Int>;
     var ids:IntMap<MovieClipDefinition>;
     var fonts:IntMap<Font>;
     var mcs:StringMap<MovieClipDefinition>;
 
+    var tiles:IntMap<Int>;
+    
     public static inline function create(width:Int, height:Int, ?tileset) {
         return new Layer(width, height, tileset);
     }
@@ -45,35 +44,6 @@ class Layer extends Tilemap {
         ids = new IntMap();
         fonts = new IntMap();
         mcs = new StringMap();
-
-        /*addEventListener(Event.ENTER_FRAME, render);
-
-        #if html5
-        // Weird OpenFL html5 bug with tilemap...
-        afterFrame(() -> {
-            x += 0.00000001;
-            afterFrame(() -> {
-                x -= 0.00000001;
-            });
-        });
-        #end*/
-    }
-
-    public function dispose() {
-        removeEventListener(Event.ENTER_FRAME, render);
-    }
-
-    inline function afterFrame(f:Void->Void) {
-        afterFrames.push(f);
-    }
-
-    function render(e) {
-        if (afterFrames.length > 0) {
-            var copy = [for (f in afterFrames) f];
-            afterFrames = [];
-
-            for (f in copy) f();
-        }
     }
 
     public inline function getTile(id:Int):Int {

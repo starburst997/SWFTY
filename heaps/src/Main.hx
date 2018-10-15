@@ -25,17 +25,12 @@ class Main extends hxd.App {
 
         trace('Hello!');
 
-        var file = hxd.Res.load('Popup.swfty');
-        var bytes = file.entry.getBytes();
-
-        Layer.createAsync(bytes, (layer) -> {
+        renderSWFTYAsync('Popup.swfty', layer -> {
             s2d.addChild(layer);
             trace('Done!');
         }, error -> {
             trace('Error: $error');
         });
-
-        trace('!!', bytes.length);
     }
 
     function onEvent(e:hxd.Event) {
@@ -56,6 +51,19 @@ class Main extends hxd.App {
     override function render(e:h3d.Engine) {
         super.render(e);
     }
+
+    public function renderSWFTYAsync(path:String, onComplete:Layer->Void, onError:Dynamic->Void) {
+		var file = hxd.Res.load(path);
+        var bytes = file.entry.getBytes();
+
+        trace('Loaded ${bytes.length}');
+
+        var timer = haxe.Timer.stamp();
+        
+        Layer.createAsync(bytes, layer -> onComplete(layer), (e) -> onError('Cannot load: $e!'));
+        
+        trace('Parsed SWFTY: ${haxe.Timer.stamp() - timer}');
+	}
 
     static function main() {
         #if html5
