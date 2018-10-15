@@ -1,5 +1,6 @@
 # Libraries
 -lib heaps
+-lib swfty
 -lib haxe-zip
 
 # Resource path
