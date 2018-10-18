@@ -101,8 +101,46 @@ class Main extends hxd.App {
 
     override function update(dt:Float) {
         super.update(dt);
-        
-        for (layer in layers) layer.update(dt);
+
+        dt = dt * 1/60;
+
+        for (layer in layers) {
+            layer.update(dt);
+
+            //continue;
+
+            var names = layer.getAllNames();
+            var name = names[Std.int(Math.random() * names.length)];
+            var sprite = layer.get(name);
+
+            var speedX = Math.random() * 50 - 25;
+            var speedY = Math.random() * 50 - 25;
+            var speedRotation = (Math.random() * 50 - 25) / 180 * Math.PI;
+            var speedAlpha = Math.random() * 0.75 + 0.25;
+
+            var stage = hxd.Stage.getInstance();
+            sprite.x = Math.random() * stage.width * 0.75;// + stage.stageWidth / 4;
+            sprite.y = Math.random() * stage.height * 0.75;// + stage.stageHeight / 4;
+
+            var scale = Math.random() * 0.25 + 0.35;
+            sprite.scaleX = scale;
+            sprite.scaleY = scale;
+
+            sprite.addRender((dt) -> {
+                sprite.x += speedX * dt;
+                sprite.y += speedY * dt;
+                sprite.rotation += speedRotation * dt;
+                sprite.alpha -= speedAlpha * dt;
+
+                if (sprite.alpha <= 0) {
+                    layer.removeTile(sprite);
+                }
+            });
+
+            //sprites.push(sprite);
+
+            layer.addTile(sprite);
+        }
 
         #if test
         printDebug();

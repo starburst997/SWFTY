@@ -13,5 +13,5 @@ rm -f $FILE
 if command_exists haxe.exe ; then
     haxe.exe html5.hxml --times -v $@ # -dce full --connect 6003
 else
-    haxe html5.hxml --times -v $@ # -dce full --connect 6003
+    haxe html5.hxml --times -v --connect 6004 $@ # -dce full
 fi

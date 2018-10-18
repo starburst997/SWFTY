@@ -47,7 +47,7 @@ class Main extends Sprite {
             /*var bmp = new Bitmap(layer.tileset.bitmapData);
             addChild(bmp);*/
 
-            //var names = layer.getAllNames();            
+            var names = layer.getAllNames();            
             //trace(names);
 
             //trace(Report.getReport(layer.json));

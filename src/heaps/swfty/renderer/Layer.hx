@@ -22,6 +22,8 @@ class Layer extends h2d.TileGroup {
 
     var sprites:Array<Sprite>;
 
+    var names:Array<String>;
+
     public static inline function create(?tile:h2d.Tile, ?parent) {
         return new Layer(tile, parent);
     }
@@ -43,6 +45,10 @@ class Layer extends h2d.TileGroup {
 
     public function addTile(sprite:Sprite) {
         sprites.push(sprite);
+    }
+
+    public function removeTile(sprite:Sprite) {
+        sprites.remove(sprite);
     }
 
     public inline function drawTile(x : Int, y : Int, sx : Float, sy : Float, r : Float, c : h3d.Vector, t : Tile) {
@@ -71,7 +77,8 @@ class Layer extends h2d.TileGroup {
     }
 
     public inline function getAllNames() {
-        return [for (key in mcs.keys()) key];
+        if (names == null) names = [for (key in mcs.keys()) key];
+        return names;
     }
 
     public inline function getTile(id:Int):h2d.Tile {

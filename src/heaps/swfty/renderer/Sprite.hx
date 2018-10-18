@@ -20,6 +20,7 @@ class Sprite extends h2d.Sprite {
     var _childs:StringMap<Sprite>;
     var _texts:StringMap<Text>;
     var definition:Option<MovieClipDefinition> = None;
+    var renders:Array<Float->Void>;
 
     public static inline function create(layer:Layer, ?tile:h2d.Tile, ?definition:MovieClipDefinition, ?parent) {
         return new Sprite(layer, tile, definition, parent);
@@ -33,6 +34,7 @@ class Sprite extends h2d.Sprite {
         color = new h3d.Vector(1, 1, 1, 1);
 
         sprites = [];
+        renders = [];
         _childs = new StringMap();
         _texts = new StringMap();
         
@@ -163,9 +165,19 @@ class Sprite extends h2d.Sprite {
         }
 
         if (tile != null) {
-            if (posChanged) syncPos();
+            /*if (posChanged)*/ syncPos();
             layer.drawTile(Std.int(_x(absX)), Std.int(_y(absY)), _scaleX(matA, matB), _scaleY(matC, matD), _rotation(matB, matC, matD), color, tile);
         }
+
+        for (f in renders) f(dt);
+    }
+
+    public function addRender(f:Float->Void) {
+        renders.push(f);
+    }
+
+    public function removeRender(f:Float->Void) {
+        renders.remove(f);
     }
 
     public function get(name:String):Sprite {
