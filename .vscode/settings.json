@@ -9,6 +9,7 @@
     "haxe.displayConfigurations": [
         ["openfl/bin/html5/haxe/debug.hxml"],
         ["--cwd", "heaps", "build.hxml"],
+        ["--cwd", "heaps", "html5.hxml"],
     ],
     "haxe.enableCompilationServer": true,
     "haxe.buildCompletionCache": true,

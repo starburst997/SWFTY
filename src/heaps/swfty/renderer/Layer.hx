@@ -150,6 +150,12 @@ class Layer extends h2d.TileGroup {
             #end
         }
 
+        #if js
+        Image.loadBytes('tilemap.png', tilemapBytes, function(image) {
+            complete(image.toTile());
+        });
+        #else
         complete(Image.create(tilemapBytes).toTile());
+        #end
     }
 }

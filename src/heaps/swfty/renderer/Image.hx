@@ -8,6 +8,9 @@ import haxe.io.BytesInput;
 
 import hxd.Pixels;
 import hxd.PixelFormat;
+import hxd.res.NanoJpeg;
+
+using haxe.io.Path;
 
 @:enum abstract ImageFormat(Int) {
 
@@ -47,6 +50,8 @@ class Image {
 	**/
 	public static var DEFAULT_ASYNC = false;
 
+    public var pixels:Pixels;
+
     var bytes:Bytes;
     var input:BytesInput;
 
@@ -56,6 +61,38 @@ class Image {
     public static inline function create(bytes:Bytes) {
         return new Image(bytes);
     }
+
+    public static function loadBytes( path:String, bytes:Bytes, onLoaded : Image -> Void ) : Void {
+		#if flash
+		var loader = new flash.display.Loader();
+		loader.contentLoaderInfo.addEventListener(flash.events.IOErrorEvent.IO_ERROR, function(e:flash.events.IOErrorEvent) {
+			throw Std.string(e) + " while loading " + fullPath;
+		});
+		loader.contentLoaderInfo.addEventListener(flash.events.Event.COMPLETE, function(_) {
+			var content : flash.display.Bitmap = cast loader.content;
+			onLoaded(new hxd.fs.LoadedBitmap(content.bitmapData));
+			loader.unload();
+		});
+		loader.loadBytes(bytes.getData());
+		#elseif js
+        var image = new Image(bytes);
+		var mime = switch path.extension().toLowerCase() {
+			case 'jpg' | 'jpeg': 'image/jpeg';
+			case 'png': 'image/png';
+			case 'gif': 'image/gif';
+			case _: throw 'Cannot determine image encoding, try adding an extension to the resource path';
+		}
+		var img = new js.html.Image();
+		img.onload = function() {
+            var bmp = new hxd.fs.LoadedBitmap(img).toBitmap();
+            image.pixels = bmp.getPixels();
+            onLoaded(image);
+        };
+		img.src = 'data:$mime;base64,' + haxe.crypto.Base64.encode(bytes);
+		#else
+		throw "Not implemented";
+		#end
+	}
 
     public function new(bytes:Bytes) {
         this.bytes = bytes;
@@ -157,7 +194,7 @@ class Image {
 			pixels = decodeJPG(bytes, inf.width, inf.height, fmt, flipY);
 			if( pixels == null ) throw "Failed to decode JPG";
 			#else
-			var p = try NanoJpeg.decode(bytes) catch( e : Dynamic ) throw "Failed to decode JPG " + entry.path + " (" + e+")";
+			var p = try NanoJpeg.decode(bytes) catch( e : Dynamic ) throw "Failed to decode JPG (" + e+")";
 			pixels = new Pixels(p.width, p.height, p.pixels, BGRA);
 			#end
 		case Tga:
@@ -244,7 +281,7 @@ class Image {
 		if( !getFormat().useAsyncDecode && !DEFAULT_ASYNC ) {
 			// immediately loading the PNG is faster than going through loadBitmap
             tex.alloc();
-            var pixels = getPixels(h3d.mat.Texture.nativeFormat);
+            var pixels = this.pixels != null ? this.pixels : getPixels(h3d.mat.Texture.nativeFormat);
             if( pixels.width != tex.width || pixels.height != tex.height )
                 pixels.makeSquare();
             tex.uploadPixels(pixels);

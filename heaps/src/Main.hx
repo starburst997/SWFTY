@@ -37,8 +37,6 @@ class Main extends hxd.App {
 
         hxd.Stage.getInstance().addEventTarget(onEvent);
 
-        trace('Hello!');
-
         renderSWFTYAsync('Popup.swfty', layer -> {
             layers.push(layer);
             s2d.addChild(layer);
@@ -46,6 +44,21 @@ class Main extends hxd.App {
             var sprite = layer.get('PopupShop');
             sprite.x += 408;
             layer.addTile(sprite);
+
+            #if test
+            if (!debugInitialized) {
+                debugInitialized = true;
+
+                var font = hxd.Res.fonts.debug_fnt.toFont();
+                if (info1Text == null) info1Text = font.text(s2d).setSpacing(0).setAlign(h2d.Text.Align.Left).changeScale(1.0).setAlpha(1.0);
+                if (info2Text == null) info2Text = font.text(s2d).setSpacing(0).setAlign(h2d.Text.Align.Left).changeScale(1.0).setAlpha(1.0);
+                if (info3Text == null) info3Text = font.text(s2d).setSpacing(0).setAlign(h2d.Text.Align.Left).changeScale(1.0).setAlpha(1.0);
+                
+                info1Text.setPosition(20.0, 20.0);
+                info2Text.setPosition(20.0, 50.0);
+                info3Text.setPosition(20.0, 80.0);
+            }
+            #end
 
             trace('Done!');
         }, error -> {
@@ -59,8 +72,10 @@ class Main extends hxd.App {
         var stage = hxd.Stage.getInstance();
         var e = h3d.Engine.getCurrent();
 
+        #if hl
         @:privateAccess trace('RESIZE', s2d.width, s2d.height, stage.window.drawableWidth, stage.window.drawableHeight);
-        
+        #end
+
         #if hlsdl
         switch(hxd.System.platform) { // TODO: Not working
             case hxd.System.Platform.Android | hxd.System.Platform.IOS : isMobile = true;
@@ -112,38 +127,27 @@ class Main extends hxd.App {
 	}
 
     function printDebug() {
-        if (!debugInitialized) {
-            debugInitialized = true;
+        if (debugInitialized) {
+            var engine = h3d.Engine.getCurrent();
 
-            var font = hxd.Res.fonts.debug_fnt.toFont();
-            if (info1Text == null) info1Text = font.text(s2d).setSpacing(0).setAlign(h2d.Text.Align.Left).changeScale(1.0).setAlpha(1.0);
-            if (info2Text == null) info2Text = font.text(s2d).setSpacing(0).setAlign(h2d.Text.Align.Left).changeScale(1.0).setAlpha(1.0);
-            if (info3Text == null) info3Text = font.text(s2d).setSpacing(0).setAlign(h2d.Text.Align.Left).changeScale(1.0).setAlpha(1.0);
+            //trace('FPS ${engine.fps}, Draw Call ${engine.drawCalls}, Draw Triangle ${engine.drawTriangles}');
+            info1Text.setText('Draw Call ${engine.drawCalls}, Draw Triangle ${engine.drawTriangles}, FPS ${engine.fps}');
+
+            var stats = engine.mem.stats();
+            var idx = (stats.totalMemory - (stats.textureMemory + stats.managedMemory));
+            var sum : Float = idx + stats.managedMemory;
+            var freeMem : Float = stats.freeManagedMemory;
+            var totTex : Float = stats.textureMemory;
+            var totalMem : Float = stats.totalMemory;
+
+            inline function MB(m:Float) return '${Math.ceil(m / 1024 / 1024 * 100) / 100}mb';
+
+            //trace('bufMem ${sum} (${freeMem}), totTex: ${totTex}, Total ${totalMem}');
+            //trace('Buffers [${stats.bufferCount}] Textures [${stats.textureCount}] [${stats.bufferCount + stats.textureCount}]');
             
-            info1Text.setPosition(20.0, 20.0);
-            info2Text.setPosition(20.0, 50.0);
-            info3Text.setPosition(20.0, 80.0);
+            info2Text.setText('bufMem ${MB(sum)} (${MB(freeMem)}), totTex: ${MB(totTex)}, Total ${MB(totalMem)}');
+            info3Text.setText('Buffers [${stats.bufferCount}] Textures [${stats.textureCount}] [${stats.bufferCount + stats.textureCount}]');
         }
-        
-        var engine = h3d.Engine.getCurrent();
-
-        //trace('FPS ${engine.fps}, Draw Call ${engine.drawCalls}, Draw Triangle ${engine.drawTriangles}');
-        info1Text.setText('Draw Call ${engine.drawCalls}, Draw Triangle ${engine.drawTriangles}, FPS ${engine.fps}');
-
-		var stats = engine.mem.stats();
-		var idx = (stats.totalMemory - (stats.textureMemory + stats.managedMemory));
-		var sum : Float = idx + stats.managedMemory;
-		var freeMem : Float = stats.freeManagedMemory;
-		var totTex : Float = stats.textureMemory;
-		var totalMem : Float = stats.totalMemory;
-
-        inline function MB(m:Float) return '${Math.ceil(m / 1024 / 1024 * 100) / 100}mb';
-
-        //trace('bufMem ${sum} (${freeMem}), totTex: ${totTex}, Total ${totalMem}');
-        //trace('Buffers [${stats.bufferCount}] Textures [${stats.textureCount}] [${stats.bufferCount + stats.textureCount}]');
-        
-        info2Text.setText('bufMem ${MB(sum)} (${MB(freeMem)}), totTex: ${MB(totTex)}, Total ${MB(totalMem)}');
-        info3Text.setText('Buffers [${stats.bufferCount}] Textures [${stats.textureCount}] [${stats.bufferCount + stats.textureCount}]');
     }
 
     static function main() {

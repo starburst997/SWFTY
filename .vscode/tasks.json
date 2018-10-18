@@ -31,7 +31,20 @@
                 "panel": "dedicated",
                 "reveal": "silent"
             }
-        }
+        },{
+            "command": "sh",
+            "taskName": "build js",
+            "isBuildCommand": true,
+            "args": [
+                "heaps/html5.sh", "-D test"
+            ],
+            "presentation": {
+                "echo": false,
+                "focus": false,
+                "panel": "dedicated",
+                "reveal": "silent"
+            }
+        },
         /*{
             "type": "hxml",
             "label": "Build",

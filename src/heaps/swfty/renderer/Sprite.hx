@@ -13,6 +13,7 @@ class Sprite extends h2d.Sprite {
     public var g:Float = 1.0;
     public var b:Float = 1.0;
 
+    // TODO: Listen to remove child and remove from array
     var sprites:Array<Sprite>;
 
     var _parent:Sprite;
