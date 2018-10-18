@@ -165,6 +165,7 @@ class Sprite extends h2d.Sprite {
         }
 
         if (tile != null) {
+            // TODO: Check dirty flag
             /*if (posChanged)*/ syncPos();
             layer.drawTile(Std.int(_x(absX)), Std.int(_y(absY)), _scaleX(matA, matB), _scaleY(matC, matD), _rotation(matB, matC, matD), color, tile);
         }
