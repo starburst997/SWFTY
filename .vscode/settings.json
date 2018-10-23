@@ -7,13 +7,13 @@
         "bin":true
     },
     "haxe.displayConfigurations": [
-        ["openfl/bin/html5/haxe/debug.hxml"],
+        ["--cwd", "openfl", "bin/html5/haxe/debug.hxml"],
         ["--cwd", "heaps", "build.hxml"],
         ["--cwd", "heaps", "html5.hxml"],
     ],
     "haxe.enableCompilationServer": true,
     "haxe.buildCompletionCache": true,
-    "haxe.displayPort": 6004,
+    "haxe.displayPort": 6005,
     "haxe.displayServer": { // configuration for starting haxe completion server itself
         "haxePath": "haxe", // path to the executable (default: `haxe`)
         "arguments": ["v"], // arguments before --wait (-v is useful for debugging)
