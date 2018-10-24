@@ -1,7 +1,5 @@
 package openfl.swfty.renderer;
 
-import swfty.renderer.Font;
-
 import openfl.geom.ColorTransform;
 import openfl.display.Tile;
 import openfl.display.TileContainer;
@@ -25,25 +23,25 @@ class Text extends TileContainer {
     public var textHeight(default, null):Float = 0.0;
 
     var layer:Layer;
-    var font:Font;
-    var definition:TextDefinition;
+    var definition:TextType;
 
-    public static inline function create(layer:Layer, definition:TextDefinition) {
+    public static inline function create(layer:Layer, definition:TextType) {
         return new Text(layer, definition);
     }
 
-    public function new(layer:Layer, definition:TextDefinition) {
+    public function new(layer:Layer, definition:TextType) {
         super();
 
         this.layer = layer;
         this.definition = definition;
 
-        font = layer.getFont(definition.font);
         text = definition.text;
     }
 
     function set_text(text:String) {
-        if (font == null || this.text == text) return text;
+        if (this.text == text) return text;
+
+        this.text = text;
 
         // Clear tiles
         while(numTiles > 0) removeTileAt(0);
@@ -57,7 +55,7 @@ class Text extends TileContainer {
         var g = (c & 0xFF00) >> 8;
         var b = c & 0xFF;
 
-        var scale = definition.size / font.definition.size;
+        var scale = definition.size / definition.font.size;
         var lineHeight = definition.size;
 
         var hasSpace = false;
@@ -76,10 +74,9 @@ class Text extends TileContainer {
                 hasSpace = true;
             }
 
-            if (font.has(code)) {
-                var char = font.get(code);
-                var id = layer.getTile(char.bitmap);
-
+            if (definition.font.has(code)) {
+                var char = definition.font.get(code);
+                var id = layer.getTile(char.bitmap.id);
                 var rect = layer.tileset.getRect(id);
                 if (rect != null) {
                     

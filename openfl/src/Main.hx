@@ -40,7 +40,7 @@ class Main extends Sprite {
     function process() {
 		// Process SWF
 		//var layer = renderSWFTY('res/Popup.swfty', layer -> {
-        processSWF('res/tower.swf', layer -> {
+        processSWF('res/Popup.swf', layer -> {
         //renderSWFTYAsync('res/Popup.swfty', layer -> {
             trace('Yay loading finished!');
 
@@ -58,7 +58,7 @@ class Main extends Sprite {
             sprite.x += 408;
             layer.addTile(sprite);
 
-            //return;
+            return;
 
             function spawn() {
                 haxe.Timer.delay(() -> {

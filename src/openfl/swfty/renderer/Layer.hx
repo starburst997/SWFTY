@@ -1,9 +1,8 @@
 package openfl.swfty.renderer;
 
-import swfty.renderer.Font;
-
 import haxe.ds.IntMap;
 import haxe.ds.StringMap;
+import haxe.ds.Option;
 import haxe.io.Bytes;
 
 import zip.Zip;
@@ -17,13 +16,10 @@ import openfl.events.Event;
 
 class Layer extends Tilemap {
 
-    public var json:SWFTYJson;
-
-    var ids:IntMap<MovieClipDefinition>;
-    var fonts:IntMap<Font>;
-    var mcs:StringMap<MovieClipDefinition>;
+    public var swfty:Option<SWFTYType>;
 
     var tiles:IntMap<Int>;
+    var mcs:StringMap<MovieClipType>;
     
     public static inline function create(width:Int, height:Int, ?tileset) {
         return new Layer(width, height, tileset);
@@ -41,9 +37,8 @@ class Layer extends Tilemap {
         super(width, height, tileset);
 
         tiles = new IntMap();
-        ids = new IntMap();
-        fonts = new IntMap();
         mcs = new StringMap();
+        swfty = None;
     }
 
     public inline function getTile(id:Int):Int {
@@ -55,20 +50,32 @@ class Layer extends Tilemap {
         } 
     }
 
-    public inline function getFont(id:Int) {
-        return fonts.get(id);
+    public inline function getFont(id:Int):FontType {
+        return switch(swfty) {
+            case Some(swfty) : swfty.fonts.get(id);
+            case None : null;
+        }
     }
 
     public inline function hasFont(id:Int) {
-        return fonts.exists(id);
+        return switch(swfty) {
+            case Some(swfty) : swfty.fonts.exists(id);
+            case None : false;
+        }
     }
 
-    public inline function getDefinition(id:Int):MovieClipDefinition {
-        return ids.get(id);
+    public inline function getDefinition(id:Int):MovieClipType {
+        return switch(swfty) {
+            case Some(swfty) : swfty.definitions.get(id);
+            case None : null;
+        }
     }
 
     public inline function hasDefinition(id:Int):Bool {
-        return ids.exists(id);
+        return switch(swfty) {
+            case Some(swfty) : swfty.definitions.exists(id);
+            case None : false;
+        }
     }
 
     public inline function getAllNames() {
@@ -82,10 +89,9 @@ class Layer extends Tilemap {
     public function get(linkage:String):Sprite {
         return if (!mcs.exists(linkage)) {
             Log.warn('Linkage: $linkage does not exists!');
-            Sprite.create(this);
+            Sprite.create(this, None);
         } else {
-            var sprite = Sprite.create(this, mcs.get(linkage));
-            sprite;
+            Sprite.create(this, Some(mcs.get(linkage)));
         }
     }
 
@@ -98,22 +104,18 @@ class Layer extends Tilemap {
     }
 
     public function loadJson(json:SWFTYJson) {
-        this.json = json;
+        var swfty = SWFTYType.fromJson(json);
 
-        for (i in 0...json.tiles.length) {
-            var tile = json.tiles[i];
-            tiles.set(tile.id, i);
+        var i = 0;
+        for (tile in swfty.tiles) {
+            tiles.set(tile.id, i++);
         }
 
-        for (definition in json.definitions) {
+        for (definition in swfty.definitions) {
             if (definition.name != null && definition.name != '') mcs.set(definition.name, definition);
-            ids.set(definition.id, definition);
         }
 
-        for (font in json.fonts) {
-            var obj = Font.create(this, font);
-            fonts.set(font.id, obj);
-        }
+        this.swfty = Some(swfty);
     }
 
     public static function loadBytes(bytes:Bytes, onComplete:Tileset->SWFTYJson->Void, onError:Dynamic->Void) {
