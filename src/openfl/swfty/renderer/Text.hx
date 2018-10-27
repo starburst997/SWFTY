@@ -1,7 +1,5 @@
 package openfl.swfty.renderer;
 
-import swfty.renderer.Font;
-
 import openfl.geom.ColorTransform;
 import openfl.display.Tile;
 import openfl.display.TileContainer;
@@ -25,25 +23,25 @@ class Text extends TileContainer {
     public var textHeight(default, null):Float = 0.0;
 
     var layer:Layer;
-    var font:Font;
-    var definition:TextDefinition;
+    var definition:TextType;
 
-    public static inline function create(layer:Layer, definition:TextDefinition) {
+    public static inline function create(layer:Layer, definition:TextType) {
         return new Text(layer, definition);
     }
 
-    public function new(layer:Layer, definition:TextDefinition) {
+    public function new(layer:Layer, definition:TextType) {
         super();
 
         this.layer = layer;
         this.definition = definition;
 
-        font = layer.getFont(definition.font);
         text = definition.text;
     }
 
     function set_text(text:String) {
-        if (font == null || this.text == text) return text;
+        if (this.text == text) return text;
+
+        this.text = text;
 
         // Clear tiles
         while(numTiles > 0) removeTileAt(0);
@@ -57,7 +55,7 @@ class Text extends TileContainer {
         var g = (c & 0xFF00) >> 8;
         var b = c & 0xFF;
 
-        var scale = definition.size / font.definition.size;
+        var scale = definition.size / definition.font.size;
         var lineHeight = definition.size;
 
         var hasSpace = false;
@@ -76,70 +74,59 @@ class Text extends TileContainer {
                 hasSpace = true;
             }
 
-            if (font.has(code)) {
-                var char = font.get(code);
-                var id = layer.getTile(char.bitmap);
+            if (definition.font.has(code)) {
+                var char = definition.font.get(code);
+                var tile = new Tile(layer.getTile(char.bitmap.id));
+                tile.colorTransform = new ColorTransform(r/255, g/255, b/255, 1.0);
+                tile.x = x + char.tx;
+                tile.y = y + char.ty;
 
-                var rect = layer.tileset.getRect(id);
-                if (rect != null) {
-                    
-                    var tile = new Tile(id);
-                    tile.colorTransform = new ColorTransform(r/255, g/255, b/255, 1.0);
-                    tile.x = x + char.tx;
-                    tile.y = y + char.ty;
+                tile.scaleX = tile.scaleY = scale;
 
-                    tile.scaleX = tile.scaleY = scale;
+                addTile(tile);
 
-                    addTile(tile);
+                currentLine.tiles.push({
+                    code: code,
+                    tile: tile
+                });
 
-                    currentLine.tiles.push({
-                        code: code,
-                        tile: tile
-                    });
+                var w = char.bitmap.width * scale;
+                
+                if ((x - definition.x) + w > definition.width && hasSpace) {
+                    y += lineHeight;
+                    hasSpace = false;
 
-                    var w = rect.width * scale;
-                    
-                    if ((x - definition.x) + w > definition.width && hasSpace) {
-                        y += lineHeight;
-                        hasSpace = false;
-
-                        // Take all characters until a space and move them to next line (ignoring the space)
-                        var tiles = [];
-                        var tile = currentLine.tiles.pop();
-                        var offsetX = 0.0;
-                        var maxWidth = (tile != null && tile.tile != null) ? tile.tile.x : 0.0;
-                        while(tile != null && tile.code != SPACE) {
-                            if (tile.tile != null) {
-                                tile.tile.y += lineHeight;
-                                offsetX = tile.tile.x;
-                            }
-                            tiles.push(tile);
-
-                            tile = currentLine.tiles.pop();
-                            if (tile != null && tile.tile != null) maxWidth = tile.tile.x;
+                    // Take all characters until a space and move them to next line (ignoring the space)
+                    var tiles = [];
+                    var tile = currentLine.tiles.pop();
+                    var offsetX = 0.0;
+                    var maxWidth = (tile != null && tile.tile != null) ? tile.tile.x : 0.0;
+                    while(tile != null && tile.code != SPACE) {
+                        if (tile.tile != null) {
+                            tile.tile.y += lineHeight;
+                            offsetX = tile.tile.x;
                         }
+                        tiles.push(tile);
 
-                        for (tile in tiles) tile.tile.x -= offsetX - definition.x;
-
-                        currentLine.textWidth = maxWidth - definition.x;
-                        if (currentLine.textWidth > textWidth) textWidth = currentLine.textWidth;
-
-                        currentLine = {
-                            textWidth: 0.0,
-                            tiles: tiles
-                        };
-                        lines.push(currentLine);
-
-                        x -= offsetX - definition.x;
+                        tile = currentLine.tiles.pop();
+                        if (tile != null && tile.tile != null) maxWidth = tile.tile.x;
                     }
 
-                    x += w;
-                } else {
-                    currentLine.tiles.push({
-                        code: code,
-                        tile: null
-                    });
+                    for (tile in tiles) tile.tile.x -= offsetX - definition.x;
+
+                    currentLine.textWidth = maxWidth - definition.x;
+                    if (currentLine.textWidth > textWidth) textWidth = currentLine.textWidth;
+
+                    currentLine = {
+                        textWidth: 0.0,
+                        tiles: tiles
+                    };
+                    lines.push(currentLine);
+
+                    x -= offsetX - definition.x;
                 }
+
+                x += w;
             }
         }
 

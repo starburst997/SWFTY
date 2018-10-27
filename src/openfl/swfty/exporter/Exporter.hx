@@ -59,6 +59,8 @@ class Exporter {
 
     var definitions:IntMap<Bool>;
     
+    var movieClipsOrder:Array<MovieClipDefinition>;
+
     var movieClips:IntMap<MovieClipDefinition>;
     var shapes:IntMap<Array<ShapeDefinition>>;
     var bitmapToShapes:IntMap<Array<ShapeDefinition>>;
@@ -91,6 +93,8 @@ class Exporter {
     public function new(bytes:ByteArray, onComplete:Exporter->Void) {
         swf = new SWF(bytes);
         data = swf.data;
+
+        movieClipsOrder = [];
 
         definitions = new IntMap();
         
@@ -296,7 +300,7 @@ class Exporter {
                     height: 0
                 }
             },
-            definitions: [for (mc in movieClips) mc],
+            definitions: movieClipsOrder,
             tiles: [for (bmp in bitmaps) bmp],
             fonts: [for (font in fonts) font]
         }
@@ -334,7 +338,7 @@ class Exporter {
         }
     }
 
-    function addSprite(tag:SWFTimelineContainer, root:Bool = false, ?onComplete:Void->Void):MovieClipDefinition {
+    function addSprite(tag:SWFTimelineContainer, root:Bool = false, ?_onComplete:Void->Void):MovieClipDefinition {
         
         var id:Int = if (Std.is(tag, IDefinitionTag)) {
 			untyped tag.characterId;
@@ -350,6 +354,11 @@ class Exporter {
         };
 
         movieClips.set(id, definition);
+
+        function onComplete() {
+            movieClipsOrder.push(definition);
+            _onComplete();
+        }
 
         function process(i) {
             var frameData = tag.frames[i];
