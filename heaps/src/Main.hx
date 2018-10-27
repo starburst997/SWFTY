@@ -45,7 +45,7 @@ class Main extends hxd.App {
             sprite.x += 408;
             layer.addTile(sprite);
 
-            #if test
+            #if testz
             if (!debugInitialized) {
                 debugInitialized = true;
 
@@ -107,7 +107,7 @@ class Main extends hxd.App {
         for (layer in layers) {
             layer.update(dt);
 
-            //continue;
+            continue;
 
             var names = layer.getAllNames();
             var name = names[Std.int(Math.random() * names.length)];
@@ -152,19 +152,18 @@ class Main extends hxd.App {
     }
 
     public function renderSWFTYAsync(path:String, onComplete:Layer->Void, onError:Dynamic->Void) {
-		var file = hxd.Res.load(path);
-        var bytes = file.entry.getBytes();
-
-        trace('Loaded ${bytes.length}');
-
-        var timer = haxe.Timer.stamp();
-        
-        Layer.createAsync(bytes, layer -> onComplete(layer), (e) -> onError('Cannot load: $e!'));
-        
-        trace('Parsed SWFTY: ${haxe.Timer.stamp() - timer}');
+		File.loadBytes('res/$path', bytes -> {
+            var timer = haxe.Timer.stamp();
+            
+            Layer.createAsync(bytes, layer -> onComplete(layer), (e) -> onError('Cannot load: $e!'));
+            
+            trace('Parsed SWFTY: ${haxe.Timer.stamp() - timer}');
+        });
 	}
 
     function printDebug() {
+        return;
+
         if (debugInitialized) {
             var engine = h3d.Engine.getCurrent();
 
@@ -189,10 +188,7 @@ class Main extends hxd.App {
     }
 
     static function main() {
-        #if html5
-        // TODO : Download res instead
-        hxd.Res.initEmbed();
-        #else
+        #if !js
         hxd.Res.initLocal();
         #end
 

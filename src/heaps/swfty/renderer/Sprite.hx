@@ -1,5 +1,6 @@
 package heaps.swfty.renderer;
 
+import js.html.NotificationDirection;
 import haxe.ds.Option;
 import haxe.ds.StringMap;
 
@@ -19,17 +20,17 @@ class Sprite extends h2d.Sprite {
     var _parent:Sprite;
     var _childs:StringMap<Sprite>;
     var _texts:StringMap<Text>;
-    var definition:Option<MovieClipDefinition> = None;
+    var definition:Option<MovieClipType> = None;
     var renders:Array<Float->Void>;
 
-    public static inline function create(layer:Layer, ?tile:h2d.Tile, ?definition:MovieClipDefinition, ?parent) {
+    public static inline function create(layer:Layer, ?tile:h2d.Tile, definition:Option<MovieClipType>, ?parent:h2d.Sprite) {
         return new Sprite(layer, tile, definition, parent);
     }
 
-    public function new(layer:Layer, ?tile:h2d.Tile, ?definition:MovieClipDefinition, ?parent) {
+    public function new(layer:Layer, ?tile:h2d.Tile, definition:Option<MovieClipType>, ?parent:h2d.Sprite) {
         this.tile = tile;
         this.layer = layer;
-        this.definition = definition == null ? None : Some(definition);
+        this.definition = definition;
         
         color = new h3d.Vector(1, 1, 1, 1);
 
@@ -45,59 +46,63 @@ class Sprite extends h2d.Sprite {
                 
                 // Create children
                 for (child in definition.children) {
-                    if (child.text != null) {
-                        var text = Text.create(layer, child.text);
+                    switch (child.text) {
+                        case Some(text) :
+                            var text = Text.create(layer, text);
 
-                        text.x = _x(child.tx);
-                        text.y = _y(child.ty);
-                        text.scaleX = _scaleX(child.a, child.b);
-                        text.scaleY = _scaleY(child.c, child.d);
-                        text.rotation = _rotation(child.b, child.c, child.d);
+                            text.x = _x(child.tx);
+                            text.y = _y(child.ty);
+                            text.scaleX = _scaleX(child.a, child.b);
+                            text.scaleY = _scaleY(child.c, child.d);
+                            text.rotation = _rotation(child.b, child.c, child.d);
 
-                        text.visible = child.visible;
+                            text.visible = child.visible;
 
-                        if (child.name != null) {
-                            text.name = child.name;
-                            _texts.set(child.name, text);
+                            if (child.name != null) {
+                                text.name = child.name;
+                                _texts.set(child.name, text);
+                            }
+
+                            addTile(text);
+                        case None : 
+                            var sprite:Sprite = create(layer, child.mc);
+
+                            if (child.name != null) {
+                                sprite.name = child.name;
+                                _childs.set(child.name, sprite);
+                            }
+
+                            sprite.x = _x(child.tx);
+                            sprite.y = _y(child.ty);
+                            sprite.scaleX = _scaleX(child.a, child.b);
+                            sprite.scaleY = _scaleY(child.c, child.d);
+                            sprite.rotation = _rotation(child.b, child.c, child.d);
+
+                            sprite.alpha = child.alpha;
+                            sprite.visible = child.visible;
+
+                            switch(child.color) {
+                                case Some(color) : 
+                                    sprite.r = color.r;
+                                    sprite.g = color.g;
+                                    sprite.b = color.b;
+                                case None : 
+                            }
+
+                            for (shape in child.shapes) {
+                                var tile = create(layer, layer.getTile(shape.bitmap.id), None);
+
+                                tile.x = _x(shape.tx);
+                                tile.y = _y(shape.ty);
+                                tile.scaleX = _scaleX(shape.a, shape.b);
+                                tile.scaleY = _scaleY(shape.c, shape.d);
+                                tile.rotation = _rotation(shape.b, shape.c, shape.d);
+
+                                sprite.addTile(tile);
+                            }
+
+                            addTile(sprite);
                         }
-
-                        addTile(text);
-                    } else {
-                        var sprite:Sprite = create(layer, layer.getDefinition(child.id));
-                        if (child.name != null) {
-                            sprite.name = child.name;
-                            _childs.set(child.name, sprite);
-                        }
-
-                        sprite.x = _x(child.tx);
-                        sprite.y = _y(child.ty);
-                        sprite.scaleX = _scaleX(child.a, child.b);
-                        sprite.scaleY = _scaleY(child.c, child.d);
-                        sprite.rotation = _rotation(child.b, child.c, child.d);
-
-                        sprite.alpha = child.alpha;
-                        sprite.visible = child.visible;
-
-                        if (child.color != null) {
-                            sprite.r = child.color.r;
-                            sprite.g = child.color.g;
-                            sprite.b = child.color.b;
-                        }
-
-                        for (shape in child.shapes) {
-                            var tile = create(layer, layer.getTile(shape.bitmap));
-
-                            tile.x = _x(shape.tx);
-                            tile.y = _y(shape.ty);
-                            tile.scaleX = _scaleX(shape.a, shape.b);
-                            tile.scaleY = _scaleY(shape.c, shape.d);
-                            tile.rotation = _rotation(shape.b, shape.c, shape.d);
-
-                            sprite.addTile(tile);
-                        }
-
-                        addTile(sprite);
-                    }
                 }
             case None :  
         }
@@ -186,7 +191,7 @@ class Sprite extends h2d.Sprite {
             _childs.get(name);
         } else {
             Log.warn('Child: $name does not exists!');
-            var sprite = create(layer);
+            var sprite = create(layer, None);
             _childs.set(name, sprite);
             sprite;
         }

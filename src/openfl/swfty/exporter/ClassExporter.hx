@@ -32,6 +32,20 @@ class ClassExporter {
 /*var popup = Popup.create(layer);
 layer.addChild(popup);*/
 
+@:forward(x, y, scaleX, scaleY, rotation, getTile, get)
+abstract MyFLA(Layer) from Layer to Layer {
+
+    public var name1(get, never):Instance1;
+
+    public inline function get_name1() {
+        return this.get('name1');
+    }
+
+    public static inline function create():Instance1 {
+        
+    }
+}
+
 @:forward(x, y, scaleX, scaleY, rotation, addTile)
 abstract Instance1(Sprite) from Sprite to Sprite {
 
@@ -41,7 +55,8 @@ abstract Instance1(Sprite) from Sprite to Sprite {
         return this.get('name1');
     }
 
+    // Only have create on named MovieClip (linkage name)
     public static inline function create(layer:MyFLA):Instance1 {
-        return layer.get(2);
+        return layer.get('Instance1');
     }
 }

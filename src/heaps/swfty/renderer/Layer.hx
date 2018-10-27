@@ -1,9 +1,8 @@
 package heaps.swfty.renderer;
 
-import swfty.renderer.Font;
-
 import h2d.Tile;
 
+import haxe.ds.Option;
 import haxe.ds.IntMap;
 import haxe.ds.StringMap;
 import haxe.io.Bytes;
@@ -13,15 +12,12 @@ import zip.ZipReader;
 
 class Layer extends h2d.TileGroup {
     
-    public var json:SWFTYJson;
+    public var swfty:Option<SWFTYType>;
 
     var tiles:IntMap<h2d.Tile>;
-    var ids:IntMap<MovieClipDefinition>;
-    var fonts:IntMap<Font>;
-    var mcs:StringMap<MovieClipDefinition>;
-
+    var mcs:StringMap<MovieClipType>;
+    
     var sprites:Array<Sprite>;
-
     var names:Array<String>;
 
     public static inline function create(?tile:h2d.Tile, ?parent) {
@@ -33,10 +29,8 @@ class Layer extends h2d.TileGroup {
 
         sprites = [];
 
-        tiles = new IntMap();
-        ids = new IntMap();
-        fonts = new IntMap();
         mcs = new StringMap();
+        tiles = new IntMap();
     }
 
     public function getColor() {
@@ -60,20 +54,32 @@ class Layer extends h2d.TileGroup {
         for (sprite in sprites) sprite.update(dt);
     }
 
-    public inline function getFont(id:Int) {
-        return fonts.get(id);
+    public inline function getFont(id:Int):FontType {
+        return switch(swfty) {
+            case Some(swfty) : swfty.fonts.get(id);
+            case None : null;
+        }
     }
 
     public inline function hasFont(id:Int) {
-        return fonts.exists(id);
+        return switch(swfty) {
+            case Some(swfty) : swfty.fonts.exists(id);
+            case None : false;
+        }
     }
 
-    public inline function getDefinition(id:Int):MovieClipDefinition {
-        return ids.get(id);
+    public inline function getDefinition(id:Int):MovieClipType {
+        return switch(swfty) {
+            case Some(swfty) : swfty.definitions.get(id);
+            case None : null;
+        }
     }
 
     public inline function hasDefinition(id:Int):Bool {
-        return ids.exists(id);
+        return switch(swfty) {
+            case Some(swfty) : swfty.definitions.exists(id);
+            case None : false;
+        }
     }
 
     public inline function getAllNames() {
@@ -93,9 +99,9 @@ class Layer extends h2d.TileGroup {
     public function get(linkage:String):Sprite {
         return if (!mcs.exists(linkage)) {
             Log.warn('Linkage: $linkage does not exists!');
-            Sprite.create(this);
+            Sprite.create(this, None);
         } else {
-            var sprite = Sprite.create(this, mcs.get(linkage));
+            var sprite = Sprite.create(this, Some(mcs.get(linkage)));
             sprite;
         }
     }
@@ -109,22 +115,17 @@ class Layer extends h2d.TileGroup {
     }
 
     public function loadJson(json:SWFTYJson) {
-        this.json = json;
+        var swfty = SWFTYType.fromJson(json);
 
-        for (i in 0...json.tiles.length) {
-            var tile = json.tiles[i];
+        for (definition in swfty.definitions) {
+            if (definition.name != null && definition.name != '') mcs.set(definition.name, definition);
+        }
+
+        for (tile in swfty.tiles) {
             tiles.set(tile.id, this.tile.sub(tile.x, tile.y, tile.width, tile.height));
         }
 
-        for (definition in json.definitions) {
-            if (definition.name != null && definition.name != '') mcs.set(definition.name, definition);
-            ids.set(definition.id, definition);
-        }
-
-        for (font in json.fonts) {
-            var obj = Font.create(this, font);
-            fonts.set(font.id, obj);
-        }
+        this.swfty = Some(swfty);
     }
 
     public static function createAsync(bytes:Bytes, ?parent, onComplete:Layer->Void, onError:Dynamic->Void) {

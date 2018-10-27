@@ -95,6 +95,15 @@ class Layer extends Tilemap {
         }
     }
 
+    public function getById(id:Int):Sprite {
+        return if (!hasDefinition(id)) {
+            Log.warn('Linkage: $id does not exists!');
+            Sprite.create(this, None);
+        } else {
+            Sprite.create(this, Some(mcs.get(linkage)));
+        }
+    }
+
     public function load(bytes:Bytes, onComplete:Void->Void, onError:Dynamic->Void) {
         loadBytes(bytes, (tileset, json) -> {
             this.tileset = tileset;

@@ -1,7 +1,5 @@
 package heaps.swfty.renderer;
 
-import swfty.renderer.Font;
-
 typedef Line = {
     textWidth: Float,
     tiles: Array<{
@@ -19,19 +17,19 @@ class Text extends Sprite {
     public var textWidth(default, null):Float = 0.0;
     public var textHeight(default, null):Float = 0.0;
 
-    var font:Font;
-    var textDefinition:TextDefinition;
+    var font:FontType;
+    var textDefinition:TextType;
 
-    public static inline function create(layer:Layer, definition:TextDefinition, ?parent) {
+    public static inline function create(layer:Layer, definition:TextType, ?parent) {
         return new Text(layer, definition);
     }
 
-    public function new(layer:Layer, definition:TextDefinition, ?parent) {
-        super(layer, parent);
+    public function new(layer:Layer, definition:TextType, ?parent) {
+        super(layer, parent, None);
 
         textDefinition = definition;
 
-        font = layer.getFont(definition.font);
+        font = definition.font;
         text = definition.text;
     }
 
@@ -51,7 +49,7 @@ class Text extends Sprite {
         var g = (c & 0xFF00) >> 8;
         var b = c & 0xFF;
 
-        var scale = textDefinition.size / font.definition.size;
+        var scale = textDefinition.size / font.size;
         var lineHeight = textDefinition.size;
 
         var hasSpace = false;
@@ -72,11 +70,11 @@ class Text extends Sprite {
 
             if (font.has(code)) {
                 var char = font.get(code);
-                var tile = layer.getTile(char.bitmap);
+                var tile = layer.getTile(char.bitmap.id);
 
                 if (tile != null) {
                     
-                    var sprite = Sprite.create(layer, tile);
+                    var sprite = Sprite.create(layer, tile, None);
 
                     sprite.r = r/255;
                     sprite.g = g/255;
