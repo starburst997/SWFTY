@@ -61,6 +61,7 @@ class Exporter {
     
     var movieClips:IntMap<MovieClipDefinition>;
     var shapes:IntMap<Array<ShapeDefinition>>;
+    var bitmapToShapes:IntMap<Array<ShapeDefinition>>;
     var texts:IntMap<TextDefinition>;
     var fonts:IntMap<FontDefinition>;
 
@@ -99,6 +100,7 @@ class Exporter {
         fonts = new IntMap();
         bitmaps = new IntMap();
         bitmapDatas = new IntMap();
+        bitmapToShapes = new IntMap();
 
         bitmapKeeps = new IntMap();
         processShapes = new IntMap();
@@ -230,6 +232,18 @@ class Exporter {
                 var keys = [for (key in bitmapDatas.keys()) key];
                 var bmpds = keys.map(key -> bitmapKeeps.exists(key) ? bitmapDatas.get(key) : null);
                 var tilemap = TilemapExporter.pack(bmpds);
+
+                // Remove all duplicates
+                // TODO: !!!
+
+                // Process all bitmaps and figure out the max scale
+                // TODO: For "real" shapes, we might want to do that before doing the screenshot
+                for (key in keys) if (bitmapKeeps.exists(key)) {
+                    var bitmap = bitmaps.get(key);
+                    
+
+                    trace(bitmap.id);
+                }
 
                 // We're done, so go back to default
                 BitmapData.premultipliedDefault = true;
