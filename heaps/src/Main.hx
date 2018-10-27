@@ -45,11 +45,16 @@ class Main extends hxd.App {
             sprite.x += 408;
             layer.addTile(sprite);
 
-            #if testz
+            #if test
             if (!debugInitialized) {
                 debugInitialized = true;
 
+                // TODO: Find a more elegant way for this
+                #if js
+                var font = hxd.Res.debug_fnt.toFont();
+                #else
                 var font = hxd.Res.fonts.debug_fnt.toFont();
+                #end
                 if (info1Text == null) info1Text = font.text(s2d).setSpacing(0).setAlign(h2d.Text.Align.Left).changeScale(1.0).setAlpha(1.0);
                 if (info2Text == null) info2Text = font.text(s2d).setSpacing(0).setAlign(h2d.Text.Align.Left).changeScale(1.0).setAlpha(1.0);
                 if (info3Text == null) info3Text = font.text(s2d).setSpacing(0).setAlign(h2d.Text.Align.Left).changeScale(1.0).setAlpha(1.0);
@@ -107,7 +112,7 @@ class Main extends hxd.App {
         for (layer in layers) {
             layer.update(dt);
 
-            continue;
+            //continue;
 
             var names = layer.getAllNames();
             var name = names[Std.int(Math.random() * names.length)];
@@ -125,6 +130,9 @@ class Main extends hxd.App {
             var scale = Math.random() * 0.25 + 0.35;
             sprite.scaleX = scale;
             sprite.scaleY = scale;
+
+            sprite.alpha = 1.0;
+            sprite.rotation = 0.0;
 
             sprite.addRender((dt) -> {
                 sprite.x += speedX * dt;
@@ -162,8 +170,6 @@ class Main extends hxd.App {
 	}
 
     function printDebug() {
-        return;
-
         if (debugInitialized) {
             var engine = h3d.Engine.getCurrent();
 
@@ -188,7 +194,10 @@ class Main extends hxd.App {
     }
 
     static function main() {
-        #if !js
+        #if js
+        // I really wanted to load SWFTY and not have them embed
+        hxd.Res.initEmbed();
+        #else
         hxd.Res.initLocal();
         #end
 
