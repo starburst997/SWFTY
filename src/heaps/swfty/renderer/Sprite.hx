@@ -17,6 +17,7 @@ class Sprite extends h2d.Sprite {
     // TODO: Listen to remove child and remove from array
     var sprites:Array<Sprite>;
 
+    var _lastAlpha = 1.0;
     var _parent:Sprite;
     var _childs:StringMap<Sprite>;
     var _texts:StringMap<Text>;
@@ -137,14 +138,14 @@ class Sprite extends h2d.Sprite {
         return if (b == 0)
             a;
         else
-            Math.sqrt(a * a + b * b);
+            Math.sqrt(a * a + b * b) * (a < 0 ? -1 : 1);
     }
 
     inline function _scaleY(c:Float, d:Float) {
         return if (c == 0)
             d;
-        else    
-            Math.sqrt(c * c + d * d);
+        else
+            Math.sqrt(c * c + d * d) * (d < 0 ? -1 : 1);
     }
 
     inline function _rotation(b:Float, c:Float, d:Float) {
@@ -165,6 +166,10 @@ class Sprite extends h2d.Sprite {
     }
 
     public function update(dt:Float) {
+        // TODO: Hack for alpha change
+        if (_lastAlpha != alpha) posChanged = true;
+        _lastAlpha = alpha;
+
         for (sprite in sprites) {
             sprite.update(dt);
         }

@@ -12,6 +12,8 @@ class Main extends hxd.App {
 
     var layers:Array<Layer>;
 
+    var sprite:Sprite;
+
     // TODO: Hack until hxd.System.Platform works
     var isMobile = #if mobile true #else false #end;
 
@@ -41,8 +43,9 @@ class Main extends hxd.App {
             layers.push(layer);
             s2d.addChild(layer);
 
-            var sprite = layer.get('PopupShop');
+            sprite = layer.get('PopupShop');
             sprite.x += 408;
+
             layer.addTile(sprite);
 
             #if test
@@ -104,6 +107,7 @@ class Main extends hxd.App {
         }
     }
 
+    var testAlpha = 0.0;
     override function update(dt:Float) {
         super.update(dt);
 
