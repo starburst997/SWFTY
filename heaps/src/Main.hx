@@ -24,20 +24,21 @@ class Main extends hxd.App {
     }
 
     override function setup() {
+        var stage = hxd.Window.getInstance();
+
         #if mobile
         @:privateAccess stage.window.displayMode = sdl.Window.DisplayMode.Fullscreen;
         #end
 
-        // Looks terrible, doesn't work on iOS
-        //stage.vsync = false;
-        
+        //stage.vsync = true;
+
         super.setup();
     }
 
     override function init() {
         super.init();
 
-        hxd.Stage.getInstance().addEventTarget(onEvent);
+        hxd.Window.getInstance().addEventTarget(onEvent);
 
         renderSWFTYAsync('Popup.swfty', layer -> {
             layers.push(layer);
@@ -62,9 +63,9 @@ class Main extends hxd.App {
                 #else
                 var font = hxd.Res.fonts.debug_fnt.toFont();
                 #end
-                if (info1Text == null) info1Text = font.text(s2d).setSpacing(0).setAlign(h2d.Text.Align.Left).changeScale(1.0).setAlpha(1.0);
-                if (info2Text == null) info2Text = font.text(s2d).setSpacing(0).setAlign(h2d.Text.Align.Left).changeScale(1.0).setAlpha(1.0);
-                if (info3Text == null) info3Text = font.text(s2d).setSpacing(0).setAlign(h2d.Text.Align.Left).changeScale(1.0).setAlpha(1.0);
+                if (info1Text == null) info1Text = font.text(s2d).setSpacing(0).setAlign(h2d.Text.Align.Left).changeScale(0.75).setAlpha(1.0);
+                if (info2Text == null) info2Text = font.text(s2d).setSpacing(0).setAlign(h2d.Text.Align.Left).changeScale(0.75).setAlpha(1.0);
+                if (info3Text == null) info3Text = font.text(s2d).setSpacing(0).setAlign(h2d.Text.Align.Left).changeScale(0.75).setAlpha(1.0);
                 
                 info1Text.setPosition(20.0, 20.0);
                 info2Text.setPosition(20.0, 50.0);
@@ -81,7 +82,7 @@ class Main extends hxd.App {
     }
 
     override function onResize() {
-        var stage = hxd.Stage.getInstance();
+        var stage = hxd.Window.getInstance();
         var e = h3d.Engine.getCurrent();
 
         #if hl
@@ -114,8 +115,6 @@ class Main extends hxd.App {
     override function update(dt:Float) {
         super.update(dt);
 
-        dt = dt * 1/60;
-
         for (layer in layers) {
             layer.update(dt);
 
@@ -130,7 +129,7 @@ class Main extends hxd.App {
             var speedRotation = (Math.random() * 50 - 25) / 180 * Math.PI * 5;
             var speedAlpha = Math.random() * 0.75 + 0.25;
 
-            var stage = hxd.Stage.getInstance();
+            var stage = hxd.Window.getInstance();
             sprite.x = Math.random() * stage.width * 0.75;// + stage.stageWidth / 4;
             sprite.y = Math.random() * stage.height * 0.75;// + stage.stageHeight / 4;
 
@@ -161,7 +160,7 @@ class Main extends hxd.App {
     }
 
     public function renderSWFTYAsync(path:String, onComplete:Layer->Void, onError:Dynamic->Void) {
-		File.loadBytes('res/$path', bytes -> {
+        File.loadBytes(path, bytes -> {
             var timer = haxe.Timer.stamp();
             
             Layer.createAsync(bytes, layer -> onComplete(layer), (e) -> onError('Cannot load: $e!'));

@@ -1,10 +1,9 @@
 package heaps.swfty.renderer;
 
-import js.html.NotificationDirection;
 import haxe.ds.Option;
 import haxe.ds.StringMap;
 
-class Sprite extends h2d.Sprite {
+class Sprite extends h2d.Object {
 
     public var layer:Layer;
     public var tile:h2d.Tile;
@@ -24,11 +23,11 @@ class Sprite extends h2d.Sprite {
     var definition:Option<MovieClipType> = None;
     var renders:Array<Float->Void>;
 
-    public static inline function create(layer:Layer, ?tile:h2d.Tile, definition:Option<MovieClipType>, ?parent:h2d.Sprite) {
+    public static inline function create(layer:Layer, ?tile:h2d.Tile, definition:Option<MovieClipType>, ?parent:h2d.Object) {
         return new Sprite(layer, tile, definition, parent);
     }
 
-    public function new(layer:Layer, ?tile:h2d.Tile, definition:Option<MovieClipType>, ?parent:h2d.Sprite) {
+    public function new(layer:Layer, ?tile:h2d.Tile, definition:Option<MovieClipType>, ?parent:h2d.Object) {
         this.tile = tile;
         this.layer = layer;
         this.definition = definition;

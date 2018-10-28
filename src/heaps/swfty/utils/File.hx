@@ -7,7 +7,7 @@ class File {
     public static function loadBytes(path:String, onComplete:Bytes->Void, ?onError:Dynamic->Void) {
         #if js
         // TODO: Is this a potential memory leak?
-        var loader = new hxd.net.BinaryLoader(path);
+        var loader = new hxd.net.BinaryLoader('res/$path');
         loader.onLoaded = (bytes) -> {
             trace('Complete loadBytes ${bytes.length}');
             onComplete(bytes);

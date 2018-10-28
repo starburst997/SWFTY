@@ -30,37 +30,37 @@ class MathTools {
 class HeapsSprite {
 
     @:generic
-    public static inline function setPosition<T:h2d.Sprite>(sprite:T, ?x:Float, ?y:Float):T {
+    public static inline function setPosition<T:h2d.Object>(sprite:T, ?x:Float, ?y:Float):T {
         sprite.setPosition(x == null ? sprite.x : x, y == null ? sprite.y : y);
         return sprite;
     }
 
     @:generic
-    public static inline function setX<T:h2d.Sprite>(sprite:T, x:Float):T {
+    public static inline function setX<T:h2d.Object>(sprite:T, x:Float):T {
         sprite.setPosition(x, sprite.y);
         return sprite;
     }
 
     @:generic
-    public static inline function setY<T:h2d.Sprite>(sprite:T, y:Float):T {
+    public static inline function setY<T:h2d.Object>(sprite:T, y:Float):T {
         sprite.setPosition(sprite.x, y);
         return sprite;
     }
 
     @:generic
-    public static inline function changeAlpha<T:h2d.Sprite>(sprite:T, alpha:Float) {
+    public static inline function changeAlpha<T:h2d.Object>(sprite:T, alpha:Float) {
         sprite.alpha = alpha;
         return sprite;
     }
 
     @:generic
-    public static inline function changeScale<T:h2d.Sprite>(sprite:T, scale:Float) {
+    public static inline function changeScale<T:h2d.Object>(sprite:T, scale:Float) {
         sprite.setScale(scale);
         return sprite;
     }
 
     @:generic
-    public static inline function changeRotation<T:h2d.Sprite>(sprite:T, rotation:Float) {
+    public static inline function changeRotation<T:h2d.Object>(sprite:T, rotation:Float) {
         sprite.rotation = rotation;
         return sprite;
     }
@@ -68,7 +68,7 @@ class HeapsSprite {
 
 class HeapsText {
 
-    public static inline function text(font:h2d.Font, ?parent:h2d.Sprite):h2d.Text {
+    public static inline function text(font:h2d.Font, ?parent:h2d.Object):h2d.Text {
         return new h2d.Text(font, parent);
     }
 

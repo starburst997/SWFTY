@@ -8,4 +8,4 @@ command_exists () {
 
 FILE=bin/SWFTY.js
 
-live-server bin
+live-server bin --watch=SWFTY.js --wait=250
