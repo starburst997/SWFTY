@@ -45,7 +45,10 @@ class Main extends hxd.App {
 
             sprite = layer.get('PopupShop');
             sprite.x += 408;
-            sprite.rotation = 0.0;
+            sprite.y += 208;
+            sprite.scaleX = 0.50;
+            sprite.scaleY = 0.50;
+            sprite.rotation = -1.0;
 
             layer.addTile(sprite);
 
@@ -124,7 +127,7 @@ class Main extends hxd.App {
 
             var speedX = Math.random() * 50 - 25;
             var speedY = Math.random() * 50 - 25;
-            var speedRotation = (Math.random() * 50 - 25) / 180 * Math.PI;
+            var speedRotation = (Math.random() * 50 - 25) / 180 * Math.PI * 5;
             var speedAlpha = Math.random() * 0.75 + 0.25;
 
             var stage = hxd.Stage.getInstance();

@@ -53,8 +53,8 @@ class Sprite extends h2d.Sprite {
 
                             text.x = _x(child.tx);
                             text.y = _y(child.ty);
-                            text.scaleX = _scaleX(child.a, child.b);
-                            text.scaleY = _scaleY(child.c, child.d);
+                            text.scaleX = _scaleX(child.a, child.b, child.c, child.d);
+                            text.scaleY = _scaleY(child.a, child.b, child.c, child.d);
                             text.rotation = _rotation(child.b, child.c, child.d);
 
                             text.visible = child.visible;
@@ -75,8 +75,8 @@ class Sprite extends h2d.Sprite {
 
                             sprite.x = _x(child.tx);
                             sprite.y = _y(child.ty);
-                            sprite.scaleX = _scaleX(child.a, child.b);
-                            sprite.scaleY = _scaleY(child.c, child.d);
+                            sprite.scaleX = _scaleX(child.a, child.b, child.c, child.d);
+                            sprite.scaleY = _scaleY(child.a, child.b, child.c, child.d);
                             sprite.rotation = _rotation(child.b, child.c, child.d);
 
                             sprite.alpha = child.alpha;
@@ -95,8 +95,8 @@ class Sprite extends h2d.Sprite {
 
                                 tile.x = _x(shape.tx);
                                 tile.y = _y(shape.ty);
-                                tile.scaleX = _scaleX(shape.a, shape.b);
-                                tile.scaleY = _scaleY(shape.c, shape.d);
+                                tile.scaleX = _scaleX(shape.a, shape.b, child.c, child.d);
+                                tile.scaleY = _scaleY(child.a, child.b, shape.c, shape.d);
                                 tile.rotation = _rotation(shape.b, shape.c, shape.d);
 
                                 sprite.addTile(tile);
@@ -134,18 +134,20 @@ class Sprite extends h2d.Sprite {
         return ty;
     }
 
-    inline function _scaleX(a:Float, b:Float) {
+    inline function _scaleX(a:Float, b:Float, c:Float, d:Float) {
         return if (b == 0)
             a;
         else
-            Math.sqrt(a * a + b * b) * (a < 0 ? -1 : 1);
+            // TODO: Figure out why I had to do that
+            Math.sqrt(a * a + b * b) * (a < 0 ? -1 : 1) * (d < 0 ? -1 : 1);
     }
 
-    inline function _scaleY(c:Float, d:Float) {
+    inline function _scaleY(a:Float, b:Float, c:Float, d:Float) {
         return if (c == 0)
             d;
         else
-            Math.sqrt(c * c + d * d) * (d < 0 ? -1 : 1);
+            // TODO: Why is this working?
+            Math.sqrt(c * c + d * d);// * (b < 0 ? -1 : 1) * (c < 0 ? -1 : 1);
     }
 
     inline function _rotation(b:Float, c:Float, d:Float) {
@@ -183,7 +185,7 @@ class Sprite extends h2d.Sprite {
 
     override function draw(ctx) {
         if (tile != null) {
-            layer.drawTile(Std.int(_x(absX)), Std.int(_y(absY)), _scaleX(matA, matB), _scaleY(matC, matD), _rotation(matB, matC, matD), color, tile);
+            layer.drawTile(Std.int(_x(absX)), Std.int(_y(absY)), _scaleX(matA, matB, matC, matD), _scaleY(matA, matB, matC, matD), _rotation(matB, matC, matD), color, tile);
         }
     }
 
