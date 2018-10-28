@@ -45,6 +45,7 @@ class Main extends hxd.App {
 
             sprite = layer.get('PopupShop');
             sprite.x += 408;
+            sprite.rotation = 0.0;
 
             layer.addTile(sprite);
 
@@ -97,7 +98,6 @@ class Main extends hxd.App {
     }
 
     function onEvent(e:hxd.Event) {
-        
         switch(e.kind) {
             case EKeyDown: switch(e.keyCode) {
                 case hxd.Key.ESCAPE: hxd.System.exit();
@@ -149,18 +149,12 @@ class Main extends hxd.App {
                 }
             });
 
-            //sprites.push(sprite);
-
             layer.addTile(sprite);
         }
 
         #if test
         printDebug();
         #end
-    }
-
-    override function render(e:h3d.Engine) {
-        super.render(e);
     }
 
     public function renderSWFTYAsync(path:String, onComplete:Layer->Void, onError:Dynamic->Void) {

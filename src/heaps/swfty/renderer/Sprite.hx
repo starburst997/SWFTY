@@ -166,7 +166,7 @@ class Sprite extends h2d.Sprite {
     }
 
     public function update(dt:Float) {
-        // TODO: Hack for alpha change
+        // Hack for alpha change
         if (_lastAlpha != alpha) posChanged = true;
         _lastAlpha = alpha;
 
@@ -174,13 +174,17 @@ class Sprite extends h2d.Sprite {
             sprite.update(dt);
         }
 
+        for (f in renders) f(dt);
+    }
+
+    public function render(ctx) {
+        drawRec(ctx);
+    }
+
+    override function draw(ctx) {
         if (tile != null) {
-            // TODO: Check dirty flag
-            /*if (posChanged)*/ syncPos();
             layer.drawTile(Std.int(_x(absX)), Std.int(_y(absY)), _scaleX(matA, matB), _scaleY(matC, matD), _rotation(matB, matC, matD), color, tile);
         }
-
-        for (f in renders) f(dt);
     }
 
     public function addRender(f:Float->Void) {

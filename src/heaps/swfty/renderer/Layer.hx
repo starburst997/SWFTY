@@ -1,5 +1,6 @@
 package heaps.swfty.renderer;
 
+import h2d.RenderContext;
 import h2d.Tile;
 
 import haxe.ds.Option;
@@ -45,12 +46,18 @@ class Layer extends h2d.TileGroup {
         sprites.remove(sprite);
     }
 
-    public inline function drawTile(x : Int, y : Int, sx : Float, sy : Float, r : Float, c : h3d.Vector, t : Tile) {
+    public inline function drawTile(x:Int, y:Int, sx:Float, sy:Float, r:Float, c:h3d.Vector, t:Tile) {
 		content.addTransform(x, y, sx, sy, r, c, t);
 	}
 
-    public function update(dt:Float) {
+    override function draw(ctx:RenderContext) {
         clear();
+        for (sprite in sprites) sprite.render(ctx);
+        
+        super.draw(ctx);
+    }
+
+    public function update(dt:Float) {
         for (sprite in sprites) sprite.update(dt);
     }
 
