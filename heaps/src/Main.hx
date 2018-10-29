@@ -24,13 +24,13 @@ class Main extends hxd.App {
     }
 
     override function setup() {
-        var stage = hxd.Window.getInstance();
+        var window = hxd.Window.getInstance();
 
         #if mobile
-        @:privateAccess stage.window.displayMode = sdl.Window.DisplayMode.Fullscreen;
+        @:privateAccess window.window.displayMode = sdl.Window.DisplayMode.Fullscreen;
         #end
 
-        //stage.vsync = true;
+        //window.vsync = true;
 
         super.setup();
     }
@@ -47,9 +47,9 @@ class Main extends hxd.App {
             sprite = layer.get('PopupShop');
             sprite.x += 408;
             sprite.y += 208;
-            sprite.scaleX = 0.50;
-            sprite.scaleY = 0.50;
-            sprite.rotation = -1.0;
+            //sprite.scaleX = 0.50;
+            //sprite.scaleY = 0.50;
+            //sprite.rotation = -1.0;
 
             layer.addTile(sprite);
 
@@ -188,8 +188,8 @@ class Main extends hxd.App {
             //trace('bufMem ${sum} (${freeMem}), totTex: ${totTex}, Total ${totalMem}');
             //trace('Buffers [${stats.bufferCount}] Textures [${stats.textureCount}] [${stats.bufferCount + stats.textureCount}]');
             
-            info2Text.setText('bufMem ${MB(sum)} (${MB(freeMem)}), totTex: ${MB(totTex)}, Total ${MB(totalMem)}');
-            info3Text.setText('Buffers [${stats.bufferCount}] Textures [${stats.textureCount}] [${stats.bufferCount + stats.textureCount}]');
+            info2Text.setText('bufMem ${MB(sum)} (${MB(freeMem)}), totTex: ${MB(totTex)}');
+            info3Text.setText('Total ${MB(totalMem)} Buffers [${stats.bufferCount}] Textures [${stats.textureCount}] [${stats.bufferCount + stats.textureCount}]');
         }
     }
 
