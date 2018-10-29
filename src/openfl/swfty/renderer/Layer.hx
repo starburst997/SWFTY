@@ -21,22 +21,23 @@ class Layer extends Tilemap {
     var tiles:IntMap<Int>;
     var mcs:StringMap<MovieClipType>;
     
-    public static inline function create(width:Int, height:Int, ?tileset) {
-        return new Layer(width, height, tileset);
+    public static inline function create(width:Int, height:Int, ?tileset, ?tiles) {
+        return new Layer(width, height, tileset, tiles);
     }
 
     public static inline function createAsync(width:Int, height:Int, bytes:Bytes, onComplete:Layer->Void, onError:Dynamic->Void) {
-        loadBytes(bytes, (tileset, json) -> {
-            var layer = create(width, height, tileset);
+        loadBytes(bytes, (tileset, tiles, json) -> {
+            var layer = create(width, height, tileset, tiles);
             layer.loadJson(json);
             onComplete(layer);
         }, onError);
     }
 
-    public function new(width:Int, height:Int, ?tileset) {
+    public function new(width:Int, height:Int, ?tileset, ?tiles) {
         super(width, height, tileset);
 
-        tiles = new IntMap();
+        this.tiles = tiles == null ? new IntMap() : tiles;
+
         mcs = new StringMap();
         swfty = None;
     }
@@ -105,7 +106,8 @@ class Layer extends Tilemap {
     }
 
     public function load(bytes:Bytes, onComplete:Void->Void, onError:Dynamic->Void) {
-        loadBytes(bytes, (tileset, json) -> {
+        loadBytes(bytes, (tileset, tiles, json) -> {
+            this.tiles = tiles;
             this.tileset = tileset;
             loadJson(json);
             onComplete();
@@ -115,11 +117,6 @@ class Layer extends Tilemap {
     public function loadJson(json:SWFTYJson) {
         var swfty = SWFTYType.fromJson(json);
 
-        var i = 0;
-        for (tile in swfty.tiles) {
-            tiles.set(tile.id, i++);
-        }
-
         for (definition in swfty.definitions) {
             if (definition.name != null && definition.name != '') mcs.set(definition.name, definition);
         }
@@ -127,7 +124,7 @@ class Layer extends Tilemap {
         this.swfty = Some(swfty);
     }
 
-    public static function loadBytes(bytes:Bytes, onComplete:Tileset->SWFTYJson->Void, onError:Dynamic->Void) {
+    public static function loadBytes(bytes:Bytes, onComplete:Tileset->IntMap<Int>->SWFTYJson->Void, onError:Dynamic->Void) {
         var entries = ZipReader.getEntries(bytes);
 
         var tilemapBytes = Zip.getBytes(entries.get('tilemap.png'));
@@ -140,11 +137,10 @@ class Layer extends Tilemap {
                 var json:SWFTYJson = haxe.Json.parse(jsonString);
 
                 // Create tileset
-                var i = 0;
                 var rects = [];
                 var map = new IntMap();
                 for (tile in json.tiles) {
-                    map.set(tile.id, i++);
+                    map.set(tile.id, rects.length);
                     rects.push(new Rectangle(tile.x, tile.y, tile.width, tile.height));
                 }
 
@@ -152,7 +148,7 @@ class Layer extends Tilemap {
 
                 trace('Tilemap: ${bmpd.width}, ${bmpd.height}');
 
-                onComplete(tileset, json);
+                onComplete(tileset, map, json);
             #if release
             } catch(e:Dynamic) {
                 onError(e);
