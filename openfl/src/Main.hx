@@ -60,7 +60,8 @@ class Main extends Sprite {
 
             //return;
 
-            function spawn() {
+            // TODO: VSCode was choking on the naming, not sure why but this did the trick
+            var spawn = function f() {
                 haxe.Timer.delay(() -> {
                     var name = names[Std.int(Math.random() * names.length)];
                     var sprite = layer.get(name);
@@ -95,7 +96,7 @@ class Main extends Sprite {
 
                     layer.addTile(sprite);
 
-                    spawn();
+                    f();
 
                 }, Std.int(DateTools.seconds(0.01)));
             }
