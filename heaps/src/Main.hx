@@ -118,7 +118,7 @@ class Main extends hxd.App {
         for (layer in layers) {
             layer.update(dt);
 
-            continue;
+            //continue;
 
             var names = layer.getAllNames();
             var name = names[Std.int(Math.random() * names.length)];
