@@ -86,7 +86,7 @@ class Layer extends Tilemap {
 
     }
 
-    public function get(linkage:String):Sprite {
+    public function get(linkage:String) {
         return if (!mcs.exists(linkage)) {
             Log.warn('Linkage: $linkage does not exists!');
             Sprite.create(this, None);
@@ -95,12 +95,12 @@ class Layer extends Tilemap {
         }
     }
 
-    public function getById(id:Int):Sprite {
+    public function getById(id:Int) {
         return if (!hasDefinition(id)) {
             Log.warn('Linkage: $id does not exists!');
             Sprite.create(this, None);
         } else {
-            Sprite.create(this, Some(mcs.get(linkage)));
+            Sprite.create(this, Some(getDefinition(id)));
         }
     }
 
