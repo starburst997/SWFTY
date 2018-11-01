@@ -40,7 +40,7 @@ class Main extends hxd.App {
 
         hxd.Window.getInstance().addEventTarget(onEvent);
 
-        renderSWFTYAsync('Popup.swfty', layer -> {
+        renderSWFTYAsync('tower.swfty', layer -> {
             layers.push(layer);
             s2d.addChild(layer);
 
