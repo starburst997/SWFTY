@@ -1,6 +1,5 @@
 package swfty;
 
-import haxe.ds.Option;
 import haxe.ds.IntMap;
 
 enum abstract BlendMode(String) from String to String {
@@ -154,10 +153,10 @@ typedef Config = {
 /* Class */
 
 @:structInit
-class MovieClipType {
-    public var id:Int;
-    public var name:String;
-    public var children:Array<SpriteType>;
+class MovieClipType implements hxbit.Serializable {
+    @:s public var id:Int;
+    @:s public var name:String;
+    @:s public var children:Array<SpriteType>;
 
     public static inline function fromJson(json:MovieClipDefinition, movieClips:IntMap<MovieClipType>, bitmaps:IntMap<BitmapType>, fonts:IntMap<FontType>):MovieClipType {
         return {
@@ -175,23 +174,23 @@ class MovieClipType {
 }
 
 @:structInit
-class SpriteType {
-    public var mc:Option<MovieClipType>;
-    public var id:Int;
-    public var a:Float;
-	public var b:Float;
-	public var c:Float;
-	public var d:Float;
-	public var tx:Float;
-	public var ty:Float;
-    public var shapes:Array<ShapeType>;
-    public var mask:Int;
-    public var text:Option<TextType>;
-    public var blendMode:BlendMode;
-    public var color:Option<ColorTransformType>;
-    public var alpha:Float;
-	public var name:String;
-    public var visible:Bool;
+class SpriteType implements hxbit.Serializable {
+    @:s public var mc:Null<MovieClipType>;
+    @:s public var id:Int;
+    @:s public var a:Float;
+	@:s public var b:Float;
+	@:s public var c:Float;
+	@:s public var d:Float;
+	@:s public var tx:Float;
+	@:s public var ty:Float;
+    @:s public var shapes:Array<ShapeType>;
+    @:s public var mask:Int;
+    @:s public var text:Null<TextType>;
+    @:s public var blendMode:BlendMode;
+    @:s public var color:Null<ColorTransformType>;
+    @:s public var alpha:Float;
+	@:s public var name:String;
+    @:s public var visible:Bool;
 
     public static inline function fromJson(json:SpriteDefinition, movieClips:IntMap<MovieClipType>, bitmaps:IntMap<BitmapType>, fonts:IntMap<FontType>):SpriteType {
         return {
@@ -216,7 +215,7 @@ class SpriteType {
 
     public function new(?id:Int, ?mc:MovieClipType, ?a:Float, ?b:Float, ?c:Float, ?d:Float, ?tx:Float, ?ty:Float, ?shapes:Array<ShapeType>, ?mask:Int, ?text:TextType, ?blendMode:BlendMode, ?color:ColorTransformType, ?alpha:Float, ?name:String, ?visible:Bool) {
         this.id = id;
-        this.mc = mc == null ? None : Some(mc);
+        this.mc = mc;
         this.a = a;
         this.b = b;
         this.c = c;
@@ -225,9 +224,9 @@ class SpriteType {
         this.ty = ty;
         this.shapes = shapes;
         this.mask = mask;
-        this.text = text == null ? None : Some(text);
+        this.text = text;
         this.blendMode = blendMode;
-        this.color = color == null ? None : Some(color);
+        this.color = color;
         this.alpha = alpha;
         this.name = name;
         this.visible = visible;
@@ -235,15 +234,15 @@ class SpriteType {
 }
 
 @:structInit
-class ShapeType {
-    public var id:Int;
-    public var a:Float;
-	public var b:Float;
-	public var c:Float;
-	public var d:Float;
-	public var tx:Float;
-	public var ty:Float;
-    public var bitmap:BitmapType;
+class ShapeType implements hxbit.Serializable {
+    @:s public var id:Int;
+    @:s public var a:Float;
+	@:s public var b:Float;
+	@:s public var c:Float;
+	@:s public var d:Float;
+	@:s public var tx:Float;
+	@:s public var ty:Float;
+    @:s public var bitmap:BitmapType;
 
     public static inline function fromJson(json:ShapeDefinition, bitmaps:IntMap<BitmapType>):ShapeType {
         return {
@@ -271,13 +270,13 @@ class ShapeType {
 }
 
 @:structInit
-class ColorTransformType {
-    public var r:Float;
-    public var g:Float;
-    public var b:Float;
-    public var rAdd:Float;
-    public var gAdd:Float;
-    public var bAdd:Float;
+class ColorTransformType implements hxbit.Serializable {
+    @:s public var r:Float;
+    @:s public var g:Float;
+    @:s public var b:Float;
+    @:s public var rAdd:Float;
+    @:s public var gAdd:Float;
+    @:s public var bAdd:Float;
 
     public static inline function fromJson(json:ColorTransform):ColorTransformType {
         return {
@@ -301,21 +300,21 @@ class ColorTransformType {
 }
 
 @:structInit
-class TextType {
-    public var font:FontType;
-    public var align:Align;
-    public var size:Float;
-    public var color:UInt;
-    public var text:String;
-    public var html:String;
-    public var leftMargin:Float;
-    public var rightMargin:Float;
-    public var leading:Float;
-    public var indent:Float;
-    public var x:Float;
-    public var y:Float;
-    public var width:Float;
-    public var height:Float;
+class TextType implements hxbit.Serializable {
+    @:s public var font:FontType;
+    @:s public var align:Align;
+    @:s public var size:Float;
+    @:s public var color:UInt;
+    @:s public var text:String;
+    @:s public var html:String;
+    @:s public var leftMargin:Float;
+    @:s public var rightMargin:Float;
+    @:s public var leading:Float;
+    @:s public var indent:Float;
+    @:s public var x:Float;
+    @:s public var y:Float;
+    @:s public var width:Float;
+    @:s public var height:Float;
 
     public static inline function fromJson(json:TextDefinition, fonts:IntMap<FontType>):TextType {
         return {
@@ -355,19 +354,19 @@ class TextType {
 }
 
 @:structInit
-class FontType {
-    public var id:Int;
-    public var name:String;
-    public var cleanName:String;
-    public var color:Int;
-    public var size:Float;
-    public var bold:Bool;
-    public var italic:Bool;
-    public var bitmap:Int;
-    public var ascent:Float;
-    public var descent:Float;
-    public var leading:Float;
-    public var characters:IntMap<CharacterType>;
+class FontType implements hxbit.Serializable {
+    @:s public var id:Int;
+    @:s public var name:String;
+    @:s public var cleanName:String;
+    @:s public var color:Int;
+    @:s public var size:Float;
+    @:s public var bold:Bool;
+    @:s public var italic:Bool;
+    @:s public var bitmap:Int;
+    @:s public var ascent:Float;
+    @:s public var descent:Float;
+    @:s public var leading:Float;
+    @:s public var characters:IntMap<CharacterType>;
 
     public static inline function fromJson(json:FontDefinition, bitmaps:IntMap<BitmapType>):FontType {
         return {
@@ -411,11 +410,11 @@ class FontType {
 }
 
 @:structInit
-class CharacterType {
-    public var id:Int;
-    public var bitmap:BitmapType;
-    public var tx:Float;
-    public var ty:Float;
+class CharacterType implements hxbit.Serializable {
+    @:s public var id:Int;
+    @:s public var bitmap:BitmapType;
+    @:s public var tx:Float;
+    @:s public var ty:Float;
 
     public static inline function fromJson(json:Character, bitmaps:IntMap<BitmapType>):CharacterType {
         return {
@@ -435,12 +434,12 @@ class CharacterType {
 }
 
 @:structInit
-class BitmapType {
-    public var id:Int;
-    public var x:Int;
-	public var y:Int;
-	public var width:Int;
-	public var height:Int;    
+class BitmapType implements hxbit.Serializable {
+    @:s public var id:Int;
+    @:s public var x:Int;
+	@:s public var y:Int;
+	@:s public var width:Int;
+	@:s public var height:Int;    
     
     public static inline function fromJson(json:BitmapDefinition):BitmapType {
         return {
@@ -462,12 +461,12 @@ class BitmapType {
 }
 
 @:structInit
-class SWFTYType {
-    public var tilemap_width:Int;
-    public var tilemap_height:Int;
-	public var definitions:IntMap<MovieClipType>;
-    public var tiles:IntMap<BitmapType>;
-    public var fonts:IntMap<FontType>;
+class SWFTYType implements hxbit.Serializable {
+    @:s public var tilemap_width:Int;
+    @:s public var tilemap_height:Int;
+	@:s public var definitions:IntMap<MovieClipType>;
+    @:s public var tiles:IntMap<BitmapType>;
+    @:s public var fonts:IntMap<FontType>;
     
     public static inline function fromJson(json:SWFTYJson):SWFTYType {
         var bitmaps = [ for (def in json.tiles) def.id => BitmapType.fromJson(def) ];

@@ -40,8 +40,8 @@ class Main extends Sprite {
     function process() {
 		// Process SWF
 		//var layer = renderSWFTY('res/Popup.swfty', layer -> {
-        //processSWF('res/Popup.swf', layer -> {
-        renderSWFTYAsync('res/Popup.swfty', layer -> {
+        processSWF('res/Popup.swf', layer -> {
+        //renderSWFTYAsync('res/Popup.swfty', layer -> {
             trace('Yay loading finished!');
 
             /*var bmp = new Bitmap(layer.tileset.bitmapData);
@@ -58,7 +58,7 @@ class Main extends Sprite {
             sprite.x += 408;
             layer.addTile(sprite);
 
-            //return;
+            return;
 
             // TODO: VSCode was choking on the naming, not sure why but this did the trick
             var spawn = function f() {

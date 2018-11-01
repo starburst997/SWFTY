@@ -14,6 +14,7 @@ haxelib dev haxe-zip haxe-zip
 haxelib dev hxp hxp
 haxelib dev lime lime
 haxelib dev openfl openfl
+haxelib dev hxbit hxbit
 haxelib dev binpacking Rectangle-Bin-Packing
 haxelib dev mcli mcli
 haxelib dev hxcpp hxcpp

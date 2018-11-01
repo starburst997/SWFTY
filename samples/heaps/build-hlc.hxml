@@ -13,4 +13,4 @@ common.hxml
 -D hl_disable_mikkt
 
 # output
--hl ../submodules/hashlink/src/_main.c
+-hl ../../submodules/hashlink/src/_main.c

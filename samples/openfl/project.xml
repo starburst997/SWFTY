@@ -13,11 +13,12 @@
     <haxelib name="binpacking" />
     <haxelib name="mcli" />
     <haxelib name="swfty" />
-    
-    <source path="src" />
-    <source path="../submodules/openfl/scripts" />
+    <haxelib name="hxbit" />
 
-    <assets path="../res" rename="res" type="binary" embed="false" />
+    <source path="src" />
+    <source path="../../submodules/openfl/scripts" />
+
+    <assets path="../../res" rename="res" type="binary" embed="false" />
     
     <haxedef name="gl_stats" if="debug" />
     <haxedef name="sync" unless="html5" />

@@ -9,7 +9,7 @@
             "taskName": "build html5",
             "isBuildCommand": true,
             "args": [
-                "build", "./openfl/project.xml", "html5", "-debug", "-v"
+                "build", "./samples/openfl/project.xml", "html5", "-debug", "-v"
             ],
             "presentation": {
                 "echo": false,
@@ -23,7 +23,7 @@
             "taskName": "build hl",
             "isBuildCommand": true,
             "args": [
-                "heaps/make.sh", "-D test"
+                "samples/heaps/make.sh", "-D test"
             ],
             "presentation": {
                 "echo": false,
@@ -36,7 +36,7 @@
             "taskName": "build js",
             "isBuildCommand": true,
             "args": [
-                "heaps/html5.sh", "-D test"
+                "samples/heaps/html5.sh", "-D test"
             ],
             "presentation": {
                 "echo": false,

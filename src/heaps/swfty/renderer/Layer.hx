@@ -106,24 +106,22 @@ class Layer extends h2d.TileGroup {
     public function get(linkage:String):Sprite {
         return if (!mcs.exists(linkage)) {
             Log.warn('Linkage: $linkage does not exists!');
-            Sprite.create(this, None);
+            Sprite.create(this);
         } else {
-            var sprite = Sprite.create(this, Some(mcs.get(linkage)));
+            var sprite = Sprite.create(this, mcs.get(linkage));
             sprite;
         }
     }
 
     public function load(bytes:Bytes, onComplete:Void->Void, onError:Dynamic->Void) {
-        loadBytes(bytes, (tile, json) -> {
+        loadBytes(bytes, (tile, swfty) -> {
             this.tile = tile;
-            loadJson(json);
+            loadSWFTY(swfty);
             onComplete();
         }, onError);
     }
 
-    public function loadJson(json:SWFTYJson) {
-        var swfty = SWFTYType.fromJson(json);
-
+    public function loadSWFTY(swfty:SWFTYType) {
         for (definition in swfty.definitions) {
             if (definition.name != null && definition.name != '') mcs.set(definition.name, definition);
         }
@@ -136,14 +134,14 @@ class Layer extends h2d.TileGroup {
     }
 
     public static function createAsync(bytes:Bytes, ?parent, onComplete:Layer->Void, onError:Dynamic->Void) {
-        loadBytes(bytes, (tile, json) -> {
+        loadBytes(bytes, (tile, swfty) -> {
             var layer = create(tile, parent);
-            layer.loadJson(json);
+            layer.loadSWFTY(swfty);
             onComplete(layer);
         }, onError);
     }
 
-    public static function loadBytes(bytes:Bytes, onComplete:h2d.Tile->SWFTYJson->Void, onError:Dynamic->Void) {
+    public static function loadBytes(bytes:Bytes, onComplete:h2d.Tile->SWFTYType->Void, onError:Dynamic->Void) {
         var entries = ZipReader.getEntries(bytes);
 
         var tilemapBytes = Zip.getBytes(entries.get('tilemap.png'));
@@ -153,11 +151,18 @@ class Layer extends h2d.TileGroup {
             #if release
             try {
             #end
-                var json:SWFTYJson = haxe.Json.parse(jsonString);
+                var swfty = if (entries.exists('definitions.json')) {
+                    var jsonString = Zip.getString(entries.get('definitions.json'));
+                    var json:SWFTYJson = haxe.Json.parse(jsonString);
+                    SWFTYType.fromJson(json);
+                } else {
+                    var bytes = Zip.getBytes(entries.get('definitions.bin'));
+                    hxbit.Serializer.load(bytes, SWFTYType);
+                }
 
                 trace('Tilemap: ${tile.width}, ${tile.height}');
 
-                onComplete(tile, json);
+                onComplete(tile, swfty);
             #if release
             } catch(e:Dynamic) {
                 onError(e);

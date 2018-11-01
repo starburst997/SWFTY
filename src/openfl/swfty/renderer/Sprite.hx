@@ -1,6 +1,5 @@
 package openfl.swfty.renderer;
 
-import haxe.ds.Option;
 import haxe.ds.StringMap;
 
 import openfl.geom.ColorTransform;
@@ -14,13 +13,13 @@ class Sprite extends TileContainer {
 
     var _childs:StringMap<Sprite>;
     var _texts:StringMap<Text>;
-    var definition:Option<MovieClipType> = None;
+    var definition:Null<MovieClipType>;
 
-    public static inline function create(layer:Layer, definition:Option<MovieClipType>) {
+    public static inline function create(layer:Layer, ?definition:MovieClipType) {
         return new Sprite(layer, definition);
     }
 
-    public function new(layer:Layer, definition:Option<MovieClipType>) {
+    public function new(layer:Layer, ?definition:MovieClipType) {
         super();
 
         this.layer = layer;
@@ -29,74 +28,70 @@ class Sprite extends TileContainer {
         _childs = new StringMap();
         _texts = new StringMap();
 
-        switch(this.definition) {
-            case Some(definition) :
-                // Create children
-                for (child in definition.children) {
-                    switch(child.text) {
-                        case Some(text):
-                            var text = Text.create(layer, text);
+        if (definition != null) {
+            // Create children
+            for (child in definition.children) {
+                if (child.text != null) {
+                    var text = Text.create(layer, child.text);
 
-                            text.matrix.a = child.a;
-                            text.matrix.b = child.b;
-                            text.matrix.c = child.c;
-                            text.matrix.d = child.d;
-                            text.matrix.tx = child.tx;
-                            text.matrix.ty = child.ty;
-                            text.visible = child.visible;
+                    text.matrix.a = child.a;
+                    text.matrix.b = child.b;
+                    text.matrix.c = child.c;
+                    text.matrix.d = child.d;
+                    text.matrix.tx = child.tx;
+                    text.matrix.ty = child.ty;
+                    text.visible = child.visible;
 
-                            if (child.name != null) {
-                                text.name = child.name;
-                                _texts.set(child.name, text);
-                            }
-
-                            addTile(text);
-                        case None:
-                            var sprite:Sprite = create(layer, child.mc);
-
-                            if (child.name != null) {
-                                sprite.name = child.name;
-                                _childs.set(child.name, sprite);
-                            }
-
-                            sprite.matrix.a = child.a;
-                            sprite.matrix.b = child.b;
-                            sprite.matrix.c = child.c;
-                            sprite.matrix.d = child.d;
-                            sprite.matrix.tx = child.tx;
-                            sprite.matrix.ty = child.ty;
-                            sprite.alpha = child.alpha;
-                            sprite.visible = child.visible;
-
-                            // This will add drawCalls, so big no no unless you really want them
-                            #if allowBlendMode
-                            if (child.blendMode != Normal && child.blendMode != null) {
-                                sprite.blendMode = child.blendMode;
-                            }
-                            #end
-
-                            switch(child.color) {
-                                case Some(color) : 
-                                    sprite.colorTransform = new openfl.geom.ColorTransform(color.r, color.g, color.b, 1.0, color.rAdd, color.gAdd, color.bAdd, 0.0);
-                                case None : 
-                            }
-
-                            for (shape in child.shapes) {
-                                var tile = new Tile(layer.getTile(shape.bitmap.id));
-                                tile.matrix.a = shape.a;
-                                tile.matrix.b = shape.b;
-                                tile.matrix.c = shape.c;
-                                tile.matrix.d = shape.d;
-                                tile.matrix.tx = shape.tx;
-                                tile.matrix.ty = shape.ty;
-
-                                sprite.addTile(tile);
-                            }
-
-                            addTile(sprite);
+                    if (child.name != null) {
+                        text.name = child.name;
+                        _texts.set(child.name, text);
                     }
+
+                    addTile(text);
+                } else {
+                    var sprite:Sprite = create(layer, child.mc);
+
+                    if (child.name != null) {
+                        sprite.name = child.name;
+                        _childs.set(child.name, sprite);
+                    }
+
+                    sprite.matrix.a = child.a;
+                    sprite.matrix.b = child.b;
+                    sprite.matrix.c = child.c;
+                    sprite.matrix.d = child.d;
+                    sprite.matrix.tx = child.tx;
+                    sprite.matrix.ty = child.ty;
+                    sprite.alpha = child.alpha;
+                    sprite.visible = child.visible;
+
+                    // This will add drawCalls, so big no no unless you really want them
+                    #if allowBlendMode
+                    if (child.blendMode != Normal && child.blendMode != null) {
+                        sprite.blendMode = child.blendMode;
+                    }
+                    #end
+
+                    if (child.color != null) {
+                        var color = child.color;
+                        sprite.colorTransform = new openfl.geom.ColorTransform(color.r, color.g, color.b, 1.0, color.rAdd, color.gAdd, color.bAdd, 0.0);
+                    }
+
+                    for (shape in child.shapes) {
+                        var tile = new Tile(layer.getTile(shape.bitmap.id));
+                        tile.matrix.a = shape.a;
+                        tile.matrix.b = shape.b;
+                        tile.matrix.c = shape.c;
+                        tile.matrix.d = shape.d;
+                        tile.matrix.tx = shape.tx;
+                        tile.matrix.ty = shape.ty;
+
+                        sprite.addTile(tile);
+                    }
+
+                    addTile(sprite);
                 }
-            case None :  
+            } 
         }
     }
 
@@ -105,7 +100,7 @@ class Sprite extends TileContainer {
             _childs.get(name);
         } else {
             Log.warn('Child: $name does not exists!');
-            var sprite = create(layer, None);
+            var sprite = create(layer);
             _childs.set(name, sprite);
             sprite;
         }

@@ -18,13 +18,13 @@ import openfl.swfty.exporter.TilemapExporter;
 class ClassExporter {
 
     // Export to a String
-    public static function export(swfty:SWFTYType) {
+    public static function export(swfty:SWFTYType, name:String) {
 
 
     }
 
     // Save on filesystem
-    public static function exportPath(path:String, swfty:SWFTYType) {
+    public static function exportPath(path:String, swfty:SWFTYType, name:String) {
 
     }
 }
@@ -35,14 +35,18 @@ layer.addChild(popup);*/
 @:forward(x, y, scaleX, scaleY, rotation, getTile, get)
 abstract MyFLA(Layer) from Layer to Layer {
 
-    public var name1(get, never):Instance1;
-
-    public inline function get_name1() {
-        return this.get('name1');
-    }
-
-    public static inline function create():Instance1 {
-        
+    public static inline function create(?onComplete:MyFLA->Void, ?onError:Void->Void):MyFLA {
+        var layer = Layer.create();
+        File.loadBytes('tower.swfty', bytes -> {
+            layer.load(bytes, () -> {
+                if (onComplete != null) onComplete(layer);
+            }, (e) -> {
+                if (onError != null) onError(e);
+            });
+        }, (e) -> {
+            if (onError != null) onError(e);
+        });
+        return layer;
     }
 }
 

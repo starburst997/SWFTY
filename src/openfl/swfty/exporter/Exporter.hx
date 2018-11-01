@@ -124,16 +124,16 @@ class Exporter {
 
         // TODO: Process root?
 
-        function process(i) {
+        var process = function f(i) { // TODO: VSCode is choking on `function process(i)`, wasn't the case before
             var tag = data.tags[i];
 
             function complete() {
                 if (i + 1 < data.tags.length) {
                     // Process 250 tags per frame to prevent maximum call stack size
                     if (processFrame++ < 250) {
-                        process(i + 1);
+                        f(i + 1);
                     } else {
-                        nextFrames.push(() -> process(i + 1));
+                        nextFrames.push(() -> f(i + 1));
                     }
                 } else {
                     // TODO: This could be moved to addShape...
@@ -289,7 +289,11 @@ class Exporter {
     }
 
     public function getJSON() {
-        var definition:SWFTYJson = {
+        return haxe.Json.stringify(getSWFTYJson());
+    }
+
+    function getSWFTYJson():SWFTYJson {
+        return {
             tilemap: switch(tilemap) {
                 case Some(tilemap) : {
                     width: tilemap.bitmapData.width,
@@ -304,8 +308,12 @@ class Exporter {
             tiles: [for (bmp in bitmaps) bmp],
             fonts: [for (font in fonts) font]
         }
+    }
 
-        return haxe.Json.stringify(definition);
+    public function getBinary() {
+        // TODO: Should use class all along instead of struct, but really a minor optimisation issue, will do for now
+        var swfty = SWFTYType.fromJson(getSWFTYJson());
+        return hxbit.Serializer.save(swfty);
     }
 
     public function getPNG(bmpd:BitmapData) {
@@ -315,14 +323,18 @@ class Exporter {
         return bmpd.encode(bmpd.rect, new PNGEncoderOptions());
     }
 
-    public function getSwfty() {
+    public function getSwfty(useJson = false, compressed = true) {
         var tilemap = getTilemap();
-        var json = getJSON();
         var png = getPNG(tilemap.bitmapData);
 
         var zip = new ZipWriter();
         zip.addBytes(png, 'tilemap.png', false);
-        zip.addString(json, 'definitions.json', true);
+        
+        if (useJson) {
+            zip.addString(getJSON(), 'definitions.json', compressed);
+        } else {
+            zip.addBytes(getBinary(), 'definitions.bin', compressed);
+        }
 
         return zip.finalize();
     }

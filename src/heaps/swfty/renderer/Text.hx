@@ -25,7 +25,7 @@ class Text extends Sprite {
     }
 
     public function new(layer:Layer, definition:TextType, ?parent) {
-        super(layer, parent, None);
+        super(layer, parent);
 
         textDefinition = definition;
 
@@ -74,7 +74,7 @@ class Text extends Sprite {
 
                 if (tile != null) {
                     
-                    var sprite = Sprite.create(layer, tile, None);
+                    var sprite = Sprite.create(layer, tile);
 
                     sprite.r = r/255;
                     sprite.g = g/255;
@@ -153,7 +153,8 @@ class Text extends Sprite {
                 for (line in lines)
                     for (tile in line.tiles) 
                         if (tile.sprite != null) tile.sprite.x += textDefinition.width / 2 - line.textWidth / 2;
-            case Justify : trace('Justify not supported!!!');
+            case Justify : 
+                trace('Justify not supported!!!');
         }
 
         return text;
