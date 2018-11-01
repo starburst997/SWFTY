@@ -850,6 +850,10 @@ class Exporter {
             // TODO: HTML5 only?
             definition.cleanName = definition.name.replace(' Bold', '').replace(' Semibold', '').replace(' Italic', '').replace('-Bold', '').replace('-Semibold', '').replace('-Italic', '');
 
+            // Add space between lower / upper case
+            var r = ~/([a-z])([A-Z])/g;
+            definition.cleanName = r.replace(definition.cleanName,"$1 $2");
+
 			fonts.set(tag.characterId, definition);
 		}
 
