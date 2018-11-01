@@ -31,6 +31,3 @@
 [submodule "submodules/hashlink"]
 	path = submodules/hashlink
 	url = git@github.com:starburst997/hashlink.git
-[submodule "submodules/hxbit"]
-	path = submodules/hxbit
-	url = git@github.com:ncannasse/hxbit.git
