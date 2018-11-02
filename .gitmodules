@@ -31,3 +31,6 @@
 [submodule "submodules/hxbit"]
 	path = submodules/hxbit
 	url = git@github.com:starburst997/hxbit.git
+[submodule "submodules/hxcpp"]
+	path = submodules/hxcpp
+	url = git@github.com:starburst997/hxcpp.git
