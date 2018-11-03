@@ -146,6 +146,8 @@ class Layer extends h2d.TileGroup {
         }
 
         this.swfty = Some(swfty);
+
+        reload();
     }
 
     public static function createAsync(bytes:Bytes, ?parent, onComplete:Layer->Void, onError:Dynamic->Void) {

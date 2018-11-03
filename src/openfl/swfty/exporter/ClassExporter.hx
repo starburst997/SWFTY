@@ -56,12 +56,8 @@ abstract MyFLA(Layer) from Layer to Layer {
         File.loadBytes('tower.swfty', bytes -> {
             this.load(bytes, () -> {
                 if (onComplete != null) onComplete();
-            }, (e) -> {
-                if (onError != null) onError(e);
-            });
-        }, (e) -> {
-            if (onError != null) onError(e);
-        });
+            }, onError);
+        }, onError);
     }
 
     public static inline function create(width:Int, height:Int, ?onComplete:MyFLA->Void, ?onError:Dynamic->Void):MyFLA {

@@ -146,6 +146,8 @@ class Layer extends Tilemap {
         }
         
         this.swfty = Some(swfty);
+
+        reload();
     }
 
     public static function loadBytes(bytes:Bytes, onComplete:Tileset->IntMap<Int>->SWFTYType->Void, onError:Dynamic->Void) {
