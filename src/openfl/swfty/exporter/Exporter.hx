@@ -545,6 +545,16 @@ class Exporter {
                     }
 
                     if (isMask) maskDepth = children.length;
+
+                    // If the name already exists, add "_" at the end
+                    if (!definition.name.empty()) {
+                        for (child in children) {
+                            if (child.name == definition.name) {
+                                definition.name += '_';
+                            }
+                        }
+                    }
+
                     children.push(definition);
 
                     if (j + 1 < objects.length) process2(j + 1) 
@@ -573,7 +583,7 @@ class Exporter {
         this.shapes.set(tag.characterId, shapes);
     
         if (bitmaps != null) {
-            function process(i) {  
+            var process = function f(i) {  
                 var bitmap = bitmaps[i];
 
                 processTag(cast data.getCharacter(bitmap.id), () -> {
@@ -592,7 +602,7 @@ class Exporter {
                     bitmapKeeps.set(bitmap.id, true);
                     shapes.push(definition);
 
-                    if (i + 1 < bitmaps.length) process(i + 1) else onComplete();
+                    if (i + 1 < bitmaps.length) f(i + 1) else onComplete();
                 });
             }
 
@@ -617,15 +627,15 @@ class Exporter {
             processShapes.set(id, {tag: tag, definition: definition});
             shapes.push(definition);
 
-            function process(i) {
+            var process = function f(i) {
                 var command = handler.commands[i];
                 switch(command) {
 					case BeginBitmapFill(bitmapID, _, _, _):
 						processTag(cast data.getCharacter(bitmapID), () -> {
-                            if (i + 1 < handler.commands.length) process(i + 1) else onComplete();
+                            if (i + 1 < handler.commands.length) f(i + 1) else onComplete();
                         });
 					default:
-                        if (i + 1 < handler.commands.length) process(i + 1) else onComplete();
+                        if (i + 1 < handler.commands.length) f(i + 1) else onComplete();
 				}
             }
             if (handler.commands.length > 0) process(0) else onComplete();

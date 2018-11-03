@@ -2,7 +2,6 @@ package openfl.swfty.renderer;
 
 import openfl.geom.ColorTransform;
 import openfl.display.Tile;
-import openfl.display.TileContainer;
 
 typedef Line = {
     textWidth: Float,
@@ -12,31 +11,47 @@ typedef Line = {
     }>
 }
 
-class Text extends TileContainer {
+class Text extends Sprite {
 
     public static inline var SPACE = 0x20;
 
-    public var name:String = '';
     public var text(default, set):String = '';
 
     public var textWidth(default, null):Float = 0.0;
     public var textHeight(default, null):Float = 0.0;
 
-    var layer:Layer;
-    var definition:TextType;
+    var textDefinition:Null<TextType>;
 
-    public static inline function create(layer:Layer, definition:TextType) {
+    public static inline function create(layer:Layer, ?definition:TextType) {
         return new Text(layer, definition);
     }
 
-    public function new(layer:Layer, definition:TextType) {
-        super();
+    public function new(layer:Layer, ?definition:TextType) {
+        super(layer);
 
-        this.layer = layer;
-        this.definition = definition;
-
+        loadText(definition);
         text = definition.text;
     }
+
+    public function loadText(definition:TextType) {
+        textDefinition = definition;
+
+        // Force refresh
+        var text = this.text;
+        set_text('');
+        set_text(text);
+
+        return this;
+    }
+
+    public override function reload() {
+        super.reload();
+        
+        if (textDefinition != null && textDefinition.font != null && layer.hasFont(textDefinition.font.id)) {
+            textDefinition.font = layer.getFont(textDefinition.font.id);
+            loadText(textDefinition);
+        }
+    } 
 
     function set_text(text:String) {
         if (this.text == text) return text;
@@ -46,17 +61,25 @@ class Text extends TileContainer {
         // Clear tiles
         while(numTiles > 0) removeTileAt(0);
 
-        // Show characters
-        var x = definition.x;
-        var y = definition.y;
+        if (text == '') {
+            textWidth = 0;
+            textHeight = 0;
+            return text;
+        }
 
-        var c = definition.color;
+        if (textDefinition == null) return text;
+
+        // Show characters
+        var x = textDefinition.x;
+        var y = textDefinition.y;
+
+        var c = textDefinition.color;
         var r = (c & 0xFF0000) >> 16;
         var g = (c & 0xFF00) >> 8;
         var b = c & 0xFF;
 
-        var scale = definition.size / definition.font.size;
-        var lineHeight = definition.size;
+        var scale = textDefinition.size / textDefinition.font.size;
+        var lineHeight = textDefinition.size;
 
         var hasSpace = false;
         var lastSpaceX = 0.0;
@@ -74,8 +97,8 @@ class Text extends TileContainer {
                 hasSpace = true;
             }
 
-            if (definition.font.has(code)) {
-                var char = definition.font.get(code);
+            if (textDefinition.font.has(code)) {
+                var char = textDefinition.font.get(code);
                 var tile = new Tile(layer.getTile(char.bitmap.id));
                 tile.colorTransform = new ColorTransform(r/255, g/255, b/255, 1.0);
                 tile.x = x + char.tx;
@@ -92,7 +115,7 @@ class Text extends TileContainer {
 
                 var w = char.bitmap.width * scale;
                 
-                if ((x - definition.x) + w > definition.width && hasSpace) {
+                if ((x - textDefinition.x) + w > textDefinition.width && hasSpace) {
                     y += lineHeight;
                     hasSpace = false;
 
@@ -112,9 +135,9 @@ class Text extends TileContainer {
                         if (tile != null && tile.tile != null) maxWidth = tile.tile.x;
                     }
 
-                    for (tile in tiles) tile.tile.x -= offsetX - definition.x;
+                    for (tile in tiles) tile.tile.x -= offsetX - textDefinition.x;
 
-                    currentLine.textWidth = maxWidth - definition.x;
+                    currentLine.textWidth = maxWidth - textDefinition.x;
                     if (currentLine.textWidth > textWidth) textWidth = currentLine.textWidth;
 
                     currentLine = {
@@ -123,28 +146,28 @@ class Text extends TileContainer {
                     };
                     lines.push(currentLine);
 
-                    x -= offsetX - definition.x;
+                    x -= offsetX - textDefinition.x;
                 }
 
                 x += w;
             }
         }
 
-        currentLine.textWidth = x - definition.x;
+        currentLine.textWidth = x - textDefinition.x;
 
         if (currentLine.textWidth > textWidth) textWidth = currentLine.textWidth;
         textHeight = y + lineHeight;
 
-        switch(definition.align) {
+        switch(textDefinition.align) {
             case Left    : 
             case Right   : 
                 for (line in lines)
                     for (tile in line.tiles) 
-                        if (tile.tile != null) tile.tile.x += definition.width - line.textWidth;
+                        if (tile.tile != null) tile.tile.x += textDefinition.width - line.textWidth;
             case Center  : 
                 for (line in lines)
                     for (tile in line.tiles) 
-                        if (tile.tile != null) tile.tile.x += definition.width / 2 - line.textWidth / 2;
+                        if (tile.tile != null) tile.tile.x += textDefinition.width / 2 - line.textWidth / 2;
             case Justify : trace('Justify not supported!!!');
         }
 

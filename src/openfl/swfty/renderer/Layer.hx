@@ -124,39 +124,45 @@ class Layer extends Tilemap {
 
     public static function loadBytes(bytes:Bytes, onComplete:Tileset->IntMap<Int>->SWFTYType->Void, onError:Dynamic->Void) {
         var entries = ZipReader.getEntries(bytes);
+        
+        if (!entries.exists('tilemap.png') || (!entries.exists('definitions.json') && !entries.exists('definitions.bin'))) {
+            onError('Missing file');
+            return;
+        }
+        
         var tilemapBytes = Zip.getBytes(entries.get('tilemap.png'));
         
         function complete(bmpd:BitmapData) {
-            #if release
-            try {
-            #end
-                var swfty = if (entries.exists('definitions.json')) {
-                    var jsonString = Zip.getString(entries.get('definitions.json'));
-                    var json:SWFTYJson = haxe.Json.parse(jsonString);
-                    SWFTYType.fromJson(json);
-                } else {
-                    var bytes = Zip.getBytes(entries.get('definitions.bin'));
-                    hxbit.Serializer.load(bytes, SWFTYType);
+            var swfty = if (entries.exists('definitions.json')) {
+                var jsonString = Zip.getString(entries.get('definitions.json'));
+                var json:SWFTYJson = try {
+                    haxe.Json.parse(jsonString);
+                } catch(e:Dynamic) {
+                    null;
                 }
-
-                // Create tileset
-                var rects = [];
-                var map = new IntMap();
-                for (tile in swfty.tiles) {
-                    map.set(tile.id, rects.length);
-                    rects.push(new Rectangle(tile.x, tile.y, tile.width, tile.height));
-                }
-
-                var tileset = new Tileset(bmpd, rects);
-
-                trace('Tilemap: ${bmpd.width}, ${bmpd.height}');
-
-                onComplete(tileset, map, swfty);
-            #if release
-            } catch(e:Dynamic) {
-                onError(e);
+                json == null ? null : SWFTYType.fromJson(json);
+            } else {
+                var bytes = Zip.getBytes(entries.get('definitions.bin'));
+                hxbit.Serializer.load(bytes, SWFTYType);
             }
-            #end
+
+            if (swfty == null) {
+                onError('Corrupted file');
+            }
+
+            // Create tileset
+            var rects = [];
+            var map = new IntMap();
+            for (tile in swfty.tiles) {
+                map.set(tile.id, rects.length);
+                rects.push(new Rectangle(tile.x, tile.y, tile.width, tile.height));
+            }
+
+            var tileset = new Tileset(bmpd, rects);
+
+            trace('Tilemap: ${bmpd.width}, ${bmpd.height}');
+
+            onComplete(tileset, map, swfty);
         }
 
         #if sync

@@ -35,8 +35,12 @@ layer.addChild(popup);*/
 @:forward(x, y, scaleX, scaleY, rotation, getTile, get)
 abstract MyFLA(Layer) from Layer to Layer {
 
-    public static inline function create(?onComplete:MyFLA->Void, ?onError:Void->Void):MyFLA {
-        var layer = Layer.create();
+    public inline function getInstance1():Instance1 {
+        return this.get('Instance1');
+    }
+
+    public static inline function create(width:Int, height:Int, ?onComplete:MyFLA->Void, ?onError:Dynamic->Void):MyFLA {
+        var layer = Layer.create(width, height);
         File.loadBytes('tower.swfty', bytes -> {
             layer.load(bytes, () -> {
                 if (onComplete != null) onComplete(layer);
@@ -61,6 +65,6 @@ abstract Instance1(Sprite) from Sprite to Sprite {
 
     // Only have create on named MovieClip (linkage name)
     public static inline function create(layer:MyFLA):Instance1 {
-        return layer.get('Instance1');
+        return layer.getInstance1();
     }
 }
