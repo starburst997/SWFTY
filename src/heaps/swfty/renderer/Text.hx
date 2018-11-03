@@ -12,7 +12,7 @@ class Text extends Sprite {
 
     public static inline var SPACE = 0x20;
 
-    public var text(default, set):String = '';
+    public var text(default, set):String = null;
 
     public var textWidth(default, null):Float = 0.0;
     public var textHeight(default, null):Float = 0.0;
@@ -32,9 +32,11 @@ class Text extends Sprite {
 
     public function loadText(definition:TextType) {
         textDefinition = definition;
-        if (text == null && definition != null) {
-            text = definition.text;
-        } else {
+        if (definition != null) font = definition.font;
+
+        if (this.text == null && definition != null && font != null) {
+            this.text = definition.text;
+        } else if (this.text != null) {
             // Force refresh
             var text = this.text;
             set_text('');

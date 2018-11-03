@@ -36,7 +36,7 @@ class Text extends Sprite {
         textDefinition = definition;
         if (text == null && definition != null) {
             text = definition.text;
-        } else {
+        } else if (this.text != null) {
             // Force refresh
             var text = this.text;
             set_text('');
