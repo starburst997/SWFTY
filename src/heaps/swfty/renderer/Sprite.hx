@@ -66,7 +66,6 @@ class Sprite extends h2d.Object {
                     _texts.get(child.name).loadText(child.text);
                 } else {
                     var text:Text = Text.create(layer, child.text);
-                    text.og = true;
 
                     if (!child.name.empty()) {
                         text.name = child.name;
@@ -74,6 +73,8 @@ class Sprite extends h2d.Object {
                     }
                     text;
                 }
+                
+                text.og = true;
 
                 text.x = _x(child.tx);
                 text.y = _y(child.ty);
@@ -89,7 +90,6 @@ class Sprite extends h2d.Object {
                     _childs.get(child.name).load(child.mc);
                 } else {
                     var sprite:Sprite = create(layer, child.mc);
-                    sprite.og = true;
 
                     if (!child.name.empty()) {
                         sprite.name = child.name;
@@ -98,6 +98,8 @@ class Sprite extends h2d.Object {
                     sprite;
                 }
 
+                sprite.og = true;
+                
                 sprite.x = _x(child.tx);
                 sprite.y = _y(child.ty);
                 sprite.scaleX = _scaleX(child.a, child.b, child.c, child.d);
@@ -133,6 +135,8 @@ class Sprite extends h2d.Object {
         // Re-add non-og tile
         for (child in childs) {
             if (!child.og) {
+                if (!child.name.empty()) Log.warn('Missing Child: ${child.name}');
+                
                 child.reload();
 
                 // TODO: Usually non-og sprites are added on top, figure out a better way to preserve order
@@ -267,6 +271,7 @@ class Sprite extends h2d.Object {
         } else {
             if (definition != null) Log.warn('Child: $name does not exists!');
             var sprite = create(layer);
+            sprite.name = name;
             _childs.set(name, sprite);
             sprite;
         }
@@ -278,6 +283,7 @@ class Sprite extends h2d.Object {
         } else {
             if (definition != null) Log.warn('Text: $name does not exists!');
             var text = Text.create(layer);
+            text.name = name;
             _texts.set(name, text);
             text;
         }
