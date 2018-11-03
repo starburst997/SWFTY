@@ -55,7 +55,7 @@ class Main extends Sprite {
             addChildAt(layer, 0);
 
             var sprite = layer.get('PopupShop');
-            sprite.x += 0;
+            sprite.x += 470;
             sprite.scaleX = sprite.scaleY = 0.75;
             layer.add(sprite);
 
