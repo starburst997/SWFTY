@@ -144,30 +144,30 @@ class Layer extends h2d.TileGroup {
     public static function loadBytes(bytes:Bytes, onComplete:h2d.Tile->SWFTYType->Void, onError:Dynamic->Void) {
         var entries = ZipReader.getEntries(bytes);
 
+        if (!entries.exists('tilemap.png') || (!entries.exists('definitions.json') && !entries.exists('definitions.bin'))) {
+            onError('Missing file');
+            return;
+        }
+
         var tilemapBytes = Zip.getBytes(entries.get('tilemap.png'));
-        var jsonString = Zip.getString(entries.get('definitions.json'));
 
         function complete(tile:h2d.Tile) {
-            #if release
-            try {
-            #end
-                var swfty = if (entries.exists('definitions.json')) {
-                    var jsonString = Zip.getString(entries.get('definitions.json'));
-                    var json:SWFTYJson = haxe.Json.parse(jsonString);
-                    SWFTYType.fromJson(json);
-                } else {
-                    var bytes = Zip.getBytes(entries.get('definitions.bin'));
-                    hxbit.Serializer.load(bytes, SWFTYType);
+            var swfty = if (entries.exists('definitions.json')) {
+                var jsonString = Zip.getString(entries.get('definitions.json'));
+                var json:SWFTYJson = try {
+                    haxe.Json.parse(jsonString);
+                } catch(e:Dynamic) {
+                    null;
                 }
-
-                trace('Tilemap: ${tile.width}, ${tile.height}');
-
-                onComplete(tile, swfty);
-            #if release
-            } catch(e:Dynamic) {
-                onError(e);
+                json == null ? null : SWFTYType.fromJson(json);
+            } else {
+                var bytes = Zip.getBytes(entries.get('definitions.bin'));
+                hxbit.Serializer.load(bytes, SWFTYType);
             }
-            #end
+
+            trace('Tilemap: ${tile.width}, ${tile.height}');
+
+            onComplete(tile, swfty);
         }
 
         #if js
