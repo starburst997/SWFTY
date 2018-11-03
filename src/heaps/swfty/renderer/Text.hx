@@ -17,28 +17,56 @@ class Text extends Sprite {
     public var textWidth(default, null):Float = 0.0;
     public var textHeight(default, null):Float = 0.0;
 
-    var font:FontType;
-    var textDefinition:TextType;
+    var font:Null<FontType>;
+    var textDefinition:Null<TextType>;
 
-    public static inline function create(layer:Layer, definition:TextType, ?parent) {
+    public static inline function create(layer:Layer, ?definition:TextType, ?parent) {
         return new Text(layer, definition);
     }
 
-    public function new(layer:Layer, definition:TextType, ?parent) {
+    public function new(layer:Layer, ?definition:TextType, ?parent) {
         super(layer, parent);
 
-        textDefinition = definition;
-
-        font = definition.font;
-        text = definition.text;
+        loadText(definition);
     }
 
+    public function loadText(definition:TextType) {
+        textDefinition = definition;
+        if (text == null && definition != null) {
+            text = definition.text;
+        } else {
+            // Force refresh
+            var text = this.text;
+            set_text('');
+            set_text(text);
+        }
+
+        return this;
+    }
+
+    public override function reload() {
+        super.reload();
+        
+        if (textDefinition != null && font != null && layer.hasFont(font.id)) {
+            textDefinition.font = layer.getFont(font.id);
+            loadText(textDefinition);
+        }
+    } 
+
     function set_text(text:String) {
-        if (font == null || this.text == text) return text;
+        if (this.text == text) return text;
 
         // Clear tiles
         removeChildren();
         sprites = [];
+
+        if (text.empty()) {
+            textWidth = 0;
+            textHeight = 0;
+            return text;
+        }
+
+        if (textDefinition == null || font == null) return text;
 
         // Show characters
         var x = textDefinition.x;
@@ -75,6 +103,7 @@ class Text extends Sprite {
                 if (tile != null) {
                     
                     var sprite = Sprite.create(layer, tile);
+                    sprite.og = true;
 
                     sprite.r = r/255;
                     sprite.g = g/255;
@@ -85,7 +114,7 @@ class Text extends Sprite {
 
                     sprite.scaleX = sprite.scaleY = scale;
 
-                    addTile(sprite);
+                    add(sprite);
 
                     currentLine.tiles.push({
                         code: code,

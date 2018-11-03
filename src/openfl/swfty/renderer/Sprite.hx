@@ -134,6 +134,7 @@ class Sprite extends TileContainer {
                 add(child);
             }
         }
+        
         return this;
     }
 

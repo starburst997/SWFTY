@@ -15,7 +15,7 @@ class Text extends Sprite {
 
     public static inline var SPACE = 0x20;
 
-    public var text(default, set):String = '';
+    public var text(default, set):String = null;
 
     public var textWidth(default, null):Float = 0.0;
     public var textHeight(default, null):Float = 0.0;
@@ -30,16 +30,18 @@ class Text extends Sprite {
         super(layer);
 
         loadText(definition);
-        text = definition.text;
     }
 
     public function loadText(definition:TextType) {
         textDefinition = definition;
-
-        // Force refresh
-        var text = this.text;
-        set_text('');
-        set_text(text);
+        if (text == null && definition != null) {
+            text = definition.text;
+        } else {
+            // Force refresh
+            var text = this.text;
+            set_text('');
+            set_text(text);
+        }
 
         return this;
     }
@@ -61,13 +63,13 @@ class Text extends Sprite {
         // Clear tiles
         while(numTiles > 0) removeTileAt(0);
 
-        if (text == '') {
+        if (text.empty()) {
             textWidth = 0;
             textHeight = 0;
             return text;
         }
 
-        if (textDefinition == null) return text;
+        if (textDefinition == null || textDefinition.font == null) return text;
 
         // Show characters
         var x = textDefinition.x;
