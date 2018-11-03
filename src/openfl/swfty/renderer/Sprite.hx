@@ -52,10 +52,10 @@ class Sprite extends TileContainer {
         // Create children
         for (child in definition.children) {
             if (child.text != null) {
-                var text = if (!child.name.empty() && _texts.exists(child.name)) {
+                var text:Text = if (!child.name.empty() && _texts.exists(child.name)) {
                     _texts.get(child.name).loadText(child.text);
                 } else {
-                    var text = Text.create(layer, child.text);
+                    var text:Text = Text.create(layer, child.text);
                     text.og = true;
 
                     if (!child.name.empty()) {
