@@ -40,15 +40,15 @@ class Main extends hxd.App {
 
         hxd.Window.getInstance().addEventTarget(onEvent);
 
-        renderSWFTYAsync('tower.swfty', layer -> {
+        renderSWFTYAsync('Popup.swfty', layer -> {
             layers.push(layer);
             s2d.addChild(layer);
 
             sprite = layer.get('PopupShop');
-            sprite.x += 408;
-            sprite.y += 208;
-            //sprite.scaleX = 0.50;
-            //sprite.scaleY = 0.50;
+            //sprite.x += 408;
+            //sprite.y += 208;
+            sprite.scaleX = 0.75;
+            sprite.scaleY = 0.75;
             //sprite.rotation = -1.0;
 
             layer.addTile(sprite);
@@ -118,7 +118,7 @@ class Main extends hxd.App {
         for (layer in layers) {
             layer.update(dt);
 
-            //continue;
+            continue;
 
             var names = layer.getAllNames();
             var name = names[Std.int(Math.random() * names.length)];

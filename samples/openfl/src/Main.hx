@@ -55,8 +55,9 @@ class Main extends Sprite {
             addChildAt(layer, 0);
 
             var sprite = layer.get('PopupShop');
-            sprite.x += 408;
-            layer.addTile(sprite);
+            sprite.x += 0;
+            sprite.scaleX = sprite.scaleY = 0.75;
+            layer.add(sprite);
 
             return;
 
@@ -88,7 +89,7 @@ class Main extends Sprite {
                         sprite.alpha -= speedAlpha * dt;
 
                         if (sprite.alpha <= 0) {
-                            layer.removeTile(sprite);
+                            layer.remove(sprite);
                             layer.removeEventListener(Event.ENTER_FRAME, render);
                         }
                     }
@@ -96,7 +97,7 @@ class Main extends Sprite {
                     layer.addEventListener(Event.ENTER_FRAME, render);
                     //sprites.push(sprite);
 
-                    layer.addTile(sprite);
+                    layer.add(sprite);
 
                     f();
 
