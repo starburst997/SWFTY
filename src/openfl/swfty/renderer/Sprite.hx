@@ -13,19 +13,23 @@ class Sprite extends TileContainer {
     public var name:String;
     public var layer:Layer;
 
+    // For reload if definition didn't exists
+    var linkage:String;
+
     var _childs:Array<Sprite>;
     var _names:StringMap<Sprite>;
     var _texts:StringMap<Text>;
     var definition:Null<MovieClipType>;
 
-    public static inline function create(layer:Layer, ?definition:MovieClipType) {
-        return new Sprite(layer, definition);
+    public static inline function create(layer:Layer, ?definition:MovieClipType, ?linkage:String) {
+        return new Sprite(layer, definition, linkage);
     }
 
-    public function new(layer:Layer, ?definition:MovieClipType) {
+    public function new(layer:Layer, ?definition:MovieClipType, ?linkage:String) {
         super();
 
         this.layer = layer;
+        this.linkage = linkage;
         
         _childs = [];
         _names = new StringMap();
@@ -141,6 +145,9 @@ class Sprite extends TileContainer {
     public function reload() {
         if (this.definition != null && layer.hasDefinition(this.definition.id)) {
             var definition = layer.getDefinition(this.definition.id);
+            load(definition);
+        } else if (linkage != null && layer.hasMC(linkage)) {
+            var definition = layer.getMC(linkage);
             load(definition);
         }
     }

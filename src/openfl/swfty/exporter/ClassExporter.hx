@@ -39,17 +39,34 @@ abstract MyFLA(Layer) from Layer to Layer {
         return this.get('Instance1');
     }
 
-    public static inline function create(width:Int, height:Int, ?onComplete:MyFLA->Void, ?onError:Dynamic->Void):MyFLA {
-        var layer = Layer.create(width, height);
+    public inline function reload(?bytes:Bytes, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
+        inline function complete() {
+            layer.reload();
+            if (onComplete != null) onComplete();
+        }
+        
+        if (bytes != null) {
+            this.load(bytes, complete, onError);
+        } else {
+            load(complete, onError);
+        }
+    }
+
+    public inline function load(?onComplete:Void->Void, ?onError:Dynamic->Void) {
         File.loadBytes('tower.swfty', bytes -> {
-            layer.load(bytes, () -> {
-                if (onComplete != null) onComplete(layer);
+            this.load(bytes, () -> {
+                if (onComplete != null) onComplete();
             }, (e) -> {
                 if (onError != null) onError(e);
             });
         }, (e) -> {
             if (onError != null) onError(e);
         });
+    }
+
+    public static inline function create(width:Int, height:Int, ?onComplete:MyFLA->Void, ?onError:Dynamic->Void):MyFLA {
+        var layer = Layer.create(width, height);
+        layer.load(() -> if (onComplete != null) onComplete(layer), onError);
         return layer;
     }
 }

@@ -17,6 +17,9 @@ class Sprite extends h2d.Object {
     // TODO: Listen to remove child and remove from array
     var sprites:Array<Sprite>;
 
+    // For reload if definition didn't exists
+    var linkage:String;
+
     var _lastAlpha = 1.0;
     var _parent:Sprite;
     var _childs:StringMap<Sprite>;
@@ -24,13 +27,14 @@ class Sprite extends h2d.Object {
     var definition:Null<MovieClipType>;
     var renders:Array<Float->Void>;
 
-    public static inline function create(layer:Layer, ?tile:h2d.Tile, ?definition:MovieClipType, ?parent:h2d.Object):Sprite {
-        return new Sprite(layer, tile, definition, parent);
+    public static inline function create(layer:Layer, ?tile:h2d.Tile, ?definition:MovieClipType, ?linkage:String, ?parent:h2d.Object):Sprite {
+        return new Sprite(layer, tile, definition, linkage, parent);
     }
 
-    public function new(layer:Layer, ?tile:h2d.Tile, ?definition:MovieClipType, ?parent:h2d.Object) {
+    public function new(layer:Layer, ?tile:h2d.Tile, ?definition:MovieClipType, ?linkage:String, ?parent:h2d.Object) {
         this.tile = tile;
         this.layer = layer;
+        this.linkage = linkage;
         
         color = new h3d.Vector(1, 1, 1, 1);
 
@@ -79,7 +83,7 @@ class Sprite extends h2d.Object {
 
                 text.visible = child.visible;
 
-                add(text);
+                addTile(text);
             } else { 
                 var sprite:Sprite = if (!child.name.empty() && _childs.exists(child.name)) {
                     _childs.get(child.name).load(child.mc);
@@ -119,10 +123,10 @@ class Sprite extends h2d.Object {
                     tile.scaleY = _scaleY(child.a, child.b, shape.c, shape.d);
                     tile.rotation = _rotation(shape.b, shape.c, shape.d);
 
-                    sprite.add(tile);
+                    sprite.addTile(tile);
                 }
 
-                add(sprite);
+                addTile(sprite);
             }
         }
 
@@ -132,7 +136,7 @@ class Sprite extends h2d.Object {
                 child.reload();
 
                 // TODO: Usually non-og sprites are added on top, figure out a better way to preserve order
-                add(child);
+                addTile(child);
             }
         }
 
@@ -147,6 +151,9 @@ class Sprite extends h2d.Object {
     public function reload() {
         if (this.definition != null && layer.hasDefinition(this.definition.id)) {
             var definition = layer.getDefinition(this.definition.id);
+            load(definition);
+        } else if (linkage != null && layer.hasMC(linkage)) {
+            var definition = layer.getMC(linkage);
             load(definition);
         }
     }
@@ -201,7 +208,7 @@ class Sprite extends h2d.Object {
         }
     }
 
-    public function add(sprite:Sprite) {
+    public function addTile(sprite:Sprite) {
         sprites.push(sprite);
 
         sprite._parent = this;
@@ -209,8 +216,7 @@ class Sprite extends h2d.Object {
         addChild(sprite);
     }
 
-    // TODO: Better name
-    public inline function removeSprite(sprite:Sprite) {
+    public function removeTile(sprite:Sprite) {
         sprites.remove(sprite);
 
         sprite._parent = null;

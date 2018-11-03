@@ -20,6 +20,8 @@ class Layer extends Tilemap {
 
     var tiles:IntMap<Int>;
     var mcs:StringMap<MovieClipType>;
+
+    var sprites:Array<Sprite>;
     
     public static inline function create(width:Int, height:Int, ?tileset, ?tiles) {
         return new Layer(width, height, tileset, tiles);
@@ -38,8 +40,20 @@ class Layer extends Tilemap {
 
         this.tiles = tiles == null ? new IntMap() : tiles;
 
+        sprites = [];
+
         mcs = new StringMap();
         swfty = None;
+    }
+
+    public function add(sprite:Sprite) {
+        sprites.push(sprite);
+        addTile(sprite);
+    }
+
+    public function remove(sprite:Sprite) {
+        sprites.remove(sprite);
+        removeTile(sprite);
     }
 
     public inline function getTile(id:Int):Int {
@@ -90,10 +104,18 @@ class Layer extends Tilemap {
     public function get(linkage:String) {
         return if (!mcs.exists(linkage)) {
             Log.warn('Linkage: $linkage does not exists!');
-            Sprite.create(this);
+            Sprite.create(this, linkage);
         } else {
             Sprite.create(this, mcs.get(linkage));
         }
+    }
+
+    public inline function getMC(linkage:String):MovieClipType {
+        return mcs.get(linkage);
+    }
+
+    public inline function hasMC(linkage:String) {
+        return mcs.exists(linkage);
     }
 
     public function getById(id:Int) {
@@ -103,6 +125,10 @@ class Layer extends Tilemap {
         } else {
             Sprite.create(this, getDefinition(id));
         }
+    }
+
+    public function reload() {
+        for (sprite in sprites) sprite.reload();
     }
 
     public function load(bytes:Bytes, onComplete:Void->Void, onError:Dynamic->Void) {

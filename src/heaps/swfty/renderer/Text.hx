@@ -116,7 +116,7 @@ class Text extends Sprite {
 
                     sprite.scaleX = sprite.scaleY = scale;
 
-                    add(sprite);
+                    addTile(sprite);
 
                     currentLine.tiles.push({
                         code: code,

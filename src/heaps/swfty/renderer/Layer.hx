@@ -104,13 +104,25 @@ class Layer extends h2d.TileGroup {
     }
 
     public function get(linkage:String):Sprite {
-        return if (!mcs.exists(linkage)) {
+        return if (!hasMC(linkage)) {
             Log.warn('Linkage: $linkage does not exists!');
-            Sprite.create(this);
+            Sprite.create(this, linkage);
         } else {
             var sprite = Sprite.create(this, mcs.get(linkage));
             sprite;
         }
+    }
+
+    public inline function getMC(linkage:String):MovieClipType {
+        return mcs.get(linkage);
+    }
+
+    public inline function hasMC(linkage:String) {
+        return mcs.exists(linkage);
+    }
+
+    public function reload() {
+        for (sprite in sprites) sprite.reload();
     }
 
     public function load(bytes:Bytes, onComplete:Void->Void, onError:Dynamic->Void) {
@@ -122,6 +134,9 @@ class Layer extends h2d.TileGroup {
     }
 
     public function loadSWFTY(swfty:SWFTYType) {
+        mcs = new StringMap();
+        tiles = new IntMap();
+        
         for (definition in swfty.definitions) {
             if (definition.name != null && definition.name != '') mcs.set(definition.name, definition);
         }
