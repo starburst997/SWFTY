@@ -103,7 +103,10 @@ class Layer extends Tilemap {
 
     public function get(linkage:String) {
         return if (!mcs.exists(linkage)) {
-            Log.warn('Linkage: $linkage does not exists!');
+            switch(swfty) {
+                case Some(swfty) : Log.warn('Linkage: $linkage does not exists!');
+                case None : 
+            }
             Sprite.create(this, linkage);
         } else {
             Sprite.create(this, mcs.get(linkage));
@@ -120,7 +123,7 @@ class Layer extends Tilemap {
 
     public function getById(id:Int) {
         return if (!hasDefinition(id)) {
-            Log.warn('Linkage: $id does not exists!');
+            Log.warn('ID: $id does not exists!');
             Sprite.create(this);
         } else {
             Sprite.create(this, getDefinition(id));

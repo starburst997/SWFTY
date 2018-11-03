@@ -105,7 +105,10 @@ class Layer extends h2d.TileGroup {
 
     public function get(linkage:String):Sprite {
         return if (!hasMC(linkage)) {
-            Log.warn('Linkage: $linkage does not exists!');
+            switch(swfty) {
+                case Some(swfty) : Log.warn('Linkage: $linkage does not exists!');
+                case None : 
+            }
             Sprite.create(this, linkage);
         } else {
             var sprite = Sprite.create(this, mcs.get(linkage));

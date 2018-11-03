@@ -149,12 +149,20 @@ class Sprite extends h2d.Object {
     }
 
     public function reload() {
-        if (this.definition != null && layer.hasDefinition(this.definition.id)) {
-            var definition = layer.getDefinition(this.definition.id);
-            load(definition);
-        } else if (linkage != null && layer.hasMC(linkage)) {
-            var definition = layer.getMC(linkage);
-            load(definition);
+        if (this.definition != null) {
+            if (layer.hasDefinition(this.definition.id)) {
+                var definition = layer.getDefinition(this.definition.id);
+                load(definition);
+            } else {
+                Log.warn('Definition does no longer exists: ${this.definition.name} (${this.definition.id})');
+            }
+        } else if (linkage != null) {
+            if (layer.hasMC(linkage)) {
+                var definition = layer.getMC(linkage);
+                load(definition);
+            } else {
+                Log.warn('Definition does not exists: ${linkage}');
+            }
         }
     }
 
@@ -257,7 +265,7 @@ class Sprite extends h2d.Object {
         return if (_childs.exists(name)) {
             _childs.get(name);
         } else {
-            Log.warn('Child: $name does not exists!');
+            if (definition != null) Log.warn('Child: $name does not exists!');
             var sprite = create(layer);
             _childs.set(name, sprite);
             sprite;
@@ -268,7 +276,7 @@ class Sprite extends h2d.Object {
         return if (_texts.exists(name)) {
             _texts.get(name);
         } else {
-            Log.warn('Text: $name does not exists!');
+            if (definition != null) Log.warn('Text: $name does not exists!');
             var text = Text.create(layer);
             _texts.set(name, text);
             text;
