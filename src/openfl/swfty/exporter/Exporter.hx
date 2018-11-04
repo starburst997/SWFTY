@@ -1,5 +1,6 @@
 package openfl.swfty.exporter;
 
+import format.abc.Data.NamespaceSet;
 import openfl.swfty.exporter.Shape;
 import openfl.swfty.exporter.MovieClip;
 import openfl.swfty.exporter.FontExporter;
@@ -57,6 +58,7 @@ class Exporter {
 
     var maxId:Int = -1;
 
+    var name:String;
     var definitions:IntMap<Bool>;
     
     var movieClipsOrder:Array<MovieClipDefinition>;
@@ -86,13 +88,15 @@ class Exporter {
     var processFrame = 0;
     var nextFrames:Array<Void->Void> = [];
 
-    public static function create(bytes:ByteArray, onComplete:Exporter->Void) {
-        return new Exporter(bytes, onComplete);
+    public static function create(bytes:ByteArray, ?name:String, onComplete:Exporter->Void) {
+        return new Exporter(bytes, name, onComplete);
     }
 
-    public function new(bytes:ByteArray, onComplete:Exporter->Void) {
+    public function new(bytes:ByteArray, ?name:String, onComplete:Exporter->Void) {
         swf = new SWF(bytes);
         data = swf.data;
+
+        this.name = name == null ? 'NoName' : name;
 
         movieClipsOrder = [];
 
@@ -323,6 +327,7 @@ class Exporter {
         return bmpd.encode(bmpd.rect, new PNGEncoderOptions());
     }
 
+    // The whole point of this library was so I could get to name this function
     public function getSwfty(useJson = false, compressed = true) {
         var tilemap = getTilemap();
         var png = getPNG(tilemap.bitmapData);
@@ -337,6 +342,12 @@ class Exporter {
         }
 
         return zip.finalize();
+    }
+
+    // This gives us optional compile-time swfty to our safety
+    public function getAbstracts() {
+        var swfty = SWFTYType.fromJson(getSWFTYJson());
+        return ClassExporter.export(swfty, name);
     }
 
     function getTransform(matrix:Matrix):Transform {

@@ -1,47 +1,113 @@
 package openfl.swfty.exporter;
 
+import haxe.ds.StringMap;
 import haxe.ds.IntMap;
-
-import openfl.swfty.exporter.Shape;
-import openfl.swfty.exporter.MovieClip;
-import openfl.swfty.exporter.FontExporter;
-import openfl.swfty.exporter.TilemapExporter;
+import haxe.io.Bytes;
 
 /**
  * Goal isn't performance but rather type safety, we want the code to fail to compile if a sprite or textfield is missing
  * 
- * This could be just Abstract
- * 
  * I was contemplating having everything saved in the class but this would remove the ability to load SWFTY on the fly
  * The binary format should be fast enough
+ * 
+ * I was also contemplating using a macro, but I don't want things to get slow, this seemed like the cheapest easiest one
+ * since I'll have the swfty CLI running in background constantly watching for file changes
  */
 class ClassExporter {
 
     // Export to a String
-    public static function export(swfty:SWFTYType, name:String) {
+    public static function export(swfty:SWFTYType, name:String, resPath:String = '') {
+        var capitalizedName = name.capitalize();
 
+        // First get the top leveled named MovieClip, the rest are innacessible 
+        // but we will create definition for any named children with a dummy class name
+        var n = 0;
+        var abstractNames:Map<MovieClipType, String> = new Map();
+        
+        var addDefinition = function f(definition:MovieClipType, allow = false) {
+            if (abstractNames.exists(definition) || 
+                (!allow && (definition.children.count(child -> !child.name.empty() && (child.mc != null || child.text != null)) == 0))) 
+                return;
+            
+            var name = definition.name.empty() ? 'Instance${n++}' : definition.name.capitalize();
+            abstractNames.set(definition, name);
+            
+            // Each of it's named children should be included as well
+            for (child in definition.children) {
+                if (!child.name.empty() && (child.mc != null)) {
+                    f(child.mc);
+                }
+            }
+        }
+        
+        for (definition in swfty.definitions) {
+            if (!definition.name.empty()) {
+                addDefinition(definition, true);
+            }
+        }
 
+        // Once we have all type that we want to include, build them up!
+        var getLayerFile = '';
+        var abstractsFile = '';
+        for (definition in abstractNames.keys()) {
+            var name = abstractNames.get(definition);
+
+            var childsFile = '';
+            for (child in definition.children) {
+                if (!child.name.empty()) {
+                    if (child.text != null) {
+                        childsFile += '
+    public var ${child.name}(get, never):Text;
+    public inline function get_${child.name}() {
+        return this.getText("${child.name}");
     }
+                        ';
+                    } else if (child.mc != null) {
+                         var abstractName = abstractNames.exists(child.mc) ? abstractNames.get(child.mc) : 'Sprite';
 
-    // Save on filesystem
-    public static function exportPath(path:String, swfty:SWFTYType, name:String) {
+                        childsFile += '
+    public var ${child.name}(get, never):$abstractName;
+    public inline function get_${child.name}() {
+        return this.get("${child.name}");
+    }
+                        ';
+                    }
+                }
+            }
 
+            if (!definition.name.empty()) getLayerFile += '
+    public inline function get$name():$name {
+        return this.get("$name");
+    }
+            ';
+
+            if (definition.name.empty()) {
+                abstractsFile += '
+@:forward(x, y, scaleX, scaleY, rotation, add, remove)
+abstract $name(EngineSprite) from EngineSprite to EngineSprite {
+    $childsFile
+}
+                ';
+            } else {
+                abstractsFile += '
+@:forward(x, y, scaleX, scaleY, rotation, add, remove)
+abstract $name(EngineSprite) from EngineSprite to EngineSprite {
+    $childsFile
+    public static inline function create(layer:$capitalizedName):$name {
+        return layer.get$name();
     }
 }
+                ';
+            }
+        }
 
-/*var popup = Popup.create(layer);
-layer.addChild(popup);*/
-
-@:forward(x, y, scaleX, scaleY, rotation, getTile, get)
-abstract MyFLA(Layer) from Layer to Layer {
-
-    public inline function getInstance1():Instance1 {
-        return this.get('Instance1');
-    }
-
+        var layer = '
+@:forward(x, y, scaleX, scaleY, rotation, get, add, remove)
+abstract $capitalizedName(EngineLayer) from EngineLayer to EngineLayer {
+    $getLayerFile
     public inline function reload(?bytes:Bytes, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
-        inline function complete() {
-            layer.reload();
+        function complete() {
+            this.reload();
             if (onComplete != null) onComplete();
         }
         
@@ -53,31 +119,39 @@ abstract MyFLA(Layer) from Layer to Layer {
     }
 
     public inline function load(?onComplete:Void->Void, ?onError:Dynamic->Void) {
-        File.loadBytes('tower.swfty', bytes -> {
+        File.loadBytes("$resPath$name.swfty", bytes -> {
             this.load(bytes, () -> {
                 if (onComplete != null) onComplete();
             }, onError);
         }, onError);
     }
 
-    public static inline function create(width:Int, height:Int, ?onComplete:MyFLA->Void, ?onError:Dynamic->Void):MyFLA {
-        var layer = Layer.create(width, height);
+    public static inline function create(width:Int, height:Int, ?onComplete:$capitalizedName->Void, ?onError:Dynamic->Void):$capitalizedName {
+        var layer:$capitalizedName = Layer.create(width, height);
         layer.load(() -> if (onComplete != null) onComplete(layer), onError);
         return layer;
     }
-}
+}';
 
-@:forward(x, y, scaleX, scaleY, rotation, addTile)
-abstract Instance1(Sprite) from Sprite to Sprite {
+        var file = 'package swfty;
 
-    public var name1(get, never):Instance1;
+import haxe.io.Bytes;
 
-    public inline function get_name1() {
-        return this.get('name1');
+import swfty.utils.File;
+import swfty.renderer.Sprite;
+import swfty.renderer.Text;
+import swfty.renderer.Sprite.EngineSprite;
+import swfty.renderer.Layer.EngineLayer;
+
+/** This file is auto-generated! **/
+$layer
+$abstractsFile';
+
+        return file;
     }
 
-    // Only have create on named MovieClip (linkage name)
-    public static inline function create(layer:MyFLA):Instance1 {
-        return layer.getInstance1();
+    // Save on filesystem
+    public static function exportPath(path:String, swfty:SWFTYType, name:String, resPath:String = '') {
+        var file = export(swfty, name);
     }
 }

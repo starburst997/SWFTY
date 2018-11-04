@@ -1,5 +1,8 @@
 package openfl.swfty.renderer;
 
+import openfl.swfty.renderer.Layer;
+import openfl.swfty.renderer.Text;
+
 import haxe.ds.StringMap;
 
 import openfl.geom.ColorTransform;

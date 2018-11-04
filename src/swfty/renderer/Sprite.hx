@@ -1,9 +1,25 @@
 package swfty.renderer;
 
 #if openfl
-typedef Sprite = openfl.swfty.renderer.Sprite;
+typedef EngineSprite = openfl.swfty.renderer.Sprite;
+
+@:forward(x, y, scaleX, scaleY, rotation, add, remove)
+abstract Sprite(EngineSprite) from EngineSprite to EngineSprite {
+    
+}
 #elseif heaps
-typedef Sprite = heaps.swfty.renderer.Sprite;
+typedef EngineSprite = heaps.swfty.renderer.Sprite;
+
+@:forward(x, y, scaleX, scaleY, rotation)
+abstract Sprite(EngineSprite) from EngineSprite to EngineSprite {
+    public inline function add(sprite:Sprite) {
+        this.addSprite(sprite);
+    }
+
+    public inline function remove(sprite:Sprite) {
+        this.removeSprite(sprite);
+    }
+}
 #else
 #error 'Unsupported framework (please use OpenFL or Heaps)'
 #end

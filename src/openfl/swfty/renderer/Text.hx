@@ -1,5 +1,8 @@
 package openfl.swfty.renderer;
 
+import openfl.swfty.renderer.Sprite;
+import openfl.swfty.renderer.Layer;
+
 import openfl.geom.ColorTransform;
 import openfl.display.Tile;
 

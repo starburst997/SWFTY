@@ -1,5 +1,7 @@
 package openfl.swfty.renderer;
 
+import openfl.swfty.renderer.Sprite;
+
 import haxe.ds.IntMap;
 import haxe.ds.StringMap;
 import haxe.ds.Option;
@@ -23,23 +25,14 @@ class Layer extends Tilemap {
 
     var sprites:Array<Sprite>;
     
-    public static inline function create(width:Int, height:Int, ?tileset, ?tiles) {
-        return new Layer(width, height, tileset, tiles);
+    public static inline function create(width:Int, height:Int) {
+        return new Layer(width, height);
     }
 
-    public static inline function createAsync(width:Int, height:Int, bytes:Bytes, onComplete:Layer->Void, onError:Dynamic->Void) {
-        loadBytes(bytes, (tileset, tiles, swfty) -> {
-            var layer = create(width, height, tileset, tiles);
-            layer.loadSWFTY(swfty);
-            onComplete(layer);
-        }, onError);
-    }
+    public function new(width:Int, height:Int) {
+        super(width, height);
 
-    public function new(width:Int, height:Int, ?tileset, ?tiles) {
-        super(width, height, tileset);
-
-        this.tiles = tiles == null ? new IntMap() : tiles;
-
+        tiles = new IntMap();
         sprites = [];
 
         mcs = new StringMap();
@@ -99,6 +92,10 @@ class Layer extends Tilemap {
 
     public function resize(width:Int, height:Int) {
 
+    }
+
+    public function empty() {
+        return Sprite.create(this);
     }
 
     public function get(linkage:String) {
