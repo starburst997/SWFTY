@@ -1,20 +1,16 @@
-package openfl.swfty.renderer;
+package swfty.renderer;
 
-import openfl.swfty.renderer.Sprite;
-import openfl.swfty.renderer.Layer;
-
-import openfl.geom.ColorTransform;
-import openfl.display.Tile;
+import swfty.renderer.Sprite.FinalSprite;
 
 typedef Line = {
     textWidth: Float,
     tiles: Array<{
         code: Int,
-        tile: Tile
+        tile: DisplayBitmap
     }>
 }
 
-class Text extends Sprite {
+class BaseText extends FinalSprite {
 
     public static inline var SPACE = 0x20;
 
@@ -25,11 +21,7 @@ class Text extends Sprite {
 
     var textDefinition:Null<TextType>;
 
-    public static inline function create(layer:Layer, ?definition:TextType) {
-        return new Text(layer, definition);
-    }
-
-    public function new(layer:Layer, ?definition:TextType) {
+    public function new(layer:EngineLayer, ?definition:TextType) {
         super(layer);
 
         loadText(definition);
@@ -64,7 +56,7 @@ class Text extends Sprite {
         this.text = text;
 
         // Clear tiles
-        while(numTiles > 0) removeTileAt(0);
+        removeAll();
 
         if (text.empty()) {
             textWidth = 0;
@@ -104,14 +96,14 @@ class Text extends Sprite {
 
             if (textDefinition.font.has(code)) {
                 var char = textDefinition.font.get(code);
-                var tile = new Tile(layer.getTile(char.bitmap.id));
-                tile.colorTransform = new ColorTransform(r/255, g/255, b/255, 1.0);
+                var tile = layer.createBitmap(char.bitmap.id, true);
+                tile.color(r, g, b);
                 tile.x = x + char.tx;
                 tile.y = y + char.ty;
 
                 tile.scaleX = tile.scaleY = scale;
 
-                addTile(tile);
+                addBitmap(tile);
 
                 currentLine.tiles.push({
                     code: code,

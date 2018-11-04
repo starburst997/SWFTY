@@ -2,6 +2,7 @@
 package swfty.renderer;
 
 #if openfl
+typedef DisplayLayer = openfl.display.Tilemap;
 typedef EngineLayer = openfl.swfty.renderer.Layer;
 
 @:forward(x, y, scaleX, scaleY, rotation, alpha, load, reload, getAllNames, add, remove)
@@ -15,6 +16,7 @@ abstract Layer(EngineLayer) from EngineLayer to EngineLayer {
     }
 }
 #elseif heaps
+typedef DisplayLayer = h2d.TileGroup;
 typedef EngineLayer = heaps.swfty.renderer.Layer;
 
 @:forward(x, y, scaleX, scaleY, rotation, alpha, load, reload, getAllNames)

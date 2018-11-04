@@ -1,212 +1,119 @@
 package openfl.swfty.renderer;
 
 import openfl.swfty.renderer.Layer;
-import openfl.swfty.renderer.Text;
 
-import haxe.ds.StringMap;
+typedef EngineSprite = openfl.display.TileContainer;
+typedef EngineBitmap = openfl.display.Tile;
 
-import openfl.geom.ColorTransform;
-import openfl.display.Tile;
-import openfl.display.TileContainer;
-
-class Sprite extends TileContainer {
-
-    public var og:Bool = false;
-
-    public var name:String;
-    public var layer:Layer;
-
-    // For reload if definition didn't exists
-    var linkage:String;
-
-    var _parent:Sprite;
-    var _childs:Array<Sprite>;
-    var _names:StringMap<Sprite>;
-    var _texts:StringMap<Text>;
-    var definition:Null<MovieClipType>;
+class FinalSprite extends BaseSprite {
 
     public static inline function create(layer:Layer, ?definition:MovieClipType, ?linkage:String) {
-        return new Sprite(layer, definition, linkage);
-    }
+        return new FinalSprite(layer, definition, linkage);
+    }    
 
     public function new(layer:Layer, ?definition:MovieClipType, ?linkage:String) {
-        super();
-
-        this.layer = layer;
-        this.linkage = linkage;
-        
-        _childs = [];
-        _names = new StringMap();
-        _texts = new StringMap();
-    
-        load(definition);
+        super(layer, definition, linkage);
     }
 
-    public function load(definition:MovieClipType) {
-        this.definition = definition;
-        
-        var childs = _childs;
-        _childs = [];
-
-        // Clear tiles
-        while(numTiles > 0) removeTileAt(0);
-
-        if (definition == null) return this;
-
-        // Create children
-        for (child in definition.children) {
-            if (child.text != null) {
-                var text:Text = if (!child.name.empty() && _texts.exists(child.name)) {
-                    _texts.get(child.name).loadText(child.text);
-                } else {
-                    var text:Text = Text.create(layer, child.text);
-
-                    if (!child.name.empty()) {
-                        text.name = child.name;
-                        _texts.set(child.name, text);
-                    }
-                    text;
-                }
-                
-                text.og = true;
-                
-                text.matrix.a = child.a;
-                text.matrix.b = child.b;
-                text.matrix.c = child.c;
-                text.matrix.d = child.d;
-                text.matrix.tx = child.tx;
-                text.matrix.ty = child.ty;
-                text.visible = child.visible;
-
-                add(text);
-            } else {
-                var sprite:Sprite = if (!child.name.empty() && _names.exists(child.name)) {
-                    _names.get(child.name).load(child.mc);
-                } else {
-                    var sprite:Sprite = create(layer, child.mc);
-
-                    if (!child.name.empty()) {
-                        sprite.name = child.name;
-                        _names.set(child.name, sprite);
-                    }
-                    sprite;
-                }
-
-                sprite.og = true;
-                
-                sprite.matrix.a = child.a;
-                sprite.matrix.b = child.b;
-                sprite.matrix.c = child.c;
-                sprite.matrix.d = child.d;
-                sprite.matrix.tx = child.tx;
-                sprite.matrix.ty = child.ty;
-                sprite.alpha = child.alpha;
-                sprite.visible = child.visible;
-
-                // This will add drawCalls, so big no no unless you really want them
-                #if allowBlendMode
-                if (child.blendMode != Normal && child.blendMode != null) {
-                    sprite.blendMode = child.blendMode;
-                } else {
-                    sprite.blendMode = null;
-                }
-                #end
-
-                if (child.color != null) {
-                    var color = child.color;
-                    sprite.colorTransform = new openfl.geom.ColorTransform(color.r, color.g, color.b, 1.0, color.rAdd, color.gAdd, color.bAdd, 0.0);
-                } else {
-                    sprite.colorTransform = null;
-                }
-
-                for (shape in child.shapes) {
-                    var tile = new Tile(layer.getTile(shape.bitmap.id));
-                    tile.matrix.a = shape.a;
-                    tile.matrix.b = shape.b;
-                    tile.matrix.c = shape.c;
-                    tile.matrix.d = shape.d;
-                    tile.matrix.tx = shape.tx;
-                    tile.matrix.ty = shape.ty;
-
-                    sprite.addTile(tile);
-                }
-
-                add(sprite);
-            }
-        }
-
-        // Re-add non-og tile
-        for (child in childs) {
-            if (!child.og) {
-                if (!child.name.empty()) Log.warn('Missing Child: ${child.name}');
-
-                child.reload();
-
-                // TODO: Usually non-og sprites are added on top, figure out a better way to preserve order
-                add(child);
-            }
-        }
-        
-        return this;
-    }
-
-    public inline function getParent() {
-        return _parent;
-    }
-
-    public function reload() {
-        if (this.definition != null) {
-            if (layer.hasDefinition(this.definition.id)) {
-                var definition = layer.getDefinition(this.definition.id);
-                load(definition);
-            } else {
-                Log.warn('Definition does no longer exists: ${this.definition.name} (${this.definition.id})');
-            }
-        } else if (linkage != null) {
-            if (layer.hasMC(linkage)) {
-                var definition = layer.getMC(linkage);
-                load(definition);
-            } else {
-                Log.warn('Definition does not exists: ${linkage}');
-            }
-        }
-    }
-
-    public inline function add(sprite:Sprite) {
+    public override function addSprite(sprite:FinalSprite) {
         sprite._parent = this;
-        _childs.push(sprite);
+        super.addSprite(sprite);
         addTile(sprite);
     }
 
-    public inline function remove(sprite:Sprite) {
-        sprite._parent = null;
-        _childs.remove(sprite);
+    public override function removeSprite(sprite:FinalSprite) {
+        super.removeSprite(sprite);
         removeTile(sprite);
     }
 
-    public function get(name:String):Sprite {
-        return if (_names.exists(name)) {
-            _names.get(name);
-        } else {
-            if (definition != null) Log.warn('Child: $name does not exists!');
-            var sprite = create(layer);
-            sprite.name = name;
-            _names.set(name, sprite);
-            add(sprite);
-            sprite;
-        }
+    public override function addBitmap(bitmap:EngineBitmap) {
+        addTile(bitmap);
     }
 
-    public function getText(name:String):Text {
-        return if (_texts.exists(name)) {
-            _texts.get(name);
-        } else {
-            if (definition != null) Log.warn('Text: $name does not exists!');
-            var text = Text.create(layer);
-            text.name = name;
-            _texts.set(name, text);
-            add(text);
-            text;
-        }
+    public override function removeBitmap(bitmap:EngineBitmap) {
+        removeTile(bitmap);
+    }
+}
+
+@:forward(x, y, scaleX, scaleY, rotation, alpha)
+abstract DisplayBitmap(EngineBitmap) from EngineBitmap to EngineBitmap {
+
+    public static inline function create(layer:EngineLayer, id:Int, og:Bool = false):DisplayBitmap {
+        return new EngineBitmap(layer.getTile(id));
+    }
+
+    public inline function transform(a:Float, b:Float, c:Float, d:Float, tx:Float, ty:Float) {
+        this.matrix.a = a;
+        this.matrix.b = b;
+        this.matrix.c = c;
+        this.matrix.d = d;
+        this.matrix.tx = tx;
+        this.matrix.ty = ty;
+    }
+
+    public inline function color(r:Int, g:Int, b:Int) {
+        this.colorTransform = new openfl.geom.ColorTransform(r/255, g/255, b/255, 1.0);
+    }
+}
+
+@:forward(x, y, scaleX, scaleY, rotation, alpha)
+abstract DisplaySprite(BaseSprite) from BaseSprite to BaseSprite {
+
+    public inline function removeAll() {
+        while(this.numTiles > 0) this.removeTileAt(0);
+    }
+
+    public inline function transform(a:Float, b:Float, c:Float, d:Float, tx:Float, ty:Float) {
+        this.matrix.a = a;
+        this.matrix.b = b;
+        this.matrix.c = c;
+        this.matrix.d = d;
+        this.matrix.tx = tx;
+        this.matrix.ty = ty;
+    }
+
+    public inline function color(r:Float, g:Float, b:Float, rAdd:Float, gAdd:Float, bAdd:Float) {
+        this.colorTransform = new openfl.geom.ColorTransform(r, g, b, 1.0, rAdd, gAdd, bAdd, 0.0);
+    }
+
+    public inline function resetColor() {
+        this.colorTransform = null;
+    }
+
+    public inline function blend(mode:BlendMode) {
+        this.blendMode = mode;
+    }
+
+    public inline function resetBlend() {
+        this.blendMode = null;
+    }
+}
+
+@:forward(x, y, scaleX, scaleY, rotation, alpha, visible)
+abstract Sprite(FinalSprite) from FinalSprite to FinalSprite {
+
+    public static inline function create(layer:Layer, ?definition:MovieClipType, ?linkage:String):Sprite {
+        return new FinalSprite(layer, definition, linkage);
+    }
+
+    public var parent(get, never):Sprite;
+    public inline function get_parent():Sprite {
+        return this.getParent();
+    }
+    
+    public inline function add(sprite:Sprite) {
+        this.addSprite(sprite);
+    }
+
+    public inline function remove(sprite:Sprite) {
+        this.removeSprite(sprite);
+    }
+
+    public inline function get(name:String):Sprite {
+        return this.get(name);
+    }
+
+    public inline function getText(name:String):Text {
+        return this.getText(name);
     }
 }

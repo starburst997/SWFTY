@@ -1,19 +1,21 @@
 package swfty.renderer;
 
-#if openfl
-typedef EngineText = openfl.swfty.renderer.Text;
+// Currently no engine-specific implementation
+// But this is because we're using Bitmap Fonts
+// Eventually think about a solution to render text to reserved space in the texture
+
+class FinalText extends BaseText {
+
+    public static inline function create(layer:EngineLayer, ?definition:TextType) {
+        return new FinalText(layer, definition);
+    }
+
+    public function new(layer:EngineLayer, ?definition:TextType) {
+        super(layer, definition);
+    }
+}
 
 @:forward(x, y, scaleX, scaleY, rotation, text)
-abstract Text(EngineText) from EngineText to EngineText {
+abstract Text(FinalText) from FinalText to FinalText {
     
 }
-#elseif heaps
-typedef EngineText = heaps.swfty.renderer.Text;
-
-@:forward(x, y, scaleX, scaleY, rotation, text)
-abstract Text(EngineText) from EngineText to EngineText {
-    
-}
-#else
-#error 'Unsupported framework (please use OpenFL or Heaps)'
-#end

@@ -3,8 +3,10 @@ import swfty.utils.*;
 import swfty.Structure;
 
 #if !macro
+import swfty.renderer.BaseSprite;
 import swfty.renderer.Sprite;
 import swfty.renderer.Layer;
+import swfty.renderer.Text;
 #end
 
 using StringTools;

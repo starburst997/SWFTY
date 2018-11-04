@@ -23,7 +23,7 @@ class Layer extends Tilemap {
     var tiles:IntMap<Int>;
     var mcs:StringMap<MovieClipType>;
 
-    var sprites:Array<Sprite>;
+    var sprites:Array<FinalSprite>;
     
     public static inline function create(width:Int, height:Int) {
         return new Layer(width, height);
@@ -47,6 +47,10 @@ class Layer extends Tilemap {
     public function remove(sprite:Sprite) {
         sprites.remove(sprite);
         removeTile(sprite);
+    }
+
+    public inline function createBitmap(id:Int, og:Bool = false) {
+        return DisplayBitmap.create(this, id, og);
     }
 
     public inline function getTile(id:Int):Int {
