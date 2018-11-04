@@ -19,6 +19,7 @@ class Sprite extends TileContainer {
     // For reload if definition didn't exists
     var linkage:String;
 
+    var _parent:Sprite;
     var _childs:Array<Sprite>;
     var _names:StringMap<Sprite>;
     var _texts:StringMap<Text>;
@@ -149,6 +150,10 @@ class Sprite extends TileContainer {
         return this;
     }
 
+    public inline function getParent() {
+        return _parent;
+    }
+
     public function reload() {
         if (this.definition != null) {
             if (layer.hasDefinition(this.definition.id)) {
@@ -168,11 +173,13 @@ class Sprite extends TileContainer {
     }
 
     public inline function add(sprite:Sprite) {
+        sprite._parent = this;
         _childs.push(sprite);
         addTile(sprite);
     }
 
     public inline function remove(sprite:Sprite) {
+        sprite._parent = null;
         _childs.remove(sprite);
         removeTile(sprite);
     }

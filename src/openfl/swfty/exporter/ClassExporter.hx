@@ -83,15 +83,15 @@ class ClassExporter {
 
             if (definition.name.empty()) {
                 abstractsFile += '
-@:forward(x, y, scaleX, scaleY, rotation, add, remove)
-abstract $name(EngineSprite) from EngineSprite to EngineSprite {
+@:forward(x, y, scaleX, scaleY, rotation, alpha, add, remove, get, getText)
+abstract $name(Sprite) from Sprite to Sprite {
     $childsFile
 }
                 ';
             } else {
                 abstractsFile += '
-@:forward(x, y, scaleX, scaleY, rotation, add, remove)
-abstract $name(EngineSprite) from EngineSprite to EngineSprite {
+@:forward(x, y, scaleX, scaleY, rotation, alpha, add, remove, get, getText)
+abstract $name(Sprite) from Sprite to Sprite {
     $childsFile
     public static inline function create(layer:$capitalizedName):$name {
         return layer.get$name();
@@ -102,8 +102,8 @@ abstract $name(EngineSprite) from EngineSprite to EngineSprite {
         }
 
         var layer = '
-@:forward(x, y, scaleX, scaleY, rotation, get, add, remove)
-abstract $capitalizedName(EngineLayer) from EngineLayer to EngineLayer {
+@:forward(x, y, scaleX, scaleY, rotation, alpha, getAllNames, get, add, remove)
+abstract $capitalizedName(Layer) from Layer to Layer {
     $getLayerFile
     public inline function reload(?bytes:Bytes, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
         function complete() {
@@ -126,7 +126,7 @@ abstract $capitalizedName(EngineLayer) from EngineLayer to EngineLayer {
         }, onError);
     }
 
-    public static inline function create(width:Int, height:Int, ?onComplete:$capitalizedName->Void, ?onError:Dynamic->Void):$capitalizedName {
+    public static inline function create(?width:Int, ?height:Int, ?onComplete:$capitalizedName->Void, ?onError:Dynamic->Void):$capitalizedName {
         var layer:$capitalizedName = Layer.create(width, height);
         layer.load(() -> if (onComplete != null) onComplete(layer), onError);
         return layer;
@@ -140,8 +140,7 @@ import haxe.io.Bytes;
 import swfty.utils.File;
 import swfty.renderer.Sprite;
 import swfty.renderer.Text;
-import swfty.renderer.Sprite.EngineSprite;
-import swfty.renderer.Layer.EngineLayer;
+import swfty.renderer.Layer;
 
 /** This file is auto-generated! **/
 $layer

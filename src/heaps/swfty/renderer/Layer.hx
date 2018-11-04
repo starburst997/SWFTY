@@ -1,5 +1,7 @@
 package heaps.swfty.renderer;
 
+import heaps.swfty.renderer.Sprite;
+
 import h2d.RenderContext;
 import h2d.Tile;
 
@@ -21,28 +23,29 @@ class Layer extends h2d.TileGroup {
     var sprites:Array<Sprite>;
     var names:Array<String>;
 
-    public static inline function create(?tile:h2d.Tile, ?parent) {
-        return new Layer(tile, parent);
+    public static inline function create() {
+        return new Layer();
     }
 
-    public function new(?tile:h2d.Tile, ?parent) {
-        super(tile, parent);
+    public function new() {
+        super(null);
 
         sprites = [];
 
         mcs = new StringMap();
         tiles = new IntMap();
+        swfty = None;
     }
 
     public function getColor() {
         return curColor;
     } 
 
-    public function addTile(sprite:Sprite) {
+    public function addSprite(sprite:Sprite) {
         sprites.push(sprite);
     }
 
-    public function removeTile(sprite:Sprite) {
+    public function removeSprite(sprite:Sprite) {
         sprites.remove(sprite);
     }
 
@@ -151,14 +154,6 @@ class Layer extends h2d.TileGroup {
         this.swfty = Some(swfty);
 
         reload();
-    }
-
-    public static function createAsync(bytes:Bytes, ?parent, onComplete:Layer->Void, onError:Dynamic->Void) {
-        loadBytes(bytes, (tile, swfty) -> {
-            var layer = create(tile, parent);
-            layer.loadSWFTY(swfty);
-            onComplete(layer);
-        }, onError);
     }
 
     public static function loadBytes(bytes:Bytes, onComplete:h2d.Tile->SWFTYType->Void, onError:Dynamic->Void) {

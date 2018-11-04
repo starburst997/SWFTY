@@ -1,5 +1,8 @@
 package heaps.swfty.renderer;
 
+import heaps.swfty.renderer.Layer;
+import heaps.swfty.renderer.Text;
+
 import haxe.ds.StringMap;
 
 class Sprite extends h2d.Object {
@@ -48,6 +51,10 @@ class Sprite extends h2d.Object {
         load(definition);
     }
 
+    public inline function getParent() {
+        return _parent;
+    }
+
     public function load(definition:MovieClipType) {
         this.definition = definition;
 
@@ -84,7 +91,7 @@ class Sprite extends h2d.Object {
 
                 text.visible = child.visible;
 
-                addTile(text);
+                addSprite(text);
             } else { 
                 var sprite:Sprite = if (!child.name.empty() && _childs.exists(child.name)) {
                     _childs.get(child.name).load(child.mc);
@@ -125,10 +132,10 @@ class Sprite extends h2d.Object {
                     tile.scaleY = _scaleY(child.a, child.b, shape.c, shape.d);
                     tile.rotation = _rotation(shape.b, shape.c, shape.d);
 
-                    sprite.addTile(tile);
+                    sprite.addSprite(tile);
                 }
 
-                addTile(sprite);
+                addSprite(sprite);
             }
         }
 
@@ -140,7 +147,7 @@ class Sprite extends h2d.Object {
                 child.reload();
 
                 // TODO: Usually non-og sprites are added on top, figure out a better way to preserve order
-                addTile(child);
+                addSprite(child);
             }
         }
 
@@ -220,7 +227,7 @@ class Sprite extends h2d.Object {
         }
     }
 
-    public function addTile(sprite:Sprite) {
+    public function addSprite(sprite:Sprite) {
         sprites.push(sprite);
 
         sprite._parent = this;
@@ -228,7 +235,7 @@ class Sprite extends h2d.Object {
         addChild(sprite);
     }
 
-    public function removeTile(sprite:Sprite) {
+    public function removeSprite(sprite:Sprite) {
         sprites.remove(sprite);
 
         sprite._parent = null;

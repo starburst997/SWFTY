@@ -1,5 +1,8 @@
 package heaps.swfty.renderer;
 
+import heaps.swfty.renderer.Layer;
+import heaps.swfty.renderer.Sprite;
+
 typedef Line = {
     textWidth: Float,
     tiles: Array<{
@@ -116,7 +119,7 @@ class Text extends Sprite {
 
                     sprite.scaleX = sprite.scaleY = scale;
 
-                    addTile(sprite);
+                    addSprite(sprite);
 
                     currentLine.tiles.push({
                         code: code,
