@@ -6,12 +6,17 @@ class BaseSprite extends EngineSprite {
 
     public var og:Bool = false;
 
-    public var name:String;
     public var layer:EngineLayer;
+
+    // TODO: Only used on heaps
+    public var r:Float = 1.0;
+    public var g:Float = 1.0;
+    public var b:Float = 1.0;
 
     // For reload if definition didn't exists
     var linkage:String;
 
+    var _name:String;
     var _parent:FinalSprite;
     var _sprites:Array<FinalSprite>;
     var _names:StringMap<FinalSprite>;
@@ -53,12 +58,14 @@ class BaseSprite extends EngineSprite {
         for (child in definition.children) {
             if (child.text != null) {
                 var text = if (!child.name.empty() && _texts.exists(child.name)) {
-                    _texts.get(child.name).loadText(child.text);
+                    var text = _texts.get(child.name);
+                    text.loadText(child.text);
+                    text;
                 } else {
                     var text = FinalText.create(layer, child.text);
 
                     if (!child.name.empty()) {
-                        text.name = child.name;
+                        text._name = child.name;
                         _texts.set(child.name, text);
                     }
                     text;
@@ -77,9 +84,8 @@ class BaseSprite extends EngineSprite {
                     sprite;
                 } else {
                     var sprite = FinalSprite.create(layer, child.mc);
-
                     if (!child.name.empty()) {
-                        sprite.name = child.name;
+                        sprite._name = child.name;
                         _names.set(child.name, sprite);
                     }
                     sprite;
@@ -176,7 +182,7 @@ class BaseSprite extends EngineSprite {
         } else {
             if (definition != null) Log.warn('Child: $name does not exists!');
             var sprite = FinalSprite.create(layer);
-            sprite.name = name;
+            sprite._name = name;
             _names.set(name, sprite);
             addSprite(sprite);
             sprite;
@@ -189,7 +195,7 @@ class BaseSprite extends EngineSprite {
         } else {
             if (definition != null) Log.warn('Text: $name does not exists!');
             var text = FinalText.create(layer);
-            text.name = name;
+            text._name = name;
             _texts.set(name, text);
             addSprite(text);
             text;

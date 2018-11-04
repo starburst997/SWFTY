@@ -1,7 +1,5 @@
 package heaps.swfty.renderer;
 
-import heaps.swfty.renderer.Sprite;
-
 import h2d.RenderContext;
 import h2d.Tile;
 
@@ -20,7 +18,7 @@ class Layer extends h2d.TileGroup {
     var tiles:IntMap<h2d.Tile>;
     var mcs:StringMap<MovieClipType>;
     
-    var sprites:Array<Sprite>;
+    var sprites:Array<FinalSprite>;
     var names:Array<String>;
 
     public static inline function create() {
@@ -58,6 +56,10 @@ class Layer extends h2d.TileGroup {
         for (sprite in sprites) sprite.render(ctx);
         
         super.draw(ctx);
+    }
+
+    public inline function createBitmap(id:Int, og:Bool = false) {
+        return DisplayBitmap.create(this, id, og);
     }
 
     public function update(dt:Float) {

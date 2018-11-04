@@ -6,7 +6,7 @@ package swfty.renderer;
 
 class FinalText extends BaseText {
 
-    public static inline function create(layer:EngineLayer, ?definition:TextType) {
+    public static inline function create(layer:EngineLayer, ?definition:TextType):FinalText {
         return new FinalText(layer, definition);
     }
 
