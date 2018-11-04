@@ -29,7 +29,7 @@ class ClassExporter {
                 (!allow && (definition.children.count(child -> !child.name.empty() && (child.mc != null || child.text != null)) == 0))) 
                 return;
             
-            var name = definition.name.empty() ? 'Instance${n++}' : definition.name.capitalize();
+            var name = definition.name.empty() ? 'Instance${n++}' : definition.name.capitalize().replace('.', '_');
             abstractNames.set(definition, name);
             
             // Each of it's named children should be included as well
@@ -77,7 +77,7 @@ class ClassExporter {
 
             if (!definition.name.empty()) getLayerFile += '
     public inline function get$name():$name {
-        return this.get("$name");
+        return this.get("${definition.name}");
     }
             ';
 

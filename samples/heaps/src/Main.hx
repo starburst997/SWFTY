@@ -40,43 +40,43 @@ class Main extends hxd.App {
 
         hxd.Window.getInstance().addEventTarget(onEvent);
 
-        renderSWFTYAsync('Popup.swfty', layer -> {
-            layers.push(layer);
-            s2d.addChild(layer);
-
-            sprite = layer.get('PopupShop');
-            //sprite.x += 408;
-            //sprite.y += 208;
-            sprite.scaleX = 0.75;
-            sprite.scaleY = 0.75;
-            //sprite.rotation = -1.0;
-
-            layer.addTile(sprite);
-
-            #if test
-            if (!debugInitialized) {
-                debugInitialized = true;
-
-                // TODO: Find a more elegant way for this
-                #if js
-                var font = hxd.Res.debug_fnt.toFont();
-                #else
-                var font = hxd.Res.fonts.debug_fnt.toFont();
-                #end
-                if (info1Text == null) info1Text = font.text(s2d).setSpacing(0).setAlign(h2d.Text.Align.Left).changeScale(0.75).setAlpha(1.0);
-                if (info2Text == null) info2Text = font.text(s2d).setSpacing(0).setAlign(h2d.Text.Align.Left).changeScale(0.75).setAlpha(1.0);
-                if (info3Text == null) info3Text = font.text(s2d).setSpacing(0).setAlign(h2d.Text.Align.Left).changeScale(0.75).setAlpha(1.0);
-                
-                info1Text.setPosition(20.0, 20.0);
-                info2Text.setPosition(20.0, 50.0);
-                info3Text.setPosition(20.0, 80.0);
-            }
-            #end
-
+        var layer = renderSWFTY('Popup.swfty', layer -> {    
             trace('Done!');
         }, error -> {
             trace('Error: $error');
         });
+
+        layers.push(layer);
+        s2d.addChild(layer);
+
+        sprite = layer.get('PopupShop');
+        //sprite.x += 408;
+        //sprite.y += 208;
+        sprite.scaleX = 0.75;
+        sprite.scaleY = 0.75;
+        //sprite.rotation = -1.0;
+
+        layer.add(sprite);
+
+        #if test
+        if (!debugInitialized) {
+            debugInitialized = true;
+
+            // TODO: Find a more elegant way for this
+            #if js
+            var font = hxd.Res.debug_fnt.toFont();
+            #else
+            var font = hxd.Res.fonts.debug_fnt.toFont();
+            #end
+            if (info1Text == null) info1Text = font.text(s2d).setSpacing(0).setAlign(h2d.Text.Align.Left).changeScale(0.75).setAlpha(1.0);
+            if (info2Text == null) info2Text = font.text(s2d).setSpacing(0).setAlign(h2d.Text.Align.Left).changeScale(0.75).setAlpha(1.0);
+            if (info3Text == null) info3Text = font.text(s2d).setSpacing(0).setAlign(h2d.Text.Align.Left).changeScale(0.75).setAlpha(1.0);
+            
+            info1Text.setPosition(20.0, 20.0);
+            info2Text.setPosition(20.0, 50.0);
+            info3Text.setPosition(20.0, 80.0);
+        }
+        #end
 
         onResize();
     }
@@ -116,11 +116,14 @@ class Main extends hxd.App {
         super.update(dt);
 
         for (layer in layers) {
-            layer.update(dt);
+            // We need to call update on heaps layer
+            var heapsLayer:EngineLayer = layer;
+            heapsLayer.update(dt);
 
-            continue;
+            //continue;
 
             var names = layer.getAllNames();
+
             var name = names[Std.int(Math.random() * names.length)];
             var sprite = layer.get(name);
 
@@ -140,18 +143,20 @@ class Main extends hxd.App {
             sprite.alpha = 1.0;
             sprite.rotation = 0.0;
 
-            sprite.addRender((dt) -> {
+            // Quick hack for now
+            var heapsSprite:EngineSprite = sprite;
+            heapsSprite.addRender((dt) -> {
                 sprite.x += speedX * dt;
                 sprite.y += speedY * dt;
                 sprite.rotation += speedRotation * dt;
                 sprite.alpha -= speedAlpha * dt;
 
                 if (sprite.alpha <= 0) {
-                    layer.removeTile(sprite);
+                    layer.remove(sprite);
                 }
             });
 
-            layer.addTile(sprite);
+            layer.add(sprite);
         }
 
         #if test
@@ -159,15 +164,15 @@ class Main extends hxd.App {
         #end
     }
 
-    public function renderSWFTYAsync(path:String, onComplete:Layer->Void, onError:Dynamic->Void) {
+    public function renderSWFTY(path:String, ?onComplete:Layer->Void, ?onError:Dynamic->Void) {
+        var layer = Layer.create();
         File.loadBytes(path, bytes -> {
-            var timer = haxe.Timer.stamp();
-            
-            Layer.createAsync(bytes, layer -> onComplete(layer), (e) -> onError('Cannot load: $e!'));
-            
-            trace('Parsed SWFTY: ${haxe.Timer.stamp() - timer}');
-        });
-	}
+            layer.load(bytes, () -> {
+                if (onComplete != null) onComplete(layer);
+            }, onError);
+        }, onError);
+        return layer;
+    } 
 
     function printDebug() {
         if (debugInitialized) {

@@ -12,6 +12,8 @@ import openfl.display.Sprite;
 import openfl.events.Event;
 import openfl.Assets;
 
+using swfty.utils.Tools;
+
 class Main extends Sprite {
 
     var afterFrames:Array<Void->Void> = [];
@@ -39,10 +41,18 @@ class Main extends Sprite {
 
     function process() {
 		// Process SWF
-		//var layer = renderSWFTY('res/Popup.swfty', layer -> {
+
+        // Asynchronous creation
         processSWF('res/Popup.swf', layer -> {
-        //renderSWFTYAsync('res/Popup.swfty', layer -> {
-            trace('Yay loading finished!');
+        //renderSWFTY('res/Popup.swfty', layer -> {
+
+        /*({
+            // Synchronous creation
+            var layer = renderSWFTY('res/Popup.swfty', layer -> {
+                trace('Yay loading finished!');
+            }, error -> {
+                trace('Error: $error');
+            });*/
 
             /*var bmp = new Bitmap(layer.tileset.bitmapData);
             addChild(bmp);*/
@@ -55,11 +65,11 @@ class Main extends Sprite {
             addChildAt(layer, 0);
 
             var sprite = layer.get('PopupShop');
-            sprite.x += 470;
+            sprite.x += 0;
             sprite.scaleX = sprite.scaleY = 0.75;
             layer.add(sprite);
 
-            return;
+            //return;
 
             // TODO: VSCode was choking on the naming, not sure why but this did the trick
             var spawn = function f() {
@@ -90,11 +100,11 @@ class Main extends Sprite {
 
                         if (sprite.alpha <= 0) {
                             layer.remove(sprite);
-                            layer.removeEventListener(Event.ENTER_FRAME, render);
+                            removeEventListener(Event.ENTER_FRAME, render);
                         }
                     }
 
-                    layer.addEventListener(Event.ENTER_FRAME, render);
+                    addEventListener(Event.ENTER_FRAME, render);
                     //sprites.push(sprite);
 
                     layer.add(sprite);
@@ -107,9 +117,6 @@ class Main extends Sprite {
             spawn();
             
             stage.addEventListener(Event.ENTER_FRAME, render);
-        
-        }, error -> {
-            trace('Error: $error');
         });
 	}
 
@@ -118,40 +125,18 @@ class Main extends Sprite {
         timer = haxe.Timer.stamp();
     }
 
-	public function renderSWFTYAsync(path:String, onComplete:Layer->Void, onError:Dynamic->Void) {
-		Assets
-		.loadBytes(path)
-		.onError(function(error) {
-			trace('Error!!!', error);
-            onError(error);
-		})
-		.onComplete(function(bytes) {
-			trace('Loaded ${bytes.length}');
-
-			var timer = haxe.Timer.stamp();
-			
-            trace(stage.stageWidth, stage.stageHeight);
-            Layer.createAsync(stage.stageWidth, stage.stageHeight, bytes, layer -> onComplete(layer), (e) -> onError('Cannot load: $e!'));
-            
-            trace('Parsed SWFTY: ${haxe.Timer.stamp() - timer}');
-		});
-	}
-
-    public function renderSWFTY(path:String, onComplete:Layer->Void, onError:Dynamic->Void) {
+    public function renderSWFTY(path:String, ?onComplete:Layer->Void, ?onError:Dynamic->Void) {
 		var layer = Layer.create(stage.stageWidth, stage.stageHeight);
         
         Assets
 		.loadBytes(path)
-		.onError(function(error) {
-			trace('Error!!!', error);
-            onError(error);
-		})
+		.onError(onError)
 		.onComplete(function(bytes) {
 			trace('Loaded ${bytes.length}');
 
 			var timer = haxe.Timer.stamp();
 			
-            layer.load(bytes, () -> onComplete(layer), (e) -> onError('Cannot load: $e!'));
+            layer.load(bytes, () -> if (onComplete != null) onComplete(layer), onError);
             
             trace('Parsed SWFTY: ${haxe.Timer.stamp() - timer}');
 		});
@@ -159,27 +144,28 @@ class Main extends Sprite {
         return layer;
 	}
 
-    public function processSWF(path:String, onComplete:Layer->Void, onError:Dynamic->Void) {
+    public function processSWF(path:String, ?onComplete:Layer->Void, ?onError:Dynamic->Void) {
 		var layer = Layer.create(stage.stageWidth, stage.stageHeight);
 
         Assets
 		.loadBytes(path)
-		.onError(function(error) {
-			trace('Error!!!', error);
-            onError(error);
-		})
+		.onError(onError)
 		.onComplete(function(bytes) {
 			trace('Loaded ${bytes.length}');
 
+            // Get name from path
+            var name = new haxe.io.Path(path).file;
+
 			var timer = haxe.Timer.stamp();
-			Exporter.create(bytes, function(exporter) {
+			Exporter.create(bytes, name, function(exporter) {
                 // TODO: Could be more optimized by getting the tilemap + definition straigt from exporter object
                 //       and passing it down to layer
                 var bytes = exporter.getSwfty();
-                layer.load(bytes, () -> onComplete(layer), (e) -> onError('Cannot load $e!'));
+                layer.load(bytes, () -> if (onComplete != null) onComplete(layer), onError);
                 
                 // Save file for test
-                FileSave.saveClickBytes(bytes, path.substring(path.lastIndexOf('/') + 1, path.length).replace('.swf', '.swfty'));
+                FileSave.saveClickBytes(bytes, '$name.swfty');
+                FileSave.saveClickString(exporter.getAbstracts(), '${name.capitalize()}.hx');
 
                 trace('Parsed SWF: ${haxe.Timer.stamp() - timer}');
             });

@@ -93,8 +93,7 @@ class Layer extends h2d.TileGroup {
     }
 
     public inline function getAllNames() {
-        if (names == null) names = [for (key in mcs.keys()) key];
-        return names;
+        return [for (key in mcs.keys()) key];
     }
 
     public inline function getTile(id:Int):h2d.Tile {
