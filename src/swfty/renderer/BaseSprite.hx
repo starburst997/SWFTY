@@ -80,7 +80,7 @@ class BaseSprite extends EngineSprite {
             } else {
                 var sprite = if (!child.name.empty() && _names.exists(child.name)) {
                     var sprite = _names.get(child.name);
-                    load(child.mc);
+                    sprite.load(child.mc);
                     sprite;
                 } else {
                     var sprite = FinalSprite.create(layer, child.mc);
