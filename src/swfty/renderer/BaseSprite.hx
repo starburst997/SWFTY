@@ -6,7 +6,7 @@ class BaseSprite extends EngineSprite {
 
     public var og:Bool = false;
 
-    public var layer:EngineLayer;
+    public var layer:BaseLayer;
 
     // TODO: Only used on heaps
     public var r:Float = 1.0;
@@ -23,7 +23,7 @@ class BaseSprite extends EngineSprite {
     var _texts:StringMap<FinalText>;
     var definition:Null<MovieClipType>;
 
-    public function new(layer:Layer, ?definition:MovieClipType, ?linkage:String) {
+    public function new(layer:BaseLayer, ?definition:MovieClipType, ?linkage:String) {
         super();
 
         this.layer = layer;

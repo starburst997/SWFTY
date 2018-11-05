@@ -7,11 +7,11 @@ typedef EngineBitmap = openfl.display.Tile;
 
 class FinalSprite extends BaseSprite {
 
-    public static inline function create(layer:Layer, ?definition:MovieClipType, ?linkage:String) {
+    public static inline function create(layer:BaseLayer, ?definition:MovieClipType, ?linkage:String) {
         return new FinalSprite(layer, definition, linkage);
     }    
 
-    public function new(layer:Layer, ?definition:MovieClipType, ?linkage:String) {
+    public function new(layer:BaseLayer, ?definition:MovieClipType, ?linkage:String) {
         super(layer, definition, linkage);
     }
 
@@ -38,7 +38,7 @@ class FinalSprite extends BaseSprite {
 @:forward(x, y, scaleX, scaleY, rotation, alpha)
 abstract DisplayBitmap(EngineBitmap) from EngineBitmap to EngineBitmap {
 
-    public static inline function create(layer:EngineLayer, id:Int, og:Bool = false):DisplayBitmap {
+    public static inline function create(layer:BaseLayer, id:Int, og:Bool = false):DisplayBitmap {
         return new EngineBitmap(layer.getTile(id));
     }
 
@@ -86,34 +86,5 @@ abstract DisplaySprite(BaseSprite) from BaseSprite to BaseSprite {
 
     public inline function resetBlend() {
         this.blendMode = null;
-    }
-}
-
-@:forward(x, y, scaleX, scaleY, rotation, alpha, visible)
-abstract Sprite(FinalSprite) from FinalSprite to FinalSprite {
-
-    public static inline function create(layer:Layer, ?definition:MovieClipType, ?linkage:String):Sprite {
-        return new FinalSprite(layer, definition, linkage);
-    }
-
-    public var parent(get, never):Sprite;
-    public inline function get_parent():Sprite {
-        return this.getParent();
-    }
-    
-    public inline function add(sprite:Sprite) {
-        this.addSprite(sprite);
-    }
-
-    public inline function remove(sprite:Sprite) {
-        this.removeSprite(sprite);
-    }
-
-    public inline function get(name:String):Sprite {
-        return this.get(name);
-    }
-
-    public inline function getText(name:String):Text {
-        return this.getText(name);
     }
 }

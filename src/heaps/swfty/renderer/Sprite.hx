@@ -11,11 +11,11 @@ class FinalSprite extends BaseSprite {
     var _lastAlpha = 1.0;
     var renders:Array<Float->Void>;
 
-    public static inline function create(layer:Layer, ?tile:h2d.Tile, ?definition:MovieClipType, ?linkage:String) {
+    public static inline function create(layer:BaseLayer, ?tile:h2d.Tile, ?definition:MovieClipType, ?linkage:String) {
         return new FinalSprite(layer, tile, definition, linkage);
     }    
 
-    public function new(layer:Layer, ?tile:h2d.Tile, ?definition:MovieClipType, ?linkage:String) {
+    public function new(layer:BaseLayer, ?tile:h2d.Tile, ?definition:MovieClipType, ?linkage:String) {
         this.tile = tile;
         
         renders = [];
@@ -59,7 +59,7 @@ class FinalSprite extends BaseSprite {
 
     override function draw(ctx) {
         if (tile != null) {    
-            layer.drawTile(Std.int(MathUtils.x(absX)), Std.int(MathUtils.y(absY)), MathUtils.scaleX(matA, matB, matC, matD), MathUtils.scaleY(matA, matB, matC, matD), MathUtils.rotation(matB, matC, matD), color, tile);
+            @:privateAccess layer.content.addTransform(Std.int(MathUtils.x(absX)), Std.int(MathUtils.y(absY)), MathUtils.scaleX(matA, matB, matC, matD), MathUtils.scaleY(matA, matB, matC, matD), MathUtils.rotation(matB, matC, matD), color, tile);
         }
     }
 
@@ -96,7 +96,7 @@ class FinalSprite extends BaseSprite {
 @:forward(x, y, scaleX, scaleY, rotation, alpha)
 abstract DisplayBitmap(EngineBitmap) from EngineBitmap to EngineBitmap {
 
-    public static inline function create(layer:EngineLayer, id:Int, og:Bool = false):DisplayBitmap {
+    public static inline function create(layer:BaseLayer, id:Int, og:Bool = false):DisplayBitmap {
         var sprite = FinalSprite.create(layer, layer.getTile(id));
         sprite.og = og;
         return sprite;
@@ -150,34 +150,5 @@ abstract DisplaySprite(BaseSprite) from BaseSprite to BaseSprite {
 
     public inline function resetBlend() {
         
-    }
-}
-
-@:forward(x, y, scaleX, scaleY, rotation, alpha, visible)
-abstract Sprite(FinalSprite) from FinalSprite to FinalSprite {
-
-    public static inline function create(layer:Layer, ?definition:MovieClipType, ?linkage:String):Sprite {
-        return new FinalSprite(layer, definition, linkage);
-    }
-
-    public var parent(get, never):Sprite;
-    public inline function get_parent():Sprite {
-        return this.getParent();
-    }
-    
-    public inline function add(sprite:Sprite) {
-        this.addSprite(sprite);
-    }
-
-    public inline function remove(sprite:Sprite) {
-        this.removeSprite(sprite);
-    }
-
-    public inline function get(name:String):Sprite {
-        return this.get(name);
-    }
-
-    public inline function getText(name:String):Text {
-        return this.getText(name);
     }
 }

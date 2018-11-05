@@ -21,7 +21,7 @@ class BaseText extends FinalSprite {
 
     var textDefinition:Null<TextType>;
 
-    public function new(layer:EngineLayer, ?definition:TextType) {
+    public function new(layer:BaseLayer, ?definition:TextType) {
         super(layer);
 
         loadText(definition);

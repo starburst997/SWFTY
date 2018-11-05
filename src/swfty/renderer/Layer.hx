@@ -2,31 +2,23 @@
 package swfty.renderer;
 
 #if openfl
-typedef DisplayLayer = openfl.display.Tilemap;
-typedef EngineLayer = openfl.swfty.renderer.Layer;
+typedef DisplayTile = openfl.swfty.renderer.Layer.DisplayTile;
+typedef EngineLayer = openfl.swfty.renderer.Layer.EngineLayer;
+typedef FinalLayer = openfl.swfty.renderer.Layer.FinalLayer;
 
-@:forward(x, y, scaleX, scaleY, rotation, alpha, load, reload, getAllNames, add, remove)
-abstract Layer(EngineLayer) from EngineLayer to EngineLayer {
-    public static inline function create(?width:Int, ?height:Int):Layer {
-        return EngineLayer.create(width == null ? 256 : width, height == null ? 256 : height);
-    }
-
-    public inline function get(linkage:String):Sprite {
-        return this.get(linkage);
-    }
-}
 #elseif heaps
-typedef DisplayLayer = h2d.TileGroup;
-typedef EngineLayer = heaps.swfty.renderer.Layer;
+typedef DisplayTile = heaps.swfty.renderer.Layer.DisplayTile;
+typedef EngineLayer = heaps.swfty.renderer.Layer.EngineLayer;
+typedef FinalLayer = heaps.swfty.renderer.Layer.FinalLayer;
 
-@:forward(x, y, scaleX, scaleY, rotation, alpha, load, reload, getAllNames)
-abstract Layer(EngineLayer) from EngineLayer to EngineLayer {
+#else
+#error 'Unsupported framework (please use OpenFL or Heaps)'
+#end
+
+@:forward(x, y, scaleX, scaleY, rotation, alpha, loadBytes, reload, getAllNames)
+abstract Layer(FinalLayer) from FinalLayer to FinalLayer {
     public static inline function create(?width:Int, ?height:Int):Layer {
-        return EngineLayer.create();
-    }
-
-    public inline function get(linkage:String):Sprite {
-        return this.get(linkage);
+        return FinalLayer.create(width, height);
     }
 
     public inline function add(sprite:Sprite) {
@@ -36,7 +28,8 @@ abstract Layer(EngineLayer) from EngineLayer to EngineLayer {
     public inline function remove(sprite:Sprite) {
         this.removeSprite(sprite);
     }
+
+    public inline function get(linkage:String):Sprite {
+        return this.get(linkage);
+    }
 }
-#else
-#error 'Unsupported framework (please use OpenFL or Heaps)'
-#end
