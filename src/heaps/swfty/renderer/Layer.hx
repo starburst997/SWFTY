@@ -6,7 +6,7 @@ import haxe.ds.IntMap;
 import h2d.RenderContext;
 import h2d.Tile;
 
-import swfty.renderer.Sprite;
+import swfty.renderer.BaseLayer;
 
 typedef EngineLayer = h2d.TileGroup;
 typedef DisplayTile = h2d.Tile;
@@ -21,10 +21,6 @@ class FinalLayer extends BaseLayer {
         super(null);
     }
 
-    public function getColor() {
-        return curColor;
-    } 
-
     override function draw(ctx:RenderContext) {
         clear();
         for (sprite in sprites) sprite.render(ctx);
@@ -37,7 +33,7 @@ class FinalLayer extends BaseLayer {
     }
 
     public override function emptyTile():DisplayTile {
-        return tile == null ? null : tile.sub(0, 0, 1, 1);
+        return null;
     }
 
     public override function loadTexture(bytes:Bytes, swfty:SWFTYType, ?onComplete:Void->Void, ?onError:Dynamic->Void) {

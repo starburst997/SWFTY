@@ -1,5 +1,7 @@
 package heaps.swfty.renderer;
 
+import swfty.renderer.BaseSprite;
+
 typedef EngineSprite = h2d.Object;
 typedef EngineBitmap = FinalSprite;
 
@@ -59,7 +61,12 @@ class FinalSprite extends BaseSprite {
 
     override function draw(ctx) {
         if (tile != null) {    
-            @:privateAccess layer.content.addTransform(Std.int(MathUtils.x(absX)), Std.int(MathUtils.y(absY)), MathUtils.scaleX(matA, matB, matC, matD), MathUtils.scaleY(matA, matB, matC, matD), MathUtils.rotation(matB, matC, matD), color, tile);
+            @:privateAccess layer.content.addTransform(
+                Std.int(MathUtils.x(absX)), 
+                Std.int(MathUtils.y(absY)), 
+                MathUtils.scaleX(matA, matB, matC, matD), 
+                MathUtils.scaleY(matA, matB, matC, matD), 
+                MathUtils.rotation(matB, matC, matD), color, tile);
         }
     }
 

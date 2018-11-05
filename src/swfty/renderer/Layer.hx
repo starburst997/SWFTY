@@ -17,6 +17,16 @@ typedef FinalLayer = heaps.swfty.renderer.Layer.FinalLayer;
 
 @:forward(x, y, scaleX, scaleY, rotation, alpha, loadBytes, reload, getAllNames)
 abstract Layer(FinalLayer) from FinalLayer to FinalLayer {
+    public static inline function load(path:String, ?onComplete:Layer->Void, ?onError:Dynamic->Void, ?width:Int, ?height:Int) {
+        var layer = Layer.create();
+        File.loadBytes(path, bytes -> {
+            layer.loadBytes(bytes, () -> {
+                if (onComplete != null) onComplete(layer);
+            }, onError);
+        }, onError);
+        return layer;
+    }
+    
     public static inline function create(?width:Int, ?height:Int):Layer {
         return FinalLayer.create(width, height);
     }
