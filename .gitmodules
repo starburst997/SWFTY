@@ -34,3 +34,6 @@
 [submodule "submodules/hxcpp"]
 	path = submodules/hxcpp
 	url = git@github.com:starburst997/hxcpp.git
+[submodule "submodules/tweenx"]
+	path = submodules/tweenx
+	url = git@github.com:shohei909/tweenx.git
