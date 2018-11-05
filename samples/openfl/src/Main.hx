@@ -1,13 +1,11 @@
 package;
 
+import js.html.LocalMediaStream;
 import swfty.exporter.Exporter;
 import swfty.renderer.Layer;
 
-import openfl.swfty.exporter.FontExporter;
-
 import file.save.FileSave;
 
-import openfl.display.Bitmap;
 import openfl.display.Sprite;
 import openfl.events.Event;
 import openfl.Assets;
@@ -44,11 +42,11 @@ class Main extends Sprite {
 
         // Asynchronous creation
         processSWF('res/Popup.swf', layer -> {
-        //renderSWFTY('res/Popup.swfty', layer -> {
+        //Layer.load('res/Popup.swfty', layer -> {
 
         /*({
             // Synchronous creation
-            var layer = renderSWFTY('res/Popup.swfty', layer -> {
+            var layer = Layer.load('res/Popup.swfty', layer -> {
                 trace('Yay loading finished!');
             }, error -> {
                 trace('Error: $error');
@@ -117,7 +115,7 @@ class Main extends Sprite {
             spawn();
             
             stage.addEventListener(Event.ENTER_FRAME, render);
-        });
+        }, e -> trace('ERROR: $e'));
 	}
 
     function render(e) {
@@ -125,34 +123,10 @@ class Main extends Sprite {
         timer = haxe.Timer.stamp();
     }
 
-    public function renderSWFTY(path:String, ?onComplete:Layer->Void, ?onError:Dynamic->Void) {
-		var layer = Layer.create(stage.stageWidth, stage.stageHeight);
-        
-        Assets
-		.loadBytes(path)
-		.onError(onError)
-		.onComplete(function(bytes) {
-			trace('Loaded ${bytes.length}');
-
-			var timer = haxe.Timer.stamp();
-			
-            layer.load(bytes, () -> if (onComplete != null) onComplete(layer), onError);
-            
-            trace('Parsed SWFTY: ${haxe.Timer.stamp() - timer}');
-		});
-
-        return layer;
-	}
-
     public function processSWF(path:String, ?onComplete:Layer->Void, ?onError:Dynamic->Void) {
 		var layer = Layer.create(stage.stageWidth, stage.stageHeight);
 
-        Assets
-		.loadBytes(path)
-		.onError(onError)
-		.onComplete(function(bytes) {
-			trace('Loaded ${bytes.length}');
-
+        File.loadBytes(path, bytes -> {
             // Get name from path
             var name = new haxe.io.Path(path).file;
 
@@ -161,7 +135,7 @@ class Main extends Sprite {
                 // TODO: Could be more optimized by getting the tilemap + definition straigt from exporter object
                 //       and passing it down to layer
                 var bytes = exporter.getSwfty();
-                layer.load(bytes, () -> if (onComplete != null) onComplete(layer), onError);
+                layer.loadBytes(bytes, () -> if (onComplete != null) onComplete(layer), onError);
                 
                 // Save file for test
                 FileSave.saveClickBytes(bytes, '$name.swfty');
@@ -169,7 +143,7 @@ class Main extends Sprite {
 
                 trace('Parsed SWF: ${haxe.Timer.stamp() - timer}');
             });
-		});
+        }, onError);
 
         return layer;
 	}

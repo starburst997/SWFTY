@@ -40,7 +40,7 @@ class Main extends hxd.App {
 
         hxd.Window.getInstance().addEventTarget(onEvent);
 
-        var layer = renderSWFTY('Popup.swfty', layer -> {    
+        var layer = Layer.load('Popup.swfty', layer -> {    
             trace('Done!');
         }, error -> {
             trace('Error: $error');
@@ -117,7 +117,7 @@ class Main extends hxd.App {
 
         for (layer in layers) {
             // We need to call update on heaps layer
-            var heapsLayer:EngineLayer = layer;
+            var heapsLayer:FinalLayer = layer;
             heapsLayer.update(dt);
 
             //continue;
@@ -144,7 +144,7 @@ class Main extends hxd.App {
             sprite.rotation = 0.0;
 
             // Quick hack for now
-            var heapsSprite:EngineSprite = sprite;
+            var heapsSprite:FinalSprite = sprite;
             heapsSprite.addRender((dt) -> {
                 sprite.x += speedX * dt;
                 sprite.y += speedY * dt;
@@ -163,16 +163,6 @@ class Main extends hxd.App {
         printDebug();
         #end
     }
-
-    public function renderSWFTY(path:String, ?onComplete:Layer->Void, ?onError:Dynamic->Void) {
-        var layer = Layer.create();
-        File.loadBytes(path, bytes -> {
-            layer.load(bytes, () -> {
-                if (onComplete != null) onComplete(layer);
-            }, onError);
-        }, onError);
-        return layer;
-    } 
 
     function printDebug() {
         if (debugInitialized) {
