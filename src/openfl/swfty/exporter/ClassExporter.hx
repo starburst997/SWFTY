@@ -76,8 +76,8 @@ class ClassExporter {
             }
 
             if (!definition.name.empty()) getLayerFile += '
-    public inline function get$name():$name {
-        return this.get("${definition.name}");
+    public inline function create$name():$name {
+        return this.create("${definition.name}");
     }
             ';
 
@@ -102,7 +102,7 @@ abstract $name(Sprite) from Sprite to Sprite {
         }
 
         var layer = '
-@:forward(x, y, scaleX, scaleY, rotation, alpha, getAllNames, get, add, remove)
+@:forward(x, y, scaleX, scaleY, rotation, alpha, getAllNames, create, add, remove)
 abstract $capitalizedName(Layer) from Layer to Layer {
     $getLayerFile
     public inline function reload(?bytes:Bytes, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
@@ -112,23 +112,21 @@ abstract $capitalizedName(Layer) from Layer to Layer {
         }
         
         if (bytes != null) {
-            this.load(bytes, complete, onError);
+            this.loadBytes(bytes, complete, onError);
         } else {
-            load(complete, onError);
+            _load(complete, onError);
         }
     }
 
-    public inline function load(?onComplete:Void->Void, ?onError:Dynamic->Void) {
+    inline function _load(?onComplete:Void->Void, ?onError:Dynamic->Void) {
         File.loadBytes("$resPath$name.swfty", bytes -> {
-            this.load(bytes, () -> {
-                if (onComplete != null) onComplete();
-            }, onError);
+            this.loadBytes(bytes, onComplete, onError);
         }, onError);
     }
 
-    public static inline function create(?width:Int, ?height:Int, ?onComplete:$capitalizedName->Void, ?onError:Dynamic->Void):$capitalizedName {
-        var layer:$capitalizedName = Layer.create(width, height);
-        layer.load(() -> if (onComplete != null) onComplete(layer), onError);
+    public static inline function load(?width:Int, ?height:Int, ?onComplete:$capitalizedName->Void, ?onError:Dynamic->Void):$capitalizedName {
+        var layer:$capitalizedName = Layer.empty(width, height);
+        layer._load(() -> if (onComplete != null) onComplete(layer), onError);
         return layer;
     }
 }';

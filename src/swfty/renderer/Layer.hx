@@ -17,8 +17,8 @@ typedef FinalLayer = heaps.swfty.renderer.Layer.FinalLayer;
 
 @:forward(x, y, scaleX, scaleY, rotation, alpha, loadBytes, reload, getAllNames)
 abstract Layer(FinalLayer) from FinalLayer to FinalLayer {
-    public static inline function load(path:String, ?onComplete:Layer->Void, ?onError:Dynamic->Void, ?width:Int, ?height:Int) {
-        var layer = Layer.create();
+    public static inline function load(path:String, ?onComplete:Layer->Void, ?onError:Dynamic->Void, ?width:Int, ?height:Int):Layer {
+        var layer = FinalLayer.create(width, height);
         File.loadBytes(path, bytes -> {
             layer.loadBytes(bytes, () -> {
                 if (onComplete != null) onComplete(layer);
@@ -26,8 +26,8 @@ abstract Layer(FinalLayer) from FinalLayer to FinalLayer {
         }, onError);
         return layer;
     }
-    
-    public static inline function create(?width:Int, ?height:Int):Layer {
+
+    public static inline function empty(?width:Int, ?height:Int):Layer {
         return FinalLayer.create(width, height);
     }
 
@@ -39,7 +39,7 @@ abstract Layer(FinalLayer) from FinalLayer to FinalLayer {
         this.removeSprite(sprite);
     }
 
-    public inline function get(linkage:String):Sprite {
+    public inline function create(linkage:String):Sprite {
         return this.get(linkage);
     }
 }
