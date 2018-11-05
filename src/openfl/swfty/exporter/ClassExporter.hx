@@ -94,7 +94,7 @@ abstract $name(Sprite) from Sprite to Sprite {
 abstract $name(Sprite) from Sprite to Sprite {
     $childsFile
     public static inline function create(layer:$capitalizedName):$name {
-        return layer.get$name();
+        return layer.create$name();
     }
 }
                 ';
