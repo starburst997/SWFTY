@@ -62,7 +62,7 @@ class Main extends Sprite {
 
             addChildAt(layer, 0);
 
-            var sprite = layer.get('PopupShop');
+            var sprite = layer.create('PopupShop');
             sprite.x += 0;
             sprite.scaleX = sprite.scaleY = 0.75;
             layer.add(sprite);
@@ -73,7 +73,7 @@ class Main extends Sprite {
             var spawn = function f() {
                 haxe.Timer.delay(() -> {
                     var name = names[Std.int(Math.random() * names.length)];
-                    var sprite = layer.get(name);
+                    var sprite = layer.create(name);
 
                     var speedX = Math.random() * 50 - 25;
                     var speedY = Math.random() * 50 - 25;
@@ -124,7 +124,7 @@ class Main extends Sprite {
     }
 
     public function processSWF(path:String, ?onComplete:Layer->Void, ?onError:Dynamic->Void) {
-		var layer = Layer.create(stage.stageWidth, stage.stageHeight);
+		var layer = Layer.empty(stage.stageWidth, stage.stageHeight);
 
         File.loadBytes(path, bytes -> {
             // Get name from path

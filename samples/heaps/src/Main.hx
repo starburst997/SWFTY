@@ -49,7 +49,7 @@ class Main extends hxd.App {
         layers.push(layer);
         s2d.addChild(layer);
 
-        sprite = layer.get('PopupShop');
+        sprite = layer.create('PopupShop');
         //sprite.x += 408;
         //sprite.y += 208;
         sprite.scaleX = 0.75;
@@ -125,7 +125,7 @@ class Main extends hxd.App {
             var names = layer.getAllNames();
 
             var name = names[Std.int(Math.random() * names.length)];
-            var sprite = layer.get(name);
+            var sprite = layer.create(name);
 
             var speedX = Math.random() * 50 - 25;
             var speedY = Math.random() * 50 - 25;
