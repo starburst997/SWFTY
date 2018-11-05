@@ -11,8 +11,7 @@ class FinalSprite extends BaseSprite {
     public var color:h3d.Vector;
 
     var _lastAlpha = 1.0;
-    var renders:Array<Float->Void>;
-
+    
     public static inline function create(layer:BaseLayer, ?tile:h2d.Tile, ?definition:MovieClipType, ?linkage:String) {
         return new FinalSprite(layer, tile, definition, linkage);
     }    
@@ -20,7 +19,6 @@ class FinalSprite extends BaseSprite {
     public function new(layer:BaseLayer, ?tile:h2d.Tile, ?definition:MovieClipType, ?linkage:String) {
         this.tile = tile;
         
-        renders = [];
         color = new h3d.Vector(1, 1, 1, 1);
         
         super(layer, definition, linkage);
@@ -43,16 +41,12 @@ class FinalSprite extends BaseSprite {
 		}
 	}
 
-    public function update(dt:Float) {
-        // Hack for alpha change
+    public override function update(dt:Float) {
+        // Hack for alpha change only
         if (_lastAlpha != alpha) posChanged = true;
         _lastAlpha = alpha;
-
-        for (sprite in _sprites) {
-            sprite.update(dt);
-        }
-
-        for (f in renders) f(dt);
+        
+        super.update(dt);
     }
 
     public function render(ctx) {
@@ -68,14 +62,6 @@ class FinalSprite extends BaseSprite {
                 MathUtils.scaleY(matA, matB, matC, matD), 
                 MathUtils.rotation(matB, matC, matD), color, tile);
         }
-    }
-
-    public function addRender(f:Float->Void) {
-        renders.push(f);
-    }
-
-    public function removeRender(f:Float->Void) {
-        renders.remove(f);
     }
 
     public override function addSprite(sprite:FinalSprite) {

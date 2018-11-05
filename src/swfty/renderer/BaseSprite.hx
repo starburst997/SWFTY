@@ -22,6 +22,7 @@ class BaseSprite extends EngineSprite {
     var _names:StringMap<FinalSprite>;
     var _texts:StringMap<FinalText>;
     var definition:Null<MovieClipType>;
+    var renders:Array<Float->Void>;
 
     public function new(layer:BaseLayer, ?definition:MovieClipType, ?linkage:String) {
         super();
@@ -29,12 +30,30 @@ class BaseSprite extends EngineSprite {
         this.layer = layer;
         this.linkage = linkage;
         
+        renders = [];
         _sprites = [];
         _names = new StringMap();
         _texts = new StringMap();
     
         load(definition);
     }
+
+    public inline function addRender(f:Float->Void) {
+        renders.push(f);
+    }
+
+    public inline function removeRender(f:Float->Void) {
+        renders.remove(f);
+    }
+
+    public function update(dt:Float) {
+        for (sprite in _sprites) {
+            sprite.update(dt);
+        }
+
+        for (f in renders) f(dt);
+    }
+
     public inline function display():DisplaySprite {
         return this;
     }

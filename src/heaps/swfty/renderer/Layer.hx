@@ -28,10 +28,6 @@ class FinalLayer extends BaseLayer {
         super.draw(ctx);
     }
 
-    public function update(dt:Float) {
-        for (sprite in sprites) sprite.update(dt);
-    }
-
     public override function emptyTile():DisplayTile {
         return null;
     }
@@ -51,6 +47,7 @@ class FinalLayer extends BaseLayer {
         }
 
         #if js
+        // Filename is only used so the load methods knows it's a PNG
         Image.loadBytes('tilemap.png', bytes, function(image) {
             complete(image.toTile());
         });

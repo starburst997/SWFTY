@@ -17,6 +17,10 @@ class BaseLayer extends EngineLayer {
 
     var sprites:Array<FinalSprite> = [];
 
+    public function update(dt:Float) {
+        for (sprite in sprites) sprite.update(dt);
+    }
+
     public function addSprite(sprite:Sprite) {
         sprites.push(sprite);
     }

@@ -25,7 +25,7 @@ typedef FinalSprite = heaps.swfty.renderer.Sprite.FinalSprite;
 #error 'Unsupported framework (please use OpenFL or Heaps)'
 #end
 
-@:forward(x, y, scaleX, scaleY, rotation, alpha, visible)
+@:forward(x, y, scaleX, scaleY, rotation, alpha, visible, addRender)
 abstract Sprite(FinalSprite) from FinalSprite to FinalSprite {
 
     public static inline function create(layer:BaseLayer, ?definition:MovieClipType, ?linkage:String):Sprite {
