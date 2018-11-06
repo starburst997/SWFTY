@@ -3,6 +3,7 @@ package swfty.extra;
 import swfty.renderer.Sprite;
 
 using tweenxcore.Tools;
+using swfty.extra.Tween;
 
 // Very simple tween meant for SWFTY Sprite (optional extra)
 // Nothing fancy and hooks on the update loop of the Sprite
@@ -10,6 +11,31 @@ using tweenxcore.Tools;
 // Not exactly super mega optimised, but should do the job just fine
 
 class Tween {
+
+    /* Presets */
+
+    public static inline function fadeIn(sprite:Sprite, duration:Float = 0.30) {
+        if (!sprite.visible) {
+            sprite.visible = true;
+            sprite.alpha = 0.0;
+        }
+
+        sprite.tweenStop().tweenAlpha(1.0, duration);
+        return sprite;
+    }
+
+    public static inline function fadeOut(sprite:Sprite, duration:Float = 0.20) {
+        sprite.tweenStop().tweenAlpha(0.0, duration, () -> sprite.visible = false);
+        return sprite;
+    }
+
+    public static inline function bounce(sprite:Sprite, to = 1.0, strength = 1.20, duration:Float = 0.5) {
+        sprite.tweenStop().tweenScale(sprite.scaleX * 1.20, duration * 0.20, CubicIn, function()
+            sprite.tweenScale(to, duration * 0.80, BounceOut));
+        return sprite;
+    }
+
+    /* Tween */
 
     public static inline function tweenScale(sprite:Sprite, scale:Float, duration:Float, delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void) {
         setup(sprite, sprite.scaleX, scale, duration, delay, easing, onComplete, function(val) {
@@ -71,20 +97,22 @@ class Tween {
         return sprite;
     }
 
+    /* Helpers */
+
     static inline function setup(sprite:Sprite, from:Float, to:Float, duration:Float, delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void, setVal:Float->Void) {
-        var ease = getEasing(sprite.scaleX, to, easing);
-        var rate = -delay;
+        var ease = getEasing(from, to, easing);
+        var time = -delay;
         var done = false;
         sprite.addRender('tween', function render(dt) {
-            if (rate >= duration) {
-                rate = duration;
+            if (time >= duration) {
+                time = duration;
                 done = true;
                 sprite.removeRender('tween', render);
             }
 
-            if (rate >= 0.0) setVal(ease(rate / duration));
-            rate += dt;
-
+            if (time >= 0.0) setVal(ease(time / duration));
+            time += dt;
+            
             if (done && onComplete != null) onComplete();
         });
     }
