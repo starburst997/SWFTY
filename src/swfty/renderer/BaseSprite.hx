@@ -46,6 +46,14 @@ class BaseSprite extends EngineSprite {
         load(definition);
     }
 
+    public function top() {
+        throw 'Not implemented';
+    }
+
+    public function bottom() {
+        throw 'Not implemented';
+    }
+
     public inline function addRender(?name:String, f:Float->Void) {
         _renders.push(f);
         if (name != null) {

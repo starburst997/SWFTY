@@ -15,6 +15,14 @@ class FinalSprite extends BaseSprite {
         super(layer, definition, linkage);
     }
 
+    public override function top() {
+        if (this.parent != null) parent.setTileIndex(this, parent.numTiles - 1);
+    }
+
+    public override function bottom() {
+        if (this.parent != null) parent.setTileIndex(this, 0);
+    }
+
     public override function addSprite(sprite:FinalSprite) {
         sprite._parent = this;
         super.addSprite(sprite);

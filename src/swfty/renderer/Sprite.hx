@@ -36,6 +36,16 @@ abstract Sprite(FinalSprite) from FinalSprite to FinalSprite {
     public inline function get_parent():Sprite {
         return this.getParent();
     }
+
+    public inline function top():Sprite {
+        this.top();
+        return this;
+    }
+
+    public inline function bottom():Sprite {
+        this.bottom();
+        return this;
+    }
     
     public inline function add(sprite:Sprite) {
         this.addSprite(sprite);
