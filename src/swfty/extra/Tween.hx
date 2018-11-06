@@ -16,38 +16,48 @@ class Tween {
 
     /* Presets */
 
-    public static inline function fadeIn(sprite:Sprite, duration:Float = 0.30) {
+    public static inline function fadeIn(sprite:Sprite, duration:Float = 0.30, delay = 0.0, ?stop:Bool = true) {
         if (!sprite.visible) {
             sprite.visible = true;
             sprite.alpha = 0.0;
         }
 
-        sprite.tweenStop().tweenAlpha(1.0, duration);
+        if (stop) sprite.tweenStop();
+        
+        sprite.tweenAlpha(1.0, duration, delay);
         return sprite;
     }
 
-    public static inline function fadeOut(sprite:Sprite, duration:Float = 0.20) {
-        sprite.tweenStop().tweenAlpha(0.0, duration, () -> sprite.visible = false);
+    public static inline function fadeOut(sprite:Sprite, duration:Float = 0.20, delay = 0.0, ?stop:Bool = true, ?remove:Bool = false) {
+        if (stop) sprite.tweenStop();
+        
+        sprite.tweenAlpha(0.0, duration, delay, () -> {
+            sprite.visible = false;
+            if (remove) sprite.removeFromParent();
+        });
         return sprite;
     }
 
-    public static inline function fadeToward(sprite:Sprite, to:Sprite, duration:Float = 0.50, delay:Float = 0.0, ?onComplete:Void->Void) {
+    public static inline function fadeToward(sprite:Sprite, to:Sprite, duration:Float = 0.50, delay:Float = 0.0, ?stop:Bool = true, ?onComplete:Void->Void) {
         // TODO: Use getBounds with target space
-        return sprite.fadeTowardPosition(to.x, to.y, duration, delay, onComplete);
+        return sprite.fadeTowardPosition(to.x, to.y, duration, delay, stop, onComplete);
     }
 
-    public static inline function fadeTowardPosition(sprite:Sprite, x:Float, y:Float, duration:Float = 0.50, delay:Float = 0.0, ?onComplete:Void->Void) {
+    public static inline function fadeTowardPosition(sprite:Sprite, x:Float, y:Float, duration:Float = 0.50, delay:Float = 0.0, ?stop:Bool = true, ?onComplete:Void->Void) {
+        if (stop) sprite.tweenStop();
+
         sprite
-        .tweenStop()
         .tweenPosition(x, y, duration, delay, BackIn)
         .tweenScale(0.0, duration, delay, BackIn, onComplete)
         .tweenAlpha(0.0, duration * 0.5, delay + duration * 0.5, () -> sprite.removeFromParent());
         return sprite;
     }
 
-    public static inline function bounce(sprite:Sprite, to = 1.0, strength = 1.20, duration:Float = 0.5) {
-        sprite.tweenStop().tweenScale(sprite.scaleX * 1.20, duration * 0.20, CubicIn, function()
-            sprite.tweenScale(to, duration * 0.80, BounceOut));
+    public static inline function bounce(sprite:Sprite, to = 1.0, strength = 1.20, duration:Float = 0.5, ?onComplete:Void->Void) {
+        sprite.tweenStop().tweenScale(sprite.scaleX * strength, duration * 0.20, CubicIn, function() {
+            if (onComplete != null) onComplete();
+            sprite.tweenScale(to, duration * 0.80, BounceOut);
+        });
         return sprite;
     }
 
@@ -67,6 +77,8 @@ class Tween {
 
             time += dt;
         });
+
+        return sprite;
     }
 
     public static inline function waitStop(sprite:Sprite) {
