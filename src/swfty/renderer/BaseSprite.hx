@@ -8,29 +8,37 @@ class BaseSprite extends EngineSprite {
 
     public var layer:BaseLayer;
 
-    // TODO: Only used on heaps
+    // TODO: Only used on heaps, kind of a hack, I think saving the ColorType instead might solve this
     public var r:Float = 1.0;
     public var g:Float = 1.0;
     public var b:Float = 1.0;
 
     // For reload if definition didn't exists
-    var linkage:String;
+    var _linkage:String;
 
+    // Using underscore to prevent var clasing with base class
+    // TODO: All private var should have an underscore?
     var _name:String;
     var _parent:FinalSprite;
     var _sprites:Array<FinalSprite>;
     var _names:StringMap<FinalSprite>;
     var _texts:StringMap<FinalText>;
-    var definition:Null<MovieClipType>;
-    var renders:Array<Float->Void>;
+    var _definition:Null<MovieClipType>;
+
+    // Being able to add a render loop is a pretty nice tool
+    // The map allows you to give it a name so you can easily remove all render loop from a specific name 
+    var _renders:Array<Float->Void>;
+    var _rendersMap:StringMap<Array<Float->Void>>;
 
     public function new(layer:BaseLayer, ?definition:MovieClipType, ?linkage:String) {
         super();
 
         this.layer = layer;
-        this.linkage = linkage;
+        _linkage = linkage;
         
-        renders = [];
+        _renders = [];
+        _rendersMap = new StringMap();
+
         _sprites = [];
         _names = new StringMap();
         _texts = new StringMap();
@@ -38,12 +46,28 @@ class BaseSprite extends EngineSprite {
         load(definition);
     }
 
-    public inline function addRender(f:Float->Void) {
-        renders.push(f);
+    public inline function addRender(?name:String, f:Float->Void) {
+        _renders.push(f);
+        if (name != null) {
+            if (!_rendersMap.exists(name)) _rendersMap.set(name, []);
+            _rendersMap.get(name).push(f);
+        }
     }
 
-    public inline function removeRender(f:Float->Void) {
-        renders.remove(f);
+    public inline function removeRender(?name:String, ?f:Float->Void) {
+        if (f != null) {
+            _renders.remove(f);
+
+            if (_rendersMap.exists(name)) {
+                _rendersMap.get(name).remove(f);
+            }
+        } else if (name != null && _rendersMap.exists(name)) {
+            for (f in _rendersMap.get(name)) {
+                _renders.remove(f);
+            }
+            
+            _rendersMap.remove(name);
+        }
     }
 
     public function update(dt:Float) {
@@ -51,7 +75,7 @@ class BaseSprite extends EngineSprite {
             sprite.update(dt);
         }
 
-        for (f in renders) f(dt);
+        for (f in _renders) f(dt);
     }
 
     public inline function display():DisplaySprite {
@@ -64,7 +88,7 @@ class BaseSprite extends EngineSprite {
     }
 
     public function load(definition:MovieClipType) {
-        this.definition = definition;
+        _definition = definition;
         
         var childs = _sprites;
 
@@ -161,19 +185,19 @@ class BaseSprite extends EngineSprite {
     }
 
     public function reload() {
-        if (this.definition != null) {
-            if (layer.hasDefinition(this.definition.id)) {
-                var definition = layer.getDefinition(this.definition.id);
+        if (_definition != null) {
+            if (layer.hasDefinition(_definition.id)) {
+                var definition = layer.getDefinition(_definition.id);
                 load(definition);
             } else {
-                Log.warn('Definition does no longer exists: ${this.definition.name} (${this.definition.id})');
+                Log.warn('Definition does no longer exists: ${_definition.name} (${_definition.id})');
             }
-        } else if (linkage != null) {
-            if (layer.hasMC(linkage)) {
-                var definition = layer.getMC(linkage);
+        } else if (_linkage != null) {
+            if (layer.hasMC(_linkage)) {
+                var definition = layer.getMC(_linkage);
                 load(definition);
             } else {
-                Log.warn('Definition does not exists: ${linkage}');
+                Log.warn('Definition does not exists: ${_linkage}');
             }
         }
     }
@@ -199,7 +223,7 @@ class BaseSprite extends EngineSprite {
         return if (_names.exists(name)) {
             _names.get(name);
         } else {
-            if (definition != null) Log.warn('Child: $name does not exists!');
+            if (_definition != null) Log.warn('Child: $name does not exists!');
             var sprite = FinalSprite.create(layer);
             sprite._name = name;
             _names.set(name, sprite);
@@ -212,7 +236,7 @@ class BaseSprite extends EngineSprite {
         return if (_texts.exists(name)) {
             _texts.get(name);
         } else {
-            if (definition != null) Log.warn('Text: $name does not exists!');
+            if (_definition != null) Log.warn('Text: $name does not exists!');
             var text = FinalText.create(layer);
             text._name = name;
             _texts.set(name, text);
