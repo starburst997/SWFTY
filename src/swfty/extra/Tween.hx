@@ -3,7 +3,9 @@ package swfty.extra;
 import swfty.renderer.Sprite;
 
 using tweenxcore.Tools;
+
 using swfty.extra.Tween;
+using swfty.extra.Lambda;
 
 // Very simple tween meant for SWFTY Sprite (optional extra)
 // Nothing fancy and hooks on the update loop of the Sprite
@@ -29,9 +31,46 @@ class Tween {
         return sprite;
     }
 
+    public static inline function fadeToward(sprite:Sprite, to:Sprite, duration:Float = 0.50, delay:Float = 0.0, ?onComplete:Void->Void) {
+        // TODO: Use getBounds with target space
+        return sprite.fadeTowardPosition(to.x, to.y, duration, delay, onComplete);
+    }
+
+    public static inline function fadeTowardPosition(sprite:Sprite, x:Float, y:Float, duration:Float = 0.50, delay:Float = 0.0, ?onComplete:Void->Void) {
+        sprite
+        .tweenStop()
+        .tweenPosition(x, y, duration, delay, BackIn)
+        .tweenScale(0.0, duration, delay, BackIn, onComplete)
+        .tweenAlpha(0.0, duration * 0.5, delay + duration * 0.5, () -> sprite.removeFromParent());
+        return sprite;
+    }
+
     public static inline function bounce(sprite:Sprite, to = 1.0, strength = 1.20, duration:Float = 0.5) {
         sprite.tweenStop().tweenScale(sprite.scaleX * 1.20, duration * 0.20, CubicIn, function()
             sprite.tweenScale(to, duration * 0.80, BounceOut));
+        return sprite;
+    }
+
+    /* Timer */
+
+    // TODO: Should be moved to it's own class tools
+
+    public static inline function wait(sprite:Sprite, duration:Float, ?onComplete:Void->Void) {
+        var time = 0.0;
+        sprite.addRender('wait', function render(dt) {
+            if (time >= duration) {
+                time = duration;
+                sprite.removeRender('wait', render);
+
+                if (onComplete != null) onComplete();
+            }
+
+            time += dt;
+        });
+    }
+
+    public static inline function waitStop(sprite:Sprite) {
+        sprite.removeRender('wait');
         return sprite;
     }
 

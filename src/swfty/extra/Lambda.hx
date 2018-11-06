@@ -13,6 +13,11 @@ class Lambda {
         return sprite;
     }
 
+    public static inline function removeFromParent(sprite:Sprite) {
+        if (sprite.parent != null) sprite.parent.remove(sprite);
+        return sprite;
+    }
+
     public static inline function setAlpha(sprite:Sprite, alpha:Float) {
         sprite.alpha = alpha;
         return sprite;
