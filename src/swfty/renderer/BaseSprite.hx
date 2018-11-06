@@ -2,9 +2,19 @@ package swfty.renderer;
 
 import haxe.ds.StringMap;
 
+typedef Size = {
+    width: Float,
+    height: Float
+}
+
 class BaseSprite extends EngineSprite {
 
     public var og:Bool = false;
+
+    public var width(get, set):Float;
+    public var height(get, set):Float;
+
+    public var size(get, null):Size;
 
     public var layer:BaseLayer;
 
@@ -24,6 +34,7 @@ class BaseSprite extends EngineSprite {
     var _names:StringMap<FinalSprite>;
     var _texts:StringMap<FinalText>;
     var _definition:Null<MovieClipType>;
+    var _size:Size;
 
     // Being able to add a render loop is a pretty nice tool
     // The map allows you to give it a name so you can easily remove all render loop from a specific name 
@@ -42,8 +53,12 @@ class BaseSprite extends EngineSprite {
         _sprites = [];
         _names = new StringMap();
         _texts = new StringMap();
-    
+
         load(definition);
+    }
+
+    public function getSize():Size {
+        throw 'Not implemented';
     }
 
     public function top() {
@@ -52,6 +67,29 @@ class BaseSprite extends EngineSprite {
 
     public function bottom() {
         throw 'Not implemented';
+    }
+
+    inline function get_size() {
+        if (_size == null) _size = getSize();
+        return _size;
+    }
+
+    inline function get_width():Float {
+        return size.width * scaleX;
+    }
+
+    inline function set_width(width:Float) {
+        scaleX = width / size.width;
+        return width;
+    }
+
+    inline function get_height():Float {
+        return size.height * scaleY;
+    }
+
+    inline function set_height(width:Float) {
+        scaleY = height / size.height;
+        return height;
     }
 
     public inline function addRender(?name:String, f:Float->Void) {

@@ -12,7 +12,17 @@ class FinalSprite extends BaseSprite {
     }    
 
     public function new(layer:BaseLayer, ?definition:MovieClipType, ?linkage:String) {
+        this.tileset = layer.tileset;
+
         super(layer, definition, linkage);
+    }
+
+    public override function getSize() {
+        var rect = this.getBounds(this);
+        return {
+            width: rect.width,
+            height: rect.height
+        }
     }
 
     public override function top() {
@@ -60,7 +70,7 @@ abstract DisplayBitmap(EngineBitmap) from EngineBitmap to EngineBitmap {
     }
 
     public inline function color(r:Int, g:Int, b:Int) {
-        this.colorTransform = new openfl.geom.ColorTransform(r/255, g/255, b/255, 1.0);
+        this.colorTransform = new openfl.geom.ColorTransform(r / 255.0, g / 255.0, b / 255.0, 1.0);
     }
 }
 
@@ -81,7 +91,7 @@ abstract DisplaySprite(BaseSprite) from BaseSprite to BaseSprite {
     }
 
     public inline function color(r:Float, g:Float, b:Float, rAdd:Float, gAdd:Float, bAdd:Float) {
-        this.colorTransform = new openfl.geom.ColorTransform(r, g, b, 1.0, rAdd, gAdd, bAdd, 0.0);
+        this.colorTransform = new openfl.geom.ColorTransform(r / 255.0, g / 255.0, b / 255.0, 1.0, rAdd, gAdd, bAdd, 0.0);
     }
 
     public inline function resetColor() {

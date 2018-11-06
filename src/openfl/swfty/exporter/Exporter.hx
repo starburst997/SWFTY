@@ -434,7 +434,16 @@ class Exporter {
                         blendMode = format.swf.data.consts.BlendMode.toString(placeTag.blendMode);
                     }
 
-                    if (placeTag.hasFilterList || (placeTag.hasCacheAsBitmap && placeTag.bitmapCache != 0) /*|| placeTag.hasBlendMode*/) {
+                    var hasColor =
+                        placeTag.colorTransform != null && 
+                        (placeTag.colorTransform.rMult != 1.0 || 
+                        placeTag.colorTransform.gMult != 1.0 || 
+                        placeTag.colorTransform.bMult != 1.0 || 
+                        placeTag.colorTransform.rAdd != 0 || 
+                        placeTag.colorTransform.gAdd != 0 || 
+                        placeTag.colorTransform.bAdd != 0);
+
+                    if (placeTag.hasFilterList || (placeTag.hasCacheAsBitmap && placeTag.bitmapCache != 0) /*|| hasColor*/ /*|| placeTag.hasBlendMode*/) {
                         // TODO: Basically like cacheAsBitmap, take a screenshot of the MovieClip
                         //       Create a unique ID to prevent duplicates
 
@@ -539,14 +548,14 @@ class Exporter {
                         d: transform.d,
                         tx: transform.tx,
                         ty: transform.ty,
-                        color: if (placeTag.colorTransform != null) {
+                        color: if (hasColor) {
                             r: placeTag.colorTransform.rMult,
                             g: placeTag.colorTransform.gMult,
                             b: placeTag.colorTransform.bMult,
                             rAdd: placeTag.colorTransform.rAdd,
                             gAdd: placeTag.colorTransform.gAdd,
                             bAdd: placeTag.colorTransform.bAdd,
-                        } else null,
+                        } else null, 
                         blendMode: blendMode == Normal ? null : blendMode,
                         mask: mask == null || isMask ? null : maskDepth,
                         visible: !isMask && visible,
