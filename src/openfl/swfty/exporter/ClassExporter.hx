@@ -58,7 +58,7 @@ class ClassExporter {
                     if (child.text != null) {
                         childsFile += '
     public var ${child.name}(get, never):Text;
-    public inline function get_${child.name}() {
+    public inline function get_${child.name}():Text {
         return this.getText("${child.name}");
     }
                         ';
@@ -67,7 +67,7 @@ class ClassExporter {
 
                         childsFile += '
     public var ${child.name}(get, never):$abstractName;
-    public inline function get_${child.name}() {
+    public inline function get_${child.name}():$abstractName {
         return this.get("${child.name}");
     }
                         ';

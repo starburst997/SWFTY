@@ -12,6 +12,14 @@ using swfty.extra.Lambda;
 // Will die with the sprite or when it finishes running
 // Not exactly super mega optimised, but should do the job just fine
 
+class TweenText {
+    public static inline function bounce(text:Text, to = 1.0, strength = 1.20, duration:Float = 0.5, delay = 0.0, ?onComplete:Void->Void) {
+        return Tween.bounce(text.sprite(), to, strength, duration, delay, onComplete);
+    }
+
+    // TODO: Also do all the other methods
+}
+
 class Tween {
 
     /* Presets */
@@ -48,13 +56,18 @@ class Tween {
 
         sprite
         .tweenPosition(x, y, duration, delay, BackIn)
-        .tweenScale(0.0, duration, delay, BackIn, onComplete)
-        .tweenAlpha(0.0, duration * 0.5, delay + duration * 0.5, () -> sprite.removeFromParent());
+        .tweenScale(0.0, duration * 0.10, delay + duration * 0.90, BackIn)
+        .tweenAlpha(0.0, duration * 0.025, delay + duration * 0.975, () -> {
+            if (onComplete != null) onComplete();
+            sprite.removeFromParent();
+        });
         return sprite;
     }
 
-    public static inline function bounce(sprite:Sprite, to = 1.0, strength = 1.20, duration:Float = 0.5, ?onComplete:Void->Void) {
-        sprite.tweenStop().tweenScale(sprite.scaleX * strength, duration * 0.20, CubicIn, function() {
+    public static inline function bounce(sprite:Sprite, to = 1.0, strength = 1.20, duration:Float = 0.5, delay = 0.0, stop = true, ?onComplete:Void->Void) {
+        if (stop) sprite.tweenStop();
+
+        sprite.tweenScale(sprite.scaleX * strength, duration * 0.20, delay, CubicIn, function() {
             if (onComplete != null) onComplete();
             sprite.tweenScale(to, duration * 0.80, BounceOut);
         });

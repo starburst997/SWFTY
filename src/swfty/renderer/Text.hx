@@ -17,5 +17,7 @@ class FinalText extends BaseText {
 
 @:forward(x, y, scaleX, scaleY, rotation, text)
 abstract Text(FinalText) from FinalText to FinalText {
-    
+    public inline function sprite():Sprite {
+        return this;
+    }   
 }
