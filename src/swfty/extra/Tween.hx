@@ -45,7 +45,7 @@ class Tween {
     }
 
     public static inline function tweenHeight(sprite:Sprite, height:Float, duration:Float, delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void) {
-        setup(sprite, sprite,height, height, duration, delay, easing, onComplete, function(val) {
+        setup(sprite, sprite.height, height, duration, delay, easing, onComplete, function(val) {
             sprite.height = val;
         });
         return sprite;
