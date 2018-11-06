@@ -38,21 +38,15 @@ class Tween {
     /* Tween */
 
     public static inline function tweenWidth(sprite:Sprite, width:Float, duration:Float, delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void) {
-        var from = sprite.scaleX;
-        var to = width / (sprite.width / sprite.scaleX);
-
-        setup(sprite, from, to, duration, delay, easing, onComplete, function(val) {
-            sprite.scaleX = val;
+        setup(sprite, sprite.width, width, duration, delay, easing, onComplete, function(val) {
+            sprite.width = val;
         });
         return sprite;
     }
 
     public static inline function tweenHeight(sprite:Sprite, height:Float, duration:Float, delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void) {
-        var from = sprite.scaleY;
-        var to = height / (sprite.height / sprite.scaleY);
-
-        setup(sprite, from, to, duration, delay, easing, onComplete, function(val) {
-            sprite.scaleY = val;
+        setup(sprite, sprite,height, height, duration, delay, easing, onComplete, function(val) {
+            sprite.height = val;
         });
         return sprite;
     }
