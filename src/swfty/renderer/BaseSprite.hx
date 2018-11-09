@@ -87,7 +87,7 @@ class BaseSprite extends EngineSprite {
         return size.height * scaleY;
     }
 
-    inline function set_height(width:Float) {
+    inline function set_height(height:Float) {
         scaleY = height / size.height;
         return height;
     }

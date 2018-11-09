@@ -83,14 +83,14 @@ class ClassExporter {
 
             if (definition.name.empty()) {
                 abstractsFile += '
-@:forward(x, y, scaleX, scaleY, rotation, alpha, add, remove, addRender, removeRender, get, getText)
+@:forward(x, y, scaleX, scaleY, rotation, alpha, add, remove, width, height, addRender, removeRender, get, getText)
 abstract $name(Sprite) from Sprite to Sprite {
     $childsFile
 }
                 ';
             } else {
                 abstractsFile += '
-@:forward(x, y, scaleX, scaleY, rotation, alpha, add, remove, addRender, removeRender, get, getText)
+@:forward(x, y, scaleX, scaleY, rotation, alpha, add, remove, width, height, addRender, removeRender, get, getText)
 abstract $name(Sprite) from Sprite to Sprite {
     $childsFile
     public static inline function create(layer:$capitalizedName):$name {
