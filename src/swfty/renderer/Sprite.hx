@@ -37,6 +37,11 @@ abstract Sprite(FinalSprite) from FinalSprite to FinalSprite {
         return this.getParent();
     }
 
+    public var layer(get, never):Layer;
+    public inline function get_layer():Layer {
+        return this.layer;
+    }
+
     public inline function clone():Sprite {
         @:privateAccess return create(this.layer, this._definition, this._linkage);
     }
