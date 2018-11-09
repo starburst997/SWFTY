@@ -12,14 +12,6 @@ using swfty.extra.Lambda;
 // Will die with the sprite or when it finishes running
 // Not exactly super mega optimised, but should do the job just fine
 
-class TweenText {
-    public static inline function bounce(text:Text, to = 1.0, strength = 1.20, duration:Float = 0.5, delay = 0.0, ?onComplete:Void->Void) {
-        return Tween.bounce(text.sprite(), to, strength, duration, delay, onComplete);
-    }
-
-    // TODO: Also do all the other methods
-}
-
 class Tween {
 
     /* Presets */
@@ -41,7 +33,9 @@ class Tween {
         
         sprite.tweenAlpha(0.0, duration, delay, () -> {
             sprite.visible = false;
-            if (remove) sprite.removeFromParent();
+        });
+        if (remove) sprite.wait(duration + delay, function() {
+            sprite.removeFromParent();
         });
         return sprite;
     }
@@ -51,23 +45,26 @@ class Tween {
         
         sprite
         .tweenScale(sprite.scaleX * strength, duration, delay, BackOut)
-        .tweenAlpha(0.0, duration, delay, () -> {
+        .tweenAlpha(0.0, duration, delay);
+
+        sprite.wait(duration + delay, function() {
             sprite.removeFromParent();
         });
         return sprite;
     }
 
     public static inline function popToward(sprite:Sprite, to:Sprite, strength:Float = 2.50, duration:Float = 0.75, delay = 0.0, ?stop:Bool = true, ?onComplete:Void->Void) {
+        // TODO: Use getBounds with target space
         return popTowardPosition(sprite, to.x, to.y, strength, duration, delay, stop, onComplete);
     }
 
-    public static inline function popTowardPosition(sprite:Sprite, x:Float, y:Float, strength:Float = 2.50, duration:Float = 0.75, delay = 0.0, ?stop:Bool = true, ?onComplete:Void->Void) {
+    public static inline function popTowardPosition(sprite:Sprite, x:Float, y:Float, duration:Float = 0.75, delay = 0.0, strength:Float = 2.50, ?stop:Bool = true, ?onComplete:Void->Void) {
         if (stop) sprite.tweenStop();
 
         sprite
         .tweenAlpha(0.10, duration * 0.25, delay + duration * 0.75)
-        .towardPosition(x, y, duration, false, function() {
-            sprite.pop(strength, duration * 0.25);
+        .towardPosition(x, y, duration, delay, false, function() {
+            sprite.pop(strength, 0.2);
             if (onComplete != null) onComplete();
         });
         return sprite;
@@ -85,8 +82,12 @@ class Tween {
         .tweenPosition(x, y, duration, delay, BackIn)
         .tweenScale(0.0, duration * 0.10, delay + duration * 0.90, BackIn)
         .tweenAlpha(0.0, duration * 0.025, delay + duration * 0.975, () -> {
-            sprite.removeFromParent();
+            
             if (onComplete != null) onComplete();
+        });
+
+        sprite.wait(duration + delay, function() {
+            sprite.removeFromParent();
         });
         return sprite;
     }
@@ -98,10 +99,13 @@ class Tween {
         return sprite;
     }
 
-    public static inline function bounce(sprite:Sprite, to = 1.0, strength = 1.20, duration:Float = 0.5, delay = 0.0, stop = true, stack = false, ?onComplete:Void->Void) {
+    public static inline function bounce(sprite:Sprite, to = 1.0, strength = 1.20, duration:Float = 0.5, delay = 0.0, stop = true, stack = false, max = 0.0, ?onComplete:Void->Void) {
         if (stop) sprite.tweenStop();
 
-        sprite.tweenScale((stack ? sprite.scaleX : to) * strength, duration * 0.20, delay, CubicIn, function() {
+        var scale = (stack ? sprite.scaleX : to) * strength;
+        if (stack && max > 0 && scale > to * max) scale = to * max;
+
+        sprite.tweenScale(scale, duration * 0.20, delay, CubicIn, function() {
             sprite.tweenScale(to, duration * 0.80, BounceOut);
             if (onComplete != null) onComplete();
         });
@@ -370,6 +374,14 @@ class Tween {
             }
         }
     }
+}
+
+class TweenText {
+    public static inline function bounce(text:Text, to = 1.0, strength = 1.20, duration:Float = 0.5, delay = 0.0, ?onComplete:Void->Void) {
+        return Tween.bounce(text.sprite(), to, strength, duration, delay, onComplete);
+    }
+
+    // TODO: Also do all the other methods
 }
 
 enum Easing {
