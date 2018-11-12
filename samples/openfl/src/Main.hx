@@ -1,6 +1,5 @@
 package;
 
-import js.html.LocalMediaStream;
 import swfty.exporter.Exporter;
 import swfty.renderer.Layer;
 
@@ -8,22 +7,21 @@ import file.save.FileSave;
 
 import openfl.display.Sprite;
 import openfl.events.Event;
-import openfl.Assets;
 
 using swfty.utils.Tools;
+using swfty.extra.Tween;
 
 class Main extends Sprite {
 
-    var afterFrames:Array<Void->Void> = [];
-
-    var layer:Layer;
-    var sprites:Array<Sprite> = [];
+    var layers:Array<Layer>;
 
     var dt = 0.0;
     var timer = 0.0;
 
 	public function new() {	
 		super();
+
+        layers = [];
 
         var fps:openfl.display.FPS = new openfl.display.FPS();
         fps.textColor = 0x000000;
@@ -41,12 +39,12 @@ class Main extends Sprite {
 		// Process SWF
 
         // Asynchronous creation
-        processSWF('res/Popup.swf', layer -> {
-        //Layer.load('res/Popup.swfty', layer -> {
+        processSWF('res/Popup.swf', function(layer) {
+        //Layer.load('res/Popup.swfty', stage.stageWidth, stage.stageHeight, layer -> {
 
         /*({
             // Synchronous creation
-            var layer = Layer.load('res/Popup.swfty', layer -> {
+            var layer = Layer.load('res/Popup.swfty', stage.stageWidth, stage.stageHeight, layer -> {
                 trace('Yay loading finished!');
             }, error -> {
                 trace('Error: $error');
@@ -54,6 +52,8 @@ class Main extends Sprite {
 
             /*var bmp = new Bitmap(layer.tileset.bitmapData);
             addChild(bmp);*/
+
+            layers.push(layer);
 
             var names = layer.getAllNames();
             //trace(names);
@@ -63,15 +63,19 @@ class Main extends Sprite {
             addChildAt(layer, 0);
 
             var sprite = layer.create('PopupShop');
-            sprite.x += 0;
             sprite.scaleX = sprite.scaleY = 0.75;
             layer.add(sprite);
+
+            //sprite.x += 300;
+            //sprite.y += 300;
+            //sprite.get('line').rotation = 90;
+            //sprite.get('line').get('shape').scaleY = 1.75;
 
             //return;
 
             // TODO: VSCode was choking on the naming, not sure why but this did the trick
             var spawn = function f() {
-                haxe.Timer.delay(() -> {
+                haxe.Timer.delay(function() {
                     var name = names[Std.int(Math.random() * names.length)];
                     var sprite = layer.create(name);
 
@@ -89,8 +93,11 @@ class Main extends Sprite {
                     sprite.scaleX = scale;
                     sprite.scaleY = scale;
 
+                    sprite.tweenScale(1.5, 0.5, 0.5, BounceOut, function() 
+                        sprite.tweenScale(0.25, 0.5, BackIn));
+
                     var render = null;
-                    render = (e) -> {
+                    render = function(e) {
                         sprite.x += speedX * dt;
                         sprite.y += speedY * dt;
                         sprite.rotation += speedRotation * dt;
@@ -103,7 +110,6 @@ class Main extends Sprite {
                     }
 
                     addEventListener(Event.ENTER_FRAME, render);
-                    //sprites.push(sprite);
 
                     layer.add(sprite);
 
@@ -115,18 +121,22 @@ class Main extends Sprite {
             spawn();
             
             stage.addEventListener(Event.ENTER_FRAME, render);
-        }, e -> trace('ERROR: $e'));
+        }, function(e) trace('ERROR: $e'));
 	}
 
     function render(e) {
         dt = (haxe.Timer.stamp() - timer); 
         timer = haxe.Timer.stamp();
+
+        for (layer in layers) {
+            layer.update(dt);
+        }
     }
 
     public function processSWF(path:String, ?onComplete:Layer->Void, ?onError:Dynamic->Void) {
 		var layer = Layer.empty(stage.stageWidth, stage.stageHeight);
 
-        File.loadBytes(path, bytes -> {
+        File.loadBytes(path, function(bytes) {
             // Get name from path
             var name = new haxe.io.Path(path).file;
 
@@ -135,7 +145,7 @@ class Main extends Sprite {
                 // TODO: Could be more optimized by getting the tilemap + definition straigt from exporter object
                 //       and passing it down to layer
                 var bytes = exporter.getSwfty();
-                layer.loadBytes(bytes, () -> if (onComplete != null) onComplete(layer), onError);
+                layer.loadBytes(bytes, function() if (onComplete != null) onComplete(layer), onError);
                 
                 // Save file for test
                 FileSave.saveClickBytes(bytes, '$name.swfty');
