@@ -31,7 +31,7 @@ class Tween {
     public static inline function fadeOut(sprite:Sprite, duration:Float = 0.20, delay = 0.0, ?stop:Bool = true, ?remove:Bool = false) {
         if (stop) sprite.tweenStop();
         
-        sprite.tweenAlpha(0.0, duration, delay, () -> {
+        sprite.tweenAlpha(0.0, duration, delay, function() {
             sprite.visible = false;
         });
         if (remove) sprite.wait(duration + delay, function() {
@@ -81,7 +81,7 @@ class Tween {
         sprite
         .tweenPosition(x, y, duration, delay, BackIn)
         .tweenScale(0.0, duration * 0.10, delay + duration * 0.90, BackIn)
-        .tweenAlpha(0.0, duration * 0.025, delay + duration * 0.975, () -> {
+        .tweenAlpha(0.0, duration * 0.025, delay + duration * 0.975, function() {
             
             if (onComplete != null) onComplete();
         });
@@ -89,6 +89,13 @@ class Tween {
         sprite.wait(duration + delay, function() {
             sprite.removeFromParent();
         });
+        return sprite;
+    }
+
+    public static inline function toward(sprite:Sprite, to:Sprite, duration:Float = 0.50, delay:Float = 0.0, ?stop:Bool = true, ?onComplete:Void->Void) {
+        if (stop) sprite.tweenStop();
+
+        sprite.tweenPosition(to.x, to.y, duration, delay, BackIn, onComplete);
         return sprite;
     }
 
@@ -237,139 +244,139 @@ class Tween {
 
     static inline function getEasing(from:Float, to:Float, ?easing:Easing) {
         return switch(easing) {
-            case SineIn: (rate:Float) -> {
+            case SineIn: function(rate:Float) {
                 return rate.sineIn().lerp(from, to);
             };
-            case SineOut: (rate:Float) -> {
+            case SineOut: function(rate:Float) {
                 return rate.sineOut().lerp(from, to);
             };
-            case SineInOut: (rate:Float) -> {
+            case SineInOut: function(rate:Float) {
                 return rate.sineInOut().lerp(from, to);
             };
-            case SineOutIn: (rate:Float) -> {
+            case SineOutIn: function(rate:Float) {
                 return rate.sineOutIn().lerp(from, to);
             };
-            case QuadIn: (rate:Float) -> {
+            case QuadIn: function(rate:Float) {
                 return rate.quadIn().lerp(from, to);
             };
-            case QuadOut: (rate:Float) -> {
+            case QuadOut: function(rate:Float) {
                 return rate.quadOut().lerp(from, to);
             };
-            case QuadInOut: (rate:Float) -> {
+            case QuadInOut: function(rate:Float) {
                 return rate.quadInOut().lerp(from, to);
             };
-            case QuadOutIn: (rate:Float) -> {
+            case QuadOutIn: function(rate:Float) {
                 return rate.quadOutIn().lerp(from, to);
             };
-            case CubicIn: (rate:Float) -> {
+            case CubicIn: function(rate:Float) {
                 return rate.cubicIn().lerp(from, to);
             };
-            case CubicOut: (rate:Float) -> {
+            case CubicOut: function(rate:Float) {
                 return rate.cubicOut().lerp(from, to);
             };
-            case CubicInOut: (rate:Float) -> {
+            case CubicInOut: function(rate:Float) {
                 return rate.cubicInOut().lerp(from, to);
             };
-            case CubicOutIn: (rate:Float) -> {
+            case CubicOutIn: function(rate:Float) {
                 return rate.cubicOutIn().lerp(from, to);
             };
-            case QuartIn: (rate:Float) -> {
+            case QuartIn: function(rate:Float) {
                 return rate.quartIn().lerp(from, to);
             };
-            case QuartOut: (rate:Float) -> {
+            case QuartOut: function(rate:Float) {
                 return rate.quartOut().lerp(from, to);
             };
-            case QuartInOut: (rate:Float) -> {
+            case QuartInOut: function(rate:Float) {
                 return rate.quartInOut().lerp(from, to);
             };
-            case QuartOutIn: (rate:Float) -> {
+            case QuartOutIn: function(rate:Float) {
                 return rate.quartOutIn().lerp(from, to);
             };
-            case QuintIn: (rate:Float) -> {
+            case QuintIn: function(rate:Float) {
                 return rate.quintIn().lerp(from, to);
             };
-            case QuintOut: (rate:Float) -> {
+            case QuintOut: function(rate:Float) {
                 return rate.quintOut().lerp(from, to);
             };
-            case QuintInOut: (rate:Float) -> {
+            case QuintInOut: function(rate:Float) {
                 return rate.quintInOut().lerp(from, to);
             };
-            case QuintOutIn: (rate:Float) -> {
+            case QuintOutIn: function(rate:Float) {
                 return rate.quintOutIn().lerp(from, to);
             };
-            case ExpoIn: (rate:Float) -> {
+            case ExpoIn: function(rate:Float) {
                 return rate.expoIn().lerp(from, to);
             };
-            case ExpoOut: (rate:Float) -> {
+            case ExpoOut: function(rate:Float) {
                 return rate.expoOut().lerp(from, to);
             };
-            case ExpoInOut: (rate:Float) -> {
+            case ExpoInOut: function(rate:Float) {
                 return rate.expoInOut().lerp(from, to);
             };
-            case ExpoOutIn: (rate:Float) -> {
+            case ExpoOutIn: function(rate:Float) {
                 return rate.expoOutIn().lerp(from, to);
             };
-            case CircIn: (rate:Float) -> {
+            case CircIn: function(rate:Float) {
                 return rate.circIn().lerp(from, to);
             };
-            case CircOut: (rate:Float) -> {
+            case CircOut: function(rate:Float) {
                 return rate.circOut().lerp(from, to);
             };
-            case CircInOut: (rate:Float) -> {
+            case CircInOut: function(rate:Float) {
                 return rate.circInOut().lerp(from, to);
             };
-            case CircOutIn: (rate:Float) -> {
+            case CircOutIn: function(rate:Float) {
                 return rate.circOutIn().lerp(from, to);
             };
-            case BounceIn: (rate:Float) -> {
+            case BounceIn: function(rate:Float) {
                 return rate.bounceIn().lerp(from, to);
             };
-            case BounceOut: (rate:Float) -> {
+            case BounceOut: function(rate:Float) {
                 return rate.bounceOut().lerp(from, to);
             };
-            case BounceInOut: (rate:Float) -> {
+            case BounceInOut: function(rate:Float) {
                 return rate.bounceInOut().lerp(from, to);
             };
-            case BounceOutIn: (rate:Float) -> {
+            case BounceOutIn: function(rate:Float) {
                 return rate.bounceOutIn().lerp(from, to);
             };
-            case BackIn: (rate:Float) -> {
+            case BackIn: function(rate:Float) {
                 return rate.backIn().lerp(from, to);
             };
-            case BackOut: (rate:Float) -> {
+            case BackOut: function(rate:Float) {
                 return rate.backOut().lerp(from, to);
             };
-            case BackInOut: (rate:Float) -> {
+            case BackInOut: function(rate:Float) {
                 return rate.backInOut().lerp(from, to);
             };
-            case BackOutIn: (rate:Float) -> {
+            case BackOutIn: function(rate:Float) {
                 return rate.backOutIn().lerp(from, to);
             };
-            case ElasticIn: (rate:Float) -> {
+            case ElasticIn: function(rate:Float) {
                 return rate.elasticIn().lerp(from, to);
             };
-            case ElasticOut: (rate:Float) -> {
+            case ElasticOut: function(rate:Float) {
                 return rate.elasticOut().lerp(from, to);
             };
-            case ElasticInOut: (rate:Float) -> {
+            case ElasticInOut: function(rate:Float) {
                 return rate.elasticInOut().lerp(from, to);
             };
-            case ElasticOutIn: (rate:Float) -> {
+            case ElasticOutIn: function(rate:Float) {
                 return rate.elasticOutIn().lerp(from, to);
             };
-            case WarpOut: (rate:Float) -> {
+            case WarpOut: function(rate:Float) {
                 return rate.warpOut().lerp(from, to);
             };
-            case WarpIn: (rate:Float) -> {
+            case WarpIn: function(rate:Float) {
                 return rate.warpIn().lerp(from, to);
             };
-            case WarpInOut: (rate:Float) -> {
+            case WarpInOut: function(rate:Float) {
                 return rate.warpInOut().lerp(from, to);
             };
-            case WarpOutIn: (rate:Float) -> {
+            case WarpOutIn: function(rate:Float) {
                 return rate.warpOutIn().lerp(from, to);
             };
-            case Linear, _: (rate:Float) -> {
+            case Linear, _: function(rate:Float) {
                 return rate.linear().lerp(from, to);
             }
         }

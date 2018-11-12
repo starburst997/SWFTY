@@ -160,7 +160,7 @@ class BaseLayer extends EngineLayer {
         }
 
         var tilemapBytes = Zip.getBytes(entries.get(TILEMAP_PNG));
-        loadTexture(tilemapBytes, swfty, () -> {
+        loadTexture(tilemapBytes, swfty, function() {
             loadSWFTY(swfty);
             reload();
             if (onComplete != null) onComplete();

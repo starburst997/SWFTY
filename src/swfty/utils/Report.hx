@@ -127,7 +127,7 @@ class Report {
         line('Orphaned: ${bitmaps.array().count(bitmap -> isOrphaned(swfty, bitmap.id))}');
         line();
 
-        bitmaps.sort((a, b) -> a.width * a.height < b.width * b.height ? 1 : -1);
+        bitmaps.sort(function(a, b) a.width * a.height < b.width * b.height ? 1 : -1);
 
         line('Biggest tiles:');
         for (i in 0...Std.int(Math.min(20, bitmaps.length))) {
@@ -138,7 +138,7 @@ class Report {
         line();
 
         line('Fonts:');
-        fonts.sort((a, b) -> a.size < b.size ? 1 : -1);
+        fonts.sort(function(a, b) a.size < b.size ? 1 : -1);
 
         for (font in fonts) {
             line('  ${font.name}: ${font.size} (${font.characters.length})${font.bold ? ' , bold' : ''}${font.italic ? ' , italic' : ''}');

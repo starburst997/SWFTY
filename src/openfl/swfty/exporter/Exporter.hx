@@ -118,7 +118,7 @@ class Exporter {
         BitmapData.premultipliedDefault = true;
 
         // TODO: Remove listener
-        openfl.Lib.current.addEventListener(Event.ENTER_FRAME, (_) -> {
+        openfl.Lib.current.addEventListener(Event.ENTER_FRAME, function(_) {
             var handlers = [for (f in nextFrames) f];
             processFrame = 0;
             nextFrames = [];
@@ -137,7 +137,7 @@ class Exporter {
                     if (processFrame++ < 250) {
                         f(i + 1);
                     } else {
-                        nextFrames.push(() -> f(i + 1));
+                        nextFrames.push(function() f(i + 1));
                     }
                 } else {
                     // TODO: This could be moved to addShape...
@@ -182,7 +182,7 @@ class Exporter {
                     }
 
                     for (font in fonts) {
-                        var fontTilemap = FontExporter.export(#if html5 font.cleanName #else font.name #end, font.size, font.bold, font.italic, () -> ++maxId);
+                        var fontTilemap = FontExporter.export(#if html5 font.cleanName #else font.name #end, font.size, font.bold, font.italic, function() return ++maxId);
 
                         var id = ++maxId;
                         var definition:BitmapDefinition = {
@@ -198,7 +198,7 @@ class Exporter {
                         bitmapKeeps.set(id, true);
 
                         font.bitmap = id;
-                        font.characters = fontTilemap.characters.map(char -> {
+                        font.characters = fontTilemap.characters.map(function(char) return {
                             id: char.id,
                             bitmap: char.bitmap,
                             tx: char.tx,
@@ -219,7 +219,7 @@ class Exporter {
                 
                 function process2(j) {
                     var symbol = symbols[j];
-                    processSymbol(symbol, () -> {
+                    processSymbol(symbol, function() {
                         if (j + 1 < symbols.length) process2(j + 1) else complete();                        
                     });
                 }
@@ -238,7 +238,7 @@ class Exporter {
             case None : 
                 // Create Tilemap based on all bitmapDatas
                 var keys = [for (key in bitmapDatas.keys()) key];
-                var bmpds = keys.map(key -> bitmapKeeps.exists(key) ? bitmapDatas.get(key) : null);
+                var bmpds = keys.map(function(key) return bitmapKeeps.exists(key) ? bitmapDatas.get(key) : null);
                 var tilemap = TilemapExporter.pack(bmpds);
 
                 // Remove all duplicates
@@ -273,7 +273,7 @@ class Exporter {
                 for (key in fontTilemaps.keys()) {
                     var font = fontTilemaps.get(key);
                     var fontTile = bitmaps.get(key);
-                    font.characters.iter(char -> {
+                    font.characters.iter(function(char) {
                         var tile = {
                             id: char.bitmap,
                             x: fontTile.x + char.x,
@@ -409,7 +409,7 @@ class Exporter {
                     trace('Found mask: ${mask.clipDepth}');
                 }
 
-                processTag(childTag, () -> {
+                processTag(childTag, function() {
                     var placeTag:TagPlaceObject = cast tag.tags[object.placedAtIndex];
 
                     var characterId = object.characterId;
@@ -606,7 +606,7 @@ class Exporter {
             var process = function f(i) {  
                 var bitmap = bitmaps[i];
 
-                processTag(cast data.getCharacter(bitmap.id), () -> {
+                processTag(cast data.getCharacter(bitmap.id), function() {
                     var transform = getTransform(bitmap.transform);
                     var definition:ShapeDefinition = {
                         id: i,
@@ -651,7 +651,7 @@ class Exporter {
                 var command = handler.commands[i];
                 switch(command) {
 					case BeginBitmapFill(bitmapID, _, _, _):
-						processTag(cast data.getCharacter(bitmapID), () -> {
+						processTag(cast data.getCharacter(bitmapID), function() {
                             if (i + 1 < handler.commands.length) f(i + 1) else onComplete();
                         });
 					default:
@@ -735,7 +735,7 @@ class Exporter {
                 #if sync
                 ({var bmpd = BitmapData.fromBytes(output.getBytes());
                 #else
-                BitmapData.loadFromBytes(output.getBytes()).onComplete((bmpd) -> {
+                BitmapData.loadFromBytes(output.getBytes()).onComplete(function(bmpd) {
                 #end
                     bitmapData = bmpd;
                     complete();
@@ -965,7 +965,7 @@ class Exporter {
 
         // Only process Sprite Symbol
         if (Std.is(tag, TagDefineSprite)) {
-            processTag(tag, () -> {
+            processTag(tag, function() {
                 var definition = movieClips.get(symbol.tagId);
                 definition.name = symbol.name;
 

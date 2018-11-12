@@ -8,11 +8,11 @@ class File {
         #if js
         // TODO: Is this a potential memory leak?
         var loader = new hxd.net.BinaryLoader('res/$path');
-        loader.onLoaded = (bytes) -> {
+        loader.onLoaded = function(bytes) {
             trace('Complete loadBytes ${bytes.length}');
             onComplete(bytes);
         };
-        loader.onError = (e) -> {
+        loader.onError = function(e) {
             trace('Error loadBytes', e);
             if (onError != null) onError(e);
         }

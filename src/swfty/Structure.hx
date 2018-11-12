@@ -2,7 +2,7 @@ package swfty;
 
 import haxe.ds.IntMap;
 
-enum abstract BlendMode(String) from String to String {
+@:enum abstract BlendMode(String) from String to String {
     var Normal      = 'normal';
     var LayerBlend  = 'layer';
     var Multiply    = 'multiply';
@@ -19,11 +19,11 @@ enum abstract BlendMode(String) from String to String {
     var Hardlight   = 'hardlight';
 }
 
-enum abstract Align(String) to String {
-    var Left;
-    var Right;
-    var Center;
-    var Justify;
+@:enum abstract Align(String) to String {
+    var Left        = 'Left';
+    var Right       = 'Right';
+    var Center      = 'Center';
+    var Justify     = 'Justify';
 }
 
 /* JSON Type */

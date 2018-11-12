@@ -26,7 +26,7 @@ class ClassExporter {
         
         var addDefinition = function f(definition:MovieClipType, allow = false) {
             if (abstractNames.exists(definition) || 
-                (!allow && (definition.children.count(child -> !child.name.empty() && (child.mc != null || child.text != null)) == 0))) 
+                (!allow && (definition.children.count(function(child) return !child.name.empty() && (child.mc != null || child.text != null)) == 0))) 
                 return;
             
             var name = definition.name.empty() ? 'Instance${n++}' : definition.name.capitalize().replace('.', '_');
@@ -126,7 +126,7 @@ abstract $capitalizedName(Layer) from Layer to Layer {
 
     public static inline function load(?width:Int, ?height:Int, ?onComplete:$capitalizedName->Void, ?onError:Dynamic->Void):$capitalizedName {
         var layer:$capitalizedName = Layer.empty(width, height);
-        layer._load(() -> if (onComplete != null) onComplete(layer), onError);
+        layer._load(function() if (onComplete != null) onComplete(layer), onError);
         return layer;
     }
 }';
