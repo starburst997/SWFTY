@@ -119,7 +119,7 @@ abstract $capitalizedName(Layer) from Layer to Layer {
     }
 
     inline function _load(?onComplete:Void->Void, ?onError:Dynamic->Void) {
-        File.loadBytes("$resPath$name.swfty", bytes -> {
+        File.loadBytes("$resPath$name.swfty", function(bytes) {
             this.loadBytes(bytes, onComplete, onError);
         }, onError);
     }
