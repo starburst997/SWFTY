@@ -115,7 +115,9 @@ class Exporter {
 
         fontTilemaps = new IntMap();
 
+        #if openfl_jd
         BitmapData.premultipliedDefault = true;
+        #end
 
         // TODO: Remove listener
         openfl.Lib.current.addEventListener(Event.ENTER_FRAME, function(_) {
@@ -254,7 +256,9 @@ class Exporter {
                 }
 
                 // We're done, so go back to default
+                #if openfl_jd
                 BitmapData.premultipliedDefault = true;
+                #end
 
                 trace('Tilemap is ${tilemap.bitmapData.width}x${tilemap.bitmapData.height}');
 

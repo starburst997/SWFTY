@@ -70,7 +70,9 @@ abstract DisplayBitmap(EngineBitmap) from EngineBitmap to EngineBitmap {
     }
 
     public inline function color(r:Int, g:Int, b:Int) {
+        #if (openfl >= "6.0.0")
         this.colorTransform = new openfl.geom.ColorTransform(r / 255.0, g / 255.0, b / 255.0, 1.0);
+        #end
     }
 }
 
@@ -91,18 +93,26 @@ abstract DisplaySprite(BaseSprite) from BaseSprite to BaseSprite {
     }
 
     public inline function color(r:Float, g:Float, b:Float, rAdd:Float, gAdd:Float, bAdd:Float) {
+        #if (openfl >= "6.0.0")
         this.colorTransform = new openfl.geom.ColorTransform(r / 255.0, g / 255.0, b / 255.0, 1.0, rAdd, gAdd, bAdd, 0.0);
+        #end
     }
 
     public inline function resetColor() {
+        #if (openfl >= "6.0.0")
         this.colorTransform = null;
+        #end
     }
 
     public inline function blend(mode:BlendMode) {
+        #if (openfl >= "8.4.0")
         this.blendMode = mode;
+        #end
     }
 
     public inline function resetBlend() {
+        #if (openfl >= "8.4.0")
         this.blendMode = null;
+        #end
     }
 }

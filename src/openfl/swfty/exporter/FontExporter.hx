@@ -8,6 +8,7 @@ import haxe.ds.IntMap;
 
 import openfl.display.BitmapData;
 import openfl.geom.Matrix;
+import openfl.geom.Rectangle;
 import openfl.text.TextFormat;
 import openfl.text.TextField;
 import openfl.text.Font;
@@ -72,6 +73,7 @@ class FontExporter {
             textField.text = char;
 
             var bounds = textField.getCharBoundaries(0);
+            if (bounds == null) bounds = new Rectangle(0, 0, 1, 1);
 
             if (Math.ceil(bounds.width) > 0 && Math.ceil(bounds.height) > 0) {
                 var bmpd = new BitmapData(Math.ceil(bounds.width), Math.ceil(bounds.height), true, 0x00000000);
