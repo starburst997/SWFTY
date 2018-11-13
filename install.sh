@@ -19,6 +19,7 @@ haxelib dev binpacking Rectangle-Bin-Packing
 haxelib dev mcli mcli
 haxelib dev hxcpp hxcpp
 haxelib dev heaps heaps
+haxelib dev tilelayer tilelayer/haxelib
 haxelib dev tweenxcore tweenx/src/tweenxcore
 haxelib dev hlsdl hashlink/libs/sdl
 haxelib dev hlopenal hashlink/libs/openal

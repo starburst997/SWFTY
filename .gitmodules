@@ -37,3 +37,6 @@
 [submodule "submodules/tweenx"]
 	path = submodules/tweenx
 	url = git@github.com:shohei909/tweenx.git
+[submodule "submodules/tilelayer"]
+	path = submodules/tilelayer
+	url = git@github.com:starburst997/tilelayer.git
