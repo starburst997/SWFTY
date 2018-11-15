@@ -41,6 +41,9 @@ class BaseSprite extends EngineSprite {
     var _renders:Array<Float->Void>;
     var _rendersMap:StringMap<Array<Float->Void>>;
 
+    var _pruneRenders:Array<Float->Void>;
+    var _pruneSprites:Array<FinalSprite>;
+
     public function new(layer:BaseLayer, ?definition:MovieClipType, ?linkage:String) {
         super();
 
@@ -53,6 +56,9 @@ class BaseSprite extends EngineSprite {
         _sprites = [];
         _names = new StringMap();
         _texts = new StringMap();
+
+        _pruneRenders = [];
+        _pruneSprites = [];
 
         load(definition);
     }
@@ -102,14 +108,14 @@ class BaseSprite extends EngineSprite {
 
     public inline function removeRender(?name:String, ?f:Float->Void) {
         if (f != null) {
-            _renders.remove(f);
+            _pruneRenders.push(f);
 
             if (_rendersMap.exists(name)) {
                 _rendersMap.get(name).remove(f);
             }
         } else if (name != null && _rendersMap.exists(name)) {
             for (f in _rendersMap.get(name)) {
-                _renders.remove(f);
+                _pruneRenders.push(f);
             }
             
             _rendersMap.remove(name);
@@ -122,6 +128,9 @@ class BaseSprite extends EngineSprite {
         }
 
         for (f in _renders) f(dt);
+
+        while(_pruneRenders.length > 0) _renders.remove(_pruneRenders.pop());
+        while(_pruneSprites.length > 0) _sprites.remove(_pruneSprites.pop());
     }
 
     public inline function display():DisplaySprite {
@@ -254,7 +263,7 @@ class BaseSprite extends EngineSprite {
 
     public function removeSprite(sprite:FinalSprite) {
         sprite._parent = null;
-        _sprites.remove(sprite);
+        _pruneSprites.push(sprite);
     }
 
     public function addBitmap(shape:EngineBitmap) {

@@ -598,6 +598,8 @@ class Exporter {
                             var hash = '${childTag.characterId}-$filterHash-$colorHash';
 
                             if (bakedId.exists(hash)) {
+
+                                trace('*********** HAS HASH !!!!!!!!!!!!!');
                                 characterId = bakedId.get(hash);
 
                             } else {

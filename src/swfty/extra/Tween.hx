@@ -16,7 +16,7 @@ class Tween {
 
     /* Presets */
 
-    public static inline function fadeIn(sprite:Sprite, duration:Float = 0.30, delay = 0.0, ?stop:Bool = true) {
+    public static inline function fadeIn(sprite:Sprite, duration:Float = 0.30, ?delay = 0.0, ?stop:Bool = true) {
         if (!sprite.visible) {
             sprite.visible = true;
             sprite.alpha = 0.0;
@@ -28,7 +28,7 @@ class Tween {
         return sprite;
     }
 
-    public static inline function fadeOut(sprite:Sprite, duration:Float = 0.20, delay = 0.0, ?stop:Bool = true, ?remove:Bool = false) {
+    public static inline function fadeOut(sprite:Sprite, duration:Float = 0.20, ?delay = 0.0, ?stop:Bool = true, ?remove:Bool = false) {
         if (stop) sprite.tweenStop();
         
         sprite.tweenAlpha(0.0, duration, delay, function() {
@@ -40,7 +40,7 @@ class Tween {
         return sprite;
     }
 
-    public static inline function pop(sprite:Sprite, strength:Float = 2.50, duration:Float = 0.20, delay = 0.0, ?stop:Bool = true) {
+    public static inline function pop(sprite:Sprite, ?strength:Float = 2.50, duration:Float = 0.20, ?delay = 0.0, ?stop:Bool = true) {
         if (stop) sprite.tweenStop();
         
         sprite
@@ -53,12 +53,12 @@ class Tween {
         return sprite;
     }
 
-    public static inline function popToward(sprite:Sprite, to:Sprite, strength:Float = 2.50, duration:Float = 0.75, delay = 0.0, ?stop:Bool = true, ?onComplete:Void->Void) {
+    public static inline function popToward(sprite:Sprite, to:Sprite, ?strength:Float = 2.50, duration:Float = 0.75, ?delay = 0.0, ?stop:Bool = true, ?onComplete:Void->Void) {
         // TODO: Use getBounds with target space
         return popTowardPosition(sprite, to.x, to.y, strength, duration, delay, stop, onComplete);
     }
 
-    public static inline function popTowardPosition(sprite:Sprite, x:Float, y:Float, duration:Float = 0.75, delay = 0.0, strength:Float = 2.50, ?stop:Bool = true, ?onComplete:Void->Void) {
+    public static inline function popTowardPosition(sprite:Sprite, x:Float, y:Float, duration:Float = 0.75, ?delay = 0.0, ?strength:Float = 2.50, ?stop:Bool = true, ?onComplete:Void->Void) {
         if (stop) sprite.tweenStop();
 
         sprite
@@ -70,12 +70,12 @@ class Tween {
         return sprite;
     }
 
-    public static inline function fadeToward(sprite:Sprite, to:Sprite, duration:Float = 0.50, delay:Float = 0.0, ?stop:Bool = true, ?onComplete:Void->Void) {
+    public static inline function fadeToward(sprite:Sprite, to:Sprite, duration:Float = 0.50, ?delay:Float = 0.0, ?stop:Bool = true, ?onComplete:Void->Void) {
         // TODO: Use getBounds with target space
         return sprite.fadeTowardPosition(to.x, to.y, duration, delay, stop, onComplete);
     }
 
-    public static inline function fadeTowardPosition(sprite:Sprite, x:Float, y:Float, duration:Float = 0.50, delay:Float = 0.0, ?stop:Bool = true, ?onComplete:Void->Void) {
+    public static inline function fadeTowardPosition(sprite:Sprite, x:Float, y:Float, duration:Float = 0.50, ?delay:Float = 0.0, ?stop:Bool = true, ?onComplete:Void->Void) {
         if (stop) sprite.tweenStop();
 
         sprite
@@ -92,21 +92,21 @@ class Tween {
         return sprite;
     }
 
-    public static inline function toward(sprite:Sprite, to:Sprite, duration:Float = 0.50, delay:Float = 0.0, ?stop:Bool = true, ?onComplete:Void->Void) {
+    public static inline function toward(sprite:Sprite, to:Sprite, duration:Float = 0.50, ?delay:Float = 0.0, ?stop:Bool = true, ?onComplete:Void->Void) {
         if (stop) sprite.tweenStop();
 
         sprite.tweenPosition(to.x, to.y, duration, delay, BackIn, onComplete);
         return sprite;
     }
 
-    public static inline function towardPosition(sprite:Sprite, x:Float, y:Float, duration:Float = 0.50, delay:Float = 0.0, ?stop:Bool = true, ?onComplete:Void->Void) {
+    public static inline function towardPosition(sprite:Sprite, x:Float, y:Float, duration:Float = 0.50, ?delay:Float = 0.0, ?stop:Bool = true, ?onComplete:Void->Void) {
         if (stop) sprite.tweenStop();
 
         sprite.tweenPosition(x, y, duration, delay, BackIn, onComplete);
         return sprite;
     }
 
-    public static inline function bounce(sprite:Sprite, to = 1.0, strength = 1.20, duration:Float = 0.5, delay = 0.0, stop = true, stack = false, max = 0.0, ?onComplete:Void->Void) {
+    public static inline function bounce(sprite:Sprite, to = 1.0, strength = 1.20, duration:Float = 0.5, ?delay = 0.0, ?stop = true, ?stack = false, ?max = 0.0, ?onComplete:Void->Void) {
         if (stop) sprite.tweenStop();
 
         var scale = (stack ? sprite.scaleX : to) * strength;
@@ -123,7 +123,7 @@ class Tween {
 
     // TODO: Should be moved to it's own class tools
 
-    public static inline function wait(sprite:Sprite, duration:Float, stop = false, ?onComplete:Void->Void) {
+    public static inline function wait(sprite:Sprite, duration:Float, ?stop = false, ?onComplete:Void->Void) {
         if (stop) sprite.waitStop();
         
         var time = 0.0;
@@ -148,70 +148,70 @@ class Tween {
 
     /* Tween */
 
-    public static inline function tweenWidth(sprite:Sprite, width:Float, duration:Float, delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void) {
+    public static inline function tweenWidth(sprite:Sprite, width:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void) {
         setup(sprite, sprite.width, width, duration, delay, easing, onComplete, function(val) {
             sprite.width = val;
         });
         return sprite;
     }
 
-    public static inline function tweenHeight(sprite:Sprite, height:Float, duration:Float, delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void) {
+    public static inline function tweenHeight(sprite:Sprite, height:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void) {
         setup(sprite, sprite.height, height, duration, delay, easing, onComplete, function(val) {
             sprite.height = val;
         });
         return sprite;
     }
 
-    public static inline function tweenScale(sprite:Sprite, scale:Float, duration:Float, delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void) {
+    public static inline function tweenScale(sprite:Sprite, scale:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void) {
         setup(sprite, sprite.scaleX, scale, duration, delay, easing, onComplete, function(val) {
             sprite.scaleX = sprite.scaleY = val;
         });
         return sprite;
     }
 
-    public static inline function tweenScaleX(sprite:Sprite, scale:Float, duration:Float, delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void) {
+    public static inline function tweenScaleX(sprite:Sprite, scale:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void) {
         setup(sprite, sprite.scaleX, scale, duration, delay, easing, onComplete, function(val) {
             sprite.scaleX = val;
         });
         return sprite;
     }
 
-    public static inline function tweenScaleY(sprite:Sprite, scale:Float, duration:Float, delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void) {
+    public static inline function tweenScaleY(sprite:Sprite, scale:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void) {
         setup(sprite, sprite.scaleY, scale, duration, delay, easing, onComplete, function(val) {
             sprite.scaleY = val;
         });
         return sprite;
     }
 
-    public static inline function tweenX(sprite:Sprite, x:Float, duration:Float, delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void) {
+    public static inline function tweenX(sprite:Sprite, x:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void) {
         setup(sprite, sprite.x, x, duration, delay, easing, onComplete, function(val) {
             sprite.x = val;
         });
         return sprite;
     }
 
-    public static inline function tweenY(sprite:Sprite, y:Float, duration:Float, delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void) {
+    public static inline function tweenY(sprite:Sprite, y:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void) {
         setup(sprite, sprite.y, y, duration, delay, easing, onComplete, function(val) {
             sprite.y = val;
         });
         return sprite;
     }
 
-    public static inline function tweenAlpha(sprite:Sprite, alpha:Float, duration:Float, delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void) {
+    public static inline function tweenAlpha(sprite:Sprite, alpha:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void) {
         setup(sprite, sprite.alpha, alpha, duration, delay, easing, onComplete, function(val) {
             sprite.alpha = val;
         });
         return sprite;
     }
 
-    public static inline function tweenRotation(sprite:Sprite, angle:Float, duration:Float, delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void) {
+    public static inline function tweenRotation(sprite:Sprite, angle:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void) {
         setup(sprite, sprite.rotation, angle, duration, delay, easing, onComplete, function(val) {
             sprite.rotation = val;
         });
         return sprite;
     }
 
-    public static inline function tweenPosition(sprite:Sprite, x:Float, y:Float, duration:Float, delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void) {
+    public static inline function tweenPosition(sprite:Sprite, x:Float, y:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void) {
         tweenX(sprite, x, duration, delay, easing, onComplete);
         tweenY(sprite, y, duration, delay, easing, onComplete);
         return sprite;
@@ -224,9 +224,9 @@ class Tween {
 
     /* Helpers */
 
-    static inline function setup(sprite:Sprite, from:Float, to:Float, duration:Float, delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void, setVal:Float->Void) {
+    static inline function setup(sprite:Sprite, from:Float, to:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void, setVal:Float->Void) {
         var ease = getEasing(from, to, easing);
-        var time = -delay;
+        var time = delay == null ? 0.0 : -delay;
         var done = false;
         sprite.addRender('tween', function render(dt) {
             if (time >= duration) {
@@ -384,7 +384,7 @@ class Tween {
 }
 
 class TweenText {
-    public static inline function bounce(text:Text, to = 1.0, strength = 1.20, duration:Float = 0.5, delay = 0.0, ?onComplete:Void->Void) {
+    public static inline function bounce(text:Text, to = 1.0, strength = 1.20, duration:Float = 0.5, ?delay = 0.0, ?onComplete:Void->Void) {
         return Tween.bounce(text.sprite(), to, strength, duration, delay, onComplete);
     }
 
