@@ -6,6 +6,7 @@ import swfty.exporter.Exporter;
 
 import haxe.ds.IntMap;
 
+import openfl.filters.BitmapFilter;
 import openfl.display.BitmapData;
 import openfl.geom.Matrix;
 import openfl.geom.Rectangle;
@@ -13,6 +14,8 @@ import openfl.text.TextFormat;
 import openfl.text.TextField;
 import openfl.text.Font;
 import openfl.utils.ByteArray;
+
+@:access(openfl.geom.Rectangle)
 
 typedef Character = {
     id: Int,
@@ -22,7 +25,8 @@ typedef Character = {
     width: Int, 
     height: Int, 
     ty: Float, 
-    tx: Float
+    tx: Float,
+    advance: Float
 }
 
 typedef FontTilemap = {
@@ -30,14 +34,24 @@ typedef FontTilemap = {
     bitmapData: BitmapData
 }
 
+typedef FontCache = {
+    id:Int,
+    font:String,
+    hash:String,
+    isNumeric:Bool,
+    color:Int,
+    filters:Array<BitmapFilter>
+}
+
 @:access(openfl.text.Font)
 class FontExporter {
 
     public static var path = 'ref/fonts';
 
-    public static function export(font:String, size:Float = 24, bold:Bool = false, italic:Bool = false, ?charSet:Array<Int>, getId:Void->Int):FontTilemap {
+    public static function export(font:String, size:Float = 24, bold:Bool = false, italic:Bool = false, ?charSet:Array<Int>, ?cache:FontCache, getId:Void->Int):FontTilemap {
 
         if (charSet == null) charSet = CharSet.ISO_8859_1;
+        if (cache != null && cache.isNumeric) charSet = CharSet.NUMERIC; 
 
         #if sys
         // Command line tools need the path to TTF
@@ -53,9 +67,11 @@ class FontExporter {
 
         var characters = [];
         var textField = new TextField();
-        var textFormat = new TextFormat(font, Std.int(size), 0xFFFFFF, bold, italic);
+        var textFormat = new TextFormat(font, Std.int(size), cache != null ? cache.color : 0xFFFFFF, bold, italic);
 
         textField.defaultTextFormat = textFormat;
+
+        if (cache != null) textField.filters = cache.filters;
 
         var bitmaps = new IntMap<BitmapData>();
         var definitions = [];
@@ -76,21 +92,27 @@ class FontExporter {
             if (bounds == null) bounds = new Rectangle(0, 0, 1, 1);
 
             if (Math.ceil(bounds.width) > 0 && Math.ceil(bounds.height) > 0) {
-                var bmpd = new BitmapData(Math.ceil(bounds.width), Math.ceil(bounds.height), true, 0x00000000);
+
+                var padding = 40;
+                
+                var bmpd = new BitmapData(Math.ceil(bounds.width) + padding * 2, Math.ceil(bounds.height) + padding * 2, true, 0x00000000);
                 
                 var m = new Matrix();
-                m.tx = -bounds.x;
-                m.ty = -bounds.y;
+                m.tx = -bounds.x + padding;
+                m.ty = -bounds.y + padding;
                 
                 bmpd.draw(textField, m);
 
-                bitmaps.set(code, bmpd);
+                var trimmed = TilemapExporter.trim(bmpd);
+
+                bitmaps.set(code, trimmed.bmpd);
 
                 definitions.push({
                     id: code,
                     bitmap: getId(),
                     x: 0, y: 0, width: 0, height: 0,
-                    tx: bounds.x, ty: bounds.y
+                    tx: bounds.x + trimmed.rect.x - padding, ty: bounds.y + trimmed.rect.y - padding,
+                    advance: bounds.width
                 });
             }
         }

@@ -53,7 +53,8 @@ typedef Character = {
     id: Int,
     bitmap: Int,
     tx: Float,
-    ty: Float
+    ty: Float,
+    advance: Float
 }
 
 typedef FontDefinition = {
@@ -415,21 +416,24 @@ class CharacterType implements hxbit.Serializable {
     @:s public var bitmap:BitmapType;
     @:s public var tx:Float;
     @:s public var ty:Float;
+    @:s public var advance:Float;
 
     public static inline function fromJson(json:Character, bitmaps:IntMap<BitmapType>):CharacterType {
         return {
             id: json.id,
             bitmap: bitmaps.get(json.bitmap),
             tx: json.tx,
-            ty: json.ty
+            ty: json.ty,
+            advance: json.advance
         };
     }
 
-    public function new(?id:Int, ?bitmap:BitmapType, ?tx:Float, ?ty:Float) {
+    public function new(?id:Int, ?bitmap:BitmapType, ?tx:Float, ?ty:Float, ?advance:Float) {
         this.id = id;
         this.bitmap = bitmap;
         this.tx = tx;
         this.ty = ty;
+        this.advance = advance;
     }
 }
 
