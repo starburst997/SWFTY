@@ -19,6 +19,20 @@
             }
         },
         {
+            "command": "openfl",
+            "taskName": "build export",
+            "isBuildCommand": true,
+            "args": [
+                "build", "./samples/openfl/project.xml", "html5", "-debug", "-Dexport", "-v"
+            ],
+            "presentation": {
+                "echo": false,
+                "focus": false,
+                "panel": "dedicated",
+                "reveal": "silent"
+            }
+        },
+        {
             "command": "sh",
             "taskName": "build hl",
             "isBuildCommand": true,
