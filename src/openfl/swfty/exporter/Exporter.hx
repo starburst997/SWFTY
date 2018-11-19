@@ -1,6 +1,7 @@
 package openfl.swfty.exporter;
 
-import format.abc.Data.NamespaceSet;
+import swfty.exporter.Exporter.CharSet;
+import format.swf.data.filters.Filter;
 import openfl.swfty.exporter.Shape;
 import openfl.swfty.exporter.MovieClip;
 import openfl.swfty.exporter.FontExporter;
@@ -9,6 +10,7 @@ import openfl.swfty.exporter.TilemapExporter;
 import zip.ZipWriter;
 
 import haxe.ds.IntMap;
+import haxe.ds.StringMap;
 import haxe.ds.Option;
 import haxe.io.Bytes;
 import haxe.io.BytesOutput;
@@ -56,6 +58,9 @@ import format.SWF;
 
 class Exporter {
 
+    // TODO: Default to false, mainly only for openfl before 6.0
+    public static var BAKE_COLOR = true;
+
     var maxId:Int = -1;
 
     var name:String;
@@ -68,6 +73,9 @@ class Exporter {
     var bitmapToShapes:IntMap<Array<ShapeDefinition>>;
     var texts:IntMap<TextDefinition>;
     var fonts:IntMap<FontDefinition>;
+    
+    var fontCacheId:StringMap<Int>;
+    var fontCache:IntMap<FontCache>;
 
     var processShapes:IntMap<{tag: TagDefineShape, definition: ShapeDefinition}>;
     var processShapesId = 0;
@@ -87,6 +95,8 @@ class Exporter {
 
     var processFrame = 0;
     var nextFrames:Array<Void->Void> = [];
+
+    var bakedId:StringMap<Int>;
 
     public static function create(bytes:ByteArray, ?name:String, onComplete:Exporter->Void) {
         return new Exporter(bytes, name, onComplete);
@@ -109,6 +119,9 @@ class Exporter {
         bitmaps = new IntMap();
         bitmapDatas = new IntMap();
         bitmapToShapes = new IntMap();
+        bakedId = new StringMap();
+        fontCacheId = new StringMap();
+        fontCache = new IntMap();
 
         bitmapKeeps = new IntMap();
         processShapes = new IntMap();
@@ -184,7 +197,7 @@ class Exporter {
                     }
 
                     for (font in fonts) {
-                        var fontTilemap = FontExporter.export(#if html5 font.cleanName #else font.name #end, font.size, font.bold, font.italic, function() return ++maxId);
+                        var fontTilemap = FontExporter.export(#if html5 font.cleanName #else font.name #end, font.size, font.bold, font.italic, fontCache.get(font.id), function() return ++maxId);
 
                         var id = ++maxId;
                         var definition:BitmapDefinition = {
@@ -204,7 +217,8 @@ class Exporter {
                             id: char.id,
                             bitmap: char.bitmap,
                             tx: char.tx,
-                            ty: char.ty
+                            ty: char.ty,
+                            advance: char.advance
                         });
 
                         fontTilemaps.set(id, fontTilemap);
@@ -232,6 +246,83 @@ class Exporter {
             }
         }
         if (data.tags.length > 0) process(0) else onComplete(this);
+    }
+
+    function getFontCache(text:TextDefinition, filterHash:String) {
+        var font = if (fonts.exists(text.font)) {
+            fonts.get(text.font).name;
+        } else {
+            '';
+        }
+        
+        var hash = '${font}-${BAKE_COLOR ? text.color : 0xFFFFFF}-${filterHash}';
+
+        // Create first cache
+        if (!fontCache.exists(text.font)) {
+            var cache = {
+                id: text.font,
+                font: font,
+                hash: hash,
+                isNumeric: isNumeric(text.text),
+                color: text.color,
+                filters: []
+            };
+
+            fontCache.set(text.font, cache);
+            fontCacheId.set(hash, text.font);
+        }
+        
+        // If cache doesn'T exists
+        if (!fontCacheId.exists(hash)) {
+            var id = --processShapesId;
+            var cache = {
+                id: id,
+                font: font,
+                hash: hash,
+                isNumeric: isNumeric(text.text),
+                color: text.color,
+                filters: []
+            };
+
+            fontCacheId.set(hash, id);
+            fontCache.set(id, cache);
+
+            // Duplicate font
+            if (fonts.exists(text.font)) {
+                var font = fonts.get(text.font);
+
+                var dupe = {
+                    id: id,
+                    name: font.name,
+                    cleanName: font.cleanName,
+                    color: font.color,
+                    size: font.size,
+                    bold: font.bold,
+                    italic: font.italic,
+                    bitmap: font.bitmap,
+                    ascent: font.ascent,
+                    descent: font.descent,
+                    leading: font.leading,
+                    characters: [for (char in font.characters) char]
+                };
+
+                fonts.set(id, dupe);
+            }
+        }
+
+        var cache = fontCache.get(fontCacheId.get(hash));
+
+        text.font = cache.id;
+        if (cache.isNumeric) cache.isNumeric = isNumeric(text.text);
+        
+        return cache;
+    }
+
+    function isNumeric(str:String) {
+        for (i in 0...str.length) {
+            if (CharSet.NUMERIC.indexOf(str.charCodeAt(i)) == -1) return false;
+        }
+        return true;
     }
 
     public function getTilemap() {
@@ -440,95 +531,147 @@ class Exporter {
 
                     var hasColor =
                         placeTag.colorTransform != null && 
-                        (placeTag.colorTransform.rMult != 1.0 || 
-                        placeTag.colorTransform.gMult != 1.0 || 
-                        placeTag.colorTransform.bMult != 1.0 || 
+                        (placeTag.colorTransform.rMult != 256.0 || 
+                        placeTag.colorTransform.gMult != 256.0 || 
+                        placeTag.colorTransform.bMult != 256.0 || 
                         placeTag.colorTransform.rAdd != 0 || 
                         placeTag.colorTransform.gAdd != 0 || 
                         placeTag.colorTransform.bAdd != 0);
 
-                    if (placeTag.hasFilterList || (placeTag.hasCacheAsBitmap && placeTag.bitmapCache != 0) /*|| hasColor*/ /*|| placeTag.hasBlendMode*/) {
-                        // TODO: Basically like cacheAsBitmap, take a screenshot of the MovieClip
-                        //       Create a unique ID to prevent duplicates
+                    var filterHash = !placeTag.hasFilterList ? '' : {
+                        var str = '';
+                        for (surfaceFilter in placeTag.surfaceFilterList) {
+                            var type = surfaceFilter.type;
+                            switch (type) {
+                                case BlurFilter (blurX, blurY, quality):
+                                    str += 'BlurFilter($blurX, $blurY, $quality)';
+                                
+                                case ColorMatrixFilter (matrix):
+                                    str += 'ColorMatrixFilter($matrix)';
+                                
+                                case DropShadowFilter (distance, angle, color, alpha, blurX, blurY, strength, quality, inner, knockout, hideObject):
+                                    str += 'DropShadowFilter($distance, $angle, $color, $alpha, $blurX, $blurY, $strength, $quality, $inner, $knockout, $hideObject)';
+                                
+                                case GlowFilter (color, alpha, blurX, blurY, strength, quality, inner, knockout):
+                                    str += 'GlowFilter($color, $alpha, $blurX, $blurY, $strength, $quality, $inner, $knockout)';   
+                            }
+                        }
+                        str;
+                    }
 
-                        if (Std.is(childTag, TagDefineSprite)) {
-                            var movieClip = new MovieClip(this, cast childTag);
+                    if (placeTag.hasFilterList || (placeTag.hasCacheAsBitmap && placeTag.bitmapCache != 0) || (BAKE_COLOR && hasColor) /*|| placeTag.hasBlendMode*/) {
+                        // Basically like cacheAsBitmap, take a screenshot of the MovieClip
+                        // also bake filters on texts (aka outlines done with GlowFilter)
 
-                            // TODO: OpenFL doesn't support inner / knockout !!
-                            if (placeTag.hasFilterList) {
-                                var filters:Array<BitmapFilter> = [];
-                                for (surfaceFilter in placeTag.surfaceFilterList) {
-                                    var type = surfaceFilter.type;
-                                    if (type != null) {
-                                        switch (type) {
-                                            case BlurFilter (blurX, blurY, quality):
-                                                filters.push (new BlurFilter (blurX, blurY, quality));
-                                            
-                                            case ColorMatrixFilter (matrix):
-                                                filters.push (new ColorMatrixFilter (matrix));
-                                            
-                                            case DropShadowFilter (distance, angle, color, alpha, blurX, blurY, strength, quality, inner, knockout, hideObject):
-                                                if (inner || knockout) Log.warn('Inner / Knockout is not supported');
-                                                filters.push (new DropShadowFilter (distance, angle, color, alpha, blurX, blurY, strength, quality, inner, knockout, hideObject));
-                                            
-                                            case GlowFilter (color, alpha, blurX, blurY, strength, quality, inner, knockout):
-                                                if (inner || knockout) Log.warn('Inner / Knockout is not supported');
-                                                filters.push (new GlowFilter (color, alpha, blurX, blurY, strength, quality, inner, knockout));   
-                                        }
+                        var colorHash = !hasColor ? '' : {
+                            var c = placeTag.colorTransform;
+                            '${c.rMult},${c.gMult},${c.bMult},${c.rAdd},${c.gAdd},${c.bAdd}';
+                        };
+
+                        // TODO: OpenFL doesn't support inner / knockout !!
+                        var filters:Array<BitmapFilter> = [];
+                        if (placeTag.hasFilterList) {
+                            for (surfaceFilter in placeTag.surfaceFilterList) {
+                                var type = surfaceFilter.type;
+                                if (type != null) {
+                                    switch (type) {
+                                        case BlurFilter (blurX, blurY, quality):
+                                            filters.push (new BlurFilter (blurX, blurY, quality));
+                                        
+                                        case ColorMatrixFilter (matrix):
+                                            filters.push (new ColorMatrixFilter (matrix));
+                                        
+                                        case DropShadowFilter (distance, angle, color, alpha, blurX, blurY, strength, quality, inner, knockout, hideObject):
+                                            if (inner || knockout) Log.warn('Inner / Knockout is not supported');
+                                            filters.push (new DropShadowFilter (distance, angle, color, alpha, blurX, blurY, strength, quality, inner, knockout, hideObject));
+                                        
+                                        case GlowFilter (color, alpha, blurX, blurY, strength, quality, inner, knockout):
+                                            if (inner || knockout) Log.warn('Inner / Knockout is not supported');
+                                            filters.push (new GlowFilter (color, alpha, blurX, blurY, strength, quality, inner, knockout));   
                                     }
                                 }
-                                
-                                movieClip.filters = filters;
                             }
+                        }
 
-                            // We're essentially creating a unique baked copy with all filters / blendMode applied to it
-                            characterId = --processShapesId;
+                        if (Std.is(childTag, TagDefineSprite)) {
 
-                            var id = --processShapesId;
-                            var shape:ShapeDefinition = {
-                                id: 0,
-                                bitmap: id,
-                                a: 1.0,
-                                b: 0.0,
-                                c: 0.0,
-                                d: 1.0,
-                                tx: 0.0,
-                                ty: 0.0
-                            };
+                            var hash = '${childTag.characterId}-$filterHash-$colorHash';
 
-                            var bounds = movieClip.getBounds(movieClip);
-                            shape.tx = bounds.x;
-                            shape.ty = bounds.y;
+                            if (bakedId.exists(hash)) {
 
-                            // TODO: Maybe add this as settings...
-                            var padding = 40;
+                                trace('*********** HAS HASH !!!!!!!!!!!!!');
+                                characterId = bakedId.get(hash);
 
-                            var bitmapData = new BitmapData(Math.ceil(bounds.width) + padding * 2, Math.ceil(bounds.height) + padding * 2, true, 0x00000000);
+                            } else {
 
-                            var m = new Matrix();
-                            m.tx = -bounds.x + padding;
-                            m.ty = -bounds.y + padding;
-                            
-                            bitmapData.draw(movieClip, m);
+                                var movieClip = new MovieClip(this, cast childTag);
 
-                            var trimmed = TilemapExporter.trim(bitmapData);
+                                movieClip.filters = filters;
 
-                            shape.tx = bounds.x + trimmed.rect.x - padding;
-                            shape.ty = bounds.y + trimmed.rect.y - padding;
+                                if (hasColor) {
+                                    var c = placeTag.colorTransform;
+                                    movieClip.transform.colorTransform = new openfl.geom.ColorTransform(c.rMult / 255.0, c.gMult / 255.0, c.bMult / 255.0, c.aMult / 255.0, c.rAdd, c.gAdd, c.bAdd, c.aAdd);
+                                }
 
-                            var definition:BitmapDefinition = {
-                                id: id,
-                                x: 0,
-                                y: 0,
-                                width: trimmed.bmpd.width,
-                                height: trimmed.bmpd.height
-                            };
+                                // We're essentially creating a unique baked copy with all filters / blendMode applied to it
+                                characterId = --processShapesId;
 
-                            bitmaps.set(id, definition);
-                            bitmapDatas.set(id, trimmed.bmpd);
-                            bitmapKeeps.set(id, true);
+                                var id = --processShapesId;
+                                var shape:ShapeDefinition = {
+                                    id: 0,
+                                    bitmap: id,
+                                    a: 1.0,
+                                    b: 0.0,
+                                    c: 0.0,
+                                    d: 1.0,
+                                    tx: 0.0,
+                                    ty: 0.0
+                                };
 
-                            shapes.set(characterId, [shape]);
+                                var bounds = movieClip.getBounds(movieClip);
+                                shape.tx = bounds.x;
+                                shape.ty = bounds.y;
+
+                                // TODO: Maybe add this as settings...
+                                var padding = 40;
+
+                                var bitmapData = new BitmapData(Math.ceil(bounds.width) + padding * 2, Math.ceil(bounds.height) + padding * 2, true, 0x00000000);
+
+                                var m = new Matrix();
+                                m.tx = -bounds.x + padding;
+                                m.ty = -bounds.y + padding;
+                                
+                                bitmapData.draw(movieClip, m, movieClip.transform.colorTransform);
+
+                                var trimmed = TilemapExporter.trim(bitmapData);
+
+                                shape.tx = bounds.x + trimmed.rect.x - padding;
+                                shape.ty = bounds.y + trimmed.rect.y - padding;
+
+                                var definition:BitmapDefinition = {
+                                    id: id,
+                                    x: 0,
+                                    y: 0,
+                                    width: trimmed.bmpd.width,
+                                    height: trimmed.bmpd.height
+                                };
+
+                                bitmaps.set(id, definition);
+                                bitmapDatas.set(id, trimmed.bmpd);
+                                bitmapKeeps.set(id, true);
+
+                                shapes.set(characterId, [shape]);
+
+                                bakedId.set(hash, characterId);
+                            }
+                        } else if (Std.is(childTag, TagDefineEditText)) {
+
+                            if (texts.exists(characterId)) {
+                                var text = texts.get(characterId);
+                                
+                                var cache = getFontCache(text, filterHash);
+                                cache.filters = filters;
+                            }
                         }
                     }
 
@@ -540,7 +683,12 @@ class Exporter {
 
                     if (mask != null && !isMask) trace('Found a masked object');
 
-                    // TODO: Any property with default values should be ignored (for optional field)
+                    if (texts.exists(characterId)) {
+                        var text = texts.get(characterId);
+
+                        // Update cache
+                        getFontCache(text, filterHash);
+                    }
 
                     var transform = getTransform(matrix);
                     var definition:SpriteDefinition = {
@@ -552,7 +700,7 @@ class Exporter {
                         d: transform.d,
                         tx: transform.tx,
                         ty: transform.ty,
-                        color: if (hasColor) {
+                        color: if (hasColor && !BAKE_COLOR) {
                             r: placeTag.colorTransform.rMult,
                             g: placeTag.colorTransform.gMult,
                             b: placeTag.colorTransform.bMult,

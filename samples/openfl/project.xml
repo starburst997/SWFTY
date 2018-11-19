@@ -19,11 +19,13 @@
     <source path="src" />
     <source path="../../submodules/openfl/scripts" />
 
-    <assets path="../../res" rename="res" type="binary" embed="false" />
+    <assets path="../../res" rename="res" />
     
     <haxedef name="gl_stats" if="debug" />
-    <haxedef name="sync" unless="html5" />
-    <haxedef name="trim" />
-    <haxedef name="use_rtti_doc" unless="html5" />
+    <!--<haxedef name="sync" unless="html5" />-->
+    <haxedef name="trim" if="export" />
+    <haxedef name="use_rtti_doc" unless="html5" if="export" />
+
+    <certificate team-id="FBFX3ZZ2WJ" />
 
 </project>

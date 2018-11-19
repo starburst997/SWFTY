@@ -110,7 +110,7 @@ class BaseText extends FinalSprite {
                     tile: tile
                 });
 
-                var w = char.bitmap.width * scale;
+                var w = char.advance * scale;
                 
                 if ((x - textDefinition.x) + w > textDefinition.width && hasSpace) {
                     y += lineHeight;
