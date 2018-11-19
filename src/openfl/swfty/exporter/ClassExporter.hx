@@ -124,9 +124,17 @@ abstract $capitalizedName(Layer) from Layer to Layer {
         }, onError);
     }
 
-    public static inline function load(?width:Int, ?height:Int, ?onComplete:$capitalizedName->Void, ?onError:Dynamic->Void):$capitalizedName {
+    inline function _loadBytes(?bytes:Bytes, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
+        this.loadBytes(bytes, onComplete, onError);
+    }
+
+    public static inline function load(?width:Int, ?height:Int, ?bytes:Bytes, ?onComplete:$capitalizedName->Void, ?onError:Dynamic->Void):$capitalizedName {
         var layer:$capitalizedName = Layer.empty(width, height);
-        layer._load(function() if (onComplete != null) onComplete(layer), onError);
+        if (bytes != null) {
+            layer._loadBytes(bytes, function() if (onComplete != null) onComplete(layer), onError);
+        } else {
+            layer._load(function() if (onComplete != null) onComplete(layer), onError);
+        }
         return layer;
     }
 }';
