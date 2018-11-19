@@ -1,6 +1,3 @@
-[submodule "submodules/lime"]
-	path = submodules/lime
-	url = git@github.com:openfl/lime.git
 [submodule "submodules/hxp"]
 	path = submodules/hxp
 	url = git@github.com:openfl/hxp.git
