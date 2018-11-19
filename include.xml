@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+
+    <haxedef name="swfty" />
+
+    <source path="submodules/haxe-zip/src" />
+    <source path="submodules/hxbit" />
+    <source path="src" />
+</project>
