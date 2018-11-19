@@ -16,9 +16,12 @@ class BaseLayer extends EngineLayer {
     var mcs:StringMap<MovieClipType> = new StringMap();
 
     var sprites:Array<FinalSprite> = [];
+    var pruneSprites:Array<FinalSprite> = [];
 
     public function update(dt:Float) {
         for (sprite in sprites) sprite.update(dt);
+        
+        while(pruneSprites.length > 0) sprites.remove(pruneSprites.pop());
     }
 
     public function addSprite(sprite:Sprite) {
@@ -26,7 +29,7 @@ class BaseLayer extends EngineLayer {
     }
 
     public function removeSprite(sprite:Sprite) {
-        sprites.remove(sprite);
+        pruneSprites.push(sprite);
     }
 
     public inline function createBitmap(id:Int, og:Bool = false) {
