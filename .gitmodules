@@ -37,3 +37,6 @@
 [submodule "submodules/tilelayer"]
 	path = submodules/tilelayer
 	url = git@github.com:starburst997/tilelayer.git
+[submodule "submodules/lime"]
+	path = submodules/lime
+	url = git@github.com:starburst997/lime.git
