@@ -13,6 +13,8 @@ class BaseSprite extends EngineSprite {
 
     public var layer:BaseLayer;
 
+    public var loaded = false;
+
     // TODO: Only used on heaps, kind of a hack, I think saving the ColorType instead might solve this
     public var r:Float = 1.0;
     public var g:Float = 1.0;
@@ -229,6 +231,8 @@ class BaseSprite extends EngineSprite {
                 addSprite(child);
             }
         }
+
+        loaded = true;
     }
 
     public inline function getParent() {
@@ -253,6 +257,8 @@ class BaseSprite extends EngineSprite {
         } else {
             // Simply reload all sprites
             for (sprite in _sprites) sprite.reload();
+
+            loaded = true;
         }
     }
 
@@ -315,6 +321,6 @@ class Rect {
     }
 
     public inline function inside(x:Float, y:Float) {
-        return x >= this.x && x < this.x + this.width && y >= this.y && y < this.x + this.height;
+        return (x >= this.x) && (x < this.x + this.width) && (y >= this.y) && (y < this.y + this.height);
     }
 }
