@@ -6,6 +6,7 @@ using tweenxcore.Tools;
 
 using swfty.extra.Tween;
 using swfty.extra.Lambda;
+using swfty.extra.Timer;
 
 // Very simple tween meant for SWFTY Sprite (optional extra)
 // Nothing fancy and hooks on the update loop of the Sprite
@@ -13,6 +14,8 @@ using swfty.extra.Lambda;
 // Not exactly super mega optimised, but should do the job just fine
 
 class Tween {
+
+    static inline var RENDER_ID = 'tween';
 
     /* Presets */
 
@@ -119,33 +122,6 @@ class Tween {
         return sprite;
     }
 
-    /* Timer */
-
-    // TODO: Should be moved to it's own class tools
-
-    public static inline function wait(sprite:Sprite, duration:Float, ?stop = false, ?onComplete:Void->Void) {
-        if (stop) sprite.waitStop();
-        
-        var time = 0.0;
-        sprite.addRender('wait', function render(dt) {
-            if (time >= duration) {
-                time = duration;
-                sprite.removeRender('wait', render);
-
-                if (onComplete != null) onComplete();
-            }
-
-            time += dt;
-        });
-
-        return sprite;
-    }
-
-    public static inline function waitStop(sprite:Sprite) {
-        sprite.removeRender('wait');
-        return sprite;
-    }
-
     /* Tween */
 
     public static inline function tweenWidth(sprite:Sprite, width:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void) {
@@ -218,7 +194,7 @@ class Tween {
     }
 
     public static inline function tweenStop(sprite:Sprite) {
-        sprite.removeRender('tween');
+        sprite.removeRender(RENDER_ID);
         return sprite;
     }
 
@@ -228,11 +204,11 @@ class Tween {
         var ease = getEasing(from, to, easing);
         var time = delay == null ? 0.0 : -delay;
         var done = false;
-        sprite.addRender('tween', function render(dt) {
+        sprite.addRender(RENDER_ID, function render(dt) {
             if (time >= duration) {
                 time = duration;
                 done = true;
-                sprite.removeRender('tween', render);
+                sprite.removeRender(RENDER_ID, render);
             }
 
             if (time >= 0.0) setVal(ease(time / duration));

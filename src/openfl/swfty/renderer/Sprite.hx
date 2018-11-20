@@ -1,7 +1,5 @@
 package openfl.swfty.renderer;
 
-import openfl.swfty.renderer.Layer;
-
 typedef EngineSprite = openfl.display.TileContainer;
 typedef EngineBitmap = openfl.display.Tile;
 
@@ -17,9 +15,11 @@ class FinalSprite extends BaseSprite {
         super(layer, definition, linkage);
     }
 
-    public override function getSize() {
-        var rect = this.getBounds(this);
+    public override function calcBounds(?relative:BaseSprite):Rect {
+        var rect = this.getBounds(relative == null ? this : relative);
         return {
+            x: rect.x,
+            y: rect.y,
             width: rect.width,
             height: rect.height
         }

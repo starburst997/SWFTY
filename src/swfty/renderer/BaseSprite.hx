@@ -2,11 +2,6 @@ package swfty.renderer;
 
 import haxe.ds.StringMap;
 
-typedef Size = {
-    width: Float,
-    height: Float
-}
-
 class BaseSprite extends EngineSprite {
 
     public var og:Bool = false;
@@ -14,7 +9,7 @@ class BaseSprite extends EngineSprite {
     public var width(get, set):Float;
     public var height(get, set):Float;
 
-    public var size(get, null):Size;
+    public var bounds(get, null):Rect;
 
     public var layer:BaseLayer;
 
@@ -34,10 +29,11 @@ class BaseSprite extends EngineSprite {
     var _names:StringMap<FinalSprite>;
     var _texts:StringMap<FinalText>;
     var _definition:Null<MovieClipType>;
-    var _size:Size;
+    var _bounds:Rect;
 
     // Being able to add a render loop is a pretty nice tool
     // The map allows you to give it a name so you can easily remove all render loop from a specific name 
+    // TODO: Would using an IntMap bring more performance?
     var _renders:Array<Float->Void>;
     var _rendersMap:StringMap<Array<Float->Void>>;
 
@@ -63,7 +59,7 @@ class BaseSprite extends EngineSprite {
         load(definition);
     }
 
-    public function getSize():Size {
+    public function calcBounds(?relative:BaseSprite):Rect {
         throw 'Not implemented';
     }
 
@@ -75,26 +71,26 @@ class BaseSprite extends EngineSprite {
         throw 'Not implemented';
     }
 
-    inline function get_size() {
-        if (_size == null) _size = getSize();
-        return _size;
+    inline function get_bounds() {
+        if (_bounds == null) _bounds = calcBounds();
+        return _bounds;
     }
 
     inline function get_width():Float {
-        return size.width * scaleX;
+        return bounds.width * scaleX;
     }
 
     inline function set_width(width:Float) {
-        scaleX = width / size.width;
+        scaleX = width / bounds.width;
         return width;
     }
 
     inline function get_height():Float {
-        return size.height * scaleY;
+        return bounds.height * scaleY;
     }
 
     inline function set_height(height:Float) {
-        scaleY = height / size.height;
+        scaleY = height / bounds.height;
         return height;
     }
 
@@ -254,6 +250,9 @@ class BaseSprite extends EngineSprite {
             } else {
                 Log.warn('Definition does not exists: ${_linkage}');
             }
+        } else {
+            // Simply reload all sprites
+            for (sprite in _sprites) sprite.reload();
         }
     }
 
@@ -298,5 +297,24 @@ class BaseSprite extends EngineSprite {
             addSprite(text);
             text;
         }
+    }
+}
+
+@:structInit
+class Rect {
+    public var x:Float = 0.0;
+    public var y:Float = 0.0;
+    public var width:Float = 0.0;
+    public var height:Float = 0.0;
+
+    public function new(?x:Float, ?y:Float, ?width:Float, ?height:Float) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
+
+    public inline function inside(x:Float, y:Float) {
+        return x >= this.x && x < this.x + this.width && y >= this.y && y < this.x + this.height;
     }
 }

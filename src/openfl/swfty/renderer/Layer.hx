@@ -20,6 +20,14 @@ class FinalLayer extends BaseLayer {
         super(width == null ? 256 : width, height == null ? 256 : height);
     }
 
+    override function get_base() {
+        if (base == null) {
+            base = FinalSprite.create(this);
+            addTile(base);
+        }
+        return base;
+    }
+
     public override function addSprite(sprite:Sprite) {
         super.addSprite(sprite);
         addTile(sprite);

@@ -8,28 +8,95 @@ import haxe.io.Bytes;
 import zip.Zip;
 import zip.ZipReader;
 
+enum ButtonState {
+    Down;
+    Up;
+    Normal;
+}
+
+class Mouse {
+    public var x:Float = 0.0;
+    public var y:Float = 0.0;
+    
+    public var leftChanged:Bool = false;
+    public var middleChanged:Bool = false;
+    public var rightChanged:Bool = false;
+
+    public var left(default, set):ButtonState = Normal;
+    public var middle(default, set):ButtonState = Normal;
+    public var right(default, set):ButtonState = Normal;
+
+    public function new() {
+
+    }
+
+    inline function set_left(state:ButtonState) {
+        left = state;
+        leftChanged = true;
+        return state;
+    }
+
+    inline function set_middle(state:ButtonState) {
+        middle = state;
+        middleChanged = true;
+        return state;
+    }
+
+    inline function set_right(state:ButtonState) {
+        right = state;
+        rightChanged = true;
+        return state;
+    }
+
+    public inline function reset() {
+        switch(left) {
+            case Up : left = Normal;
+            case _  :
+        }
+        switch(middle) {
+            case Up : middle = Normal;
+            case _  :
+        }
+        switch(right) {
+            case Up : right = Normal;
+            case _  :
+        }
+
+        leftChanged = false;
+        rightChanged = false;
+        middleChanged = false;
+    }
+}
+
 class BaseLayer extends EngineLayer {
 
     public var swfty:Option<SWFTYType> = None;
 
+    // Mouse need to be updated from the engine
+    public var mouse = new Mouse();
+
     var tiles:IntMap<DisplayTile> = new IntMap();
     var mcs:StringMap<MovieClipType> = new StringMap();
 
-    var sprites:Array<FinalSprite> = [];
-    var pruneSprites:Array<FinalSprite> = [];
+    public var base(get, null):FinalSprite;
+    function get_base() {
+        if (base == null) base = FinalSprite.create(this);
+        return base;
+    }
 
     public function update(dt:Float) {
-        for (sprite in sprites) sprite.update(dt);
-        
-        while(pruneSprites.length > 0) sprites.remove(pruneSprites.pop());
+        base.update(dt);
+
+        // Reset mouse properties
+        mouse.reset();
     }
 
     public function addSprite(sprite:Sprite) {
-        sprites.push(sprite);
+        base.addSprite(sprite);
     }
 
     public function removeSprite(sprite:Sprite) {
-        pruneSprites.push(sprite);
+        base.removeSprite(sprite);
     }
 
     public inline function createBitmap(id:Int, og:Bool = false) {
@@ -87,7 +154,7 @@ class BaseLayer extends EngineLayer {
 
     }
 
-    public function empty() {
+    public inline function empty() {
         return Sprite.create(this);
     }
 
@@ -121,7 +188,7 @@ class BaseLayer extends EngineLayer {
     }
 
     public function reload() {
-        for (sprite in sprites) sprite.reload();
+        base.reload();
     }
 
     public function loadSWFTY(swfty:SWFTYType) {

@@ -96,6 +96,7 @@ abstract DisplayBitmap(EngineBitmap) from EngineBitmap to EngineBitmap {
     }
 
     public inline function transform(a:Float, b:Float, c:Float, d:Float, tx:Float, ty:Float) {
+        // TODO: This is a bit of extra steps, maybe I should submit a PR to expose the matrix more easily?
         this.x = MathUtils.x(tx);
         this.y = MathUtils.y(ty);
         this.scaleX = MathUtils.scaleX(a, b, c, d);
@@ -104,9 +105,9 @@ abstract DisplayBitmap(EngineBitmap) from EngineBitmap to EngineBitmap {
     }
 
     public inline function color(r:Int, g:Int, b:Int) {
-        this.r = r/255;
-        this.g = g/255;
-        this.b = b/255;
+        this.r = r / 255.0;
+        this.g = g / 255.0;
+        this.b = b / 255.0;
     }
 }
 
@@ -126,9 +127,9 @@ abstract DisplaySprite(BaseSprite) from BaseSprite to BaseSprite {
     }
 
     public inline function color(r:Float, g:Float, b:Float, rAdd:Float, gAdd:Float, bAdd:Float) {
-        this.r = r/255;
-        this.g = g/255;
-        this.b = b/255;
+        this.r = r / 255.0;
+        this.g = g / 255.0;
+        this.b = b / 255.0;
     }
 
     public inline function resetColor() {
