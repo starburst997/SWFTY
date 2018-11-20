@@ -5,5 +5,7 @@
 
     <source path="submodules/haxe-zip/src" />
     <source path="submodules/hxbit" />
+    <source path="submodules/format" />
+    <source path="submodules/tweenx/src/tweenxcore" />
     <source path="src" />
 </project>
