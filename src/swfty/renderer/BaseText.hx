@@ -2,6 +2,7 @@ package swfty.renderer;
 
 import swfty.renderer.Sprite.FinalSprite;
 
+// TODO: Switch to class instead of Typedef?
 typedef Line = {
     textWidth: Float,
     tiles: Array<{
