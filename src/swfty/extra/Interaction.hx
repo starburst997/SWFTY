@@ -2,6 +2,8 @@ package swfty.extra;
 
 import swfty.renderer.Sprite;
 
+using swfty.extra.Tween;
+
 class Interaction {
 
     static inline var RENDER_ID = 'interaction';
@@ -43,6 +45,10 @@ class Interaction {
         });
 
         return sprite;
+    }
+
+    public static inline function fancyClick(sprite:sprite, f:Void->Void) {
+        // TODO: Add a quick tween on "down" and when "up", like scale down a bit with a bounce then scale back up
     }
 
     public static inline function removeClick(sprite:Sprite) {
