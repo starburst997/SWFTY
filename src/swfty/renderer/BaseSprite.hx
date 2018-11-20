@@ -155,6 +155,8 @@ class BaseSprite extends EngineSprite {
         for (child in definition.children) {
             
             if (!loaded) {
+                // TODO: Probably not the best way to do it.... Might as well create getter for properties and not override the EngineSprite class
+                //       but keep it as a var, this way I could turn a switch on whenever a propery has been changed by the user rather than the library
                 updateVisible = true;
                 updatePosition = true;
                 updateScale = true;
