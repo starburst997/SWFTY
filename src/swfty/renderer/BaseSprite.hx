@@ -151,10 +151,29 @@ class BaseSprite extends EngineSprite {
         if (definition == null) return;
 
         // Create children
+        var updateVisible = true, updatePosition = true, updateScale = true, updateRotation = true, updateAlpha = true;
         for (child in definition.children) {
+            
+            if (!loaded) {
+                updateVisible = true;
+                updatePosition = true;
+                updateScale = true;
+                updateRotation = true;
+                updateAlpha = true;
+            }
+            
             if (child.text != null) {
                 var text = if (!child.name.empty() && _texts.exists(child.name)) {
                     var text = _texts.get(child.name);
+
+                    if (!loaded) {
+                        if (!text.visible) updateVisible = false;
+                        if (text.x != 0 || text.y != 0) updatePosition = false;
+                        if (text.scaleX != 1 || text.scaleY != 1) updateScale = false;
+                        if (text.rotation != 0) updateRotation = false;
+                        if (text.alpha != 1) updateAlpha = false;
+                    }
+
                     text.loadText(child.text);
                     text;
                 } else {
@@ -169,13 +188,23 @@ class BaseSprite extends EngineSprite {
                 
                 text.og = true;
 
-                text.display().transform(child.a, child.b, child.c, child.d, child.tx, child.ty);
-                text.visible = child.visible;
+                if (updatePosition && updateScale && updateRotation) text.display().transform(child.a, child.b, child.c, child.d, child.tx, child.ty);
+                if (updateAlpha) text.alpha = child.alpha;
+                if (updateVisible) text.visible = child.visible;
 
                 addSprite(text);
             } else {
                 var sprite = if (!child.name.empty() && _names.exists(child.name)) {
                     var sprite = _names.get(child.name);
+
+                    if (!loaded) {
+                        if (!sprite.visible) updateVisible = false;
+                        if (sprite.x != 0 || sprite.y != 0) updatePosition = false;
+                        if (sprite.scaleX != 1 || sprite.scaleY != 1) updateScale = false;
+                        if (sprite.rotation != 0) updateRotation = false;
+                        if (sprite.alpha != 1) updateAlpha = false;
+                    }
+
                     sprite.load(child.mc);
                     sprite;
                 } else {
@@ -189,9 +218,9 @@ class BaseSprite extends EngineSprite {
 
                 sprite.og = true;
                 
-                sprite.display().transform(child.a, child.b, child.c, child.d, child.tx, child.ty);
-                sprite.alpha = child.alpha;
-                sprite.visible = child.visible;
+                if (updatePosition && updateScale && updateRotation) sprite.display().transform(child.a, child.b, child.c, child.d, child.tx, child.ty);
+                if (updateAlpha) sprite.alpha = child.alpha;
+                if (updateVisible) sprite.visible = child.visible;
 
                 // This will add drawCalls, so big no no unless you really want them
                 #if allowBlendMode

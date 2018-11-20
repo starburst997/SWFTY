@@ -8,23 +8,23 @@ class Interaction {
 
     static inline var RENDER_ID = 'interaction';
 
-    public static inline function click(sprite:Sprite, ?cache = true, f:Void->Void) {
-        // TODO: The Sprite might not have been loaded yet, wait for it?
-        
+    public static inline function click(sprite:Sprite, ?name:String, ?cache = true, f:Void->Void) {
+        var child = name == null ? sprite : sprite.get(name);
+
         // Cache bounds with transform to stage coordinate
         // TODO: 99% of case the bounds doesn't change, but maybe we shouldn't cache it? We still take into account local x / y
         var bounds:Rect = null;
         inline function getBounds() {
-            if (!cache || bounds == null) bounds = sprite.calcBounds(sprite.layer.base);
+            if (!cache || bounds == null) bounds = child.calcBounds(child.layer.base);
             return bounds;
         }
 
         // Detect left click inside and wait for mouse up inside to trigger handler
         var wasInside = false;
-        sprite.addRender(RENDER_ID, function render(dt) {
-            if (sprite.layer == null || !sprite.loaded) return;
+        child.addRender(RENDER_ID, function render(dt) {
+            if (child.layer == null || !child.loaded) return;
 
-            var mouse = sprite.layer.mouse;
+            var mouse = child.layer.mouse;
             if (mouse.leftChanged) {
                 var y = mouse.y;
                 var x = mouse.x;
@@ -47,12 +47,18 @@ class Interaction {
         return sprite;
     }
 
-    public static inline function fancyClick(sprite:Sprite, f:Void->Void) {
+    public static inline function fancyClick(sprite:Sprite, ?name:String, f:Void->Void) {
+        var child = name == null ? sprite : sprite.get(name);
+
         // TODO: Add a quick tween on "down" and when "up", like scale down a bit with a bounce then scale back up
+
+        return sprite;
     }
 
-    public static inline function removeClick(sprite:Sprite) {
-        sprite.removeRender(RENDER_ID);
+    public static inline function removeClick(sprite:Sprite, ?name:String) {
+        var child = name == null ? sprite : sprite.get(name);
+
+        child.removeRender(RENDER_ID);
         return sprite;
     }
 }

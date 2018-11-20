@@ -13,11 +13,18 @@ typedef Line = {
 class BaseText extends FinalSprite {
 
     public static inline var SPACE = 0x20;
+    public static inline var DOT   = 0x2E;
 
     public var text(default, set):String = null;
 
     public var textWidth(default, null):Float = 0.0;
     public var textHeight(default, null):Float = 0.0;
+
+    // Add "..." at the end of the text if cannot fit within the boundaries
+    public var short = false;
+
+    // Scale the text down until it fits withing the boundaries
+    public var fit = false;
 
     var textDefinition:Null<TextType>;
 
@@ -86,6 +93,9 @@ class BaseText extends FinalSprite {
         };
         var lines:Array<Line> = [currentLine];
 
+        // Get the '.' char
+        var dot = textDefinition.font.get(DOT);
+
         for (i in 0...text.length) {
             var code = text.charCodeAt(i);
 
@@ -112,7 +122,35 @@ class BaseText extends FinalSprite {
 
                 var w = char.advance * scale;
                 
-                if ((x - textDefinition.x) + w > textDefinition.width && hasSpace) {
+                if (fit) {
+                    // TODO: Implements "fit" text, for multiline check the "height"
+                } else if (short) {
+                    // TODO: For multiline "short" text we should check the "height" and do it on the last line only!
+                    if ((x - textDefinition.x) + w > (textDefinition.width - scale * dot.advance * 3) && (i <= text.length - 3)) {
+                        // Set the remaining charaters as "..." and call it a day
+                        for (j in 0...3) {
+                            code = DOT;
+                            char = textDefinition.font.get(code);
+                            tile = layer.createBitmap(char.bitmap.id, true);
+                            tile.color(r, g, b);
+                            tile.x = x + char.tx;
+                            tile.y = y + char.ty;
+
+                            tile.scaleX = tile.scaleY = scale;
+
+                            addBitmap(tile);
+
+                            currentLine.tiles.push({
+                                code: code,
+                                tile: tile
+                            });
+
+                            w = char.advance * scale;
+                            x += w;
+                        }
+                        break;
+                    }
+                } else if ((x - textDefinition.x) + w > textDefinition.width && hasSpace) {
                     y += lineHeight;
                     hasSpace = false;
 
