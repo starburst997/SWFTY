@@ -31,7 +31,7 @@ class ClassExporter {
                 return;
             
             var name = definition.name.empty() ? 'Instance${n++}' : definition.name.capitalize().replace('.', '_');
-            if (name == capitalizedName) name = '$capitalizedName_';
+            if (name == capitalizedName) name += '_';
 
             // Make sure there is no dupe
             var dupe = 0;
@@ -119,7 +119,7 @@ abstract $capitalizedName(Layer) from Layer to Layer {
     public inline function reload(?bytes:Bytes, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
         function complete() {
             this.reload();
-            if (onComplete != null) onComplete();
+            if (onComplete != null) onComplete();g
         }
 
         if (bytes != null) {
