@@ -14,9 +14,9 @@ Currently works on Heaps and OpenFL but other engine are in the work (Kha, PixiJ
 ## TODO
 Create a README with online (HTML5) example
 
-## Similar Project
+## Similar Projects
 
-[Flump](https://github.com/tconkling/flump), AIR-based approach focused on animation
+* [Flump](https://github.com/tconkling/flump), AIR-based approach focused on animation
 
 ## Copyright
 Exporter powered by OpenFL
