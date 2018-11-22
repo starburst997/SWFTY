@@ -119,7 +119,7 @@ abstract $capitalizedName(Layer) from Layer to Layer {
     public inline function reload(?bytes:Bytes, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
         function complete() {
             this.reload();
-            if (onComplete != null) onComplete();g
+            if (onComplete != null) onComplete();
         }
 
         if (bytes != null) {
