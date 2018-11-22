@@ -9,7 +9,7 @@ Create a cross-engine high-performance SWF rendering layer (no code, graphics / 
 
 Can facilitate migration from OpenFL to Heaps or to get a performance boost on OpenFL.
 
-Currently works on Heaps and OpenFL but other engine are in the work (Kha, PixiJS andf Unity).
+Currently works on Heaps and OpenFL but other engine are in the work (Kha, PixiJS and Unity).
 
 ## TODO
 Create a README with online (HTML5) example
