@@ -47,6 +47,25 @@ class LambdaSprite {
         return sprite;
     }
 
+    public static inline function setX(sprite:Sprite, ?name:String, x:Float) {
+        var child = name == null ? sprite : sprite.get(name);
+        child.x = x;
+        return sprite;
+    }
+
+    public static inline function setY(sprite:Sprite, ?name:String, y:Float) {
+        var child = name == null ? sprite : sprite.get(name);
+        child.y = y;
+        return sprite;
+    }
+
+    public static inline function setPosition(sprite:Sprite, ?name:String, x:Float, y:Float) {
+        var child = name == null ? sprite : sprite.get(name);
+        child.x = x;
+        child.y = y;
+        return sprite;
+    }
+
     public static inline function shortText(sprite:Sprite, name:String, text:String) {
         sprite.getText(name).shortText(text);
         return sprite;

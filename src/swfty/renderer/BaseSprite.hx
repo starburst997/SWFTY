@@ -4,6 +4,8 @@ import haxe.ds.StringMap;
 
 class BaseSprite extends EngineSprite {
 
+    var disposed = false;
+
     public var og:Bool = false;
 
     public var width(get, set):Float;
@@ -333,6 +335,22 @@ class BaseSprite extends EngineSprite {
             _texts.set(name, text);
             addSprite(text);
             text;
+        }
+    }
+
+    public function dispose() {
+        if (!disposed) {
+            disposed = true;
+            
+            _renders = [];
+            _rendersMap = new StringMap();
+
+            _sprites = [];
+            _names = new StringMap();
+            _texts = new StringMap();
+
+            _pruneRenders = [];
+            _pruneSprites = [];
         }
     }
 }

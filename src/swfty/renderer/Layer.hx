@@ -15,7 +15,7 @@ typedef FinalLayer = heaps.swfty.renderer.Layer.FinalLayer;
 #error 'Unsupported framework (please use OpenFL or Heaps)'
 #end
 
-@:forward(x, y, scaleX, scaleY, rotation, alpha, mouse, base, loadBytes, reload, update, getAllNames)
+@:forward(x, y, scaleX, scaleY, rotation, alpha, dispose, mouse, base, loadBytes, reload, update, getAllNames)
 abstract Layer(BaseLayer) from BaseLayer to BaseLayer {
     public static inline function load(path:String, ?width:Int, ?height:Int, ?onComplete:Layer->Void, ?onError:Dynamic->Void):Layer {
         var layer = FinalLayer.create(width, height);

@@ -23,6 +23,7 @@ class ClassExporter {
         // but we will create definition for any named children with a dummy class name
         var n = 0;
         var abstractNames:Map<MovieClipType, String> = new Map();
+        var dupeNames:StringMap<Int> = new StringMap();
         
         var addDefinition = function f(definition:MovieClipType, allow = false) {
             if (abstractNames.exists(definition) || 
@@ -30,6 +31,16 @@ class ClassExporter {
                 return;
             
             var name = definition.name.empty() ? 'Instance${n++}' : definition.name.capitalize().replace('.', '_');
+            if (name == capitalizedName) name = '$capitalizedName_';
+
+            // Make sure there is no dupe
+            var dupe = 0;
+            if (dupeNames.exists(name)) {
+                dupe = dupeNames.get(name) + 1;
+            }
+            dupeNames.set(name, dupe);
+
+            for (i in 0...dupe) name += '_';
             abstractNames.set(definition, name);
             
             // Each of it's named children should be included as well
@@ -84,14 +95,14 @@ class ClassExporter {
             if (definition.name.empty()) {
                 abstractsFile += '
 @:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract $name(Sprite) from Sprite to Sprite {
+private abstract $name(Sprite) from Sprite to Sprite {
     $childsFile
 }
                 ';
             } else {
                 abstractsFile += '
 @:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract $name(Sprite) from Sprite to Sprite {
+private abstract $name(Sprite) from Sprite to Sprite {
     $childsFile
     public static inline function create(layer:$capitalizedName):$name {
         return layer.create$name();
@@ -102,7 +113,7 @@ abstract $name(Sprite) from Sprite to Sprite {
         }
 
         var layer = '
-@:forward(x, y, scaleX, scaleY, rotation, alpha, mouse, base, getAllNames, update, create, add, remove)
+@:forward(x, y, scaleX, scaleY, rotation, alpha, dispose, mouse, base, getAllNames, update, create, add, remove)
 abstract $capitalizedName(Layer) from Layer to Layer {
     $getLayerFile
     public inline function reload(?bytes:Bytes, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
@@ -110,7 +121,7 @@ abstract $capitalizedName(Layer) from Layer to Layer {
             this.reload();
             if (onComplete != null) onComplete();
         }
-        
+
         if (bytes != null) {
             this.loadBytes(bytes, complete, onError);
         } else {

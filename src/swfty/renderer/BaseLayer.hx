@@ -70,6 +70,8 @@ class Mouse {
 
 class BaseLayer extends EngineLayer {
 
+    var disposed = false;
+
     public var swfty:Option<SWFTYType> = None;
 
     // Mouse need to be updated from the engine
@@ -231,6 +233,8 @@ class BaseLayer extends EngineLayer {
 
         var tilemapBytes = Zip.getBytes(entries.get(TILEMAP_PNG));
         loadTexture(tilemapBytes, swfty, function() {
+            if (disposed) return;
+
             loadSWFTY(swfty);
             reload();
             if (onComplete != null) onComplete();
@@ -239,5 +243,18 @@ class BaseLayer extends EngineLayer {
 
     public function loadTexture(bytes:Bytes, swfty:SWFTYType, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
         throw 'Not implemented';
+    }
+
+    public function dispose() {
+        if (!disposed) {
+            disposed = true;
+
+            swfty = None;
+            tiles = new IntMap();
+            mcs = new StringMap();
+
+            base.dispose();
+            base = null;
+        }
     }
 }
