@@ -14,6 +14,10 @@ Currently works on Heaps and OpenFL but other engine are in the work (Kha, PixiJ
 ## TODO
 Create a README with online (HTML5) example
 
+## Similar Projext
+
+[Flump](https://github.com/tconkling/flump), AIR-based approach
+
 ## Copyright
 Exporter powered by OpenFL
 
