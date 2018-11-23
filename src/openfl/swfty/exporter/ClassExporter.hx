@@ -148,6 +148,10 @@ abstract $capitalizedName(Layer) from Layer to Layer {
         }
         return layer;
     }
+
+    public static inline function create(?width:Int, ?height:Int):$capitalizedName {
+        return Layer.empty(width, height);
+    }
 }';
 
         var file = 'package swfty;
