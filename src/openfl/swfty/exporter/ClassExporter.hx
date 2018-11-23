@@ -113,7 +113,7 @@ private abstract $name(Sprite) from Sprite to Sprite {
         }
 
         var layer = '
-@:forward(x, y, scaleX, scaleY, rotation, alpha, dispose, mouse, base, getAllNames, update, create, add, remove)
+@:forward(x, y, scaleX, scaleY, rotation, alpha, dispose, mouse, addRender, removeRender, addMouseDown, removeMouseDown, addMouseUp, removeMouseUp, base, getAllNames, update, create, add, remove, width, height)
 abstract $capitalizedName(Layer) from Layer to Layer {
     $getLayerFile
     public inline function reload(?bytes:Bytes, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
@@ -147,6 +147,10 @@ abstract $capitalizedName(Layer) from Layer to Layer {
             layer._load(function() if (onComplete != null) onComplete(layer), onError);
         }
         return layer;
+    }
+
+    public static inline function create(?width:Int, ?height:Int):$capitalizedName {
+        return Layer.empty(width, height);
     }
 }';
 

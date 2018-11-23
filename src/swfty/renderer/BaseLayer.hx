@@ -80,6 +80,10 @@ class BaseLayer extends EngineLayer {
     var tiles:IntMap<DisplayTile> = new IntMap();
     var mcs:StringMap<MovieClipType> = new StringMap();
 
+    var renders:Array<Float->Void> = [];
+    var mouseDowns:Array<Float->Float->Void> = [];
+    var mouseUps:Array<Float->Float->Void> = [];
+
     public var base(get, null):FinalSprite;
     function get_base() {
         if (base == null) base = FinalSprite.create(this);
@@ -87,10 +91,47 @@ class BaseLayer extends EngineLayer {
     }
 
     public function update(dt:Float) {
+        for (f in renders) f(dt);
+        
+        if (mouse.leftChanged) {
+            var y = mouse.y;
+            var x = mouse.x;
+
+            switch(mouse.left) {
+                case Down : for (f in mouseDowns) f(x, y);
+                case Up   : for (f in mouseUps) f(x, y);
+                case _    : 
+            }
+        }
+
         base.update(dt);
 
         // Reset mouse properties
         mouse.reset();
+    }
+
+    public function addRender(f:Float->Void) {
+        renders.push(f);
+    }
+
+    public function removeRender(f:Float->Void) {
+        renders.remove(f);
+    }
+
+    public function addMouseDown(f:Float->Float->Void) {
+        mouseDowns.push(f);
+    }
+
+    public function removeMouseDown(f:Float->Float->Void) {
+        mouseDowns.remove(f);
+    }
+
+    public function addMouseUp(f:Float->Float->Void) {
+        mouseUps.push(f);
+    }
+
+    public function removeMouseUp(f:Float->Float->Void) {
+        mouseUps.remove(f);
     }
 
     public function addSprite(sprite:Sprite) {
@@ -202,6 +243,11 @@ class BaseLayer extends EngineLayer {
     }
 
     public function loadBytes(bytes:Bytes, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
+        if (disposed) {
+            if (onError != null) onError('Layer was disposed');
+            return;
+        }
+
         var TILEMAP_PNG     = 'tilemap.png';
         var DEFINITION_JSON = 'definitions.json';
         var DEFINITION_BIN  = 'definitions.bin';
@@ -238,7 +284,11 @@ class BaseLayer extends EngineLayer {
             loadSWFTY(swfty);
             reload();
             if (onComplete != null) onComplete();
-        }, onError);
+        }, function(e) {
+            if (disposed) return;
+            
+            if (onError != null) onError(e);
+        });
     }
 
     public function loadTexture(bytes:Bytes, swfty:SWFTYType, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
@@ -248,6 +298,10 @@ class BaseLayer extends EngineLayer {
     public function dispose() {
         if (!disposed) {
             disposed = true;
+
+            renders = [];
+            mouseDowns = [];
+            mouseUps = [];
 
             swfty = None;
             tiles = new IntMap();

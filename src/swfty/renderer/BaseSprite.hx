@@ -339,9 +339,13 @@ class BaseSprite extends EngineSprite {
     }
 
     public function dispose() {
+        // TODO: Not really necessary... I guess it can help a bit the GC...
         if (!disposed) {
             disposed = true;
+
+            for (sprite in _sprites) sprite.dispose();
             
+            // TODO: Should I null everything?
             _renders = [];
             _rendersMap = new StringMap();
 
@@ -351,6 +355,9 @@ class BaseSprite extends EngineSprite {
 
             _pruneRenders = [];
             _pruneSprites = [];
+
+            _parent = null;
+            _bounds = null;
         }
     }
 }

@@ -19,8 +19,8 @@ class Tween {
 
     /* Presets */
 
-    public static inline function fadeIn(sprite:Sprite, duration:Float = 0.30, ?delay = 0.0, ?stop:Bool = true) {
-        if (!sprite.visible) {
+    public static inline function fadeIn(sprite:Sprite, ?duration:Float = 0.30, ?delay = 0.0, ?startFromZero = false, ?stop:Bool = true) {
+        if (!sprite.visible || startFromZero) {
             sprite.visible = true;
             sprite.alpha = 0.0;
         }
@@ -31,7 +31,7 @@ class Tween {
         return sprite;
     }
 
-    public static inline function fadeOut(sprite:Sprite, duration:Float = 0.20, ?delay = 0.0, ?stop:Bool = true, ?remove:Bool = false) {
+    public static inline function fadeOut(sprite:Sprite, ?duration:Float = 0.20, ?delay = 0.0, ?stop:Bool = true, ?remove:Bool = false) {
         if (stop) sprite.tweenStop();
         
         sprite.tweenAlpha(0.0, duration, delay, function() {
@@ -189,7 +189,7 @@ class Tween {
 
     public static inline function tweenPosition(sprite:Sprite, x:Float, y:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void) {
         tweenX(sprite, x, duration, delay, easing, onComplete);
-        tweenY(sprite, y, duration, delay, easing, onComplete);
+        tweenY(sprite, y, duration, delay, easing);
         return sprite;
     }
 

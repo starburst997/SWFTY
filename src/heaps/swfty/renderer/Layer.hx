@@ -13,11 +13,17 @@ typedef DisplayTile = h2d.Tile;
 
 class FinalLayer extends BaseLayer {
 
+    public var width:Int;
+    public var height:Int;
+
     public static inline function create(?width:Int, ?height:Int) {
         return new FinalLayer(width, height);
     }
 
     public function new(?width:Int, ?height:Int) {
+        this.width = width;
+        this.height = height;
+        
         super(null);
     }
 
