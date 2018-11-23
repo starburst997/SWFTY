@@ -47,6 +47,13 @@ class Interaction {
         return sprite;
     }
 
+    public static inline function clickOnce(sprite:Sprite, ?name:String, ?cache = true, f:Void->Void) {
+        click(sprite, name, cache, function() {
+            removeClick(sprite, name);
+            f();
+        });
+    }
+
     public static inline function fancyClick(sprite:Sprite, ?name:String, f:Void->Void) {
         var child = name == null ? sprite : sprite.get(name);
 
@@ -55,6 +62,7 @@ class Interaction {
         return sprite;
     }
 
+    // TODO: Should we specify the function?
     public static inline function removeClick(sprite:Sprite, ?name:String) {
         var child = name == null ? sprite : sprite.get(name);
 
