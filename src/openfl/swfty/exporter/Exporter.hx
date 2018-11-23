@@ -197,8 +197,11 @@ class Exporter {
                     }
 
                     for (font in fonts) {
-                        var fontTilemap = FontExporter.export(#if html5 font.cleanName #else font.name #end, font.size, font.bold, font.italic, fontCache.get(font.id), function() return ++maxId);
+                        #if packFont
 
+                        // All glyphs are grouped together
+                        var fontTilemap = FontExporter.exportTilemap(#if html5 font.cleanName #else font.name #end, font.size, font.bold, font.italic, fontCache.get(font.id), function() return ++maxId);
+                        
                         var id = ++maxId;
                         var definition:BitmapDefinition = {
                             id: id,
@@ -222,6 +225,40 @@ class Exporter {
                         });
 
                         fontTilemaps.set(id, fontTilemap);
+                        #else
+
+                        // Glyphs are scattered all around the Tilemap
+                        var fontGlyphs = FontExporter.exportGlyphs(#if html5 font.cleanName #else font.name #end, font.size, font.bold, font.italic, fontCache.get(font.id), function() return ++maxId);
+
+                        var definitions = fontGlyphs.definitions;
+                        var bitmaps = fontGlyphs.bitmaps;
+
+                        for (glyph in fontGlyphs.definitions) {
+                            var bitmapData = bitmaps.get(glyph.id);
+
+                            var id = glyph.bitmap;
+                            var definition:BitmapDefinition = {
+                                id: id,
+                                x: 0,
+                                y: 0,
+                                width: bitmapData.width,
+                                height: bitmapData.height
+                            };
+
+                            this.bitmaps.set(id, definition);
+                            this.bitmapDatas.set(id, bitmapData);
+                            this.bitmapKeeps.set(id, true);
+                        }
+
+                        font.bitmap = -1;
+                        font.characters = fontGlyphs.definitions.map(function(char) return {
+                            id: char.id,
+                            bitmap: char.bitmap,
+                            tx: char.tx,
+                            ty: char.ty,
+                            advance: char.advance
+                        });
+                        #end
                     }
 
                     onComplete(this);
@@ -332,7 +369,7 @@ class Exporter {
                 // Create Tilemap based on all bitmapDatas
                 var keys = [for (key in bitmapDatas.keys()) key];
                 var bmpds = keys.map(function(key) return bitmapKeeps.exists(key) ? bitmapDatas.get(key) : null);
-                var tilemap = TilemapExporter.pack(bmpds);
+                var tilemap = TilemapExporter.pack(bmpds, false);
 
                 // Remove all duplicates
                 // TODO: !!!
