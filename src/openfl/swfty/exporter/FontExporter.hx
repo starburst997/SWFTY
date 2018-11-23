@@ -34,13 +34,18 @@ typedef FontTilemap = {
     bitmapData: BitmapData
 }
 
+typedef FontGlyphs = {
+    bitmaps: IntMap<BitmapData>,
+    definitions: Array<Character>
+}
+
 typedef FontCache = {
-    id:Int,
-    font:String,
-    hash:String,
-    isNumeric:Bool,
-    color:Int,
-    filters:Array<BitmapFilter>
+    id: Int,
+    font: String,
+    hash: String,
+    isNumeric: Bool,
+    color: Int,
+    filters: Array<BitmapFilter>
 }
 
 @:access(openfl.text.Font)
@@ -48,7 +53,7 @@ class FontExporter {
 
     public static var path = 'ref/fonts';
 
-    public static function export(font:String, size:Float = 24, bold:Bool = false, italic:Bool = false, ?charSet:Array<Int>, ?cache:FontCache, getId:Void->Int):FontTilemap {
+    public static function exportGlyphs(font:String, size:Float = 24, bold:Bool = false, italic:Bool = false, ?charSet:Array<Int>, ?cache:FontCache, getId:Void->Int):FontGlyphs {
 
         if (charSet == null) charSet = CharSet.ISO_8859_1;
         if (cache != null && cache.isNumeric) charSet = CharSet.NUMERIC; 
@@ -65,7 +70,8 @@ class FontExporter {
         }
         #end
 
-        var characters = [];
+        // TODO: Use embedded font from SWF instead? Draw each glyph...
+
         var textField = new TextField();
         var textFormat = new TextFormat(font, Std.int(size), cache != null ? cache.color : 0xFFFFFF, bold, italic);
 
@@ -117,10 +123,21 @@ class FontExporter {
             }
         }
 
+        return {
+            definitions: definitions,
+            bitmaps: bitmaps
+        }
+    }
+
+    public static function exportTilemap(font:String, size:Float = 24, bold:Bool = false, italic:Bool = false, ?charSet:Array<Int>, ?cache:FontCache, getId:Void->Int):FontTilemap {
+        
+        var characters = [];
+        var glyphs = exportGlyphs(font, size, bold, italic, charSet, cache, getId);
+        
         // Transform to a Tilemap, this way we can easily replace the region for other language
-        var tilemap = TilemapExporter.pack([for (definition in definitions) bitmaps.get(definition.id)], false);
+        var tilemap = TilemapExporter.pack([for (definition in glyphs.definitions) glyphs.bitmaps.get(definition.id)], false);
         for (i in 0...tilemap.tiles.length) {
-            var definition = definitions[i];
+            var definition = glyphs.definitions[i];
             var tile = tilemap.tiles[i];
 
             definition.x = tile.x;
