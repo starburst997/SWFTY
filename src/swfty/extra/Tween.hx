@@ -359,9 +359,55 @@ class Tween {
     }
 }
 
+@:access(swfty.extra.Tween)
 class TweenText {
-    public static inline function bounce(text:Text, to = 1.0, strength = 1.20, duration:Float = 0.5, ?delay = 0.0, ?onComplete:Void->Void) {
+    public static inline function bounce(text:Text, ?to = 1.0, ?strength = 1.20, ?duration:Float = 0.5, ?delay = 0.0, ?onComplete:Void->Void) {
         return Tween.bounce(text.sprite(), to, strength, duration, delay, onComplete);
+    }
+
+    /*public static inline function incrementBounce(text:Text, i:Int, ?duration:Float = 1.0, ?delay = 0.0, ?onComplete:Void->Void) {
+        var current = 0;
+        var time = duration / i;
+        var timer = 0.0;
+        
+        text.addRender(Tween.RENDER_ID, function render(dt) {
+            if (timer >= time) {
+                timer = 0.0;
+                current++;
+
+                text.text = '$current';
+                Tween.bounce(text.sprite(), 1.0, 1.0 + 0.05 * Math.min(1 - current / 200, 1.00001), 0.40, false, true, 2.5, current >= i ? onComplete : null);
+
+                if (current >= i) {
+                    text.removeRender(Tween.RENDER_ID, render);
+                }
+            }
+
+            timer += dt;
+        });
+    }*/
+
+    // Require the Sprite to have a "label" child
+    public static inline function incrementBounce(sprite:Sprite, i:Int, ?duration:Float = 1.0, ?delay = 0.0, ?onComplete:Void->Void) {
+        var current = 0;
+        var time = duration / i;
+        var timer = 0.0;
+        
+        sprite.addRender(Tween.RENDER_ID, function render(dt) {
+            if (timer >= time) {
+                timer = 0.0;
+                current++;
+
+                sprite.getText('label').text = '$current';
+                sprite.bounce(1.0, 1.0 + 0.05 * Math.min(1 - current / 200, 1.00001), 0.40, false, true, 2.5, current >= i ? onComplete : null);
+
+                if (current >= i) {
+                    sprite.removeRender(Tween.RENDER_ID, render);
+                }
+            }
+
+            timer += dt;
+        });
     }
 
     // TODO: Also do all the other methods
