@@ -31,7 +31,7 @@ class ClassExporter {
                 return;
             
             var name = definition.name.empty() ? 'Instance${n++}' : definition.name.capitalize().replace('.', '_');
-            if (name == capitalizedName) name += '_';
+            //if (name == capitalizedName) name += '_';
 
             // Make sure there is no dupe
             var dupe = 0;
@@ -74,7 +74,7 @@ class ClassExporter {
     }
                         ';
                     } else if (child.mc != null) {
-                         var abstractName = abstractNames.exists(child.mc) ? abstractNames.get(child.mc) : 'Sprite';
+                         var abstractName = abstractNames.exists(child.mc) ? (capitalizedName + '_' + abstractNames.get(child.mc)) : 'Sprite';
 
                         childsFile += '
     public var ${child.name}(get, never):$abstractName;
@@ -87,7 +87,7 @@ class ClassExporter {
             }
 
             if (!definition.name.empty()) getLayerFile += '
-    public inline function create$name():$name {
+    public inline function create$name():${capitalizedName}_${name} {
         return this.create("${definition.name}");
     }
             ';
@@ -95,16 +95,16 @@ class ClassExporter {
             if (definition.name.empty()) {
                 abstractsFile += '
 @:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-private abstract $name(Sprite) from Sprite to Sprite {
+abstract ${capitalizedName}_${name}(Sprite) from Sprite to Sprite {
     $childsFile
 }
                 ';
             } else {
                 abstractsFile += '
 @:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-private abstract $name(Sprite) from Sprite to Sprite {
+abstract ${capitalizedName}_${name}(Sprite) from Sprite to Sprite {
     $childsFile
-    public static inline function create(layer:$capitalizedName):$name {
+    public static inline function create(layer:$capitalizedName):${capitalizedName}_${name} {
         return layer.create$name();
     }
 }
@@ -113,7 +113,7 @@ private abstract $name(Sprite) from Sprite to Sprite {
         }
 
         var layer = '
-@:forward(x, y, scaleX, scaleY, rotation, alpha, dispose, mouse, addRender, removeRender, addMouseDown, removeMouseDown, addMouseUp, removeMouseUp, base, getAllNames, update, create, add, remove, width, height)
+@:forward(x, y, scaleX, scaleY, rotation, alpha, dispose, mouse, base, width, height, getAllNames, update, create, add, remove, addRender, removeRender, addMouseDown, removeMouseDown, addMouseUp, removeMouseUp)
 abstract $capitalizedName(Layer) from Layer to Layer {
     $getLayerFile
     public inline function reload(?bytes:Bytes, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
