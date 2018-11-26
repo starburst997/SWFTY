@@ -72,6 +72,8 @@ class BaseLayer extends EngineLayer {
 
     var disposed = false;
 
+    public var pause = false;
+
     public var swfty:Option<SWFTYType> = None;
 
     // Mouse need to be updated from the engine
@@ -91,6 +93,8 @@ class BaseLayer extends EngineLayer {
     }
 
     public function update(dt:Float) {
+        if (pause) return;
+        
         for (f in renders) f(dt);
         
         if (mouse.leftChanged) {
