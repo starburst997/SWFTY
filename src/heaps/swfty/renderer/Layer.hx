@@ -13,9 +13,6 @@ typedef DisplayTile = h2d.Tile;
 
 class FinalLayer extends BaseLayer {
 
-    public var width:Int;
-    public var height:Int;
-
     public static inline function create(?width:Int, ?height:Int) {
         return new FinalLayer(width, height);
     }

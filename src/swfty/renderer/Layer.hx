@@ -31,12 +31,33 @@ abstract Layer(BaseLayer) from BaseLayer to BaseLayer {
         return FinalLayer.create(width, height);
     }
 
+    public function layout(targetWidth:Float, targetHeight:Float) {
+        // First layout by height, if offset is negative, then we layout by width
+        // Ideally you make your UI to fit vertically, if the device is larger in width it will simply offset
+        var scale = this.height / targetHeight;
+        this.base.scaleX = this.base.scaleY = scale;
+        this.base.x = (this.width - (targetWidth * scale)) / 2.0;
+
+        // But if the screen is narrower than you anticipated (like iPhone X), it is best to then offset vertically
+        if (this.base.x < 0) {
+            this.base.x = 0;
+
+            var scale = this.width / targetWidth;
+            this.base.scaleX = this.base.scaleY = scale;
+            this.base.y = (this.height - (targetHeight * scale)) / 2.0;
+        }
+
+        return this;
+    }
+
     public inline function add(sprite:Sprite) {
         this.addSprite(sprite);
+        return this;
     }
 
     public inline function remove(sprite:Sprite) {
         this.removeSprite(sprite);
+        return this;
     }
 
     public inline function create(linkage:String):Sprite {

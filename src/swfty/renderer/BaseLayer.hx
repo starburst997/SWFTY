@@ -72,6 +72,11 @@ class BaseLayer extends EngineLayer {
 
     var disposed = false;
 
+    #if !openfl
+    public var width:Int;
+    public var height:Int;
+    #end
+
     public var pause = false;
 
     public var swfty:Option<SWFTYType> = None;
