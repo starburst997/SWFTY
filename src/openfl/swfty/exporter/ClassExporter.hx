@@ -113,7 +113,7 @@ abstract ${capitalizedName}_${name}(Sprite) from Sprite to Sprite {
         }
 
         var layer = '
-@:forward(x, y, scaleX, scaleY, rotation, alpha, dispose, pause, layout, mouse, base, width, height, getAllNames, update, create, add, remove, addRender, removeRender, addMouseDown, removeMouseDown, addMouseUp, removeMouseUp)
+@:forward(x, y, scaleX, scaleY, rotation, alpha, dispose, pause, layout, mouse, base, baseLayout, width, height, getAllNames, update, create, add, remove, addRender, removeRender, addMouseDown, removeMouseDown, addMouseUp, removeMouseUp, getMouseX, getMouseY)
 abstract $capitalizedName(Layer) from Layer to Layer {
     $getLayerFile
     public inline function reload(?bytes:Bytes, ?onComplete:Void->Void, ?onError:Dynamic->Void) {

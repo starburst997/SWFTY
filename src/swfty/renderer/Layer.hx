@@ -15,7 +15,7 @@ typedef FinalLayer = heaps.swfty.renderer.Layer.FinalLayer;
 #error 'Unsupported framework (please use OpenFL or Heaps)'
 #end
 
-@:forward(x, y, scaleX, scaleY, rotation, alpha, dispose, pause, addRender, removeRender, addMouseDown, removeMouseDown, addMouseUp, removeMouseUp, mouse, base, loadBytes, reload, update, getAllNames, width, height)
+@:forward(x, y, scaleX, scaleY, rotation, alpha, dispose, pause, addRender, removeRender, addMouseDown, removeMouseDown, addMouseUp, removeMouseUp, mouse, base, baseLayout, loadBytes, reload, update, getAllNames, width, height, getMouseX, getMouseY)
 abstract Layer(BaseLayer) from BaseLayer to BaseLayer {
     public static inline function load(path:String, ?width:Int, ?height:Int, ?onComplete:Layer->Void, ?onError:Dynamic->Void):Layer {
         var layer = FinalLayer.create(width, height);
@@ -35,16 +35,16 @@ abstract Layer(BaseLayer) from BaseLayer to BaseLayer {
         // First layout by height, if offset is negative, then we layout by width
         // Ideally you make your UI to fit vertically, if the device is larger in width it will simply offset
         var scale = this.height / targetHeight;
-        this.base.scaleX = this.base.scaleY = scale;
-        this.base.x = (this.width - (targetWidth * scale)) / 2.0;
+        this.baseLayout.scaleX = this.baseLayout.scaleY = scale;
+        this.baseLayout.x = (this.width - (targetWidth * scale)) / 2.0;
 
         // But if the screen is narrower than you anticipated (like iPhone X), it is best to then offset vertically
-        if (this.base.x < 0) {
-            this.base.x = 0;
+        if (this.baseLayout.x < 0) {
+            this.baseLayout.x = 0;
 
             var scale = this.width / targetWidth;
-            this.base.scaleX = this.base.scaleY = scale;
-            this.base.y = (this.height - (targetHeight * scale)) / 2.0;
+            this.baseLayout.scaleX = this.baseLayout.scaleY = scale;
+            this.baseLayout.y = (this.height - (targetHeight * scale)) / 2.0;
         }
 
         return this;

@@ -91,10 +91,32 @@ class BaseLayer extends EngineLayer {
     var mouseDowns:Array<Float->Float->Void> = [];
     var mouseUps:Array<Float->Float->Void> = [];
 
+    // TODO: Disable all transform on this object, should be equivalent to "stage" in Flash
+    //       Create StageSprite or RootSprite, only a container with no matrix or position
     public var base(get, null):FinalSprite;
     function get_base() {
         if (base == null) base = FinalSprite.create(this);
         return base;
+    }
+
+    // TODO: Not sure if I should only have a "base" and no "baseLayout" 
+    //       but it's nice to have an "un-transformed" Sprite as the root
+    public var baseLayout(get, null):FinalSprite;
+    function get_baseLayout() {
+        if (baseLayout == null) {
+            baseLayout = FinalSprite.create(this);
+            base.addSprite(baseLayout);
+        }
+        return baseLayout;
+    }
+
+    // TODO: Add individual mouseX / mouseY on Sprite object instead
+    public inline function getMouseX() {
+        return (mouse.x - baseLayout.x) / baseLayout.scaleX;
+    }
+
+    public inline function getMouseY() {
+        return (mouse.y - baseLayout.y) / baseLayout.scaleY;
     }
 
     public function update(dt:Float) {
@@ -144,11 +166,11 @@ class BaseLayer extends EngineLayer {
     }
 
     public function addSprite(sprite:Sprite) {
-        base.addSprite(sprite);
+        baseLayout.addSprite(sprite);
     }
 
     public function removeSprite(sprite:Sprite) {
-        base.removeSprite(sprite);
+        baseLayout.removeSprite(sprite);
     }
 
     public inline function createBitmap(id:Int, og:Bool = false) {
@@ -315,6 +337,9 @@ class BaseLayer extends EngineLayer {
             swfty = None;
             tiles = new IntMap();
             mcs = new StringMap();
+
+            baseLayout.dispose();
+            baseLayout = null;
 
             base.dispose();
             base = null;
