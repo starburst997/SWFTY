@@ -1,42 +1,42 @@
 [submodule "submodules/hxp"]
 	path = submodules/hxp
-	url = git@github.com:openfl/hxp.git
+	url = https://github.com/openfl/hxp
 [submodule "submodules/format"]
 	path = submodules/format
-	url = git@github.com:HaxeFoundation/format.git
+	url = https://github.com/HaxeFoundation/format
 [submodule "submodules/Rectangle-Bin-Packing"]
 	path = submodules/Rectangle-Bin-Packing
-	url = git@github.com:Tw1ddle/Rectangle-Bin-Packing.git
+	url = https://github.com/Tw1ddle/Rectangle-Bin-Packing
 [submodule "submodules/haxe-zip"]
 	path = submodules/haxe-zip
-	url = git@github.com:starburst997/haxe-zip.git
+	url = https://github.com/starburst997/haxe-zip
 [submodule "submodules/haxe-file-save"]
 	path = submodules/haxe-file-save
-	url = git@github.com:starburst997/haxe-file-save.git
+	url = https://github.com/starburst997/haxe-file-save
 [submodule "submodules/mcli"]
 	path = submodules/mcli
-	url = git@github.com:waneck/mcli.git
+	url = https://github.com/waneck/mcli
 [submodule "submodules/openfl"]
 	path = submodules/openfl
-	url = git@github.com:starburst997/openfl.git
+	url = https://github.com/starburst997/openfl
 [submodule "submodules/heaps"]
 	path = submodules/heaps
-	url = git@github.com:starburst997/heaps.git
+	url = https://github.com/starburst997/heaps
 [submodule "submodules/hashlink"]
 	path = submodules/hashlink
-	url = git@github.com:starburst997/hashlink.git
+	url = https://github.com/starburst997/hashlink
 [submodule "submodules/hxbit"]
 	path = submodules/hxbit
-	url = git@github.com:starburst997/hxbit.git
+	url = https://github.com/starburst997/hxbit
 [submodule "submodules/hxcpp"]
 	path = submodules/hxcpp
-	url = git@github.com:starburst997/hxcpp.git
+	url = https://github.com/starburst997/hxcpp
 [submodule "submodules/tweenx"]
 	path = submodules/tweenx
-	url = git@github.com:shohei909/tweenx.git
+	url = https://github.com/shohei909/tweenx
 [submodule "submodules/tilelayer"]
 	path = submodules/tilelayer
-	url = git@github.com:starburst997/tilelayer.git
+	url = https://github.com/starburst997/tilelayer
 [submodule "submodules/lime"]
 	path = submodules/lime
-	url = git@github.com:starburst997/lime.git
+	url = https://github.com/starburst997/lime
