@@ -5,6 +5,26 @@ using swfty.extra.Lambda;
 // Extra Functional Programming shorthand
 class LambdaSprite {
 
+    public static function iter(sprite:Sprite, ?name:String, f:Sprite->Void) {
+        var i = 0;
+        // Grab either name0 or name1 first, then continue by incrementing until there is none
+        var child:Sprite = sprite.exists('$name$i') ? sprite.get('$name$i') : (sprite.exists('$name${++i}') ? sprite.get('$name$i') : null);
+        while (child != null) {
+            f(child);
+            child = sprite.exists('$name${++i}') ? sprite.get('$name$i') : null;
+        }
+    }
+
+    public static function iteri(sprite:Sprite, ?name:String, f:Sprite->Int->Void) {
+        var i = 0;
+        // Grab either name0 or name1 first, then continue by incrementing until there is none
+        var child:Sprite = sprite.exists('$name$i') ? sprite.get('$name$i') : (sprite.exists('$name${++i}') ? sprite.get('$name$i') : null);
+        while (child != null) {
+            f(child, i);
+            child = sprite.exists('$name${++i}') ? sprite.get('$name$i') : null;
+        }
+    }
+
     public static inline function show(sprite:Sprite, ?name:String, visible = true) {
         var child = name == null ? sprite : sprite.get(name);
         child.visible = visible;

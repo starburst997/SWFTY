@@ -312,6 +312,11 @@ class BaseSprite extends EngineSprite {
         throw 'Not implemented';
     }
 
+    public inline function exists(name:String):Bool {
+        trace(name, [for (key in _names.keys()) key]);
+        return _names.exists(name);
+    }
+
     public function get(name:String):FinalSprite {
         return if (_names.exists(name)) {
             _names.get(name);
