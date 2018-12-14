@@ -72,7 +72,7 @@ class BaseLayer extends EngineLayer {
 
     var disposed = false;
 
-    #if !openfl
+    #if (!openfl && !void && !macro)
     public var width:Int;
     public var height:Int;
     #end
@@ -300,7 +300,12 @@ class BaseLayer extends EngineLayer {
             json == null ? null : SWFTYType.fromJson(json);
         } else {
             var bytes = Zip.getBytes(entries.get(DEFINITION_BIN));
+            #if !macro
             hxbit.Serializer.load(bytes, SWFTYType);
+            #else
+            // TODO: Currently unavailable in macro, issue with hxbit
+            null;
+            #end
         }
 
         if (swfty == null) {

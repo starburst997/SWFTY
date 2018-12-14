@@ -8,7 +8,7 @@ class Interaction {
 
     static inline var RENDER_ID = 'interaction';
 
-    public static inline function click(sprite:Sprite, ?name:String, ?cache = true, f:Void->Void) {
+    public static function click(sprite:Sprite, ?name:String, ?cache = true, f:Void->Void) {
         var child = name == null ? sprite : sprite.get(name);
 
         // Cache bounds with transform to stage coordinate
@@ -54,7 +54,7 @@ class Interaction {
         });
     }
 
-    public static inline function fancyClick(sprite:Sprite, ?name:String, f:Void->Void) {
+    public static function fancyClick(sprite:Sprite, ?name:String, f:Void->Void) {
         var child = name == null ? sprite : sprite.get(name);
 
         // TODO: Add a quick tween on "down" and when "up", like scale down a bit with a bounce then scale back up

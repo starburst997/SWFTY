@@ -7,7 +7,14 @@ package swfty.renderer;
 // FinalSprite   = An engine specific Sprite that extends BaseSprite (which extends EngineSprite)
 // Sprite        = An abstract over FinalSprite that can be used over any engine
 
-#if openfl
+#if (macro || void)
+typedef EngineSprite = void.swfty.renderer.Sprite.EngineSprite;
+typedef EngineBitmap = void.swfty.renderer.Sprite.EngineBitmap;
+typedef DisplaySprite = void.swfty.renderer.Sprite.DisplaySprite;
+typedef DisplayBitmap = void.swfty.renderer.Sprite.DisplayBitmap;
+typedef FinalSprite = void.swfty.renderer.Sprite.FinalSprite;
+
+#elseif openfl
 typedef EngineSprite = openfl.swfty.renderer.Sprite.EngineSprite;
 typedef EngineBitmap = openfl.swfty.renderer.Sprite.EngineBitmap;
 typedef DisplaySprite = openfl.swfty.renderer.Sprite.DisplaySprite;

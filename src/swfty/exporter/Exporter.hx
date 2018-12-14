@@ -5,7 +5,9 @@ class CharSet {
     public static var NUMERIC = [43,44,48,49,50,51,52,53,54,55,56,57,44,45,46,37, 120, 88 /* X */, 33 /* ! */]; // TODO: Remove some extra chars I added
 }
 
-#if openfl
+#if (macro || void || heaps)
+typedef Exporter = void.swfty.exporter.Exporter;
+#elseif openfl
 typedef Exporter = openfl.swfty.exporter.Exporter;
 #else
 #error 'Unsupported framework (please use OpenFL)'

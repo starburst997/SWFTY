@@ -154,7 +154,7 @@ typedef Config = {
 /* Class */
 
 @:structInit
-class MovieClipType implements hxbit.Serializable {
+class MovieClipType #if !macro implements hxbit.Serializable #end {
     @:s public var id:Int;
     @:s public var name:String;
     @:s public var children:Array<SpriteType>;
@@ -175,7 +175,7 @@ class MovieClipType implements hxbit.Serializable {
 }
 
 @:structInit
-class SpriteType implements hxbit.Serializable {
+class SpriteType #if !macro implements hxbit.Serializable #end {
     @:s public var mc:Null<MovieClipType>;
     @:s public var id:Int;
     @:s public var a:Float;
@@ -235,7 +235,7 @@ class SpriteType implements hxbit.Serializable {
 }
 
 @:structInit
-class ShapeType implements hxbit.Serializable {
+class ShapeType #if !macro implements hxbit.Serializable #end {
     @:s public var id:Int;
     @:s public var a:Float;
 	@:s public var b:Float;
@@ -271,7 +271,7 @@ class ShapeType implements hxbit.Serializable {
 }
 
 @:structInit
-class ColorTransformType implements hxbit.Serializable {
+class ColorTransformType #if !macro implements hxbit.Serializable #end {
     @:s public var r:Float;
     @:s public var g:Float;
     @:s public var b:Float;
@@ -301,7 +301,7 @@ class ColorTransformType implements hxbit.Serializable {
 }
 
 @:structInit
-class TextType implements hxbit.Serializable {
+class TextType #if !macro implements hxbit.Serializable #end {
     @:s public var font:FontType;
     @:s public var align:Align;
     @:s public var size:Float;
@@ -355,7 +355,7 @@ class TextType implements hxbit.Serializable {
 }
 
 @:structInit
-class FontType implements hxbit.Serializable {
+class FontType #if !macro implements hxbit.Serializable #end {
     @:s public var id:Int;
     @:s public var name:String;
     @:s public var cleanName:String;
@@ -411,7 +411,7 @@ class FontType implements hxbit.Serializable {
 }
 
 @:structInit
-class CharacterType implements hxbit.Serializable {
+class CharacterType #if !macro implements hxbit.Serializable #end {
     @:s public var id:Int;
     @:s public var bitmap:BitmapType;
     @:s public var tx:Float;
@@ -438,7 +438,7 @@ class CharacterType implements hxbit.Serializable {
 }
 
 @:structInit
-class BitmapType implements hxbit.Serializable {
+class BitmapType #if !macro implements hxbit.Serializable #end {
     @:s public var id:Int;
     @:s public var x:Int;
 	@:s public var y:Int;
@@ -465,7 +465,7 @@ class BitmapType implements hxbit.Serializable {
 }
 
 @:structInit
-class SWFTYType implements hxbit.Serializable {
+class SWFTYType #if !macro implements hxbit.Serializable #end {
     @:s public var tilemap_width:Int;
     @:s public var tilemap_height:Int;
 	@:s public var definitions:IntMap<MovieClipType>;

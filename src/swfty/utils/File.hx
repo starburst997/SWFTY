@@ -1,6 +1,8 @@
 package swfty.utils;
 
-#if openfl
+#if (macro || void)
+typedef File = void.swfty.utils.File;
+#elseif openfl
 typedef File = openfl.swfty.utils.File;
 #elseif heaps
 typedef File = heaps.swfty.utils.File;
