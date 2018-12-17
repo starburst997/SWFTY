@@ -18,6 +18,9 @@ class FinalLayer extends BaseLayer {
 
     public function new(?width:Int, ?height:Int) {
         super(width == null ? 256 : width, height == null ? 256 : height);
+
+        _width = width;
+        _height = height;
     }
 
     override function get_base() {

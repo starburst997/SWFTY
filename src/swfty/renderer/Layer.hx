@@ -20,7 +20,7 @@ typedef FinalLayer = heaps.swfty.renderer.Layer.FinalLayer;
 #error 'Unsupported framework (please use OpenFL or Heaps)'
 #end
 
-@:forward(x, y, scaleX, scaleY, rotation, alpha, dispose, pause, addRender, removeRender, addMouseDown, removeMouseDown, addMouseUp, removeMouseUp, mouse, base, baseLayout, loadBytes, reload, update, getAllNames, width, height)
+@:forward(x, y, scaleX, scaleY, rotation, alpha, dispose, pause, addRender, removeRender, addMouseDown, removeMouseDown, addMouseUp, removeMouseUp, mouse, base, baseLayout, loadBytes, reload, update, getAllNames)
 abstract Layer(BaseLayer) from BaseLayer to BaseLayer {
     public static inline function load(path:String, ?width:Int, ?height:Int, ?onComplete:Layer->Void, ?onError:Dynamic->Void):Layer {
         var layer = FinalLayer.create(width, height);
@@ -46,20 +46,30 @@ abstract Layer(BaseLayer) from BaseLayer to BaseLayer {
         return this.getMouseY();
     }
 
+    public var width(get, never):Float;
+    public var height(get, never):Float;
+
+    inline function get_width() {
+        @:privateAccess return this._width;
+    }
+    inline function get_height() {
+        @:privateAccess return this._height;
+    }
+
     public function layout(targetWidth:Float, targetHeight:Float) {
         // First layout by height, if offset is negative, then we layout by width
         // Ideally you make your UI to fit vertically, if the device is larger in width it will simply offset
-        var scale = this.height / targetHeight;
+        var scale = height / targetHeight;
         this.baseLayout.scaleX = this.baseLayout.scaleY = scale;
-        this.baseLayout.x = (this.width - (targetWidth * scale)) / 2.0;
+        this.baseLayout.x = (width - (targetWidth * scale)) / 2.0;
 
         // But if the screen is narrower than you anticipated (like iPhone X), it is best to then offset vertically
         if (this.baseLayout.x < 0) {
             this.baseLayout.x = 0;
 
-            var scale = this.width / targetWidth;
+            var scale = width / targetWidth;
             this.baseLayout.scaleX = this.baseLayout.scaleY = scale;
-            this.baseLayout.y = (this.height - (targetHeight * scale)) / 2.0;
+            this.baseLayout.y = (height - (targetHeight * scale)) / 2.0;
         }
 
         return this;

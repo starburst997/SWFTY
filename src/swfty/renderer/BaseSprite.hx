@@ -198,8 +198,8 @@ class BaseSprite extends EngineSprite {
 
                 addSprite(text);
             } else {
-                var sprite = if (!child.name.empty() && _names.exists(child.name)) {
-                    var sprite = _names.get(child.name);
+                var sprite:FinalSprite = if (!child.name.empty() && _names.exists(child.name)) {
+                    var sprite:FinalSprite = _names.get(child.name);
 
                     if (!loaded) {
                         if (!sprite.visible) updateVisible = false;
@@ -212,7 +212,7 @@ class BaseSprite extends EngineSprite {
                     sprite.load(child.mc);
                     sprite;
                 } else {
-                    var sprite = FinalSprite.create(layer, child.mc);
+                    var sprite:FinalSprite = FinalSprite.create(layer, child.mc);
                     if (!child.name.empty()) {
                         sprite._name = child.name;
                         _names.set(child.name, sprite);

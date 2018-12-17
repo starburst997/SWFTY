@@ -4,12 +4,8 @@ import haxe.io.Bytes;
 
 class EngineLayer {
 
-    public var width:Int = 0;
-    public var height:Int = 0;
-
-    public function new(width, height) {
-        this.width = width;
-        this.height = height;
+    public function new() {
+        
     }
 }
 
@@ -22,7 +18,10 @@ class FinalLayer extends BaseLayer {
     }    
 
     public function new(?width:Int, ?height:Int) {
-        super(width, height);
+        super();
+
+        _width = width;
+        _height = height;
     }
 
     override function get_base() {

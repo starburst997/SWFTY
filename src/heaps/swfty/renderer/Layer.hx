@@ -18,10 +18,10 @@ class FinalLayer extends BaseLayer {
     }
 
     public function new(?width:Int, ?height:Int) {
-        this.width = width;
-        this.height = height;
-        
         super(null);
+        
+        _width = width;
+        _height = height;
     }
 
     override function draw(ctx:RenderContext) {
