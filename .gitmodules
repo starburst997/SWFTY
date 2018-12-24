@@ -34,9 +34,6 @@
 [submodule "submodules/tweenx"]
 	path = submodules/tweenx
 	url = https://github.com/shohei909/tweenx
-[submodule "submodules/tilelayer"]
-	path = submodules/tilelayer
-	url = https://github.com/starburst997/tilelayer
 [submodule "submodules/lime"]
 	path = submodules/lime
 	url = https://github.com/starburst997/lime
