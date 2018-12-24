@@ -116,9 +116,7 @@ class Main extends hxd.App {
         super.update(dt);
 
         for (layer in layers) {
-            // We need to call update on heaps layer
-            var heapsLayer:FinalLayer = layer;
-            heapsLayer.update(dt);
+            layer.update(dt);
 
             //continue;
 
@@ -143,9 +141,7 @@ class Main extends hxd.App {
             sprite.alpha = 1.0;
             sprite.rotation = 0.0;
 
-            // Quick hack for now
-            var heapsSprite:FinalSprite = sprite;
-            heapsSprite.addRender((dt) -> {
+            sprite.addRender(function(dt) {
                 sprite.x += speedX * dt;
                 sprite.y += speedY * dt;
                 sprite.rotation += speedRotation * dt;

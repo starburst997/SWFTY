@@ -1,12 +1,15 @@
 package;
 
+#if export
 import swfty.exporter.Exporter;
-import swfty.renderer.Layer;
-
 import file.save.FileSave;
+#end
+
+import swfty.renderer.Layer;
 
 import openfl.display.Sprite;
 import openfl.events.Event;
+import openfl.text.TextFormat;
 
 using swfty.utils.Tools;
 using swfty.extra.Tween;
@@ -24,7 +27,9 @@ class Main extends Sprite {
         layers = [];
 
         var fps:openfl.display.FPS = new openfl.display.FPS();
-        fps.textColor = 0x000000;
+        fps.width = 200;
+        fps.defaultTextFormat = new TextFormat(null, 40);
+        fps.textColor = 0xFFFFFF;
         this.addChild(fps);
 
         /*var font = FontExporter.export('Bango', 24, false, false, iso8859_1);
@@ -39,8 +44,11 @@ class Main extends Sprite {
 		// Process SWF
 
         // Asynchronous creation
+        #if export
         processSWF('res/Popup.swf', function(layer) {
-        //Layer.load('res/Popup.swfty', stage.stageWidth, stage.stageHeight, layer -> {
+        #else
+        Layer.load('res/Popup.swfty', stage.stageWidth, stage.stageHeight, function(layer) {
+        #end
 
         /*({
             // Synchronous creation
@@ -71,7 +79,7 @@ class Main extends Sprite {
             //sprite.get('line').rotation = 90;
             //sprite.get('line').get('shape').scaleY = 1.75;
 
-            //return;
+            return;
 
             // TODO: VSCode was choking on the naming, not sure why but this did the trick
             var spawn = function f() {
@@ -115,7 +123,7 @@ class Main extends Sprite {
 
                     f();
 
-                }, Std.int(DateTools.seconds(0.01)));
+                }, Std.int(DateTools.seconds(0.0025)));
             }
 
             spawn();
@@ -133,6 +141,7 @@ class Main extends Sprite {
         }
     }
 
+    #if export
     public function processSWF(path:String, ?onComplete:Layer->Void, ?onError:Dynamic->Void) {
 		var layer = Layer.empty(stage.stageWidth, stage.stageHeight);
 
@@ -157,4 +166,5 @@ class Main extends Sprite {
 
         return layer;
 	}
+    #end
 }
