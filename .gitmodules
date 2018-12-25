@@ -37,3 +37,6 @@
 [submodule "submodules/lime"]
 	path = submodules/lime
 	url = https://github.com/starburst997/lime
+[submodule "submodules/haxe-file-load"]
+	path = submodules/haxe-file-load
+	url = git@github.com:starburst997/haxe-file-load.git

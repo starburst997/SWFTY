@@ -11,6 +11,7 @@ haxelib.exe dev format submodules/format
 haxelib.exe dev binpacking submodules/Rectangle-Bin-Packing
 haxelib.exe dev mcli submodules/mcli
 haxelib.exe dev haxe-file-save submodules/haxe-file-save
+haxelib.exe dev haxe-file-load submodules/haxe-file-load
 haxelib.exe dev haxe-zip submodules/haxe-zip
 haxelib.exe dev hxcpp submodules/hxcpp
 haxelib.exe dev hxbit submodules/hxbit

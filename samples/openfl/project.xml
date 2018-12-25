@@ -8,10 +8,11 @@
     
     <haxelib name="openfl" />
     <haxelib name="haxe-zip" />
-    <haxelib name="haxe-file-save" />
+    <haxelib name="haxe-file-save" if="export" />
+    <haxelib name="haxe-file-load" if="export" />
     <haxelib name="format" />
-    <haxelib name="binpacking" />
-    <haxelib name="mcli" />
+    <haxelib name="binpacking" if="export" />
+    <haxelib name="mcli" if="export" />
     <haxelib name="swfty" />
     <haxelib name="hxbit" />
     <haxelib name="tweenxcore" />
