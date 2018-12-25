@@ -100,4 +100,19 @@ class LambdaText {
         
         return label;
     }
+
+    public static inline function fitSizeText(label:Text, text:String) {
+        label.fit = true;
+        label.fitVertically = false;
+        label.text = text;
+        
+        return label;
+    }
+
+    public static inline function fitText(label:Text, text:String) {
+        label.fit = true;
+        label.text = text;
+        
+        return label;
+    }
 }

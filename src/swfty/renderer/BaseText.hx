@@ -27,8 +27,9 @@ class BaseText extends FinalSprite {
     public var short = false;
 
     // Scale the text down until it fits withing the boundaries
-    // TODO: Use an Enum instead of two bool
+    // TODO: Use an Enum instead of bools
     public var fit = false;
+    public var fitVertically = true;
 
     var textDefinition:Null<TextType>;
 
@@ -86,11 +87,12 @@ class BaseText extends FinalSprite {
         var g = (c & 0xFF00) >> 8;
         var b = c & 0xFF;
 
-        var scale = textDefinition.size / textDefinition.font.size;
+        var size = textDefinition.size;
+        var scale = size / textDefinition.font.size;
 
-        y += (1 - (textDefinition.font.ascent / (textDefinition.font.ascent + textDefinition.font.descent))) * textDefinition.size; 
+        y += (1 - (textDefinition.font.ascent / (textDefinition.font.ascent + textDefinition.font.descent))) * size; 
         
-        var lineHeight = (textDefinition.font.ascent + textDefinition.font.descent + textDefinition.font.leading) / 20 / 1024 * textDefinition.size;
+        var lineHeight = (textDefinition.font.ascent + textDefinition.font.descent + textDefinition.font.leading) / 20 / 1024 * size;
 
         var hasSpace = false;
         var lastSpaceX = 0.0;
@@ -130,10 +132,37 @@ class BaseText extends FinalSprite {
                 });
 
                 if (fit) {
-                    // TODO: Implements "fit" text, for multiline check the "height"
+                    // TODO: For multiline check the "height" as well?
+                    // TODO: Could probably be done simply at the end of each line?
+                    if (code != SPACE && (x - textDefinition.x) + w > textDefinition.width) {
+                        var scaleDown =  textDefinition.width / ((x - textDefinition.x) + w);
+
+                        // Take all tiles and scale them down
+                        for (line in lines) {
+                            for (tile in line.tiles) {
+                                tile.tile.scaleX *= scaleDown;
+                                tile.tile.scaleY *= scaleDown;
+                                tile.tile.x *= scaleDown;
+                                tile.tile.y *= scaleDown;
+                            }
+                        }
+
+                        x *= scaleDown;
+                        y *= scaleDown;
+
+                        size *= scaleDown;
+                        scale = size / textDefinition.font.size;
+
+                        if (!fitVertically) {
+                            lineHeight = (textDefinition.font.ascent + textDefinition.font.descent + textDefinition.font.leading) / 20 / 1024 * size;
+                        }
+                        
+                        w = char.advance * scale;
+                    }
+
                 } else if (short) {
                     // TODO: For multiline "short" text we should check the "height" and do it on the last line only!
-                    if (code != SPACE && (x - textDefinition.x) + w > (textDefinition.width - scale * dot.advance * 3) && (i <= text.length - 3)) {
+                    if ((x - textDefinition.x) + w > (textDefinition.width - scale * dot.advance * 3) && (i <= text.length - 3)) {
                         // Set the remaining charaters as "..." and call it a day
                         for (j in 0...3) {
                             code = DOT;
@@ -208,6 +237,13 @@ class BaseText extends FinalSprite {
         }
 
         currentLine.textWidth = x - textDefinition.x;
+
+        // Center vertically
+        if (fit && fitVertically) {
+            for (line in lines)
+                for (tile in line.tiles) 
+                    tile.tile.y += (1 - size / textDefinition.size) * lineHeight / 2.0;
+        }
 
         if (currentLine.textWidth > textWidth) textWidth = currentLine.textWidth;
         textHeight = y + lineHeight;
