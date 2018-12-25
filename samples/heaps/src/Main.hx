@@ -2,6 +2,8 @@ package;
 
 import swfty.renderer.Layer;
 
+using swfty.extra.Lambda;
+
 class Main extends hxd.App {
 
     var debugInitialized = false;
@@ -38,6 +40,7 @@ class Main extends hxd.App {
     override function init() {
         super.init();
 
+        s2d.defaultSmooth = true;
         hxd.Window.getInstance().addEventTarget(onEvent);
 
         var layer = Layer.load('Popup.swfty', layer -> {    
@@ -50,11 +53,13 @@ class Main extends hxd.App {
         s2d.addChild(layer);
 
         sprite = layer.create('PopupShop');
-        //sprite.x += 408;
-        //sprite.y += 208;
-        sprite.scaleX = 0.75;
-        sprite.scaleY = 0.75;
+        sprite.x += 408;
+        sprite.y += 208;
+        //sprite.scaleX = 0.85;
+        //sprite.scaleY = 0.85;
         //sprite.rotation = -1.0;
+
+        sprite.get('mc').get('description').getText('title').fitText('A very long title, yes, hello!!!');
 
         layer.add(sprite);
 
@@ -118,7 +123,7 @@ class Main extends hxd.App {
         for (layer in layers) {
             layer.update(dt);
 
-            //continue;
+            continue;
 
             var names = layer.getAllNames();
 

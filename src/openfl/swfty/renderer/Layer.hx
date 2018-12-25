@@ -31,14 +31,6 @@ class FinalLayer extends BaseLayer {
         return base;
     }
 
-    public override function addSprite(sprite:Sprite) {
-        super.addSprite(sprite);
-    }
-
-    public override function removeSprite(sprite:Sprite) {
-        super.removeSprite(sprite);
-    }
-
     public override function emptyTile():DisplayTile {
         return -1;
     }

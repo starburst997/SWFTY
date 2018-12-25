@@ -24,9 +24,17 @@ class FinalLayer extends BaseLayer {
         _height = height;
     }
 
+    override function get_base() {
+        if (base == null) {
+            base = FinalSprite.create(this);
+            addChild(base);
+        }
+        return base;
+    }
+
     override function draw(ctx:RenderContext) {
         clear();
-        for (sprite in sprites) sprite.render(ctx);
+        @:privateAccess for (sprite in base._sprites) sprite.render(ctx);
         
         super.draw(ctx);
     }
