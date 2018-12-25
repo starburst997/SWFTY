@@ -381,7 +381,7 @@ class Exporter {
                     var bitmap = bitmaps.get(key);
                     
 
-                    trace(bitmap.id);
+                    //trace(bitmap.id);
                 }
 
                 // We're done, so go back to default
@@ -648,7 +648,7 @@ class Exporter {
 
                                 if (hasColor) {
                                     var c = placeTag.colorTransform;
-                                    movieClip.transform.colorTransform = new openfl.geom.ColorTransform(c.rMult / 255.0, c.gMult / 255.0, c.bMult / 255.0, c.aMult / 255.0, c.rAdd, c.gAdd, c.bAdd, c.aAdd);
+                                    movieClip.transform.colorTransform = new openfl.geom.ColorTransform(c.rMult / 255.0, c.gMult / 255.0, c.bMult / 255.0, 1.0, c.rAdd, c.gAdd, c.bAdd, 0.0);
                                 }
 
                                 // We're essentially creating a unique baked copy with all filters / blendMode applied to it
