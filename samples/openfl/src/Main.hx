@@ -12,6 +12,7 @@ import openfl.events.Event;
 import openfl.text.TextFormat;
 
 using swfty.utils.Tools;
+using swfty.extra.Lambda;
 using swfty.extra.Tween;
 
 class Main extends Sprite {
@@ -78,6 +79,8 @@ class Main extends Sprite {
             sprite.y += 300;
             //sprite.get('line').rotation = 90;
             //sprite.get('line').get('shape').scaleY = 1.75;
+
+            sprite.get('mc').get('description').getText('title').fitText('A very long title, yes, hello!!!');
 
             return;
 
