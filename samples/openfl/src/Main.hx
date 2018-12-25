@@ -71,11 +71,11 @@ class Main extends Sprite {
             addChildAt(layer, 0);
 
             var sprite = layer.create('PopupShop');
-            sprite.scaleX = sprite.scaleY = 0.75;
+            //sprite.scaleX = sprite.scaleY = 0.75;
             layer.add(sprite);
 
-            //sprite.x += 300;
-            //sprite.y += 300;
+            sprite.x += 300;
+            sprite.y += 300;
             //sprite.get('line').rotation = 90;
             //sprite.get('line').get('shape').scaleY = 1.75;
 

@@ -13,8 +13,10 @@ typedef Line = {
 
 class BaseText extends FinalSprite {
 
-    public static inline var SPACE = 0x20;
-    public static inline var DOT   = 0x2E;
+    public static inline var SPACE    = 0x20;
+    public static inline var DOT      = 0x2E;
+    public static inline var NEW_LINE = 0x0A;
+    public static inline var RETURN   = 0x0D;
 
     public var text(default, set):String = null;
 
@@ -25,6 +27,7 @@ class BaseText extends FinalSprite {
     public var short = false;
 
     // Scale the text down until it fits withing the boundaries
+    // TODO: Use an Enum instead of two bool
     public var fit = false;
 
     var textDefinition:Null<TextType>;
@@ -84,7 +87,10 @@ class BaseText extends FinalSprite {
         var b = c & 0xFF;
 
         var scale = textDefinition.size / textDefinition.font.size;
-        var lineHeight = textDefinition.size;
+
+        y += (1 - (textDefinition.font.ascent / (textDefinition.font.ascent + textDefinition.font.descent))) * textDefinition.size; 
+        
+        var lineHeight = (textDefinition.font.ascent + textDefinition.font.descent + textDefinition.font.leading) / 20 / 1024 * textDefinition.size;
 
         var hasSpace = false;
         var lastSpaceX = 0.0;
@@ -107,10 +113,12 @@ class BaseText extends FinalSprite {
 
             if (textDefinition.font.has(code)) {
                 var char = textDefinition.font.get(code);
+                var w = char.advance * scale;
+
                 var tile = layer.createBitmap(char.bitmap.id, true);
                 tile.color(r, g, b);
-                tile.x = x + char.tx;
-                tile.y = y + char.ty;
+                tile.x = x + char.tx * scale;
+                tile.y = y + char.ty * scale;
 
                 tile.scaleX = tile.scaleY = scale;
 
@@ -121,13 +129,11 @@ class BaseText extends FinalSprite {
                     tile: tile
                 });
 
-                var w = char.advance * scale;
-                
                 if (fit) {
                     // TODO: Implements "fit" text, for multiline check the "height"
                 } else if (short) {
                     // TODO: For multiline "short" text we should check the "height" and do it on the last line only!
-                    if ((x - textDefinition.x) + w > (textDefinition.width - scale * dot.advance * 3) && (i <= text.length - 3)) {
+                    if (code != SPACE && (x - textDefinition.x) + w > (textDefinition.width - scale * dot.advance * 3) && (i <= text.length - 3)) {
                         // Set the remaining charaters as "..." and call it a day
                         for (j in 0...3) {
                             code = DOT;
@@ -158,6 +164,10 @@ class BaseText extends FinalSprite {
                     // Take all characters until a space and move them to next line (ignoring the space)
                     var tiles = [];
                     var tile = currentLine.tiles.pop();
+                    while(tile != null && tile.code == SPACE) {
+                        tile = currentLine.tiles.pop();
+                    }
+
                     var offsetX = 0.0;
                     var maxWidth = (tile != null && tile.tile != null) ? tile.tile.x : 0.0;
                     while(tile != null && tile.code != SPACE) {
@@ -186,6 +196,14 @@ class BaseText extends FinalSprite {
                 }
 
                 x += w;
+            } else {
+                // Special cases
+                switch(code) {
+                    case NEW_LINE | RETURN : 
+                        y += lineHeight;
+                        x = textDefinition.x;
+                    case _ : 
+                }
             }
         }
 

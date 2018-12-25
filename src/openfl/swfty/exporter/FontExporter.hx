@@ -26,7 +26,8 @@ typedef Character = {
     height: Int, 
     ty: Float, 
     tx: Float,
-    advance: Float
+    advance: Float,
+    charHeight: Float
 }
 
 typedef FontTilemap = {
@@ -118,7 +119,8 @@ class FontExporter {
                     bitmap: getId(),
                     x: 0, y: 0, width: 0, height: 0,
                     tx: bounds.x + trimmed.rect.x - padding, ty: bounds.y + trimmed.rect.y - padding,
-                    advance: bounds.width
+                    advance: bounds.width,
+                    charHeight: bounds.height
                 });
             }
         }

@@ -54,7 +54,8 @@ typedef Character = {
     bitmap: Int,
     tx: Float,
     ty: Float,
-    advance: Float
+    advance: Float,
+    height: Float
 }
 
 typedef FontDefinition = {
@@ -417,6 +418,7 @@ class CharacterType #if !macro implements hxbit.Serializable #end {
     @:s public var tx:Float;
     @:s public var ty:Float;
     @:s public var advance:Float;
+    @:s public var height:Float;
 
     public static inline function fromJson(json:Character, bitmaps:IntMap<BitmapType>):CharacterType {
         return {
@@ -424,16 +426,18 @@ class CharacterType #if !macro implements hxbit.Serializable #end {
             bitmap: bitmaps.get(json.bitmap),
             tx: json.tx,
             ty: json.ty,
-            advance: json.advance
+            advance: json.advance,
+            height: json.height
         };
     }
 
-    public function new(?id:Int, ?bitmap:BitmapType, ?tx:Float, ?ty:Float, ?advance:Float) {
+    public function new(?id:Int, ?bitmap:BitmapType, ?tx:Float, ?ty:Float, ?advance:Float, ?height:Float) {
         this.id = id;
         this.bitmap = bitmap;
         this.tx = tx;
         this.ty = ty;
         this.advance = advance;
+        this.height = height;
     }
 }
 

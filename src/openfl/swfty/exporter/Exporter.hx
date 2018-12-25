@@ -256,7 +256,8 @@ class Exporter {
                             bitmap: char.bitmap,
                             tx: char.tx,
                             ty: char.ty,
-                            advance: char.advance
+                            advance: char.advance,
+                            height: char.charHeight
                         });
                         #end
                     }
