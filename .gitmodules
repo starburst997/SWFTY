@@ -40,3 +40,6 @@
 [submodule "submodules/haxe-file-load"]
 	path = submodules/haxe-file-load
 	url = git@github.com:starburst997/haxe-file-load.git
+[submodule "submodules/haxe-custom"]
+	path = submodules/haxe-custom
+	url = git@github.com:starburst997/haxe-custom.git
