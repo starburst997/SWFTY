@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	
+	<meta charset="utf-8">
+	
+	<title>::APP_TITLE::</title>
+	
+	<meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	
+	::if favicons::::foreach (favicons)::
+	<link rel="::__current__.rel::" type="::__current__.type::" href="::__current__.href::">::end::::end::
+	
+	::if linkedLibraries::::foreach (linkedLibraries)::
+	<script type="text/javascript" src="::__current__::"></script>::end::::end::
+	<script type="text/javascript" src="./::APP_FILE::.js"></script>
+	
+	<script>
+		window.addEventListener ("touchmove", function (event) { event.preventDefault (); }, { capture: false, passive: false });
+		if (typeof window.devicePixelRatio != 'undefined' && window.devicePixelRatio > 2) {
+			var meta = document.getElementById ("viewport");
+			meta.setAttribute ('content', 'width=device-width, initial-scale=' + (2 / window.devicePixelRatio) + ', user-scalable=no');
+		}
+	</script>
+	
+	<style>
+		html,body { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+
+		#inputBox { height: 80px; width: 100%; } 
+		#swfFile {  }
+		#swftySave {  }
+
+		#content { background: #000000; width: ::if (WIN_RESIZABLE)::100%::elseif (WIN_WIDTH > 0)::::WIN_WIDTH::px::else::100%::end::; height: ::if (WIN_RESIZABLE)::100%::elseif (WIN_WIDTH > 0)::::WIN_HEIGHT::px::else::100%::end::; }
+::foreach assets::::if (type == "font")::::if (cssFontFace)::::cssFontFace::::end::::end::::end::
+	</style>
+	
+</head>
+<body>
+	::foreach assets::::if (type == "font")::
+	<span style="font-family: ::id::"> </span>::end::::end::
+	
+	<div>
+		<div id="inputBox">
+			<input type="file" id="swfFile" name="swfFile" />
+			<input type="button" id="swftySave" name="swftySave" value="SWFTY" />
+			<input type="button" id="abstractsSave" name="abstractsSave" value="Abstracts" />
+		</div>
+
+	</div>
+	
+	<div id="content"></div>
+	
+	<script type="text/javascript">
+		var config = {};
+		var exporter = null;
+		var swfty = null;
+		lime.embed ("::APP_FILE::", "content", ::WIN_WIDTH::, ::WIN_HEIGHT::, config);
+
+		function handleFileSelect(evt) {
+			var files = evt.target.files; // FileList object
+
+			// Loop through the FileList and render image files as thumbnails.
+			for (var i = 0, f; f = files[i]; i++) {
+				var reader = new FileReader();
+				reader.onload = (function(theFile) {
+					return function(e) {
+						SWFTY.processSWF(e.target.result, theFile.name, function(_exporter) {
+							exporter = _exporter;
+
+							SWFTY.exportSWF(exporter, function(_swfty) {
+								console.log('Export SWF!');
+								swfty = _swfty;
+								
+								SWFTY.renderSWFTY(swfty);
+							});
+						});
+					};
+				})(f);
+				reader.readAsArrayBuffer(f);
+
+				// Only one file
+				break;
+			}
+		}
+
+		function handleFileSave(evt) {
+			if (swfty != null && exporter != null) {
+				saveAs(new Blob([swfty], {type: "application/octet-stream"}), exporter.name + '.swfty');
+			}
+		}
+
+		function handleAbstractsSave(evt) {
+			if (exporter != null) {
+				var abstracts = SWFTY.exportAbstracts(exporter);
+				saveAs(new Blob([abstracts], {type: "text/plain;charset=utf-8"}), exporter.name + '.hx');
+			}
+		}
+
+		document.getElementById('swfFile').addEventListener('change', handleFileSelect, false);
+		document.getElementById('swftySave').addEventListener('click', handleFileSave, false);
+		document.getElementById('abstractsSave').addEventListener('click', handleAbstractsSave, false);
+	</script>
+	
+</body>
+</html>

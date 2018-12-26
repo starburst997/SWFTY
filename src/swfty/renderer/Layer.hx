@@ -1,6 +1,8 @@
 
 package swfty.renderer;
 
+import haxe.io.Bytes;
+
 #if (macro || void)
 typedef DisplayTile = void.swfty.renderer.Layer.DisplayTile;
 typedef EngineLayer = void.swfty.renderer.Layer.EngineLayer;
@@ -22,13 +24,23 @@ typedef FinalLayer = heaps.swfty.renderer.Layer.FinalLayer;
 
 @:forward(x, y, scaleX, scaleY, rotation, alpha, dispose, pause, addRender, removeRender, addMouseDown, removeMouseDown, addMouseUp, removeMouseUp, mouse, base, baseLayout, loadBytes, reload, update, getAllNames)
 abstract Layer(BaseLayer) from BaseLayer to BaseLayer {
-    public static inline function load(path:String, ?width:Int, ?height:Int, ?onComplete:Layer->Void, ?onError:Dynamic->Void):Layer {
+    public static inline function load(?path:String, ?bytes:Bytes, ?width:Int, ?height:Int, ?onComplete:Layer->Void, ?onError:Dynamic->Void):Layer {
         var layer = FinalLayer.create(width, height);
-        File.loadBytes(path, function(bytes) {
+        
+        if (path != null) {
+            File.loadBytes(path, function(bytes) {
+                layer.loadBytes(bytes, function() {
+                    if (onComplete != null) onComplete(layer);
+                }, onError);
+            }, onError);
+        }
+
+        if (bytes != null) {
             layer.loadBytes(bytes, function() {
                 if (onComplete != null) onComplete(layer);
             }, onError);
-        }, onError);
+        }
+        
         return layer;
     }
 

@@ -63,7 +63,7 @@ class Exporter {
 
     var maxId:Int = -1;
 
-    var name:String;
+    public var name:String;
     var definitions:IntMap<Bool>;
     
     var movieClipsOrder:Array<MovieClipDefinition>;
@@ -107,6 +107,7 @@ class Exporter {
         data = swf.data;
 
         this.name = name == null ? 'NoName' : name;
+        trace('Exporting', this.name);
 
         movieClipsOrder = [];
 

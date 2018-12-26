@@ -1,6 +1,7 @@
 package swfty.extra;
 
 using swfty.extra.Lambda;
+using swfty.utils.MathUtils;
 
 // Extra Functional Programming shorthand
 class LambdaSprite {
@@ -88,6 +89,35 @@ class LambdaSprite {
 
     public static inline function shortText(sprite:Sprite, name:String, text:String) {
         sprite.getText(name).shortText(text);
+        return sprite;
+    }
+
+    public static inline function fit(sprite:Sprite, ?width:Float, ?height:Float) {
+        var bounds = sprite.calcBounds(sprite.parent);
+
+        if (width == null) width = sprite.layer.width;
+        if (height == null) height = sprite.layer.height;
+
+        // Try to fit
+        var scale = if (bounds.width < bounds.height) {
+            var scale = height / bounds.height;
+            if (width.greater(bounds.width * scale)) {
+                scale = width / bounds.width;
+            } else {
+                scale;
+            }
+        } else {
+            var scale = width / bounds.width;
+            if (height.greater(bounds.height * scale)) {
+                scale = height / bounds.height;
+            } else {
+                scale;
+            }
+        }
+
+        sprite.setScale(scale);
+        sprite.setPosition(-bounds.x * scale - (bounds.width * scale - width) / 2, -bounds.y * scale - (bounds.height * scale - height) / 2);
+
         return sprite;
     }
 }

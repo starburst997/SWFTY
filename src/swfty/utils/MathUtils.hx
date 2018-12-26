@@ -34,4 +34,16 @@ class MathUtils {
             radians;
         }
     }
+
+    public static inline function lower(a:Float, b:Float, ?precision:Float = 0.001) {
+        return b < 0 ? a < b - precision : a < b + precision;
+    }
+
+    public static inline function greater(a:Float, b:Float, ?precision:Float = 0.001) {
+        return b < 0 ? a > b - precision : a > b + precision;
+    }
+
+    public static inline function equals(a:Float, b:Float, ?precision:Float = 0.001) {
+        return a > b - precision && a < b + precision;
+    }
 }

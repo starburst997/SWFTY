@@ -12,6 +12,7 @@ haxelib dev format format
 haxelib dev haxe-file-save haxe-file-save
 haxelib dev haxe-file-load haxe-file-load
 haxelib dev haxe-zip haxe-zip
+haxelib dev haxe-custom haxe-custom
 haxelib dev hxp hxp
 haxelib dev lime lime
 haxelib dev openfl openfl
