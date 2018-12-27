@@ -101,14 +101,14 @@ class LambdaSprite {
         // Try to fit
         var scale = if (bounds.width < bounds.height) {
             var scale = height / bounds.height;
-            if (width.greater(bounds.width * scale)) {
+            if ((bounds.width * scale).greater(width)) {
                 scale = width / bounds.width;
             } else {
                 scale;
             }
         } else {
             var scale = width / bounds.width;
-            if (height.greater(bounds.height * scale)) {
+            if ((bounds.height * scale).greater(height)) {
                 scale = height / bounds.height;
             } else {
                 scale;
