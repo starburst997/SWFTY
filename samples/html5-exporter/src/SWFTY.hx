@@ -27,6 +27,11 @@ class SWFTY {
 		}, onError);
 	}
 
+	public static function getTilemap(exporter:Exporter, ?onComplete:String->Int->Int->Int->Void) {
+		var info = exporter.getTilemapInfo();
+		if (onComplete != null) onComplete(info.src, info.width, info.height, info.size);
+	}
+
 	public static function exportSWF(exporter:Exporter, ?onComplete:BytesData->Void, ?useJson:Bool = false, ?compressed:Bool = true) {
 		var swfty = exporter.getSwfty(useJson, compressed);
 		if (onComplete != null) onComplete(swfty.getData());
@@ -37,8 +42,21 @@ class SWFTY {
 		return abstracts;
 	}
 
-	public static function renderSWFTY(bytes:ArrayBuffer, ?onComplete:Layer->Void, ?onError:Dynamic->Void) {
+	public static function exportNames(exporter:Exporter) {
+		var names = exporter.getAllNames();
+		return names;
+	}
+
+	public static function renderSWFTY(bytes:ArrayBuffer, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
 		if (Main.instance != null) Main.instance.renderSWFTY(Bytes.ofData(bytes), onComplete, onError);
+	}
+
+	public static function renderMC(name:String) {
+		if (Main.instance != null) Main.instance.renderMC(name);
+	}
+
+	public static function stress() {
+		if (Main.instance != null) Main.instance.stress();
 	}
 }
 #end

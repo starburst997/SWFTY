@@ -119,7 +119,7 @@ class BaseLayer extends EngineLayer {
 
     public function update(dt:Float) {
         if (pause) return;
-        
+
         for (f in renders) f(dt);
         
         if (mouse.leftChanged) {
@@ -137,6 +137,10 @@ class BaseLayer extends EngineLayer {
 
         // Reset mouse properties
         mouse.reset();
+    }
+
+    public function removeAll() {
+        baseLayout.removeAll();
     }
 
     public function addRender(f:Float->Void) {

@@ -1,5 +1,6 @@
 package openfl.swfty.exporter;
 
+import haxe.crypto.Base64;
 import swfty.exporter.Exporter.CharSet;
 import format.swf.data.filters.Filter;
 import openfl.swfty.exporter.Shape;
@@ -476,6 +477,49 @@ class Exporter {
         }
 
         return zip.finalize();
+    }
+
+    public function getTilemapInfo() {
+        var tilemap = getTilemap();
+        var png = getPNG(tilemap.bitmapData);
+        return {
+            src: 'data:image/png;base64,' + Base64.encode(png),
+            width: tilemap.bitmapData.width,
+            height: tilemap.bitmapData.height,
+            size: png.length
+        };
+    }
+
+    public function getAllNames() {
+        var cache:IntMap<Int> = new IntMap();
+        
+        var countChildren = function f(mc:MovieClipDefinition) {
+            if (mc == null) return 0;
+            
+            if (cache.exists(mc.id)) {
+                return cache.get(mc.id);
+            }
+            
+            var innerCount = 0;
+            for (child in mc.children) {
+                if (cache.exists(child.id)) {
+                    innerCount += cache.get(child.id);
+                } else {
+                    innerCount += f(movieClips.get(child.id));
+                }
+                
+                innerCount++;
+            }
+
+            cache.set(mc.id, innerCount);
+
+            return innerCount;
+        }
+        
+        return movieClipsOrder
+            .filter(function(i) return !i.name.empty())
+            .sortdf(function(i) return countChildren(i))
+            .map(function(i) return i.name);
     }
 
     // This gives us optional compile-time swfty to our safety

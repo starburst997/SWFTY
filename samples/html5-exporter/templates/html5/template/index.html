@@ -27,9 +27,15 @@
 	<style>
 		html,body { margin: 0; padding: 0; height: 100%; overflow: hidden; }
 
-		#inputBox { height: 80px; width: 100%; } 
+		.right { text-align: right; }
+		#inputBox { margin-top: 8px; margin-bottom: 8px; width: 400px; } 
 		#swfFile {  }
 		#swftySave {  }
+
+		#tilemap { max-height: 200px; background-color: #666666 }
+		#tilemapInfo { font-weight: bold; margin-bottom: 4px; }
+
+		#names { margin-bottom: 10px; width: 400px; }
 
 		#content { background: #000000; width: ::if (WIN_RESIZABLE)::100%::elseif (WIN_WIDTH > 0)::::WIN_WIDTH::px::else::100%::end::; height: ::if (WIN_RESIZABLE)::100%::elseif (WIN_WIDTH > 0)::::WIN_HEIGHT::px::else::100%::end::; }
 ::foreach assets::::if (type == "font")::::if (cssFontFace)::::cssFontFace::::end::::end::::end::
@@ -42,9 +48,25 @@
 	
 	<div>
 		<div id="inputBox">
-			<input type="file" id="swfFile" name="swfFile" />
-			<input type="button" id="swftySave" name="swftySave" value="SWFTY" />
-			<input type="button" id="abstractsSave" name="abstractsSave" value="Abstracts" />
+			<div>
+				<input type="file" id="swfFile" name="swfFile" width="100%" />
+			</div>
+			<div class="right">
+				<input type="button" id="swftySave" name="swftySave" value="SWFTY" />
+				<input type="button" id="abstractsSave" name="abstractsSave" value="Abstracts" />
+				<input type="button" id="swftyStress" name="swftyStress" value="Stress Test" />
+			</div>
+		</div>
+
+		<div>
+			<image id="tilemap" />
+			<div id="tilemapInfo">Tilemap: not loaded</div>
+		</div>
+
+		<div>
+			<select id="names" size="6" selected-index="0" required>
+				<option value="Not loaded">Not loaded</option>
+			</select>
 		</div>
 
 	</div>
@@ -55,11 +77,21 @@
 		var config = {};
 		var exporter = null;
 		var swfty = null;
+
+		var swfFileInput = document.getElementById('swfFile');
+		var swftySaveInput = document.getElementById('swftySave');
+		var abstractsSaveInput = document.getElementById('abstractsSave');
+		var stressInput = document.getElementById('swftyStress');
+		var namesInput = document.getElementById('names');
+		var tilemapImage = document.getElementById('tilemap');
+		var tilemapInfo = document.getElementById('tilemapInfo');
+
 		lime.embed ("::APP_FILE::", "content", ::WIN_WIDTH::, ::WIN_HEIGHT::, config);
 
 		function handleFileSelect(evt) {
 			var files = evt.target.files; // FileList object
 
+			// TODO: Handle more than one files
 			// Loop through the FileList and render image files as thumbnails.
 			for (var i = 0, f; f = files[i]; i++) {
 				var reader = new FileReader();
@@ -68,11 +100,34 @@
 						SWFTY.processSWF(e.target.result, theFile.name, function(_exporter) {
 							exporter = _exporter;
 
+							SWFTY.getTilemap(exporter, function(src, width, height, size) {
+								tilemapImage.src = src;
+
+								tilemapInfo.innerHTML = 'Tilemap: ' + width + 'x' + height + ', (' + (Math.round(size/1024/1024*100) / 100) + 'MB)';
+							});
+
+							for(var i = namesInput.options.length - 1 ; i >= 0 ; i--) {
+								namesInput.remove(i);
+							}
+
+							var names = SWFTY.exportNames(exporter);
+							for (var i = 0; i < names.length; i++) {
+								var name = names[i];
+								var option = document.createElement("option");
+								option.text = name;
+								option.value = name;
+								namesInput.add(option);
+							}
+
+							namesInput.selectedIndex = 0;
+							
 							SWFTY.exportSWF(exporter, function(_swfty) {
 								console.log('Export SWF!');
 								swfty = _swfty;
 								
-								SWFTY.renderSWFTY(swfty);
+								SWFTY.renderSWFTY(swfty, function() {
+									SWFTY.renderMC(namesInput.value);
+								});
 							});
 						});
 					};
@@ -97,9 +152,23 @@
 			}
 		}
 
-		document.getElementById('swfFile').addEventListener('change', handleFileSelect, false);
-		document.getElementById('swftySave').addEventListener('click', handleFileSave, false);
-		document.getElementById('abstractsSave').addEventListener('click', handleAbstractsSave, false);
+		function handleNameSelect(evt) {
+			if (exporter != null) {
+				SWFTY.renderMC(namesInput.value);
+			}
+		}
+
+		function handleStress(evt) {
+			if (exporter != null) {
+				SWFTY.stress();
+			}
+		}
+
+		namesInput.addEventListener('change', handleNameSelect, false);
+		swfFileInput.addEventListener('change', handleFileSelect, false);
+		swftySaveInput.addEventListener('click', handleStress, false);
+		abstractsSaveInput.addEventListener('click', handleAbstractsSave, false);
+		stressInput.addEventListener('click', handleStress, false);
 	</script>
 	
 </body>
