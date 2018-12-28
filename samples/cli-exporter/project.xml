@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
     
-    <meta title="SWFTY" package="jd.boivin.swfty" version="1.0.0" company="Jean-Denis Boivin" />
+    <meta title="SWFTY" package="jd.boivin.swfty" version="0.1.0" company="Jean-Denis Boivin" />
     <app main="Main" path="bin" file="SWFTY" />
     <window background="#666666" allowHighDPI="true" fps="60" />
     <window hidden="true" />
@@ -18,11 +18,13 @@
     <haxelib name="hxbit" />
     <haxelib name="tweenxcore" />
 
+    <haxeflag name="-dce full" if="final" />
+
     <source path="src" />
     <source path="../../submodules/openfl/scripts" />
 
-    <assets path="../../res" rename="res" />
-    
+    <icon path="../../res/icon.png" />
+
     <haxedef name="gl_stats" if="debug" />
     <!--<haxedef name="sync" unless="html5" />-->
     <!--<haxedef name="trim" if="export" />-->

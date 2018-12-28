@@ -139,13 +139,28 @@ typedef Rectangle = {
     height: Int
 }
 
+typedef Quality = {
+    name: String,
+    ?appendName: Bool,
+    ?scale: Float,
+    ?maxDimension: Rectangle,
+    ?outputFolder: String,
+}
+
 typedef Config = {
     ?watch: Bool,
+    ?watchFolder: String,
+    ?outputFolder: String,
+    ?fontFolder: String,
+    ?quality: Array<Quality>,
     ?pngquant: Bool,
+    ?fontEnabled: Bool,
     ?sharedFonts:Bool,
+    ?maxDimension: Rectangle,
     ?files: Array<{
         name: String,
         ?pngquant: Bool,
+        ?quality: Array<Quality>,
         ?maxDimension: Rectangle,
         ?fontEnabled: Bool,
         ?maxFontDimension: Rectangle

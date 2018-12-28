@@ -1,0 +1,39 @@
+{
+    "watch": true,
+    "watchFolder": "res",
+    "outputFolder": "res/swfty/high",
+    "fontFolder": "ref/fonts",
+    "pngquant": true,
+    
+    "sharedFonts": false,
+    "fontEnabled": true,
+    
+    "maxDimension": {
+        "width": 2048,
+        "height": 2048
+    },
+    "quality": [{
+        "name": "low",
+        "appendName": false,
+        "outputFolder": "res/swfty/low",
+        "scale": 0.50,
+        "maxDimension": {
+            "width": 1024,
+            "height": 1024
+        }
+    },{
+        "name": "mid",
+        "appendName": false,
+        "outputFolder": "res/swfty/mid",
+        "scale": 0.75,
+        "maxDimension": {
+            "width": 2048,
+            "height": 1024
+        }
+    }],
+
+    "files": [{
+        "name": "Popup.swf",
+        "pngquant": false
+    }]
+}

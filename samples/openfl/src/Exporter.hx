@@ -96,7 +96,7 @@ class Exporter extends Sprite {
 			swfty.Exporter.create(bytes, function(exporter) {
                 trace('Parsed SWF: ${haxe.Timer.stamp() - timer}');
                 onComplete(exporter);
-            });
+            }, onError);
 		});
 	}
 }

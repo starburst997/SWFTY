@@ -3,6 +3,7 @@ package openfl.swfty.renderer;
 typedef EngineSprite = openfl.display.TileContainer;
 typedef EngineBitmap = openfl.display.Tile;
 
+@:keepSub // Fix DCE=full
 class FinalSprite extends BaseSprite {
 
     public static inline function create(layer:BaseLayer, ?definition:MovieClipType, ?linkage:String) {

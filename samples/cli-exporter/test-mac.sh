@@ -3,13 +3,13 @@
 # cd to the script's directory so we can run it from anywhere
 cd "$(dirname "$0")"
 
-rm -Rf ./bin/macos/bin/SWFTY
+rm -Rf ./bin/macos/bin/SWFTY.app
 
-openfl build mac -v
+openfl build mac -final -v
 
 FILE=bin/macos/bin/SWFTY.app/Contents/MacOS/SWFTY
 if [ -f $FILE ]; then
-    ./$FILE $@ -f ../../ref/fonts
+    ./$FILE $@ -r $PWD/../../
 else
     echo "File not found"
 fi

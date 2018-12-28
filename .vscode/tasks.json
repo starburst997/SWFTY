@@ -51,7 +51,7 @@
             "taskName": "build cli exporter",
             "isBuildCommand": true,
             "args": [
-                "samples/cli-exporter/test-mac.sh", "res/Popup.swf"
+                "samples/cli-exporter/test-mac.sh"
             ],
             "presentation": {
                 "echo": false,

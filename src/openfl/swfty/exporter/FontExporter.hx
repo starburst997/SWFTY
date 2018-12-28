@@ -52,7 +52,7 @@ typedef FontCache = {
 @:access(openfl.text.Font)
 class FontExporter {
 
-    public static var path = 'ref/fonts';
+    public static var path = 'ref/fonts/';
 
     public static function exportGlyphs(font:String, size:Float = 24, bold:Bool = false, italic:Bool = false, ?charSet:Array<Int>, ?cache:FontCache, getId:Void->Int):FontGlyphs {
 
@@ -61,13 +61,13 @@ class FontExporter {
 
         #if sys
         // Command line tools need the path to TTF
-        var f = Font.fromFile(System.getPath('$path/$font.ttf'));
+        var f = Font.fromFile('$path/$font.ttf'); // System.getPath('$path/$font.ttf'));
         if (f != null) {
             Font.__registeredFonts.push(f);
             Font.__fontByName[font] = f;
             font = f.fontName;
         } else {
-            Log.warn('Missing font: ${System.getPath('$path/$font.ttf')}');
+            Log.warn('Missing font: $path/$font.ttf');
         }
         #end
 

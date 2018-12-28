@@ -164,7 +164,7 @@ class Main extends Sprite {
                 FileSave.saveClickString(exporter.getAbstracts(), '${name.capitalize()}.hx');
 
                 trace('Parsed SWF: ${haxe.Timer.stamp() - timer}');
-            });
+            }, onError);
         }, onError);
 
         return layer;

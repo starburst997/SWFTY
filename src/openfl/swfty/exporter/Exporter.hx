@@ -99,11 +99,20 @@ class Exporter {
 
     var bakedId:StringMap<Int>;
 
-    public static function create(bytes:ByteArray, ?name:String, onComplete:Exporter->Void) {
-        return new Exporter(bytes, name, onComplete);
+    public static function create(bytes:ByteArray, ?name:String, ?onComplete:Exporter->Void, ?onError:Dynamic->Void) {
+        return new Exporter(bytes, name, onComplete, onError);
     }
 
-    public function new(bytes:ByteArray, ?name:String, onComplete:Exporter->Void) {
+    public function new(bytes:ByteArray, ?name:String, ?onComplete:Exporter->Void, ?onError:Dynamic->Void) {
+        // Check if file is valid (43 57 53)
+        bytes.position = 0;
+        if (bytes.length < 3 || bytes.readByte() != 0x43 || bytes.readByte() != 0x57 || bytes.readByte() != 0x53) {
+            if (onError != null) onError('Invalid format');
+            return;
+        } 
+        
+        bytes.position = 0;
+
         swf = new SWF(bytes);
         data = swf.data;
 
@@ -264,7 +273,7 @@ class Exporter {
                         #end
                     }
 
-                    onComplete(this);
+                    if (onComplete != null) onComplete(this);
                 }
             }
 
@@ -285,7 +294,11 @@ class Exporter {
                 complete();
             }
         }
-        if (data.tags.length > 0) process(0) else onComplete(this);
+        if (data.tags.length > 0) {
+            process(0);
+        } else {
+            if (onComplete != null) onComplete(this);
+        }
     }
 
     function getFontCache(text:TextDefinition, filterHash:String) {

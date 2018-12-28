@@ -18,7 +18,7 @@ class SWFTY {
 		Exporter.create(Bytes.ofData(bytes), new haxe.io.Path(name).file, function(exporter) {
             trace('Parsed SWF: ${haxe.Timer.stamp() - timer}');
             if (onComplete != null) onComplete(exporter);
-        });
+        }, onError);
 	}
 
 	public static function convertSWF(bytes:ArrayBuffer, ?name:String, ?onComplete:BytesData->Void, ?onError:Dynamic->Void, ?useJson:Bool = false, ?compressed:Bool = true) {
