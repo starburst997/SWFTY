@@ -9,6 +9,7 @@
     "haxe.displayConfigurations": [
         ["--cwd", "samples/openfl", "bin/html5/haxe/debug.hxml"],
         ["--cwd", "samples/html5-exporter", "bin/html5/haxe/debug.hxml"],
+        ["--cwd", "samples/cli-exporter", "bin/macos/haxe/debug.hxml"],
         ["--cwd", "samples/heaps", "build.hxml"],
         ["--cwd", "samples/heaps", "html5.hxml"],
     ],

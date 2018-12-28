@@ -48,6 +48,20 @@
         },
         {
             "command": "sh",
+            "taskName": "build cli exporter",
+            "isBuildCommand": true,
+            "args": [
+                "samples/cli-exporter/test-mac.sh", "res/Popup.swf"
+            ],
+            "presentation": {
+                "echo": false,
+                "focus": false,
+                "panel": "dedicated",
+                "reveal": "silent"
+            }
+        },
+        {
+            "command": "sh",
             "taskName": "build hl",
             "isBuildCommand": true,
             "args": [

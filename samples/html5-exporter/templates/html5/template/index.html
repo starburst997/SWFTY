@@ -37,7 +37,7 @@
 
 		#names { margin-bottom: 10px; width: 400px; }
 
-		#content { background: #000000; width: ::if (WIN_RESIZABLE)::100%::elseif (WIN_WIDTH > 0)::::WIN_WIDTH::px::else::100%::end::; height: ::if (WIN_RESIZABLE)::100%::elseif (WIN_WIDTH > 0)::::WIN_HEIGHT::px::else::100%::end::; }
+		#content { background: #666666; width: ::if (WIN_RESIZABLE)::100%::elseif (WIN_WIDTH > 0)::::WIN_WIDTH::px::else::100%::end::; height: ::if (WIN_RESIZABLE)::100%::elseif (WIN_WIDTH > 0)::::WIN_HEIGHT::px::else::100%::end::; }
 ::foreach assets::::if (type == "font")::::if (cssFontFace)::::cssFontFace::::end::::end::::end::
 	</style>
 	
@@ -52,9 +52,9 @@
 				<input type="file" id="swfFile" name="swfFile" width="100%" />
 			</div>
 			<div class="right">
-				<input type="button" id="swftySave" name="swftySave" value="SWFTY" />
-				<input type="button" id="abstractsSave" name="abstractsSave" value="Abstracts" />
-				<input type="button" id="swftyStress" name="swftyStress" value="Stress Test" />
+				<input type="button" id="swftySave" name="swftySave" value="SWFTY" disabled />
+				<input type="button" id="abstractsSave" name="abstractsSave" value="Abstracts" disabled />
+				<input type="button" id="swftyStress" name="swftyStress" value="Stress Test" disabled />
 			</div>
 		</div>
 
@@ -64,7 +64,7 @@
 		</div>
 
 		<div>
-			<select id="names" size="6" selected-index="0" required>
+			<select id="names" size="6" selected-index="0" required disabled>
 				<option value="Not loaded">Not loaded</option>
 			</select>
 		</div>
@@ -99,6 +99,7 @@
 					return function(e) {
 						SWFTY.processSWF(e.target.result, theFile.name, function(_exporter) {
 							exporter = _exporter;
+							abstractsSaveInput.disabled = false;
 
 							SWFTY.getTilemap(exporter, function(src, width, height, size) {
 								tilemapImage.src = src;
@@ -124,9 +125,12 @@
 							SWFTY.exportSWF(exporter, function(_swfty) {
 								console.log('Export SWF!');
 								swfty = _swfty;
+								swftySaveInput.disabled = false;
 								
 								SWFTY.renderSWFTY(swfty, function() {
 									SWFTY.renderMC(namesInput.value);
+									stressInput.disabled = false;
+									namesInput.disabled = false;
 								});
 							});
 						});

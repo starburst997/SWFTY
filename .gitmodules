@@ -43,3 +43,12 @@
 [submodule "submodules/haxe-custom"]
 	path = submodules/haxe-custom
 	url = git@github.com:starburst997/haxe-custom.git
+[submodule "submodules/haxe-strings"]
+	path = submodules/haxe-strings
+	url = git@github.com:vegardit/haxe-strings.git
+[submodule "submodules/haxe-concurrent"]
+	path = submodules/haxe-concurrent
+	url = git@github.com:vegardit/haxe-concurrent.git
+[submodule "submodules/haxe-files"]
+	path = submodules/haxe-files
+	url = git@github.com:vegardit/haxe-files.git

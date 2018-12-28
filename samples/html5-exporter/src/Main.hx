@@ -40,6 +40,10 @@ class Main extends Sprite {
         fps.textColor = 0xFFFFFF;
         this.addChild(fps);
 
+        openfl.Lib.current.graphics.beginFill(0x666666, 1.0);
+        openfl.Lib.current.graphics.drawRect(0, 0, stage.stageWidth, stage.stageHeight);
+        openfl.Lib.current.graphics.endFill();
+
         stage.addEventListener(Event.ENTER_FRAME, render);
     }
 
@@ -85,7 +89,7 @@ class Main extends Sprite {
         var names = layer.getAllNames();
 
         stressing = true;
-        
+
         var spawn = function f() {
             haxe.Timer.delay(function() {
                 var name = names[Std.int(Math.random() * names.length)];
