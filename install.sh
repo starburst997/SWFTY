@@ -16,6 +16,8 @@ haxelib dev haxe-custom haxe-custom
 haxelib dev haxe-concurrent haxe-concurrent
 haxelib dev haxe-files haxe-files
 haxelib dev haxe-strings haxe-strings
+haxelib dev haxe-ws haxe-ws
+haxelib dev console.hx console.hx
 haxelib dev hxp hxp
 haxelib dev lime lime
 haxelib dev openfl openfl

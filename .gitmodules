@@ -52,3 +52,9 @@
 [submodule "submodules/haxe-files"]
 	path = submodules/haxe-files
 	url = git@github.com:vegardit/haxe-files.git
+[submodule "submodules/hxnet"]
+	path = submodules/hxnet
+	url = git@github.com:MattTuttle/hxnet.git
+[submodule "submodules/console.hx"]
+	path = submodules/console.hx
+	url = git@github.com:haxiomic/console.hx.git

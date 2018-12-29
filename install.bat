@@ -17,6 +17,8 @@ haxelib.exe dev haxe-zip submodules/haxe-zip
 haxelib.exe dev haxe-concurrent submodules/haxe-concurrent
 haxelib.exe dev haxe-files submodules/haxe-files
 haxelib.exe dev haxe-strings submodules/haxe-strings
+haxelib.exe dev haxe-ws submodules/haxe-ws
+haxelib.exe dev console.hx submodules/console.hx
 haxelib.exe dev hxcpp submodules/hxcpp
 haxelib.exe dev hxbit submodules/hxbit
 haxelib.exe dev heaps submodules/heaps

@@ -22,9 +22,31 @@ class Main extends Sprite {
     var dt = 0.0;
     var timer = 0.0;
 
+    #if sys
+    var client:hxnet.tcp.Client = null;
+    #end
+
 	public function new() {	
 		super();
 
+        #if sys
+        haxe.Timer.delay(function() {
+            // Start client
+            client = new hxnet.tcp.Client();
+            client.protocol = new Client();
+            client.connect('localhost', 9971);
+            client.blocking = true;
+
+            client.update();
+
+            trace('TESTSTSTSTTS');
+
+        }, 1000);
+        #elseif html5
+        // TODO: Use websocket or something for js
+        #end
+
+        // Test
         layers = [];
 
         var fps:openfl.display.FPS = new openfl.display.FPS();
@@ -38,7 +60,9 @@ class Main extends Sprite {
 
         addChild(bmp);*/
 
-        process();
+        //process();
+
+        stage.addEventListener(Event.ENTER_FRAME, render);
     }
 
     function process() {
@@ -48,7 +72,7 @@ class Main extends Sprite {
         #if export
         processSWF('res/Popup.swf', function(layer) {
         #else
-        Layer.load('res/Popup.swfty', stage.stageWidth, stage.stageHeight, function(layer) {
+        Layer.load('res/swfty/high/Popup.swfty', stage.stageWidth, stage.stageHeight, function(layer) {
         #end
 
         /*({
@@ -130,8 +154,6 @@ class Main extends Sprite {
             }
 
             spawn();
-            
-            stage.addEventListener(Event.ENTER_FRAME, render);
         }, function(e) trace('ERROR: $e'));
 	}
 
@@ -142,6 +164,12 @@ class Main extends Sprite {
         for (layer in layers) {
             layer.update(dt);
         }
+
+        #if sys
+        if (client != null) {
+            client.update();
+        }
+        #end
     }
 
     #if export
@@ -171,3 +199,13 @@ class Main extends Sprite {
 	}
     #end
 }
+
+#if sys
+class Client extends hxnet.protocols.WebSocket
+{
+	override private function recvText(line:String)
+	{
+        trace('HEY 2!', line);
+	}
+}
+#end

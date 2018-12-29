@@ -9,9 +9,11 @@ import openfl.swfty.exporter.FontExporter;
 
 import file.save.FileSave;
 
-import hx.concurrent.executor.Executor;
+import hx.concurrent.executor.*;
 import hx.files.*;
 import hx.files.watcher.*;
+import hx.concurrent.event.*;
+import hx.concurrent.collection.*;
 
 import openfl.display.Bitmap;
 import openfl.display.Sprite;
@@ -44,6 +46,12 @@ class CLI extends mcli.CommandLine {
 	**/
 	public var relPath:String = null;
 
+    /**
+		Watch for file changes (only works on folder)
+        @alias w
+	**/
+	public var watch:Bool = false;
+
     var path:String = null;
 
 	/**
@@ -70,6 +78,14 @@ class CLI extends mcli.CommandLine {
         return Path.of(path).normalize().toString();
     }
 
+    function error(text:String) {
+        Console.log('<b>* Error: <#FF0000>$text</></>');
+    }
+
+    function log(text:String, ?info:String, ?depth = 1) {
+        Console.log('<b>${[for (i in 0...Std.int(Math.max(depth - 1, 0))) '  '].join('')}${depth == 0 ? '' : '- '}$text</>${info == null ? '' : '<b>:</> <i>$info</>'}');
+    }
+
 	public function runDefault(?path:String) {
         this.path = path;
 
@@ -77,9 +93,10 @@ class CLI extends mcli.CommandLine {
             // Look for swfty.json
             var bytes = File.of(getFile('swfty.json')).readAsBytes();
             if (bytes != null) {
+                log('Found', getFile('swfty.json'), 0);
                 loadConfig(bytes);
             } else {
-                trace('Please specify a folder to watch or a .SWF to convert or have a swfty.json file!');
+                error('Please specify a folder to watch or a .SWF to convert or have a swfty.json file!');
                 Sys.exit(0);
             }
         } else {
@@ -88,7 +105,7 @@ class CLI extends mcli.CommandLine {
             if (p.filenameExt.toLowerCase() == 'swf') {
                 // Convert single SWF
                 // TODO: Clean this up
-                trace('Converting: ${p.toString()}...');
+                log('Converting single file', '${p.toString()}');
                 FontExporter.path = getDir(this.fontPath != null ? this.fontPath : FontExporter.path);
                 processSWF(getFile(path), exporter -> {
                     var zip = exporter.getSwfty();
@@ -97,19 +114,20 @@ class CLI extends mcli.CommandLine {
                         output += Path.of(output).join(p.filenameStem + '.swfty').toString();
                     }
 
-                    trace('Saving: $output...');
+                    log('Saving', '$output', 2);
                     FileSave.writeBytes(zip, output);
                     
-                    trace('Done!');
+                    log('Done!');
                     Sys.exit(0);
-                }, error -> {
-                    trace('Error', error);
+                }, e -> {
+                    error(e);
                     Sys.exit(0);
                 });
             } else {
                 // Look for a swfty.json in folder
                 var bytes = File.of(p.join('swfty.json')).readAsBytes();
                 if (bytes != null) {
+                    log('Found', p.join('swfty.json').toString(), 0);
                     loadConfig(bytes);
                 } else {
                     // Just watch folder using default config
@@ -122,7 +140,7 @@ class CLI extends mcli.CommandLine {
     function getConfig(?config:Config) {
         if (config == null) config = {};
 
-        if (config.watch == null) config.watch = true;
+        if (config.watch == null) config.watch = this.watch;
         if (config.watchFolder == null) config.watchFolder = 'res';
         if (config.outputFolder == null) config.outputFolder = config.watchFolder;
         if (config.fontFolder == null) config.fontFolder = FontExporter.path;
@@ -142,7 +160,7 @@ class CLI extends mcli.CommandLine {
 
         FontExporter.path = getDir(config.fontFolder);
 
-        trace('Font path:', FontExporter.path);
+        log('Font path', FontExporter.path, 0);
 
         return config;
     }
@@ -154,7 +172,7 @@ class CLI extends mcli.CommandLine {
 
             processConfig(config);
         } catch(e:Dynamic) {
-            trace('Error!!!', e);
+            error(e);
             Sys.exit(0);
         }
     }
@@ -175,16 +193,22 @@ class CLI extends mcli.CommandLine {
 
     function processConfig(config:Config) {
         function convertSWF(path:Path, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
+            log('Converting', path.toString());
             processSWF(path.toString(), exporter -> {
+                log('Exporting', path.toString(), 2);
+
                 var zip = exporter.getSwfty();
-                
                 var output = Path.of(getDir(config.outputFolder)).join(path.filenameStem + '.swfty').toString();
 
                 // Makes sure dir exists
                 Dir.of(Path.of(output).parent).create();
 
-                trace('Saving: $output...');
+                log('Saving', '$output', 2);
                 FileSave.writeBytes(zip, output);
+
+                Main.swfs.add('LOL!');
+
+                log('Done!');
                 
                 if (onComplete != null) onComplete();
             }, onError);
@@ -203,9 +227,6 @@ class CLI extends mcli.CommandLine {
                 }
             }
 
-            // Start socket server to send new bytes whenever a swfty gets compiled
-
-
             // Watch folder, processing any SWF
             var ex = Executor.create();
             var fw = new PollingFileWatcher(ex, 100);
@@ -221,7 +242,7 @@ class CLI extends mcli.CommandLine {
                         // Introduce a slight delay (sometimes multiple event can be fired quickly when publishing SWF)
                         if (timer != null) timer.stop();
                         timer = haxe.Timer.delay(() -> {
-                            trace('File modified: $file');
+                            log('File modified', file.path.toString(), 0);
                             
                             timer.stop();
                             timer = null;
@@ -232,6 +253,7 @@ class CLI extends mcli.CommandLine {
                 }
             });
 
+            log('Watching', getDir(config.watchFolder), 0);
             fw.watch(getDir(config.watchFolder));
 
         } else {
@@ -245,33 +267,127 @@ class CLI extends mcli.CommandLine {
 
     function processSWF(path:String, onComplete:Exporter->Void, onError:Dynamic->Void) {
 		try {
-            trace('Loading', path);
+            log('Loading', path, 2);
 
             var bytes = File.of(path).readAsBytes();
             if (bytes == null) throw 'File doesn\'t exists at $path';
 
-            trace('Loaded ${bytes.length}');
+            log('Loaded', '${Math.ceil(bytes.length/1024)} KB', 2);
 
 			var timer = haxe.Timer.stamp();
 			Exporter.create(bytes, path, function(exporter) {
-                trace('Parsed SWF: ${haxe.Timer.stamp() - timer}');
+                log('Parsed SWF', '${haxe.Timer.stamp() - timer} sec', 2);
                 onComplete(exporter);
             }, onError);
         } catch(e:Dynamic) {
-            trace('Error!!!', e);
+            error(e);
             onError(e);
         }
 	}
 }
 #end
 
+class Echo extends hxnet.protocols.WebSocket
+{
+    public function new() {
+        super();
+    }
+
+	override private function recvText(line:String)
+	{
+        trace('HEY!', line);
+	}
+
+}
+
 class Main extends Sprite {
+
+    public static var swfs:SynchronizedArray<String> = new SynchronizedArray();
 
 	public function new() {	
 		super();
 
+        // Meh let's have some fun
+        var color1 = '#00b3c4';
+        var color2 = '#dbe688';
+        var color3 = '#cccccc';
+        Console.log("<" + color1 + ">                          ,d8888b</><" + color2 + ">                  </>");
+        Console.log("<" + color1 + ">                          88P'   </><" + color2 + ">   d8P            </>");
+        Console.log("<" + color1 + ">                       d888888P  </><" + color2 + ">d888888P          </>");
+        Console.log("<" + color1 + "> .d888b, ?88   d8P  d8P  ?88'    </><" + color2 + ">  ?88'  ?88   d8P </>");
+        Console.log("<" + color1 + "> ?8b,    d88  d8P' d8P'  88P     </><" + color2 + ">  88P   d88   88  </>");
+        Console.log("<" + color1 + ">   `?8b  ?8b ,88b ,88'  d88      </><" + color2 + ">  88b   ?8(  d88  </>");
+        Console.log("<" + color1 + ">`?888P'  `?888P'888P'  d88'      </><" + color2 + ">  `?8b  `?88P'?8b </>");
+        Console.log("<" + color1 + ">                                 </><" + color2 + ">               )88</>");
+        //Console.log("<" + color3 + ">    https://github.com/starburst997/SWFTY   </><" + color2 + ">   ,d8P</>");
+        Console.log("<" + color3 + ">                                            </><" + color2 + ">   ,d8P</>");
+        Console.log("<" + color1 + ">                                 </><" + color2 + ">           `?888P'</>");
+
+        function showMeWhatYouGot(str:String) {
+            var color1 = '#dfc24c';
+            var color2 = '#f29941';
+            str = str.replace('#', '<$color2>#</>');
+            Console.log('<$color1>$str</>');
+        }
+        showMeWhatYouGot('      . -^   `--,      ');
+        showMeWhatYouGot('     /# =========`-_   ');
+        showMeWhatYouGot('    /# (--====___====\\ ');
+        showMeWhatYouGot('   /#   .- --.  . --.| ');
+        showMeWhatYouGot('  /##   |  * ) (   * ),');
+        showMeWhatYouGot('  |##   \\    /\\ \\   / |');
+        showMeWhatYouGot('  |###   ---   \\ ---  |');
+        showMeWhatYouGot('  |####      ___)    #|');
+        showMeWhatYouGot('  |######           ##|');
+        showMeWhatYouGot('   \\##### ---------- / ');
+        showMeWhatYouGot('    \\####           (  ');
+        showMeWhatYouGot('     `\\###          |  ');
+        showMeWhatYouGot('       \\###         |  ');
+        showMeWhatYouGot('        \\##        |   ');
+        showMeWhatYouGot('         \\###.    .)   ');
+        showMeWhatYouGot('          `======/     ');
+        
+        Console.log('');
+        Console.log('<b><$color1>SWFTY</></> <i><b>(</></><i>0.1.0</><i><b>)</></> by <b><i>Jean-Denis Boivin</></>');
+        Console.log('');
+        Console.log('https://github.com/starburst997/SWFTY');
+        Console.log('');
+
+        haxe.Log.trace = function(v:Dynamic, ?infos:haxe.PosInfos) {
+            // Do nothing!
+        };
+
         #if sys
-        new mcli.Dispatch(Sys.args()).dispatch(new CLI());
+        // Start server
+        var executor = Executor.create(1);
+        
+        var startServer = function():Void {
+            var server = new hxnet.tcp.Server(new hxnet.base.Factory(Echo), 9971, 'localhost');
+
+		    server.listen();
+            while (true) {
+                server.update();
+
+                if (swfs.count() > 0) {
+                    trace('FOUND SOMETHING', swfs.first);
+                    
+                    @:privateAccess for (client in server.clients.keys()) {
+                        // Bytes.ofString(swfs.first)
+                        trace(client);
+                        cast(client.custom, Echo).sendText('Yay!');
+                    };
+
+                    swfs.removeFirst();
+                } 
+
+                Sys.sleep(0.01); // wait for 1 ms
+            }
+        }
+
+        executor.submit(startServer);
+
+        // Start CLI
+        var cli = new CLI();
+        new mcli.Dispatch(Sys.args()).dispatch(cli);
         #end
 	}
 }

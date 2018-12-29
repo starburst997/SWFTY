@@ -17,6 +17,8 @@
     <haxelib name="swfty" />
     <haxelib name="hxbit" />
     <haxelib name="tweenxcore" />
+    <haxelib name="hxnet" />
+    <haxelib name="console.hx" />
 
     <haxeflag name="-dce full" if="final" />
 
