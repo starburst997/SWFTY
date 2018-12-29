@@ -1,6 +1,10 @@
 package;
 
+import haxe.Json;
 import haxe.io.Bytes;
+
+import haxe.net.WebSocket;
+import haxe.net.WebSocketServer;
 
 import swfty.exporter.Exporter;
 import swfty.Structure;
@@ -15,9 +19,8 @@ import hx.files.watcher.*;
 import hx.concurrent.event.*;
 import hx.concurrent.collection.*;
 
-import openfl.display.Bitmap;
+import openfl.events.Event;
 import openfl.display.Sprite;
-import openfl.Assets;
 
 #if sys
 /**
@@ -78,12 +81,12 @@ class CLI extends mcli.CommandLine {
         return Path.of(path).normalize().toString();
     }
 
-    function error(text:String) {
-        Console.log('<b>* Error: <#FF0000>$text</></>');
+    static inline function error(text:String) {
+        Main.error(text);
     }
 
-    function log(text:String, ?info:String, ?depth = 1) {
-        Console.log('<b>${[for (i in 0...Std.int(Math.max(depth - 1, 0))) '  '].join('')}${depth == 0 ? '' : '- '}$text</>${info == null ? '' : '<b>:</> <i>$info</>'}');
+    static inline function log(text:String, ?info:String, ?depth = 1) {
+        Main.log(text, info, depth);
     }
 
 	public function runDefault(?path:String) {
@@ -287,22 +290,69 @@ class CLI extends mcli.CommandLine {
 }
 #end
 
-class Echo extends hxnet.protocols.WebSocket
-{
-    public function new() {
-        super();
+class WebSocketHandler {
+	static var _nextId = 0;
+	var _id = _nextId++;
+	var _websocket:WebSocket;
+	
+	public function new(websocket:WebSocket) {
+		_websocket = websocket;
+		_websocket.onopen = onopen;
+		_websocket.onclose = onclose;
+		_websocket.onerror = onerror;
+		_websocket.onmessageBytes = onmessageBytes;
+		_websocket.onmessageString = onmessageString;
+	}
+	
+	public function update():Bool {
+		_websocket.process();
+		return _websocket.readyState != Closed;
+	}
+	
+    function onopen():Void {
+		Main.logs.add('$_id:open');
+		_websocket.sendString('Hello from server');
     }
 
-	override private function recvText(line:String)
-	{
-        trace('HEY!', line);
-	}
+    function onerror(message:String):Void {
+		Main.logs.add('$_id:error: $message');
+    }
 
+    function onmessageString(message:String):Void {
+		Main.logs.add('$_id:message: $message');
+		_websocket.sendString(message);
+    }
+
+    function onmessageBytes(message:Bytes):Void {
+		Main.logs.add('$_id:message bytes:' + message.toHex());
+		_websocket.sendBytes(message);
+    }
+
+    public function sendBytes(message:Bytes) {
+        _websocket.sendBytes(message);
+    }
+
+    public function sendString(message:String) {
+        _websocket.sendString(message);
+    }
+
+    function onclose():Void {
+		Main.logs.add('$_id:close');
+    }
 }
 
 class Main extends Sprite {
 
     public static var swfs:SynchronizedArray<String> = new SynchronizedArray();
+    public static var logs:SynchronizedArray<String> = new SynchronizedArray();
+
+    public static function error(text:String) {
+        Console.log('<b>* Error: <#FF0000>$text</></>');
+    }
+
+    public static function log(text:String, ?info:String, ?depth = 1) {
+        Console.log('<b>${[for (i in 0...Std.int(Math.max(depth - 1, 0))) '  '].join('')}${depth == 0 ? '' : '- '}$text</>${info == null ? '' : '<b>:</> <i>$info</>'}');
+    }
 
 	public function new() {	
 		super();
@@ -349,7 +399,7 @@ class Main extends Sprite {
         Console.log('');
         Console.log('<b><$color1>SWFTY</></> <i><b>(</></><i>0.1.0</><i><b>)</></> by <b><i>Jean-Denis Boivin</></>');
         Console.log('');
-        Console.log('https://github.com/starburst997/SWFTY');
+        Console.log('<u>https://github.com/starburst997/SWFTY</>');
         Console.log('');
 
         haxe.Log.trace = function(v:Dynamic, ?infos:haxe.PosInfos) {
@@ -359,31 +409,58 @@ class Main extends Sprite {
         #if sys
         // Start server
         var executor = Executor.create(1);
-        
         var startServer = function():Void {
-            var server = new hxnet.tcp.Server(new hxnet.base.Factory(Echo), 9971, 'localhost');
 
-		    server.listen();
+            var port = 0xC137;
+            var server = WebSocketServer.create('0.0.0.0', port, 1, false);
+            var handlers:Array<WebSocketHandler> = [];
+            logs.add('Listening on port $port');
+
             while (true) {
-                server.update();
+                try {
+                    if (swfs.count() > 0) {
+                        logs.add('FOUND SOMETHING: ${swfs.first}');
+                        
+                        // Send to all connected clients
+                        for (handler in handlers) {
+                            handler.sendString(swfs.first);
+                        }
 
-                if (swfs.count() > 0) {
-                    trace('FOUND SOMETHING', swfs.first);
+                        swfs.removeFirst();
+                    }
+
+                    var websocket = server.accept();
+                    if (websocket != null) {
+                        handlers.push(new WebSocketHandler(websocket));
+                    }
                     
-                    @:privateAccess for (client in server.clients.keys()) {
-                        // Bytes.ofString(swfs.first)
-                        trace(client);
-                        cast(client.custom, Echo).sendText('Yay!');
-                    };
-
-                    swfs.removeFirst();
-                } 
-
-                Sys.sleep(0.01); // wait for 1 ms
+                    var toRemove = [];
+                    for (handler in handlers) {
+                        if (!handler.update()) {
+                            toRemove.push(handler);
+                        }
+                    }
+                    
+                    while (toRemove.length > 0)
+                        handlers.remove(toRemove.pop());
+                        
+                    Sys.sleep(0.1);
+                } catch (e:Dynamic) {
+                    logs.add('Error: $e');
+                    //logs.add(CallStack.exceptionStack());
+                }
             }
         }
 
+        log('Server', 'Starting server thread', 0);
         executor.submit(startServer);
+
+        addEventListener(Event.ENTER_FRAME, function(_) {
+            if (logs.count() > 0) {
+                log('Server', logs.first, 0);
+                logs.removeFirst();
+            }
+        });
 
         // Start CLI
         var cli = new CLI();

@@ -8,6 +8,7 @@
     
     <haxelib name="openfl" />
     <haxelib name="haxe-files" />
+    <haxelib name="haxe-ws" />
     <haxelib name="haxe-zip" />
     <haxelib name="haxe-file-save" />
     <haxelib name="haxe-file-load" />
@@ -17,7 +18,6 @@
     <haxelib name="swfty" />
     <haxelib name="hxbit" />
     <haxelib name="tweenxcore" />
-    <haxelib name="hxnet" />
     <haxelib name="console.hx" />
 
     <haxeflag name="-dce full" if="final" />

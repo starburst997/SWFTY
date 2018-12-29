@@ -5,6 +5,8 @@ import swfty.exporter.Exporter;
 import file.save.FileSave;
 #end
 
+import haxe.net.WebSocket;
+
 import swfty.renderer.Layer;
 
 import openfl.display.Sprite;
@@ -29,22 +31,22 @@ class Main extends Sprite {
 	public function new() {	
 		super();
 
-        #if sys
-        haxe.Timer.delay(function() {
-            // Start client
-            client = new hxnet.tcp.Client();
-            client.protocol = new Client();
-            client.connect('localhost', 9971);
-            client.blocking = true;
-
-            client.update();
-
-            trace('TESTSTSTSTTS');
-
-        }, 1000);
-        #elseif html5
-        // TODO: Use websocket or something for js
-        #end
+        // This should be in your DEV code only
+        var ws = WebSocket.create("ws://127.0.0.1:49463/", [], false);
+        ws.onopen = function() {
+            trace('open!');
+            ws.sendString('hello friend!');
+            ws.sendString('hello my dearest friend! this is a longer message! which is longer than 126 bytes, so it sends a short instead of just a single byte. And yeah, it should be longer thant that by now!');
+            var s = 'message longer than 64k';
+            while(s.length < 100000) s = '$s, $s';
+            ws.sendString(s);
+            ws.sendString('message length was ${s.length}');
+            
+        };
+        ws.onmessageString = function(message) {
+            trace('message from server!' + (message.length > 200 ? message.substr(0, 200) + '...' : message));
+            trace('message.length=' + message.length);
+        };
 
         // Test
         layers = [];

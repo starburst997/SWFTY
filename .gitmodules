@@ -58,3 +58,6 @@
 [submodule "submodules/console.hx"]
 	path = submodules/console.hx
 	url = git@github.com:haxiomic/console.hx.git
+[submodule "submodules/haxe-ws"]
+	path = submodules/haxe-ws
+	url = git@github.com:starburst997/haxe-ws.git

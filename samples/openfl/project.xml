@@ -7,7 +7,7 @@
     <window hidden="true" if="cli" />
     
     <haxelib name="openfl" />
-    <haxelib name="hxnet" />
+    <haxelib name="haxe-ws" />
     <haxelib name="haxe-zip" />
     <haxelib name="haxe-file-save" if="export" />
     <haxelib name="haxe-file-load" if="export" />
@@ -20,8 +20,6 @@
 
     <source path="src" />
     <source path="../../submodules/openfl/scripts" />
-
-    <haxedef name="no-inline" if="final" />
 
     <assets path="../../res" rename="res" />
     
