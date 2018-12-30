@@ -309,7 +309,7 @@ class BaseLayer extends EngineLayer {
             #if !macro
             hxbit.Serializer.load(bytes, SWFTYType);
             #else
-            // TODO: Currently unavailable in macro, issue with hxbit
+            // TODO: Currently unavailable in macro, issue with hxbit or something?
             null;
             #end
         }

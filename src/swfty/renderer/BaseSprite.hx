@@ -180,6 +180,12 @@ class BaseSprite extends EngineSprite {
                     }
 
                     text.loadText(child.text);
+
+                    text.refresh();
+                    for (sprite in text._sprites) {
+                        sprite.refresh();
+                    }
+
                     text;
                 } else {
                     var text = FinalText.create(layer, child.text);
@@ -209,6 +215,8 @@ class BaseSprite extends EngineSprite {
                         if (sprite.rotation != 0) updateRotation = false;
                         if (sprite.alpha != 1) updateAlpha = false;
                     }
+
+                    sprite.refresh();
 
                     sprite.load(child.mc);
                     sprite;
@@ -270,6 +278,10 @@ class BaseSprite extends EngineSprite {
 
     public inline function getParent() {
         return _parent;
+    }
+
+    function refresh() {
+        // Override if necessary, this is when the texture get replaced by a new one
     }
 
     public function reload() {

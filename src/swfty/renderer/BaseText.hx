@@ -23,6 +23,8 @@ class BaseText extends FinalSprite {
     public var textWidth(default, null):Float = 0.0;
     public var textHeight(default, null):Float = 0.0;
 
+    public var originalText:String = '';
+
     // Add "..." at the end of the text if cannot fit within the boundaries
     public var short = false;
 
@@ -43,9 +45,10 @@ class BaseText extends FinalSprite {
         textDefinition = definition;
         if (text == null && definition != null) {
             text = definition.text;
+            originalText = text;
         } else if (this.text != null) {
             // Force refresh
-            var text = this.text;
+            var text = this.text == originalText ? originalText = definition.text : this.text;
             set_text('');
             set_text(text);
         }

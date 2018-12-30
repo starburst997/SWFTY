@@ -16,6 +16,10 @@ class FinalSprite extends BaseSprite {
         super(layer, definition, linkage);
     }
 
+    override function refresh() {
+        tileset = layer.tileset;
+    }
+
     public override function calcBounds(?relative:BaseSprite):Rect {
         var rect = this.getBounds(relative == null ? this : relative);
         return {

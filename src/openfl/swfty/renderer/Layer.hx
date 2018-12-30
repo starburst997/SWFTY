@@ -45,8 +45,16 @@ class FinalLayer extends BaseLayer {
                 rects.push(new Rectangle(tile.x, tile.y, tile.width, tile.height));
             }
 
-            var tileset = new Tileset(bmpd, rects);
+            /*if (this.tileset != null) {
+                this.tileset.bitmapData = bmpd;
+                this.tileset.rectData = new Vector<Float>();
+                for (rect in rects) this.tileset.addRect(rect);
+            } else {
+                var tileset = new Tileset(bmpd, rects);
+                this.tileset = tileset;
+            }*/
 
+            var tileset = new Tileset(bmpd, rects);
             this.tileset = tileset;
 
             trace('Tilemap: ${bmpd.width}, ${bmpd.height}');
