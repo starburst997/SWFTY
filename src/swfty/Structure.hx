@@ -140,7 +140,7 @@ typedef Rectangle = {
     height: Int
 }
 
-typedef Quality = {
+typedef InnerQuality = {
     name: String,
     ?appendName: Bool,
     ?scale: Float,
@@ -152,8 +152,9 @@ typedef Config = {
     ?watch: Bool,
     ?watchFolder: String,
     ?outputFolder: String,
+    ?abstractFolder: String,
     ?fontFolder: String,
-    ?quality: Array<Quality>,
+    ?quality: Array<InnerQuality>,
     ?pngquant: Bool,
     ?fontEnabled: Bool,
     ?sharedFonts:Bool,
@@ -161,7 +162,7 @@ typedef Config = {
     ?files: Array<{
         name: String,
         ?pngquant: Bool,
-        ?quality: Array<Quality>,
+        ?quality: Array<InnerQuality>,
         ?maxDimension: Rectangle,
         ?fontEnabled: Bool,
         ?maxFontDimension: Rectangle

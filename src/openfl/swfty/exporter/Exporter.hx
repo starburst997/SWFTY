@@ -106,7 +106,8 @@ class Exporter {
     public function new(bytes:ByteArray, ?name:String, ?onComplete:Exporter->Void, ?onError:Dynamic->Void) {
         // Check if file is valid (43 57 53)
         bytes.position = 0;
-        if (bytes.length < 3 || bytes.readByte() != 0x43 || bytes.readByte() != 0x57 || bytes.readByte() != 0x53) {
+        var p = bytes.length > 0 ? bytes.readByte() : 0;
+        if (bytes.length < 3 || (p != 0x43 && p != 0x46) || bytes.readByte() != 0x57 || bytes.readByte() != 0x53) {
             if (onError != null) onError('Invalid format');
             return;
         } 
@@ -539,7 +540,16 @@ class Exporter {
     // This gives us optional compile-time swfty to our safety
     public function getAbstracts() {
         var swfty = SWFTYType.fromJson(getSWFTYJson());
-        return ClassExporter.export(swfty, name);
+
+        var i = name.lastIndexOf('/');
+        if (i == -1) i = name.lastIndexOf('\\');
+
+        var abstractName = i == -1 ? name : name.substr(i + 1);
+        return ClassExporter.export(swfty, abstractName, name.replace(abstractName, '').replace('/', '.').replace('\\', '.'));
+    }
+
+    public function getRootAbstract(?quality:StringMap<String>) {
+        return ClassExporter.exportRoot(quality);
     }
 
     function getTransform(matrix:Matrix):Transform {

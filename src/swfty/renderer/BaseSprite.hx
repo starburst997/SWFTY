@@ -49,7 +49,7 @@ class BaseSprite extends EngineSprite {
 
         this.layer = layer;
         _linkage = linkage;
-        
+
         _renders = [];
         _rendersMap = new StringMap();
 
@@ -144,7 +144,7 @@ class BaseSprite extends EngineSprite {
 
     public function load(definition:MovieClipType) {
         _definition = definition;
-        _linkage = definition != null ? definition.name : null;
+        if (definition != null) _linkage = definition.name;
         
         var childs = _sprites;
 
@@ -314,7 +314,6 @@ class BaseSprite extends EngineSprite {
     }
 
     public inline function exists(name:String):Bool {
-        trace(name, [for (key in _names.keys()) key]);
         return _names.exists(name);
     }
 

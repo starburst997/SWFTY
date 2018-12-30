@@ -2,6 +2,8 @@ package;
 
 import haxe.Json;
 import haxe.io.Bytes;
+import haxe.ds.IntMap;
+import haxe.ds.StringMap;
 
 import haxe.net.WebSocket;
 import haxe.net.WebSocketServer;
@@ -50,10 +52,22 @@ class CLI extends mcli.CommandLine {
 	public var relPath:String = null;
 
     /**
+		Path of the abstract directory
+        @alias a
+	**/
+	public var abstractPath:String = null;
+
+    /**
 		Watch for file changes (only works on folder)
         @alias w
 	**/
 	public var watch:Bool = false;
+
+    /**
+		Recreate every SWF in the folder
+        @alias c
+	**/
+	public var recreate:Bool = false;
 
     var path:String = null;
 
@@ -110,7 +124,7 @@ class CLI extends mcli.CommandLine {
                 // TODO: Clean this up
                 log('Converting single file', '${p.toString()}');
                 FontExporter.path = getDir(this.fontPath != null ? this.fontPath : FontExporter.path);
-                processSWF(getFile(path), exporter -> {
+                processSWF(getFile(path), null, exporter -> {
                     var zip = exporter.getSwfty();
                     var output = this.output == null ? getFile(p.parent.join(p.filenameStem).toString() + '.swfty') : getDir(this.output);
                     if (Path.of(output).isDirectory()) {
@@ -147,6 +161,7 @@ class CLI extends mcli.CommandLine {
         if (config.watchFolder == null) config.watchFolder = 'res';
         if (config.outputFolder == null) config.outputFolder = config.watchFolder;
         if (config.fontFolder == null) config.fontFolder = FontExporter.path;
+        if (config.abstractFolder == null) config.abstractFolder = 'src/swfty';
         if (config.quality == null) config.quality = [];
         if (config.pngquant == null) config.pngquant = true;
         if (config.fontEnabled == null) config.fontEnabled = true;
@@ -195,13 +210,25 @@ class CLI extends mcli.CommandLine {
     }
 
     function processConfig(config:Config) {
-        function convertSWF(path:Path, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
+        // Creating quality enum
+        var quality = new StringMap<String>();
+        quality.set('normal', Path.of(config.outputFolder).toStringWithTrailingSeparator());
+
+        for (q in config.quality) {
+            quality.set(q.name, Path.of(q.outputFolder).toStringWithTrailingSeparator());
+        }
+
+        function convertSWF(path:Path, ?onComplete:Void->Void) {
+            function onError(e) {
+                error(e);
+            }
+
             log('Converting', path.toString());
-            processSWF(path.toString(), exporter -> {
+            processSWF(path.toString(), config.watchFolder, exporter -> {
                 log('Exporting', path.toString(), 2);
 
                 var zip = exporter.getSwfty();
-                var output = Path.of(getDir(config.outputFolder)).join(path.filenameStem + '.swfty').toString();
+                var output = Path.of(getDir(config.outputFolder)).join(exporter.name + '.swfty').toString();
 
                 var tilemap = exporter.getTilemap();
                 log('Size', '${Math.ceil(zip.length / 1024 / 1024 * 100) / 100} MB', 2);
@@ -212,6 +239,19 @@ class CLI extends mcli.CommandLine {
 
                 log('Saving', '$output', 2);
                 FileSave.writeBytes(zip, output);
+
+                // Save abstract
+                var abstractPath = Path.of(getDir(config.abstractFolder)).join(exporter.name + '.hx').toString();
+
+                // Makes sure dir exists
+                Dir.of(Path.of(abstractPath).parent).create();
+
+                log('Saving', '$abstractPath', 2);
+                FileSave.writeBytes(Bytes.ofString(exporter.getAbstracts()), abstractPath);
+
+                var rootPath = Path.of(getDir(config.abstractFolder)).join('SWFTY.hx').toString();
+                log('Saving', '$rootPath', 2);
+                FileSave.writeBytes(Bytes.ofString(exporter.getRootAbstract(quality)), rootPath);
 
                 // Craft message to be sent to server
                 var idBytes = Bytes.ofString(exporter.name);
@@ -229,11 +269,12 @@ class CLI extends mcli.CommandLine {
 
         if (config.watch) {
             // Look for all SWF in folder, convert any that don't have a "swfty" counter part
-            var swfs = listFiles(Dir.of(getDir(config.outputFolder)));
-            var swftys = [for (file in listFiles(Dir.of(getDir(config.outputFolder)), 'swfty')) file.path.filenameStem => false];
+            var swfs = listFiles(Dir.of(getDir(config.watchFolder)));
+            var swftys = [for (file in listFiles(Dir.of(getDir(config.outputFolder)), 'swfty')) file.path.filenameStem => !recreate];
 
             for (swf in swfs) {
-                if (swftys.exists(swf.path.filenameStem) && !swftys.get(swf.path.filenameStem)) {
+                // TODO: Check quality SWFTY missing
+                if (!swftys.exists(swf.path.filenameStem) || !swftys.get(swf.path.filenameStem)) {
                     // Convert SWF
                     convertSWF(swf.path);
                     swftys.set(swf.path.filenameStem, true);
@@ -271,14 +312,14 @@ class CLI extends mcli.CommandLine {
 
         } else {
             // Process entire folder conveerting all SWF
-            var swfs = listFiles(Dir.of(getDir(config.outputFolder)));
+            var swfs = listFiles(Dir.of(getDir(config.watchFolder)));
             for (swf in swfs) {
                 convertSWF(swf.path);
             }
         }
     }
 
-    function processSWF(path:String, onComplete:Exporter->Void, onError:Dynamic->Void) {
+    function processSWF(path:String, folder:String, onComplete:Exporter->Void, onError:Dynamic->Void) {
 		try {
             log('Loading', path, 2);
 
@@ -289,7 +330,7 @@ class CLI extends mcli.CommandLine {
 
 			var timer = haxe.Timer.stamp();
 
-            var id = path.substr(getDir('.').length);
+            var id = path.substr(getDir(folder).length).replace('.swf', '');
 			Exporter.create(bytes, id, function(exporter) {
                 log('Parsed SWF', '${Math.ceil((haxe.Timer.stamp() - timer) * 100) / 100} sec', 2);
                 onComplete(exporter);
@@ -303,10 +344,22 @@ class CLI extends mcli.CommandLine {
 #end
 
 class WebSocketHandler {
+    public static var parts = new IntMap<{
+        id: Int,
+        start: Float,
+        time: Float,
+        chunks: Array<Bytes>
+    }>();
+
 	static var _nextId = 0;
 	var _id = _nextId++;
 	var _websocket:WebSocket;
-	
+
+    public var isOpen = false;
+
+    public var wait = 0.0001;
+    public var size = 1 * 1024;
+
 	public function new(websocket:WebSocket) {
 		_websocket = websocket;
 		_websocket.onopen = onopen;
@@ -324,43 +377,73 @@ class WebSocketHandler {
     function onopen():Void {
 		Main.logs.add('$_id:open');
 		_websocket.sendString('Get SWFTY!');
+
+        isOpen = true;
     }
 
     function onerror(message:String):Void {
-		Main.logs.add('$_id:error: $message');
+		//Main.logs.add('$_id:error: $message');
     }
 
     function onmessageString(message:String):Void {
 		Main.logs.add('$_id:message: $message');
-		_websocket.sendString(message);
     }
 
     function onmessageBytes(message:Bytes):Void {
-		Main.logs.add('$_id:message bytes:' + message.toHex());
-		_websocket.sendBytes(message);
+		//Main.logs.add('$_id:message bytes:' + message.length);
+		
+        if (message.getUInt16(0) == 0xDEDE) {
+            var id = message.getInt32(2);
+            if (parts.exists(id)) {
+                Main.logs.add('Sending $id again');
+
+                var ps = parts.get(id);
+                for (i in 0...Std.int((message.length - 2 - 4) / 4)) {
+                    if (_websocket.readyState != Open) {
+                        Console.log('break;');
+                        break;
+                    } 
+
+                    var p = message.getInt32(i * 4 + 2 + 4);
+
+                    ps.time = Date.now().getTime();
+                    
+                    var part = ps.chunks[p];
+                    sendBytes(part);
+                    Sys.sleep(wait);
+                }
+
+                Main.logs.add('Sent all! ${Std.int((message.length - 2 - 4) / 4)}');
+            }
+        }
     }
 
     public function sendBytes(message:Bytes) {
-        _websocket.sendBytes(message);
+        if (_websocket.readyState == Open) _websocket.sendBytes(message);
     }
 
     public function sendString(message:String) {
-        _websocket.sendString(message);
+        if (_websocket.readyState == Open) _websocket.sendString(message);
     }
 
     function onclose():Void {
 		Main.logs.add('$_id:close');
+
+        isOpen = false;
     }
 }
 
 class Main extends Sprite {
 
-    public static var id = 0;
+    // TODO: Let client specify those along with size?
+    public static var wait = 0.0001;
+
+    public static var id = Std.int(Math.random() * 10000000);
     public static var swfs:SynchronizedArray<Bytes> = new SynchronizedArray();
     public static var logs:SynchronizedArray<String> = new SynchronizedArray();
 
     public static function error(text:String) {
-        Console.log('<b>* Error: <#FF0000>$text</></>');
+        Console.log('<b>* Error: <#CC0000>$text</></>');
     }
 
     public static function log(text:String, ?info:String, ?depth = 1) {
@@ -421,6 +504,8 @@ class Main extends Sprite {
 
         #if sys
         // Start server
+        // TODO: Instead of sending the bytes throught the socket, only tell the client, then load using a file server or something
+        //       Still work pretty well from my test with iphone and fast enough, so not a priority... I don't want to add too much extra dependencies
         var executor = Executor.create(1);
         var startServer = function():Void {
 
@@ -436,7 +521,7 @@ class Main extends Sprite {
                         
                         // Create chunks of messages
                         var bytes = swfs.first;
-                        var max = 200 * 1024; // TODO: Why is that the ~maximum ??
+                        var max = 1 * 1024 - (2 + 4 + 4 + 4); // TODO: Why is that the ~maximum ??
                         var n = Math.ceil(bytes.length / max);
                         var parts = [];
                         for (i in 0...n) {
@@ -452,18 +537,40 @@ class Main extends Sprite {
 
                             parts.push(chunk);
                         }
+
+                        var p = {
+                            id: id,
+                            start: Date.now().getTime(), 
+                            time: Date.now().getTime(),
+                            chunks: parts
+                        };
+                        WebSocketHandler.parts.set(id, p); // TODO: Use hash of id + size instead
                         
+                        // TODO: Auto-delete after 1 minute?
+
                         id++;
 
                         // Send to all connected clients
                         for (handler in handlers) {
                             //handler.sendString('TEST');
                             
+                            var time1 = Date.now().getTime();
+
                             // Send all individual chunks
                             for (i in 0...parts.length) {
+                                if (!handler.isOpen) {
+                                    Console.log('break;');
+                                    break;
+                                }
+                                
+                                p.time = Date.now().getTime();
+
                                 var part = parts[i];
                                 handler.sendBytes(part);
+                                Sys.sleep(wait);
                             }
+
+                            Console.log('Sent took: ${(Date.now().getTime() - time1) / 1000}');
                         }
 
                         swfs.removeFirst();
@@ -484,10 +591,13 @@ class Main extends Sprite {
                     while (toRemove.length > 0)
                         handlers.remove(toRemove.pop());
                         
-                    Sys.sleep(0.1);
+                    Sys.sleep(0.01);
                 } catch (e:Dynamic) {
                     logs.add('Error: $e');
                     //logs.add(CallStack.exceptionStack());
+
+                    // Prevent infinite errors
+                    swfs.removeFirst();
                 }
             }
         }
@@ -499,6 +609,13 @@ class Main extends Sprite {
             if (logs.count() > 0) {
                 log('Server', logs.first, 0);
                 logs.removeFirst();
+            }
+
+            for (p in WebSocketHandler.parts) {
+                if (Date.now().getTime() - p.time > 60 * 1000) {
+                    Console.log('Removed: ' + p.id);
+                    WebSocketHandler.parts.remove(p.id);
+                }
             }
         });
 

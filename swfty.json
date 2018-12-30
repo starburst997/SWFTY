@@ -2,6 +2,7 @@
     "watch": true,
     "watchFolder": "res",
     "outputFolder": "res/swfty/high",
+    "abstractFolder": "samples/abstracts/swfty",
     "fontFolder": "ref/fonts",
     "pngquant": true,
     

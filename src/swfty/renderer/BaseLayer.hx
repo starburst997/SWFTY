@@ -78,6 +78,8 @@ class BaseLayer extends EngineLayer {
     public var id = '';
     public var pause = false;
 
+    public var path:String = '';
+
     public var swfty:Option<SWFTYType> = None;
 
     // Mouse need to be updated from the engine
@@ -243,7 +245,7 @@ class BaseLayer extends EngineLayer {
             }
             Sprite.create(this, linkage);
         } else {
-            Sprite.create(this, mcs.get(linkage));
+            Sprite.create(this, mcs.get(linkage), linkage);
         }
     }
 

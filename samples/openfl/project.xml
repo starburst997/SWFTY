@@ -9,6 +9,7 @@
     <haxelib name="openfl" />
     <haxelib name="haxe-ws" />
     <haxelib name="haxe-zip" />
+    <haxelib name="haxe-concurrent" />
     <haxelib name="haxe-file-save" if="export" />
     <haxelib name="haxe-file-load" if="export" />
     <haxelib name="format" />
@@ -19,6 +20,7 @@
     <haxelib name="tweenxcore" />
 
     <source path="src" />
+    <source path="../abstracts" />
     <source path="../../submodules/openfl/scripts" />
 
     <assets path="../../res" rename="res" />

@@ -4,6 +4,8 @@ import haxe.ds.StringMap;
 import haxe.ds.IntMap;
 import haxe.io.Bytes;
 
+using Lambda;
+
 /**
  * Goal isn't performance but rather type safety, we want the code to fail to compile if a sprite or textfield is missing
  * 
@@ -15,8 +17,35 @@ import haxe.io.Bytes;
  */
 class ClassExporter {
 
+    // Export root abstract
+    public static function exportRoot(?quality:StringMap<String>) {
+        if (quality == null) quality = ['normal' => ''];
+
+        var qualities = '';
+        for (key in quality.keys()) {
+            qualities += '    var ${key.capitalize()} = "${quality.get(key)}";\n';
+        }
+
+        var q = '
+@:enum
+abstract Quality(String) from String to String {
+$qualities
+}';
+
+        var file = 'package swfty;
+
+/** This file is auto-generated! **/
+$q
+
+class SWFTY {
+
+}';
+
+        return file;
+    }
+
     // Export to a String
-    public static function export(swfty:SWFTYType, name:String, resPath:String = '') {
+    public static function export(swfty:SWFTYType, name:String, path:String = '', resPath:String = '') {
         var capitalizedName = name.capitalize();
 
         // First get the top leveled named MovieClip, the rest are innacessible 
@@ -125,26 +154,29 @@ abstract $capitalizedName(Layer) from Layer to Layer {
         if (bytes != null) {
             this.loadBytes(bytes, complete, onError);
         } else {
-            _load(complete, onError);
+            _load(this.path, complete, onError);
         }
     }
 
-    inline function _load(?onComplete:Void->Void, ?onError:Dynamic->Void) {
-        File.loadBytes("$resPath$name.swfty", function(bytes) {
+    inline function _load(?path:String = "", ?onComplete:Void->Void, ?onError:Dynamic->Void) {
+        this.path = path;
+        File.loadBytes("$resPath" + path + "$name.swfty", function(bytes) {
             this.loadBytes(bytes, onComplete, onError);
         }, onError);
     }
+
 
     inline function _loadBytes(?bytes:Bytes, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
         this.loadBytes(bytes, onComplete, onError);
     }
 
-    public static inline function load(?width:Int, ?height:Int, ?bytes:Bytes, ?onComplete:$capitalizedName->Void, ?onError:Dynamic->Void):$capitalizedName {
+    public static inline function load(?quality:Quality, ?width:Int, ?height:Int, ?bytes:Bytes, ?onComplete:$capitalizedName->Void, ?onError:Dynamic->Void):$capitalizedName {
+        if (quality == null) quality = Normal;
         var layer:$capitalizedName = Layer.empty(width, height);
         if (bytes != null) {
             layer._loadBytes(bytes, function() if (onComplete != null) onComplete(layer), onError);
         } else {
-            layer._load(function() if (onComplete != null) onComplete(layer), onError);
+            layer._load(quality, function() if (onComplete != null) onComplete(layer), onError);
         }
         return layer;
     }
@@ -154,10 +186,11 @@ abstract $capitalizedName(Layer) from Layer to Layer {
     }
 }';
 
-        var file = 'package swfty;
+        var file = 'package swfty$path;
 
 import haxe.io.Bytes;
 
+import swfty.SWFTY;
 import swfty.utils.File;
 import swfty.renderer.Sprite;
 import swfty.renderer.Text;
@@ -168,10 +201,5 @@ $layer
 $abstractsFile';
 
         return file;
-    }
-
-    // Save on filesystem
-    public static function exportPath(path:String, swfty:SWFTYType, name:String, resPath:String = '') {
-        var file = export(swfty, name);
     }
 }
