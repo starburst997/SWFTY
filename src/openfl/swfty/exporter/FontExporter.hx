@@ -64,12 +64,10 @@ class FontExporter {
         var f = Font.fromFile('$path/$font.ttf'); // System.getPath('$path/$font.ttf'));
         if (f != null) {
             Font.__registeredFonts.push(f);
-            Font.__fontByName[font] = f;
-            //font = f.fontName;
+            Font.__fontByName[f.fontName] = f;
+            font = f.fontName;
         } else {
             Log.warn('Missing font: $path/$font.ttf');
-            
-            Console.log('<#CC0000>Error: Missing font: $path/$font.ttf</>');
         }
         #end
 
