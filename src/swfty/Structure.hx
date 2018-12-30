@@ -129,6 +129,7 @@ typedef SWFTYJson = {
         width: Int,
         height: Int
     },
+    name: String,
 	definitions: Array<MovieClipDefinition>,
     tiles: Array<BitmapDefinition>,
     fonts: Array<FontDefinition>
@@ -485,6 +486,7 @@ class BitmapType #if !macro implements hxbit.Serializable #end {
 
 @:structInit
 class SWFTYType #if !macro implements hxbit.Serializable #end {
+    @:s public var name:String;
     @:s public var tilemap_width:Int;
     @:s public var tilemap_height:Int;
 	@:s public var definitions:IntMap<MovieClipType>;
@@ -501,15 +503,17 @@ class SWFTYType #if !macro implements hxbit.Serializable #end {
         return {
             tilemap_width: json.tilemap.width,
             tilemap_height: json.tilemap.height,
+            name: json.name,
             definitions: movieClips,
             tiles: bitmaps,
             fonts: fonts,
         };
     }
 
-    public function new(?tilemap_width:Int, ?tilemap_height:Int, ?definitions:IntMap<MovieClipType>, ?tiles:IntMap<BitmapType>, ?fonts:IntMap<FontType>) {
+    public function new(?tilemap_width:Int, ?tilemap_height:Int, ?name:String, ?definitions:IntMap<MovieClipType>, ?tiles:IntMap<BitmapType>, ?fonts:IntMap<FontType>) {
         this.tilemap_width = tilemap_width;
         this.tilemap_height = tilemap_height;
+        this.name = name;
         this.definitions = definitions;
         this.tiles = tiles;
         this.fonts = fonts;

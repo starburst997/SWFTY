@@ -456,6 +456,7 @@ class Exporter {
                     height: 0
                 }
             },
+            name: name,
             definitions: movieClipsOrder,
             tiles: [for (bmp in bitmaps) bmp],
             fonts: [for (font in fonts) font]

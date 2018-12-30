@@ -203,13 +203,23 @@ class CLI extends mcli.CommandLine {
                 var zip = exporter.getSwfty();
                 var output = Path.of(getDir(config.outputFolder)).join(path.filenameStem + '.swfty').toString();
 
+                var tilemap = exporter.getTilemap();
+                log('Size', '${Math.ceil(zip.length / 1024 / 1024 * 100) / 100} MB', 2);
+                log('Tilemap', '${tilemap.bitmapData.width}x${tilemap.bitmapData.height}', 2);
+
                 // Makes sure dir exists
                 Dir.of(Path.of(output).parent).create();
 
                 log('Saving', '$output', 2);
                 FileSave.writeBytes(zip, output);
 
-                Main.swfs.add('LOL!');
+                // Craft message to be sent to server
+                var idBytes = Bytes.ofString(exporter.name);
+                var messageBytes = Bytes.alloc(idBytes.length + 4 + zip.length);
+                messageBytes.setInt32(0, idBytes.length);
+                messageBytes.blit(4, idBytes, 0, idBytes.length);
+                messageBytes.blit(idBytes.length + 4, zip, 0, zip.length);
+                Main.swfs.add(messageBytes);
 
                 log('Done!');
                 
@@ -278,8 +288,10 @@ class CLI extends mcli.CommandLine {
             log('Loaded', '${Math.ceil(bytes.length/1024)} KB', 2);
 
 			var timer = haxe.Timer.stamp();
-			Exporter.create(bytes, path, function(exporter) {
-                log('Parsed SWF', '${haxe.Timer.stamp() - timer} sec', 2);
+
+            var id = path.substr(getDir('.').length);
+			Exporter.create(bytes, id, function(exporter) {
+                log('Parsed SWF', '${Math.ceil((haxe.Timer.stamp() - timer) * 100) / 100} sec', 2);
                 onComplete(exporter);
             }, onError);
         } catch(e:Dynamic) {
@@ -311,7 +323,7 @@ class WebSocketHandler {
 	
     function onopen():Void {
 		Main.logs.add('$_id:open');
-		_websocket.sendString('Hello from server');
+		_websocket.sendString('Get SWFTY!');
     }
 
     function onerror(message:String):Void {
@@ -343,7 +355,8 @@ class WebSocketHandler {
 
 class Main extends Sprite {
 
-    public static var swfs:SynchronizedArray<String> = new SynchronizedArray();
+    public static var id = 0;
+    public static var swfs:SynchronizedArray<Bytes> = new SynchronizedArray();
     public static var logs:SynchronizedArray<String> = new SynchronizedArray();
 
     public static function error(text:String) {
@@ -412,18 +425,45 @@ class Main extends Sprite {
         var startServer = function():Void {
 
             var port = 0xC137;
-            var server = WebSocketServer.create('0.0.0.0', port, 1, false);
+            var server = WebSocketServer.create('0.0.0.0', port, 50, true);
             var handlers:Array<WebSocketHandler> = [];
             logs.add('Listening on port $port');
 
             while (true) {
                 try {
                     if (swfs.count() > 0) {
-                        logs.add('FOUND SOMETHING: ${swfs.first}');
+                        logs.add('Sending change to clients (${handlers.length}) (${Math.ceil(swfs.first.length / 1024 / 1024 * 100) / 100} MB)');
                         
+                        // Create chunks of messages
+                        var bytes = swfs.first;
+                        var max = 200 * 1024; // TODO: Why is that the ~maximum ??
+                        var n = Math.ceil(bytes.length / max);
+                        var parts = [];
+                        for (i in 0...n) {
+                            // OP    , ID        , Part,       Total,      Bytes
+                            // 0xCACA, 0x00000000, 0x00000000, 0x00000001, ...
+                            var len = (i == n - 1) ? bytes.length - (n - 1) * max : max;
+                            var chunk = Bytes.alloc(2 + 4 + 4 + 4 + len);
+                            chunk.setUInt16(0, 0xCACA);
+                            chunk.setInt32(2, id);
+                            chunk.setInt32(2 + 4, i);
+                            chunk.setInt32(2 + 4 + 4, n);
+                            chunk.blit(2 + 4 + 4 + 4, bytes, i * max, len);
+
+                            parts.push(chunk);
+                        }
+                        
+                        id++;
+
                         // Send to all connected clients
                         for (handler in handlers) {
-                            handler.sendString(swfs.first);
+                            //handler.sendString('TEST');
+                            
+                            // Send all individual chunks
+                            for (i in 0...parts.length) {
+                                var part = parts[i];
+                                handler.sendBytes(part);
+                            }
                         }
 
                         swfs.removeFirst();

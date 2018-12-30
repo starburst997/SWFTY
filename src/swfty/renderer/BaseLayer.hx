@@ -75,6 +75,7 @@ class BaseLayer extends EngineLayer {
     var _width:Int;
     var _height:Int;
     
+    public var id = '';
     public var pause = false;
 
     public var swfty:Option<SWFTYType> = None;
@@ -273,6 +274,7 @@ class BaseLayer extends EngineLayer {
         }
         
         this.swfty = Some(swfty);
+        this.id = swfty.name;
     }
 
     public function loadBytes(bytes:Bytes, ?onComplete:Void->Void, ?onError:Dynamic->Void) {

@@ -6,6 +6,8 @@ import file.save.FileSave;
 #end
 
 import haxe.net.WebSocket;
+import haxe.ds.IntMap;
+import haxe.io.Bytes;
 
 import swfty.renderer.Layer;
 
@@ -32,20 +34,93 @@ class Main extends Sprite {
 		super();
 
         // This should be in your DEV code only
+        var messages = new IntMap<{
+            id: Int,
+            total: Int,
+            timestamp: Float,
+            chunks: Array<{
+                part: Int,
+                bytes: Bytes
+            }>
+        }>();
+
+        // TODO: Get rid of message if it been over X sec
+
         var ws = WebSocket.create("ws://127.0.0.1:49463/", [], false);
         ws.onopen = function() {
             trace('open!');
-            ws.sendString('hello friend!');
-            ws.sendString('hello my dearest friend! this is a longer message! which is longer than 126 bytes, so it sends a short instead of just a single byte. And yeah, it should be longer thant that by now!');
-            var s = 'message longer than 64k';
-            while(s.length < 100000) s = '$s, $s';
-            ws.sendString(s);
-            ws.sendString('message length was ${s.length}');
-            
         };
         ws.onmessageString = function(message) {
             trace('message from server!' + (message.length > 200 ? message.substr(0, 200) + '...' : message));
             trace('message.length=' + message.length);
+        };
+        ws.onmessageBytes = function(bytes) {
+            trace('message bytes from server!', bytes.length);
+
+            // Verify magic number
+            if (bytes.getUInt16(0) == 0xCACA) {
+                var id = bytes.getInt32(2);
+                var part = bytes.getInt32(2 + 4);
+                var total = bytes.getInt32(2 + 4 + 4);
+
+                if (!messages.exists(id)) {
+                    messages.set(id, {
+                        id: id,
+                        timestamp: Date.now().getTime(),
+                        total: total,
+                        chunks: []
+                    });
+                }
+
+                var message = messages.get(id);
+                message.timestamp = Date.now().getTime();
+
+                // Skip duplicate
+                for (chunk in message.chunks) {
+                    if (chunk.part == part) return;
+                }
+
+                message.chunks.push({
+                    part: part,
+                    bytes: bytes
+                });
+
+                if (message.chunks.length == total) {
+                    trace('Received all message');
+
+                    // Calculate size and read name
+                    var len = 0;
+                    var name = '';
+                    for (chunk in message.chunks) {
+                        len += chunk.bytes.length - (2 + 4 + 4 + 4);
+
+                        if (chunk.part == 0) {
+                            var l = chunk.bytes.getInt32(2 + 4 + 4 + 4);
+                            len -= l + 4;
+                            name = chunk.bytes.getString(2 + 4 + 4 + 4 + 4, l);
+                        }
+                    }
+
+                    // Create SWFTY bytes back
+                    var n = 0;
+                    var swfty = Bytes.alloc(len);
+                    for (chunk in message.chunks.sortf(chunk -> chunk.part)) {
+                        var skip = 2 + 4 + 4 + 4 + (chunk.part == 0 ? 4 + chunk.bytes.getInt32(2 + 4 + 4 + 4) : 0);
+
+                        swfty.blit(n, chunk.bytes, skip, chunk.bytes.length - skip);
+                        n += chunk.bytes.length - skip;
+                    }
+
+                    trace('Got SWFTY!', name, swfty.length);
+
+                    for (layer in layers) {
+                        if (layer.id == name) {
+                            trace('Found a layer!');
+                            layer.loadBytes(swfty);
+                        }
+                    }
+                }
+            }
         };
 
         // Test
@@ -62,7 +137,7 @@ class Main extends Sprite {
 
         addChild(bmp);*/
 
-        //process();
+        process();
 
         stage.addEventListener(Event.ENTER_FRAME, render);
     }
