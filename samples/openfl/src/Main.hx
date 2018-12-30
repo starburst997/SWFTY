@@ -119,6 +119,8 @@ class Main extends Sprite {
                             layer.loadBytes(swfty);
                         }
                     }
+                    
+                    messages.remove(id);
                 }
             }
         };

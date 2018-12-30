@@ -279,7 +279,7 @@ class Exporter {
 
             if (Std.is(tag, TagSymbolClass)) {
                 var symbols = cast (tag, TagSymbolClass).symbols;
-                
+    
                 //trace('TAG: ${tag.name} ${tag.toString()}');
                 
                 function process2(j) {

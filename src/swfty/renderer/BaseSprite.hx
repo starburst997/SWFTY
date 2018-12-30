@@ -144,6 +144,7 @@ class BaseSprite extends EngineSprite {
 
     public function load(definition:MovieClipType) {
         _definition = definition;
+        _linkage = definition != null ? definition.name : null;
         
         var childs = _sprites;
 
@@ -272,14 +273,15 @@ class BaseSprite extends EngineSprite {
     }
 
     public function reload() {
-        if (_definition != null) {
+        // We cannot use definition.id because it can change... would've been nice if it was using the "itemID" instead...
+        /*if (_definition != null) {
             if (layer.hasDefinition(_definition.id)) {
                 var definition = layer.getDefinition(_definition.id);
                 load(definition);
             } else {
                 Log.warn('Definition does no longer exists: ${_definition.name} (${_definition.id})');
             }
-        } else if (_linkage != null) {
+        } else*/ if (_linkage != null) {
             if (layer.hasMC(_linkage)) {
                 var definition = layer.getMC(_linkage);
                 load(definition);
