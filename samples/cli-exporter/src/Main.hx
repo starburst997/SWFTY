@@ -619,6 +619,11 @@ class Main extends Sprite {
             }
         });
 
+        // Fix trace statements
+        Log.warn = function(str) {
+            Console.log('<#CC000000>Error:</> $str');
+        }
+
         // Start CLI
         var cli = new CLI();
         new mcli.Dispatch(Sys.args()).dispatch(cli);
