@@ -400,7 +400,7 @@ class WebSocketHandler {
                 var ps = parts.get(id);
                 for (i in 0...Std.int((message.length - 2 - 4) / 4)) {
                     if (_websocket.readyState != Open) {
-                        Console.log('break;');
+                        //Console.log('break;');
                         break;
                     } 
 
@@ -570,7 +570,7 @@ class Main extends Sprite {
                                 Sys.sleep(wait);
                             }
 
-                            Console.log('Sent took: ${(Date.now().getTime() - time1) / 1000}');
+                            //Console.log('Sent took: ${(Date.now().getTime() - time1) / 1000}');
                         }
 
                         swfs.removeFirst();
@@ -613,7 +613,7 @@ class Main extends Sprite {
 
             for (p in WebSocketHandler.parts) {
                 if (Date.now().getTime() - p.time > 60 * 1000) {
-                    Console.log('Removed: ' + p.id);
+                    //Console.log('Removed: ' + p.id);
                     WebSocketHandler.parts.remove(p.id);
                 }
             }
