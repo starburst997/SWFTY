@@ -230,7 +230,7 @@ class Main extends Sprite {
         #end*/
 
         swfty.Popup.load(stage.stageWidth, stage.stageHeight, function(layer:swfty.Popup) {
-
+        
             layers.push(layer);
 
             var names = layer.getAllNames();

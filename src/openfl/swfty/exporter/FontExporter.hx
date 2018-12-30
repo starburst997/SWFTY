@@ -65,9 +65,11 @@ class FontExporter {
         if (f != null) {
             Font.__registeredFonts.push(f);
             Font.__fontByName[font] = f;
-            font = f.fontName;
+            //font = f.fontName;
         } else {
             Log.warn('Missing font: $path/$font.ttf');
+            
+            Console.log('<#CC0000>Error: Missing font: $path/$font.ttf</>');
         }
         #end
 
@@ -101,7 +103,6 @@ class FontExporter {
             if (Math.ceil(bounds.width) > 0 && Math.ceil(bounds.height) > 0) {
 
                 var padding = 40;
-                
                 var bmpd = new BitmapData(Math.ceil(bounds.width) + padding * 2, Math.ceil(bounds.height) + padding * 2, true, 0x00000000);
                 
                 var m = new Matrix();
@@ -111,8 +112,12 @@ class FontExporter {
                 bmpd.draw(textField, m);
 
                 var trimmed = TilemapExporter.trim(bmpd);
-
                 bitmaps.set(code, trimmed.bmpd);
+
+                #if sys
+                // Not sure where this comes from...
+                trimmed.rect.y -= size / 5;
+                #end
 
                 definitions.push({
                     id: code,

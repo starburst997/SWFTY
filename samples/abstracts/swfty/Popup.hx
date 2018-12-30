@@ -13,176 +13,176 @@ import swfty.renderer.Layer;
 @:forward(x, y, scaleX, scaleY, rotation, alpha, dispose, pause, layout, mouse, base, baseLayout, width, height, getAllNames, update, create, add, remove, addRender, removeRender, addMouseDown, removeMouseDown, addMouseUp, removeMouseUp, mouseX, mouseY)
 abstract Popup(Layer) from Layer to Layer {
     
-    public inline function createMC_ChopperRotor():Popup_MC_ChopperRotor {
-        return this.create("MC_ChopperRotor");
-    }
-            
-    public inline function createBtnBuyOverlay():Popup_BtnBuyOverlay {
-        return this.create("BtnBuyOverlay");
-    }
-            
-    public inline function createPopupHalfShop():Popup_PopupHalfShop {
-        return this.create("PopupHalfShop");
-    }
-            
-    public inline function createPopupShopMC():Popup_PopupShopMC {
-        return this.create("PopupShopMC");
-    }
-            
-    public inline function createBalloon_cord_stroke():Popup_Balloon_cord_stroke {
-        return this.create("balloon_cord_stroke");
-    }
-            
-    public inline function createShopTitle():Popup_ShopTitle {
-        return this.create("ShopTitle");
-    }
-            
-    public inline function createPopupShop():Popup_PopupShop {
-        return this.create("PopupShop");
-    }
-            
-    public inline function createSold():Popup_Sold {
-        return this.create("Sold");
-    }
-            
-    public inline function createBalloon_blue():Popup_Balloon_blue {
-        return this.create("balloon_blue");
-    }
-            
-    public inline function createPopup_Closebutton():Popup_Popup_Closebutton {
-        return this.create("Popup_Closebutton");
-    }
-            
-    public inline function createFace():Popup_Face {
-        return this.create("Face");
-    }
-            
-    public inline function createMC_ChopperBody():Popup_MC_ChopperBody {
-        return this.create("MC_ChopperBody");
-    }
-            
-    public inline function createPopup_fla_headShop_smashChopper_26():Popup_Popup_fla_headShop_smashChopper_26 {
-        return this.create("Popup_fla.headShop_smashChopper_26");
-    }
-            
-    public inline function createIconOverlay():Popup_IconOverlay {
-        return this.create("iconOverlay");
-    }
-            
-    public inline function createBaloonHighlight():Popup_BaloonHighlight {
-        return this.create("BaloonHighlight");
-    }
-            
-    public inline function createBackLocale():Popup_BackLocale {
-        return this.create("BackLocale");
-    }
-            
-    public inline function createBalloon_yellow():Popup_Balloon_yellow {
-        return this.create("balloon_yellow");
+    public inline function createRainbowMainMenu():Popup_RainbowMainMenu {
+        return this.create("RainbowMainMenu");
     }
             
     public inline function createBtnBack():Popup_BtnBack {
         return this.create("BtnBack");
     }
             
-    public inline function createBuyLocale():Popup_BuyLocale {
-        return this.create("BuyLocale");
-    }
-            
-    public inline function createItemShop():Popup_ItemShop {
-        return this.create("ItemShop");
-    }
-            
-    public inline function createShopDescription():Popup_ShopDescription {
-        return this.create("ShopDescription");
-    }
-            
-    public inline function createStarCurrency():Popup_StarCurrency {
-        return this.create("StarCurrency");
-    }
-            
-    public inline function createPopup_fla_headShop_funnyHead_43():Popup_Popup_fla_headShop_funnyHead_43 {
-        return this.create("Popup_fla.headShop_funnyHead_43");
-    }
-            
-    public inline function createBaloonShadowInn():Popup_BaloonShadowInn {
-        return this.create("BaloonShadowInn");
-    }
-            
-    public inline function createTitleHead():Popup_TitleHead {
-        return this.create("TitleHead");
-    }
-            
-    public inline function createManHair():Popup_ManHair {
-        return this.create("ManHair");
-    }
-            
-    public inline function createCorner():Popup_Corner {
-        return this.create("Corner");
-    }
-            
-    public inline function createBalloon_cord():Popup_Balloon_cord {
-        return this.create("balloon_cord");
-    }
-            
-    public inline function createShopItems():Popup_ShopItems {
-        return this.create("ShopItems");
-    }
-            
-    public inline function createCurrencyBG():Popup_CurrencyBG {
-        return this.create("CurrencyBG");
-    }
-            
-    public inline function createRainbowMainMenu():Popup_RainbowMainMenu {
-        return this.create("RainbowMainMenu");
-    }
-            
     public inline function createBalloon_orange():Popup_Balloon_orange {
         return this.create("balloon_orange");
-    }
-            
-    public inline function createBalloon_stroked():Popup_Balloon_stroked {
-        return this.create("balloon_stroked");
-    }
-            
-    public inline function createIcon_shopItem():Popup_Icon_shopItem {
-        return this.create("icon_shopItem");
-    }
-            
-    public inline function createBtnBuy():Popup_BtnBuy {
-        return this.create("BtnBuy");
-    }
-            
-    public inline function createBalloon_red():Popup_Balloon_red {
-        return this.create("balloon_red");
-    }
-            
-    public inline function createBalloons():Popup_Balloons {
-        return this.create("Balloons");
-    }
-            
-    public inline function createManNose():Popup_ManNose {
-        return this.create("ManNose");
-    }
-            
-    public inline function createBGtitle():Popup_BGtitle {
-        return this.create("BGtitle");
-    }
-            
-    public inline function createPinCloud1():Popup_PinCloud1 {
-        return this.create("PinCloud1");
-    }
-            
-    public inline function createStarMini():Popup_StarMini {
-        return this.create("StarMini");
     }
             
     public inline function createPopup_fla_headShop_smashRainbow_23():Popup_Popup_fla_headShop_smashRainbow_23 {
         return this.create("Popup_fla.headShop_smashRainbow_23");
     }
             
+    public inline function createBtnBuyOverlay():Popup_BtnBuyOverlay {
+        return this.create("BtnBuyOverlay");
+    }
+            
+    public inline function createBaloonShadowInn():Popup_BaloonShadowInn {
+        return this.create("BaloonShadowInn");
+    }
+            
     public inline function createManMouth():Popup_ManMouth {
         return this.create("ManMouth");
+    }
+            
+    public inline function createIconOverlay():Popup_IconOverlay {
+        return this.create("iconOverlay");
+    }
+            
+    public inline function createPopupShopMC():Popup_PopupShopMC {
+        return this.create("PopupShopMC");
+    }
+            
+    public inline function createBuyLocale():Popup_BuyLocale {
+        return this.create("BuyLocale");
+    }
+            
+    public inline function createBackLocale():Popup_BackLocale {
+        return this.create("BackLocale");
+    }
+            
+    public inline function createShopItems():Popup_ShopItems {
+        return this.create("ShopItems");
+    }
+            
+    public inline function createItemShop():Popup_ItemShop {
+        return this.create("ItemShop");
+    }
+            
+    public inline function createManHair():Popup_ManHair {
+        return this.create("ManHair");
+    }
+            
+    public inline function createMC_ChopperBody():Popup_MC_ChopperBody {
+        return this.create("MC_ChopperBody");
+    }
+            
+    public inline function createFace():Popup_Face {
+        return this.create("Face");
+    }
+            
+    public inline function createBalloon_red():Popup_Balloon_red {
+        return this.create("balloon_red");
+    }
+            
+    public inline function createPopup_Closebutton():Popup_Popup_Closebutton {
+        return this.create("Popup_Closebutton");
+    }
+            
+    public inline function createCorner():Popup_Corner {
+        return this.create("Corner");
+    }
+            
+    public inline function createBGtitle():Popup_BGtitle {
+        return this.create("BGtitle");
+    }
+            
+    public inline function createPopupShop():Popup_PopupShop {
+        return this.create("PopupShop");
+    }
+            
+    public inline function createStarCurrency():Popup_StarCurrency {
+        return this.create("StarCurrency");
+    }
+            
+    public inline function createBaloonHighlight():Popup_BaloonHighlight {
+        return this.create("BaloonHighlight");
+    }
+            
+    public inline function createStarMini():Popup_StarMini {
+        return this.create("StarMini");
+    }
+            
+    public inline function createMC_ChopperRotor():Popup_MC_ChopperRotor {
+        return this.create("MC_ChopperRotor");
+    }
+            
+    public inline function createShopTitle():Popup_ShopTitle {
+        return this.create("ShopTitle");
+    }
+            
+    public inline function createBalloon_blue():Popup_Balloon_blue {
+        return this.create("balloon_blue");
+    }
+            
+    public inline function createPinCloud1():Popup_PinCloud1 {
+        return this.create("PinCloud1");
+    }
+            
+    public inline function createBalloon_yellow():Popup_Balloon_yellow {
+        return this.create("balloon_yellow");
+    }
+            
+    public inline function createIcon_shopItem():Popup_Icon_shopItem {
+        return this.create("icon_shopItem");
+    }
+            
+    public inline function createPopup_fla_headShop_smashChopper_26():Popup_Popup_fla_headShop_smashChopper_26 {
+        return this.create("Popup_fla.headShop_smashChopper_26");
+    }
+            
+    public inline function createCurrencyBG():Popup_CurrencyBG {
+        return this.create("CurrencyBG");
+    }
+            
+    public inline function createBalloons():Popup_Balloons {
+        return this.create("Balloons");
+    }
+            
+    public inline function createTitleHead():Popup_TitleHead {
+        return this.create("TitleHead");
+    }
+            
+    public inline function createPopup_fla_headShop_funnyHead_43():Popup_Popup_fla_headShop_funnyHead_43 {
+        return this.create("Popup_fla.headShop_funnyHead_43");
+    }
+            
+    public inline function createPopupHalfShop():Popup_PopupHalfShop {
+        return this.create("PopupHalfShop");
+    }
+            
+    public inline function createManNose():Popup_ManNose {
+        return this.create("ManNose");
+    }
+            
+    public inline function createBalloon_cord_stroke():Popup_Balloon_cord_stroke {
+        return this.create("balloon_cord_stroke");
+    }
+            
+    public inline function createShopDescription():Popup_ShopDescription {
+        return this.create("ShopDescription");
+    }
+            
+    public inline function createBalloon_cord():Popup_Balloon_cord {
+        return this.create("balloon_cord");
+    }
+            
+    public inline function createSold():Popup_Sold {
+        return this.create("Sold");
+    }
+            
+    public inline function createBalloon_stroked():Popup_Balloon_stroked {
+        return this.create("balloon_stroked");
+    }
+            
+    public inline function createBtnBuy():Popup_BtnBuy {
+        return this.create("BtnBuy");
     }
             
     public inline function reload(?bytes:Bytes, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
@@ -227,10 +227,34 @@ abstract Popup(Layer) from Layer to Layer {
 }
 
 @:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract Popup_MC_ChopperRotor(Sprite) from Sprite to Sprite {
+abstract Popup_RainbowMainMenu(Sprite) from Sprite to Sprite {
     
-    public static inline function create(layer:Popup):Popup_MC_ChopperRotor {
-        return layer.createMC_ChopperRotor();
+    public static inline function create(layer:Popup):Popup_RainbowMainMenu {
+        return layer.createRainbowMainMenu();
+    }
+}
+                
+@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
+abstract Popup_BtnBack(Sprite) from Sprite to Sprite {
+    
+    public static inline function create(layer:Popup):Popup_BtnBack {
+        return layer.createBtnBack();
+    }
+}
+                
+@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
+abstract Popup_Balloon_orange(Sprite) from Sprite to Sprite {
+    
+    public static inline function create(layer:Popup):Popup_Balloon_orange {
+        return layer.createBalloon_orange();
+    }
+}
+                
+@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
+abstract Popup_Popup_fla_headShop_smashRainbow_23(Sprite) from Sprite to Sprite {
+    
+    public static inline function create(layer:Popup):Popup_Popup_fla_headShop_smashRainbow_23 {
+        return layer.createPopup_fla_headShop_smashRainbow_23();
     }
 }
                 
@@ -243,10 +267,26 @@ abstract Popup_BtnBuyOverlay(Sprite) from Sprite to Sprite {
 }
                 
 @:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract Popup_PopupHalfShop(Sprite) from Sprite to Sprite {
+abstract Popup_BaloonShadowInn(Sprite) from Sprite to Sprite {
     
-    public static inline function create(layer:Popup):Popup_PopupHalfShop {
-        return layer.createPopupHalfShop();
+    public static inline function create(layer:Popup):Popup_BaloonShadowInn {
+        return layer.createBaloonShadowInn();
+    }
+}
+                
+@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
+abstract Popup_ManMouth(Sprite) from Sprite to Sprite {
+    
+    public static inline function create(layer:Popup):Popup_ManMouth {
+        return layer.createManMouth();
+    }
+}
+                
+@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
+abstract Popup_IconOverlay(Sprite) from Sprite to Sprite {
+    
+    public static inline function create(layer:Popup):Popup_IconOverlay {
+        return layer.createIconOverlay();
     }
 }
                 
@@ -304,143 +344,6 @@ abstract Popup_PopupShopMC(Sprite) from Sprite to Sprite {
 }
                 
 @:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract Popup_Balloon_cord_stroke(Sprite) from Sprite to Sprite {
-    
-    public static inline function create(layer:Popup):Popup_Balloon_cord_stroke {
-        return layer.createBalloon_cord_stroke();
-    }
-}
-                
-@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract Popup_ShopTitle(Sprite) from Sprite to Sprite {
-    
-    public static inline function create(layer:Popup):Popup_ShopTitle {
-        return layer.createShopTitle();
-    }
-}
-                
-@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract Popup_PopupShop(Sprite) from Sprite to Sprite {
-    
-    public var c1(get, never):Popup_Corner;
-    public inline function get_c1():Popup_Corner {
-        return this.get("c1");
-    }
-                        
-    public var c2(get, never):Popup_Corner;
-    public inline function get_c2():Popup_Corner {
-        return this.get("c2");
-    }
-                        
-    public var c3(get, never):Popup_Corner;
-    public inline function get_c3():Popup_Corner {
-        return this.get("c3");
-    }
-                        
-    public var c4(get, never):Popup_Corner;
-    public inline function get_c4():Popup_Corner {
-        return this.get("c4");
-    }
-                        
-    public var mc(get, never):Popup_PopupShopMC;
-    public inline function get_mc():Popup_PopupShopMC {
-        return this.get("mc");
-    }
-                        
-    public static inline function create(layer:Popup):Popup_PopupShop {
-        return layer.createPopupShop();
-    }
-}
-                
-@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract Popup_Sold(Sprite) from Sprite to Sprite {
-    
-    public static inline function create(layer:Popup):Popup_Sold {
-        return layer.createSold();
-    }
-}
-                
-@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract Popup_Balloon_blue(Sprite) from Sprite to Sprite {
-    
-    public static inline function create(layer:Popup):Popup_Balloon_blue {
-        return layer.createBalloon_blue();
-    }
-}
-                
-@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract Popup_Popup_Closebutton(Sprite) from Sprite to Sprite {
-    
-    public static inline function create(layer:Popup):Popup_Popup_Closebutton {
-        return layer.createPopup_Closebutton();
-    }
-}
-                
-@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract Popup_Face(Sprite) from Sprite to Sprite {
-    
-    public static inline function create(layer:Popup):Popup_Face {
-        return layer.createFace();
-    }
-}
-                
-@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract Popup_MC_ChopperBody(Sprite) from Sprite to Sprite {
-    
-    public static inline function create(layer:Popup):Popup_MC_ChopperBody {
-        return layer.createMC_ChopperBody();
-    }
-}
-                
-@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract Popup_Popup_fla_headShop_smashChopper_26(Sprite) from Sprite to Sprite {
-    
-    public static inline function create(layer:Popup):Popup_Popup_fla_headShop_smashChopper_26 {
-        return layer.createPopup_fla_headShop_smashChopper_26();
-    }
-}
-                
-@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract Popup_IconOverlay(Sprite) from Sprite to Sprite {
-    
-    public static inline function create(layer:Popup):Popup_IconOverlay {
-        return layer.createIconOverlay();
-    }
-}
-                
-@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract Popup_BaloonHighlight(Sprite) from Sprite to Sprite {
-    
-    public static inline function create(layer:Popup):Popup_BaloonHighlight {
-        return layer.createBaloonHighlight();
-    }
-}
-                
-@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract Popup_BackLocale(Sprite) from Sprite to Sprite {
-    
-    public static inline function create(layer:Popup):Popup_BackLocale {
-        return layer.createBackLocale();
-    }
-}
-                
-@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract Popup_Balloon_yellow(Sprite) from Sprite to Sprite {
-    
-    public static inline function create(layer:Popup):Popup_Balloon_yellow {
-        return layer.createBalloon_yellow();
-    }
-}
-                
-@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract Popup_BtnBack(Sprite) from Sprite to Sprite {
-    
-    public static inline function create(layer:Popup):Popup_BtnBack {
-        return layer.createBtnBack();
-    }
-}
-                
-@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
 abstract Popup_BuyLocale(Sprite) from Sprite to Sprite {
     
     public static inline function create(layer:Popup):Popup_BuyLocale {
@@ -449,114 +352,10 @@ abstract Popup_BuyLocale(Sprite) from Sprite to Sprite {
 }
                 
 @:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract Popup_ItemShop(Sprite) from Sprite to Sprite {
+abstract Popup_BackLocale(Sprite) from Sprite to Sprite {
     
-    public var icon(get, never):Popup_Icon_shopItem;
-    public inline function get_icon():Popup_Icon_shopItem {
-        return this.get("icon");
-    }
-                        
-    public var price(get, never):Text;
-    public inline function get_price():Text {
-        return this.getText("price");
-    }
-                        
-    public var over(get, never):Popup_IconOverlay;
-    public inline function get_over():Popup_IconOverlay {
-        return this.get("over");
-    }
-                        
-    public var sold(get, never):Popup_Sold;
-    public inline function get_sold():Popup_Sold {
-        return this.get("sold");
-    }
-                        
-    public static inline function create(layer:Popup):Popup_ItemShop {
-        return layer.createItemShop();
-    }
-}
-                
-@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract Popup_ShopDescription(Sprite) from Sprite to Sprite {
-    
-    public var icon(get, never):Popup_Icon_shopItem;
-    public inline function get_icon():Popup_Icon_shopItem {
-        return this.get("icon");
-    }
-                        
-    public var description(get, never):Text;
-    public inline function get_description():Text {
-        return this.getText("description");
-    }
-                        
-    public var price(get, never):Text;
-    public inline function get_price():Text {
-        return this.getText("price");
-    }
-                        
-    public var title(get, never):Text;
-    public inline function get_title():Text {
-        return this.getText("title");
-    }
-                        
-    public static inline function create(layer:Popup):Popup_ShopDescription {
-        return layer.createShopDescription();
-    }
-}
-                
-@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract Popup_StarCurrency(Sprite) from Sprite to Sprite {
-    
-    public static inline function create(layer:Popup):Popup_StarCurrency {
-        return layer.createStarCurrency();
-    }
-}
-                
-@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract Popup_Popup_fla_headShop_funnyHead_43(Sprite) from Sprite to Sprite {
-    
-    public static inline function create(layer:Popup):Popup_Popup_fla_headShop_funnyHead_43 {
-        return layer.createPopup_fla_headShop_funnyHead_43();
-    }
-}
-                
-@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract Popup_BaloonShadowInn(Sprite) from Sprite to Sprite {
-    
-    public static inline function create(layer:Popup):Popup_BaloonShadowInn {
-        return layer.createBaloonShadowInn();
-    }
-}
-                
-@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract Popup_TitleHead(Sprite) from Sprite to Sprite {
-    
-    public static inline function create(layer:Popup):Popup_TitleHead {
-        return layer.createTitleHead();
-    }
-}
-                
-@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract Popup_ManHair(Sprite) from Sprite to Sprite {
-    
-    public static inline function create(layer:Popup):Popup_ManHair {
-        return layer.createManHair();
-    }
-}
-                
-@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract Popup_Corner(Sprite) from Sprite to Sprite {
-    
-    public static inline function create(layer:Popup):Popup_Corner {
-        return layer.createCorner();
-    }
-}
-                
-@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract Popup_Balloon_cord(Sprite) from Sprite to Sprite {
-    
-    public static inline function create(layer:Popup):Popup_Balloon_cord {
-        return layer.createBalloon_cord();
+    public static inline function create(layer:Popup):Popup_BackLocale {
+        return layer.createBackLocale();
     }
 }
                 
@@ -629,34 +428,183 @@ abstract Popup_ShopItems(Sprite) from Sprite to Sprite {
 }
                 
 @:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract Popup_CurrencyBG(Sprite) from Sprite to Sprite {
+abstract Popup_ItemShop(Sprite) from Sprite to Sprite {
     
-    public static inline function create(layer:Popup):Popup_CurrencyBG {
-        return layer.createCurrencyBG();
+    public var icon(get, never):Popup_Icon_shopItem;
+    public inline function get_icon():Popup_Icon_shopItem {
+        return this.get("icon");
+    }
+                        
+    public var price(get, never):Text;
+    public inline function get_price():Text {
+        return this.getText("price");
+    }
+                        
+    public var over(get, never):Popup_IconOverlay;
+    public inline function get_over():Popup_IconOverlay {
+        return this.get("over");
+    }
+                        
+    public var sold(get, never):Popup_Sold;
+    public inline function get_sold():Popup_Sold {
+        return this.get("sold");
+    }
+                        
+    public static inline function create(layer:Popup):Popup_ItemShop {
+        return layer.createItemShop();
     }
 }
                 
 @:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract Popup_RainbowMainMenu(Sprite) from Sprite to Sprite {
+abstract Popup_ManHair(Sprite) from Sprite to Sprite {
     
-    public static inline function create(layer:Popup):Popup_RainbowMainMenu {
-        return layer.createRainbowMainMenu();
+    public static inline function create(layer:Popup):Popup_ManHair {
+        return layer.createManHair();
     }
 }
                 
 @:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract Popup_Balloon_orange(Sprite) from Sprite to Sprite {
+abstract Popup_MC_ChopperBody(Sprite) from Sprite to Sprite {
     
-    public static inline function create(layer:Popup):Popup_Balloon_orange {
-        return layer.createBalloon_orange();
+    public static inline function create(layer:Popup):Popup_MC_ChopperBody {
+        return layer.createMC_ChopperBody();
     }
 }
                 
 @:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract Popup_Balloon_stroked(Sprite) from Sprite to Sprite {
+abstract Popup_Face(Sprite) from Sprite to Sprite {
     
-    public static inline function create(layer:Popup):Popup_Balloon_stroked {
-        return layer.createBalloon_stroked();
+    public static inline function create(layer:Popup):Popup_Face {
+        return layer.createFace();
+    }
+}
+                
+@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
+abstract Popup_Balloon_red(Sprite) from Sprite to Sprite {
+    
+    public static inline function create(layer:Popup):Popup_Balloon_red {
+        return layer.createBalloon_red();
+    }
+}
+                
+@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
+abstract Popup_Popup_Closebutton(Sprite) from Sprite to Sprite {
+    
+    public static inline function create(layer:Popup):Popup_Popup_Closebutton {
+        return layer.createPopup_Closebutton();
+    }
+}
+                
+@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
+abstract Popup_Corner(Sprite) from Sprite to Sprite {
+    
+    public static inline function create(layer:Popup):Popup_Corner {
+        return layer.createCorner();
+    }
+}
+                
+@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
+abstract Popup_BGtitle(Sprite) from Sprite to Sprite {
+    
+    public static inline function create(layer:Popup):Popup_BGtitle {
+        return layer.createBGtitle();
+    }
+}
+                
+@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
+abstract Popup_PopupShop(Sprite) from Sprite to Sprite {
+    
+    public var c1(get, never):Popup_Corner;
+    public inline function get_c1():Popup_Corner {
+        return this.get("c1");
+    }
+                        
+    public var c2(get, never):Popup_Corner;
+    public inline function get_c2():Popup_Corner {
+        return this.get("c2");
+    }
+                        
+    public var c3(get, never):Popup_Corner;
+    public inline function get_c3():Popup_Corner {
+        return this.get("c3");
+    }
+                        
+    public var c4(get, never):Popup_Corner;
+    public inline function get_c4():Popup_Corner {
+        return this.get("c4");
+    }
+                        
+    public var mc(get, never):Popup_PopupShopMC;
+    public inline function get_mc():Popup_PopupShopMC {
+        return this.get("mc");
+    }
+                        
+    public static inline function create(layer:Popup):Popup_PopupShop {
+        return layer.createPopupShop();
+    }
+}
+                
+@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
+abstract Popup_StarCurrency(Sprite) from Sprite to Sprite {
+    
+    public static inline function create(layer:Popup):Popup_StarCurrency {
+        return layer.createStarCurrency();
+    }
+}
+                
+@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
+abstract Popup_BaloonHighlight(Sprite) from Sprite to Sprite {
+    
+    public static inline function create(layer:Popup):Popup_BaloonHighlight {
+        return layer.createBaloonHighlight();
+    }
+}
+                
+@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
+abstract Popup_StarMini(Sprite) from Sprite to Sprite {
+    
+    public static inline function create(layer:Popup):Popup_StarMini {
+        return layer.createStarMini();
+    }
+}
+                
+@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
+abstract Popup_MC_ChopperRotor(Sprite) from Sprite to Sprite {
+    
+    public static inline function create(layer:Popup):Popup_MC_ChopperRotor {
+        return layer.createMC_ChopperRotor();
+    }
+}
+                
+@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
+abstract Popup_ShopTitle(Sprite) from Sprite to Sprite {
+    
+    public static inline function create(layer:Popup):Popup_ShopTitle {
+        return layer.createShopTitle();
+    }
+}
+                
+@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
+abstract Popup_Balloon_blue(Sprite) from Sprite to Sprite {
+    
+    public static inline function create(layer:Popup):Popup_Balloon_blue {
+        return layer.createBalloon_blue();
+    }
+}
+                
+@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
+abstract Popup_PinCloud1(Sprite) from Sprite to Sprite {
+    
+    public static inline function create(layer:Popup):Popup_PinCloud1 {
+        return layer.createPinCloud1();
+    }
+}
+                
+@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
+abstract Popup_Balloon_yellow(Sprite) from Sprite to Sprite {
+    
+    public static inline function create(layer:Popup):Popup_Balloon_yellow {
+        return layer.createBalloon_yellow();
     }
 }
                 
@@ -669,18 +617,18 @@ abstract Popup_Icon_shopItem(Sprite) from Sprite to Sprite {
 }
                 
 @:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract Popup_BtnBuy(Sprite) from Sprite to Sprite {
+abstract Popup_Popup_fla_headShop_smashChopper_26(Sprite) from Sprite to Sprite {
     
-    public static inline function create(layer:Popup):Popup_BtnBuy {
-        return layer.createBtnBuy();
+    public static inline function create(layer:Popup):Popup_Popup_fla_headShop_smashChopper_26 {
+        return layer.createPopup_fla_headShop_smashChopper_26();
     }
 }
                 
 @:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract Popup_Balloon_red(Sprite) from Sprite to Sprite {
+abstract Popup_CurrencyBG(Sprite) from Sprite to Sprite {
     
-    public static inline function create(layer:Popup):Popup_Balloon_red {
-        return layer.createBalloon_red();
+    public static inline function create(layer:Popup):Popup_CurrencyBG {
+        return layer.createCurrencyBG();
     }
 }
                 
@@ -773,6 +721,30 @@ abstract Popup_Balloons(Sprite) from Sprite to Sprite {
 }
                 
 @:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
+abstract Popup_TitleHead(Sprite) from Sprite to Sprite {
+    
+    public static inline function create(layer:Popup):Popup_TitleHead {
+        return layer.createTitleHead();
+    }
+}
+                
+@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
+abstract Popup_Popup_fla_headShop_funnyHead_43(Sprite) from Sprite to Sprite {
+    
+    public static inline function create(layer:Popup):Popup_Popup_fla_headShop_funnyHead_43 {
+        return layer.createPopup_fla_headShop_funnyHead_43();
+    }
+}
+                
+@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
+abstract Popup_PopupHalfShop(Sprite) from Sprite to Sprite {
+    
+    public static inline function create(layer:Popup):Popup_PopupHalfShop {
+        return layer.createPopupHalfShop();
+    }
+}
+                
+@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
 abstract Popup_ManNose(Sprite) from Sprite to Sprite {
     
     public static inline function create(layer:Popup):Popup_ManNose {
@@ -781,42 +753,70 @@ abstract Popup_ManNose(Sprite) from Sprite to Sprite {
 }
                 
 @:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract Popup_BGtitle(Sprite) from Sprite to Sprite {
+abstract Popup_Balloon_cord_stroke(Sprite) from Sprite to Sprite {
     
-    public static inline function create(layer:Popup):Popup_BGtitle {
-        return layer.createBGtitle();
+    public static inline function create(layer:Popup):Popup_Balloon_cord_stroke {
+        return layer.createBalloon_cord_stroke();
     }
 }
                 
 @:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract Popup_PinCloud1(Sprite) from Sprite to Sprite {
+abstract Popup_ShopDescription(Sprite) from Sprite to Sprite {
     
-    public static inline function create(layer:Popup):Popup_PinCloud1 {
-        return layer.createPinCloud1();
+    public var icon(get, never):Popup_Icon_shopItem;
+    public inline function get_icon():Popup_Icon_shopItem {
+        return this.get("icon");
+    }
+                        
+    public var description(get, never):Text;
+    public inline function get_description():Text {
+        return this.getText("description");
+    }
+                        
+    public var price(get, never):Text;
+    public inline function get_price():Text {
+        return this.getText("price");
+    }
+                        
+    public var title(get, never):Text;
+    public inline function get_title():Text {
+        return this.getText("title");
+    }
+                        
+    public static inline function create(layer:Popup):Popup_ShopDescription {
+        return layer.createShopDescription();
     }
 }
                 
 @:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract Popup_StarMini(Sprite) from Sprite to Sprite {
+abstract Popup_Balloon_cord(Sprite) from Sprite to Sprite {
     
-    public static inline function create(layer:Popup):Popup_StarMini {
-        return layer.createStarMini();
+    public static inline function create(layer:Popup):Popup_Balloon_cord {
+        return layer.createBalloon_cord();
     }
 }
                 
 @:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract Popup_Popup_fla_headShop_smashRainbow_23(Sprite) from Sprite to Sprite {
+abstract Popup_Sold(Sprite) from Sprite to Sprite {
     
-    public static inline function create(layer:Popup):Popup_Popup_fla_headShop_smashRainbow_23 {
-        return layer.createPopup_fla_headShop_smashRainbow_23();
+    public static inline function create(layer:Popup):Popup_Sold {
+        return layer.createSold();
     }
 }
                 
 @:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract Popup_ManMouth(Sprite) from Sprite to Sprite {
+abstract Popup_Balloon_stroked(Sprite) from Sprite to Sprite {
     
-    public static inline function create(layer:Popup):Popup_ManMouth {
-        return layer.createManMouth();
+    public static inline function create(layer:Popup):Popup_Balloon_stroked {
+        return layer.createBalloon_stroked();
+    }
+}
+                
+@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
+abstract Popup_BtnBuy(Sprite) from Sprite to Sprite {
+    
+    public static inline function create(layer:Popup):Popup_BtnBuy {
+        return layer.createBtnBuy();
     }
 }
                 
