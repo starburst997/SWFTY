@@ -5,7 +5,7 @@ cd "$(dirname "$0")"
 
 rm -Rf ./bin/macos/bin/SWFTY.app
 
-openfl build mac -final -v
+openfl build mac -Dsync -final -v
 
 FILE=bin/macos/bin/SWFTY.app/Contents/MacOS/SWFTY
 if [ -f $FILE ]; then
