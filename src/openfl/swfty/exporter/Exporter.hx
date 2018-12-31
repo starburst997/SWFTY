@@ -1037,51 +1037,58 @@ class Exporter {
                 #else
                 Image.loadFromBytes(data.bitmapData).onComplete(function(image) {
                 #end
-                    var values = Bytes.alloc((image.width + 1) * image.height);
-                    var index = 0;
-                    
-                    for (y in 0...image.height) {
-                        values.set(index++, 0);
-                        values.blit(index, alpha, alpha.position, image.width);
-                        index += image.width;
-                        alpha.position += image.width;
-                    }
-                    
-                    var png = new List();
-                    png.add(CHeader( { width: image.width, height: image.height, colbits: 8, color: ColIndexed, interlaced: false } ));
-                    png.add(CPalette(alphaPalette));
-                    
-                    var bytes = zip.Zip.compress(values);
-                    png.add(CData(bytes));
-                    png.add(CEnd);
-                    
-                    var output = new BytesOutput();
-                    var writer = new Writer(output);
-                    writer.write(png);
-                    
-                    #if sync
-                    ({var bitmapDataAlpha = BitmapData.fromBytes(output.getBytes());
-                    #else
-                    BitmapData.loadFromBytes(output.getBytes()).onComplete(function(bitmapDataAlpha) {
-                    #end
-                        var bitmapDataJPEG = BitmapData.fromImage(image);
-                        bitmapData = new BitmapData(image.width, image.height, true, 0x00000000);
-
-                        var alpha = Image.fromBitmapData(bitmapDataAlpha);
-                        bitmapData.copyPixels(bitmapDataJPEG, bitmapDataJPEG.rect, new Point(0, 0));
-                        
-                        var jpeg = Image.fromBitmapData(bitmapData);
-                        jpeg.copyChannel(alpha, alpha.rect, new Vector2(), ImageChannel.RED, ImageChannel.ALPHA);
-
-                        jpeg.buffer.premultiplied = true;
-		
-                        #if !sys
-                        jpeg.premultiplied = false;
-                        #end
-                        
-                        bitmapData = BitmapData.fromImage(jpeg);
+                    // Some legit JPEG can be "null" in newer openfl, I reverted JPEG lib version
+                    if (image == null) {
+                        // TODO: Used to works before upgrade to latest openfl...
+                        bitmapData = new BitmapData(1, 1, true, 0x00000000);
                         complete();
-                    });
+                    } else {
+                        var values = Bytes.alloc((image.width + 1) * image.height);
+                        var index = 0;
+                        
+                        for (y in 0...image.height) {
+                            values.set(index++, 0);
+                            values.blit(index, alpha, alpha.position, image.width);
+                            index += image.width;
+                            alpha.position += image.width;
+                        }
+                        
+                        var png = new List();
+                        png.add(CHeader( { width: image.width, height: image.height, colbits: 8, color: ColIndexed, interlaced: false } ));
+                        png.add(CPalette(alphaPalette));
+                        
+                        var bytes = zip.Zip.compress(values);
+                        png.add(CData(bytes));
+                        png.add(CEnd);
+                        
+                        var output = new BytesOutput();
+                        var writer = new Writer(output);
+                        writer.write(png);
+                        
+                        #if sync
+                        ({var bitmapDataAlpha = BitmapData.fromBytes(output.getBytes());
+                        #else
+                        BitmapData.loadFromBytes(output.getBytes()).onComplete(function(bitmapDataAlpha) {
+                        #end
+                            var bitmapDataJPEG = BitmapData.fromImage(image);
+                            bitmapData = new BitmapData(image.width, image.height, true, 0x00000000);
+
+                            var alpha = Image.fromBitmapData(bitmapDataAlpha);
+                            bitmapData.copyPixels(bitmapDataJPEG, bitmapDataJPEG.rect, new Point(0, 0));
+                            
+                            var jpeg = Image.fromBitmapData(bitmapData);
+                            jpeg.copyChannel(alpha, alpha.rect, new Vector2(), ImageChannel.RED, ImageChannel.ALPHA);
+
+                            jpeg.buffer.premultiplied = true;
+            
+                            #if !sys
+                            jpeg.premultiplied = false;
+                            #end
+                            
+                            bitmapData = BitmapData.fromImage(jpeg);
+                            complete();
+                        });
+                    }
                 });
 			} else {
                 #if sync

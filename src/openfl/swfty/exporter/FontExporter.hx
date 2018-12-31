@@ -78,7 +78,9 @@ class FontExporter {
 
         textField.defaultTextFormat = textFormat;
 
-        if (cache != null) textField.filters = cache.filters;
+        if (cache != null) {
+            textField.filters = cache.filters;
+        }
 
         var bitmaps = new IntMap<BitmapData>();
         var definitions = [];
