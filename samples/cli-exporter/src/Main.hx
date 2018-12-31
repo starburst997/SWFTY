@@ -498,9 +498,11 @@ class Main extends Sprite {
         Console.log('<u>https://github.com/starburst997/SWFTY</>');
         Console.log('');
 
+        #if !debug
         haxe.Log.trace = function(v:Dynamic, ?infos:haxe.PosInfos) {
             // Do nothing!
         };
+        #end
 
         #if sys
         // Start server
