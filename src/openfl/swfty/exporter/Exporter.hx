@@ -62,6 +62,8 @@ class Exporter {
     // TODO: Default to false, mainly only for openfl before 6.0
     public static var BAKE_COLOR = true;
 
+    static inline var MAX_STACK = 100;
+
     var maxId:Int = -1;
 
     public var name:String;
@@ -110,8 +112,8 @@ class Exporter {
         if (bytes.length < 3 || (p != 0x43 && p != 0x46) || bytes.readByte() != 0x57 || bytes.readByte() != 0x53) {
             if (onError != null) onError('Invalid format');
             return;
-        } 
-        
+        }
+
         bytes.position = 0;
 
         swf = new SWF(bytes);
@@ -161,7 +163,7 @@ class Exporter {
             function complete() {
                 if (i + 1 < data.tags.length) {
                     // Process 250 tags per frame to prevent maximum call stack size
-                    if (processFrame++ < 250) {
+                    if (processFrame++ < MAX_STACK) {
                         f(i + 1);
                     } else {
                         nextFrames.push(function() f(i + 1));
@@ -286,7 +288,13 @@ class Exporter {
                 function process2(j) {
                     var symbol = symbols[j];
                     processSymbol(symbol, function() {
-                        if (j + 1 < symbols.length) process2(j + 1) else complete();                        
+                        if (j + 1 < symbols.length) {
+                            if (processFrame++ < MAX_STACK) {
+                                process2(j + 1);
+                            } else {
+                                nextFrames.push(function() process2(j + 1));
+                            }
+                        } else complete();                        
                     });
                 }
 
@@ -595,7 +603,6 @@ class Exporter {
 
             function process2(j) {
                 var object = objects[j];
-
                 var childTag = cast data.getCharacter(object.characterId);
                 
                 if (mask != null && mask.clipDepth < object.depth) {
@@ -836,10 +843,15 @@ class Exporter {
 
                     children.push(definition);
 
-                    if (j + 1 < objects.length) process2(j + 1) 
+                    if (j + 1 < objects.length) {
+                        if (processFrame++ < MAX_STACK) {
+                            process2(j + 1);
+                        } else {
+                            nextFrames.push(function() process2(j + 1));
+                        } 
                     // TODO: Only process 1 frame for now...
                     //else if (i + 1 < tag.frames.length) process(i + 1) 
-                    else onComplete();
+                    } else onComplete();
 
                     //if (j + 1 >= objects.length) onComplete();
                 });
@@ -881,13 +893,19 @@ class Exporter {
                     bitmapKeeps.set(bitmap.id, true);
                     shapes.push(definition);
 
-                    if (i + 1 < bitmaps.length) f(i + 1) else onComplete();
+                    if (i + 1 < bitmaps.length) {
+                        if (processFrame++ < MAX_STACK) {
+                            f(i + 1);
+                        } else {
+                            nextFrames.push(function() f(i + 1));
+                        }
+                    } else onComplete();
                 });
             }
 
             if (bitmaps.length > 0) process(0) else onComplete();
         } else {
-            
+
             //processShapes.push(tag);
             //onComplete();
 
@@ -906,18 +924,40 @@ class Exporter {
             processShapes.set(id, {tag: tag, definition: definition});
             shapes.push(definition);
 
-            var process = function f(i) {
-                var command = handler.commands[i];
+            var bitmaps = [];
+            for (command in handler.commands) {
                 switch(command) {
 					case BeginBitmapFill(bitmapID, _, _, _):
-						processTag(cast data.getCharacter(bitmapID), function() {
-                            if (i + 1 < handler.commands.length) f(i + 1) else onComplete();
-                        });
+                        bitmaps.push(command);
 					default:
-                        if (i + 1 < handler.commands.length) f(i + 1) else onComplete();
+                        
 				}
             }
-            if (handler.commands.length > 0) process(0) else onComplete();
+
+            var process = function f(i) {
+                var command = bitmaps[i];
+                switch(command) {
+					case BeginBitmapFill(bitmapID, _, _, _):
+                        processTag(cast data.getCharacter(bitmapID), function() {
+                            if (i + 1 < bitmaps.length) {
+                                if (processFrame++ < MAX_STACK) {
+                                    f(i + 1);
+                                } else {
+                                    nextFrames.push(function() f(i + 1));
+                                }
+                            } else onComplete();
+                        });
+					default:
+                        if (i + 1 < bitmaps.length) {
+                            if (processFrame++ < MAX_STACK) {
+                                f(i + 1);
+                            } else {
+                                nextFrames.push(function() f(i + 1));
+                            }
+                        } else onComplete();
+				}
+            }
+            if (bitmaps.length > 0) process(0) else onComplete();
         }
     }
 
@@ -1252,11 +1292,9 @@ class Exporter {
         definitions.set(tag.characterId, true);
 
         if (Std.is(tag, TagDefineSprite)) {
-            
             addSprite(cast tag, onComplete);
 
         } else if (Std.is(tag, TagDefineBits) || Std.is(tag, TagDefineBitsJPEG2) || Std.is(tag, TagDefineBitsLossless)) {
-            
             addBitmap(cast tag, onComplete);
             
         } else if (Std.is(tag, TagDefineButton) || Std.is(tag, TagDefineButton2)) {
@@ -1265,20 +1303,16 @@ class Exporter {
             onComplete();
             
         } else if (Std.is(tag, TagDefineEditText)) {
-            
             addDynamicText(cast tag, onComplete);
             
         } else if (Std.is(tag, TagDefineText)) {
-            
             // TODO: Static Text
             onComplete();
             
         } else if (Std.is(tag, TagDefineShape)) {
-            
             addShape(cast tag, onComplete);
             
         } else if (Std.is(tag, TagDefineFont) || Std.is(tag, TagDefineFont4)) {
-            
             addFont(cast tag, onComplete);
             
         } else if (Std.is(tag, TagDefineSound)) {

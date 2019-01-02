@@ -23,7 +23,8 @@ class ClassExporter {
 
         var qualities = '';
         for (key in quality.keys()) {
-            qualities += '    var ${key.capitalize()} = "${quality.get(key)}";\n';
+            var path = quality.get(key).replace('\\', '/');
+            qualities += '    var ${key.capitalize()} = "${path}";\n';
         }
 
         var q = '

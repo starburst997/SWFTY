@@ -61,13 +61,14 @@ class FontExporter {
 
         #if sys
         // Command line tools need the path to TTF
-        var f = Font.fromFile('$path/$font.ttf'); // System.getPath('$path/$font.ttf'));
+        //font = font.replace('-', ' ');
+        var f = Font.fromFile('$path$font.ttf'); // System.getPath('$path/$font.ttf'));
         if (f != null) {
             Font.__registeredFonts.push(f);
             Font.__fontByName[f.fontName] = f;
             font = f.fontName;
         } else {
-            Log.warn('Missing font: $path/$font.ttf');
+            Log.warn('Missing font: $path$font.ttf');
         }
         #end
 
