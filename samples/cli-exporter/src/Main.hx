@@ -498,9 +498,11 @@ class Main extends Sprite {
         Console.log('<u>https://github.com/starburst997/SWFTY</>');
         Console.log('');
 
+        #if !debug
         haxe.Log.trace = function(v:Dynamic, ?infos:haxe.PosInfos) {
             // Do nothing!
         };
+        #end
 
         #if sys
         // Start server
@@ -510,7 +512,7 @@ class Main extends Sprite {
         var startServer = function():Void {
 
             var port = 0xC137;
-            var server = WebSocketServer.create('0.0.0.0', port, 50, true);
+            var server = WebSocketServer.create('0.0.0.0', port, 10, true);
             var handlers:Array<WebSocketHandler> = [];
             logs.add('Listening on port $port');
 
@@ -628,5 +630,7 @@ class Main extends Sprite {
         var cli = new CLI();
         new mcli.Dispatch(Sys.args()).dispatch(cli);
         #end
+
+        stage.frameRate = 0xFFFF;
 	}
 }

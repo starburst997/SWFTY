@@ -3,8 +3,9 @@
     
     <meta title="SWFTY" package="jd.boivin.swfty" version="0.1.0" company="Jean-Denis Boivin" />
     <app main="Main" path="bin" file="SWFTY" />
-    <window background="#666666" allowHighDPI="true" fps="60" />
+    <window background="#666666" allowHighDPI="false" fps="9999" />
     <window hidden="true" />
+    <window hidden="false" width="256" height="128" if="windows" /><!-- Can't close from terminal in windows, process is still going on... -->
     
     <haxelib name="openfl" />
     <haxelib name="haxe-files" />

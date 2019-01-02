@@ -53,7 +53,7 @@ class Main extends Sprite {
             // TODO: Get rid of message if it been over X sec
 
             var stop = false;
-            var ws = WebSocket.create("ws://192.168.2.109:49463/", [], false);
+            var ws = WebSocket.create("ws://192.168.0.194:49463/", [], false);
             ws.onopen = function() {
                 trace('open!');
 
