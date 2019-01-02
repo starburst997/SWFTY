@@ -37,11 +37,6 @@ class TilemapExporter {
         trimed.copyPixels(bmpd, notAlphaBounds, new Point());
         bmpd.dispose();
 
-        #if sys
-        // 
-        //trimmed.rect.y = 
-        #end
-
         // Save trimmed bmpd
         return {bmpd: trimed, rect: notAlphaBounds, originalWidth: originalWidth, originalHeight: originalHeight};
     }

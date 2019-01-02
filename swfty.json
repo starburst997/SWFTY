@@ -9,6 +9,11 @@
     "sharedFonts": false,
     "fontEnabled": true,
     
+    "fonts": [{
+        "name": "Bango",
+        "yOffset": 5.0
+    }],
+
     "maxDimension": {
         "width": 2048,
         "height": 2048
