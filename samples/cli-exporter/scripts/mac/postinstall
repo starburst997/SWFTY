@@ -1,0 +1,8 @@
+#!/bin/bash
+
+echo "#!/bin/bash" > /usr/local/bin/swfty
+echo "/Applications/SWFTY.app/Contents/MacOS/SWFTY \$@ -r \$PWD" >> /usr/local/bin/swfty
+chmod 755 /usr/local/bin/swfty
+chmod +x /usr/local/bin/swfty
+
+exit 0
