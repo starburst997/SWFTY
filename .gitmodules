@@ -58,3 +58,9 @@
 [submodule "submodules/haxe-ws"]
 	path = submodules/haxe-ws
 	url = git@github.com:starburst997/haxe-ws.git
+[submodule "submodules/openfl-export"]
+	path = submodules/openfl-export
+	url = git@github.com:starburst997/openfl.git
+[submodule "submodules/lime-export"]
+	path = submodules/lime-export
+	url = git@github.com:starburst997/lime.git
