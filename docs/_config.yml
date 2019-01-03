@@ -1,1 +1,4 @@
 theme: jekyll-theme-minimal
+logo: assets/images/logo.png
+title: SWFTY
+description: Convert a SWF to GPU friendly format for use in Heaps and OpenFL

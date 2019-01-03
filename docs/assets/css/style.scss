@@ -1,0 +1,16 @@
+---
+---
+
+@import "{{ site.theme }}";
+
+.right { text-align: right; }
+#inputBox { margin-top: 8px; margin-bottom: 8px; width: 400px; } 
+#swfFile {  }
+#swftySave {  }
+
+#tilemap { max-height: 200px; background-color: #666666 }
+#tilemapInfo { font-weight: bold; margin-bottom: 4px; }
+
+#names { margin-bottom: 10px; width: 400px; }
+
+#content { background: #666666; width: 400px; height: 300px; }
