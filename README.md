@@ -2,6 +2,8 @@
 
 ![SWFTY](https://github.com/starburst997/SWFTY/raw/master/ref/swfty.gif)
 
+### Try the [HTML Demo](https://starburst997.github.io/SWFTY/)
+
 **WIP** *Not to be used in production yet, PRs, issues, etc. are very much welcome*
 
 ## Purpose
