@@ -4,12 +4,15 @@ Blabla write something
 
 ## HTML5 Demo
 
+
+
 <div>
 	<div id="inputBox">
 		<div>
 			<input type="file" id="swfFile" name="swfFile" width="100%" />
 		</div>
 		<div class="right">
+			<input type="button" id="loadDemo" name="loadDemo" value="Load Demo" />
 			<input type="button" id="swftySave" name="swftySave" value="SWFTY" disabled />
 			<input type="button" id="abstractsSave" name="abstractsSave" value="Abstracts" disabled />
 			<input type="button" id="swftyStress" name="swftyStress" value="Stress Test" disabled />
@@ -36,6 +39,7 @@ Blabla write something
 	var exporter = null;
 	var swfty = null;
 
+	var loadDemoInput = document.getElementById('loadDemo');
 	var swfFileInput = document.getElementById('swfFile');
 	var swftySaveInput = document.getElementById('swftySave');
 	var abstractsSaveInput = document.getElementById('abstractsSave');
@@ -46,6 +50,46 @@ Blabla write something
 
 	lime.embed ("SWFTYExporter", "content", 400, 300, config);
 
+	function loadArrayBuffer(result, name) {
+		SWFTY.processSWF(result, name, function(_exporter) {
+			exporter = _exporter;
+			abstractsSaveInput.disabled = false;
+
+			SWFTY.getTilemap(exporter, function(src, width, height, size) {
+				tilemapImage.src = src;
+
+				tilemapInfo.innerHTML = 'Tilemap: ' + width + 'x' + height + ', (' + (Math.round(size/1024/1024*100) / 100) + 'MB)';
+			});
+
+			for(var i = namesInput.options.length - 1 ; i >= 0 ; i--) {
+				namesInput.remove(i);
+			}
+
+			var names = SWFTY.exportNames(exporter);
+			for (var i = 0; i < names.length; i++) {
+				var name = names[i];
+				var option = document.createElement("option");
+				option.text = name;
+				option.value = name;
+				namesInput.add(option);
+			}
+
+			namesInput.selectedIndex = 0;
+			
+			SWFTY.exportSWF(exporter, function(_swfty) {
+				console.log('Export SWF!');
+				swfty = _swfty;
+				swftySaveInput.disabled = false;
+				
+				SWFTY.renderSWFTY(swfty, function() {
+					SWFTY.renderMC(namesInput.value);
+					stressInput.disabled = false;
+					namesInput.disabled = false;
+				});
+			});
+		});
+	} 
+
 	function handleFileSelect(evt) {
 		var files = evt.target.files; // FileList object
 
@@ -55,43 +99,7 @@ Blabla write something
 			var reader = new FileReader();
 			reader.onload = (function(theFile) {
 				return function(e) {
-					SWFTY.processSWF(e.target.result, theFile.name, function(_exporter) {
-						exporter = _exporter;
-						abstractsSaveInput.disabled = false;
-
-						SWFTY.getTilemap(exporter, function(src, width, height, size) {
-							tilemapImage.src = src;
-
-							tilemapInfo.innerHTML = 'Tilemap: ' + width + 'x' + height + ', (' + (Math.round(size/1024/1024*100) / 100) + 'MB)';
-						});
-
-						for(var i = namesInput.options.length - 1 ; i >= 0 ; i--) {
-							namesInput.remove(i);
-						}
-
-						var names = SWFTY.exportNames(exporter);
-						for (var i = 0; i < names.length; i++) {
-							var name = names[i];
-							var option = document.createElement("option");
-							option.text = name;
-							option.value = name;
-							namesInput.add(option);
-						}
-
-						namesInput.selectedIndex = 0;
-						
-						SWFTY.exportSWF(exporter, function(_swfty) {
-							console.log('Export SWF!');
-							swfty = _swfty;
-							swftySaveInput.disabled = false;
-							
-							SWFTY.renderSWFTY(swfty, function() {
-								SWFTY.renderMC(namesInput.value);
-								stressInput.disabled = false;
-								namesInput.disabled = false;
-							});
-						});
-					});
+					loadArrayBuffer(e.target.result, theFile.name);
 				};
 			})(f);
 			reader.readAsArrayBuffer(f);
@@ -126,6 +134,22 @@ Blabla write something
 		}
 	}
 
+	function handleDemo(evt) {
+		var oReq = new XMLHttpRequest();
+		oReq.open("GET", "/assets/res/Popup.swf", true);
+		oReq.responseType = "arraybuffer";
+
+		oReq.onload = function (oEvent) {
+		  var arrayBuffer = oReq.response; // Note: not oReq.responseText
+		  if (arrayBuffer) {
+		    loadArrayBuffer(arrayBuffer, 'Popup.swf');
+		  }
+		};
+
+		oReq.send(null);
+	}
+
+	loadDemoInput.addEventListener('click', handleDemo, false);
 	namesInput.addEventListener('change', handleNameSelect, false);
 	swfFileInput.addEventListener('change', handleFileSelect, false);
 	swftySaveInput.addEventListener('click', handleStress, false);
