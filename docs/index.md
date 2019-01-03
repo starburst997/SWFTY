@@ -136,7 +136,7 @@ Blabla write something
 
 	function handleDemo(evt) {
 		var oReq = new XMLHttpRequest();
-		oReq.open("GET", "/assets/res/Popup.swf", true);
+		oReq.open("GET", "assets/res/Popup.swf", true);
 		oReq.responseType = "arraybuffer";
 
 		oReq.onload = function (oEvent) {
