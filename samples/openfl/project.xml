@@ -24,6 +24,14 @@
     <source path="../../submodules/openfl/scripts" />
 
     <assets path="../../res" rename="res" />
+    <icon path="../../res/icon.png" />
+    <launchImage path="../../ref/launchImages/Default~iphone.png" width="320" height="480" />
+    <launchImage path="../../ref/launchImages/Default@2x~iphone.png" width="640" height="960" />
+    <launchImage path="../../ref/launchImages/Default-568h@2x~iphone.png" width="640" height="1136" />
+    <launchImage path="../../ref/launchImages/Default-667h.png" width="750" height="1334" />
+    <launchImage path="../../ref/launchImages/Default-736h.png" width="1242" height="2208" />
+    <launchImage path="../../ref/launchImages/Default-Portrait~ipad.png" width="768" height="1024" />
+    <launchImage path="../../ref/launchImages/Default-Portrait@2x~ipad.png" width="1536" height="2048" />
     
     <haxedef name="gl_stats" if="debug" />
     <!--<haxedef name="sync" unless="html5" />-->

@@ -53,7 +53,7 @@ class Main extends Sprite {
             // TODO: Get rid of message if it been over X sec
 
             var stop = false;
-            var ws = WebSocket.create("ws://192.168.0.192:49463/", [], false);
+            var ws = WebSocket.create("ws://192.168.101.236:49463/", [], false);
             ws.onopen = function() {
                 trace('open!');
 
@@ -243,9 +243,9 @@ class Main extends Sprite {
             var sprite = layer.createPopupShop();
             layer.add(sprite);
 
-            sprite.fit();
-
             sprite.mc.description.title.fitText('A very long title, yes, hello!!!');
+
+            sprite.fit();
 
             return;
 
