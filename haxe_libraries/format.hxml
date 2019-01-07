@@ -1,0 +1,3 @@
+-D format=3.4.1
+# @install: lix --silent download "git:git@github.com:HaxeFoundation/format#c40e17e9dabc9be362073b0551f830fae07dcdde" into format/3.4.1/git/c40e17e9dabc9be362073b0551f830fae07dcdde
+-cp ${HAXE_LIBCACHE}/format/3.4.1/git/c40e17e9dabc9be362073b0551f830fae07dcdde/

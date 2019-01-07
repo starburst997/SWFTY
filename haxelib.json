@@ -8,5 +8,12 @@
   "classPath": "src/",
   "releasenote" : "Initial Release",
   "contributors" : ["starburst997"],
-  "dependencies" : { }
+  "dependencies" : { 
+    "format": "",
+    "haxe-concurrent": "",
+    "haxe-ws": "",
+    "hxbit": "",
+    "zip": "",
+    "tweenxcore": ""
+  }
 }
