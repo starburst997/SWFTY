@@ -17,6 +17,7 @@ class FinalLayer extends BaseLayer {
     }    
 
     public function new(?width:Int, ?height:Int) {
+        // TODO: If null, it should maybe be the stage's dimensions??? Or at least on the "getter"
         super(width == null ? 256 : width, height == null ? 256 : height);
 
         _width = width;

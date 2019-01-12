@@ -27,7 +27,7 @@ class Mouse {
     public var right(default, set):ButtonState = Normal;
 
     public function new() {
-
+        
     }
 
     inline function set_left(state:ButtonState) {
