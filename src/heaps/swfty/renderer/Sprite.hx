@@ -31,7 +31,6 @@ class FinalSprite extends BaseSprite {
 
     override function calcBounds(?relative:BaseSprite):Rect {
         var bounds = getBounds(relative);
-        trace('Bounds: ${bounds}');
         return {
             x: bounds.x,
             y: bounds.y,
