@@ -1,0 +1,44 @@
+{
+    "version": "2.0.0",
+    "command": "bash",
+    "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+    },
+    "tasks": [
+        {
+            "command": "haxe",
+            "label": "Hashlink",
+            "args": [
+                "build.hxml", "-D", "test"
+            ]
+        },
+        {
+            "command": "haxe",
+            "label": "HTML5",
+            "args": [
+                "html5.hxml", "-D", "test", "--connect", "6005", "-debug"
+            ]
+        },
+        /*{
+            "type": "hxml",
+            "label": "Heaps JS",
+            "file": "build.hxml",
+            "problemMatcher": [
+                "$haxe-absolute",
+                "$haxe",
+                "$haxe-error",
+                "$haxe-trace"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }*/
+    ],
+    "problemMatcher": "$haxe"
+}
