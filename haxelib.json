@@ -1,5 +1,5 @@
 {
-  "name" : "SWFTY",
+  "name" : "swfty",
   "url" : "https://github.com/starburst997/SWFTY",
   "tags": ["swf", "atlas", "spritesheet", "bitmap-font", "openfl", "heaps", "adobe-animate", "flash"],
   "license" : "MIT",
@@ -8,5 +8,8 @@
   "classPath": "src/",
   "releasenote" : "Initial Release",
   "contributors" : ["starburst997"],
-  "dependencies" : { }
+  "dependencies" : { 
+    "zip": "gh:starburst997/haxe-zip#master",
+    "hxbit": "gh:starburst997/hxbit#jd"
+  }
 }
