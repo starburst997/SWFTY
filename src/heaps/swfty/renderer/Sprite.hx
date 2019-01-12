@@ -24,6 +24,22 @@ class FinalSprite extends BaseSprite {
         super(layer, definition, linkage);
     }
 
+    override function getBoundsRec( relativeTo : h2d.Object, out : h2d.col.Bounds, forSize : Bool ) {
+		super.getBoundsRec(relativeTo, out, forSize);
+		if( tile != null ) addBounds(relativeTo, out, tile.dx, tile.dy, tile.width, tile.height);
+	}
+
+    override function calcBounds(?relative:BaseSprite):Rect {
+        var bounds = getBounds(relative);
+        trace('Bounds: ${bounds}');
+        return {
+            x: bounds.x,
+            y: bounds.y,
+            width: bounds.width,
+            height: bounds.height
+        }
+    }
+
     override function calcAbsPos() {
         super.calcAbsPos();
 
