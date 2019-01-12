@@ -14,8 +14,6 @@ class Main extends hxd.App {
 
     var layers:Array<Layer>;
 
-    var sprite:Sprite;
-
     // TODO: Hack until hxd.System.Platform works
     var isMobile = #if mobile true #else false #end;
 
@@ -40,28 +38,36 @@ class Main extends hxd.App {
     override function init() {
         super.init();
 
-        s2d.defaultSmooth = true;
-        hxd.Window.getInstance().addEventTarget(onEvent);
+        var stage = hxd.Window.getInstance();
 
-        var layer = Layer.load('Popup.swfty', layer -> {    
+        s2d.defaultSmooth = true;
+        stage.addEventTarget(onEvent);
+
+        var layer = Layer.load(stage.width, stage.height, 'swfty/high/Yokat.swfty', layer -> {    
             trace('Done!');
+            
+            var sprite:Sprite = layer.create('UI');
+            layer.add(sprite);
+
+            sprite.fit();
+
+            trace(sprite.x, sprite.y, sprite.width, sprite.height);
+
+            //sprite.fit();
+            //sprite.x += 408;
+            //sprite.y += 208;
+            //sprite.scaleX = 0.85;
+            //sprite.scaleY = 0.85;
+            //sprite.rotation = -1.0;
+
+            //sprite.get('mc').get('description').getText('title').fitText('A very long title, yes, hello!!!');
+        
         }, error -> {
             trace('Error: $error');
         });
 
         layers.push(layer);
         s2d.addChild(layer);
-
-        sprite = layer.create('PopupShop');
-        sprite.x += 408;
-        sprite.y += 208;
-        //sprite.scaleX = 0.85;
-        //sprite.scaleY = 0.85;
-        //sprite.rotation = -1.0;
-
-        sprite.get('mc').get('description').getText('title').fitText('A very long title, yes, hello!!!');
-
-        layer.add(sprite);
 
         #if test
         if (!debugInitialized) {

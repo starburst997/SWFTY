@@ -1,11 +1,9 @@
 # Libraries
 -lib heaps
 -lib swfty
--lib haxe-zip
--lib hxbit
 
 # Resource path
--D resourcesPath=../../res/
+-D resourcesPath=res
 
 # Defs
 -D hl_disable_mikkt
