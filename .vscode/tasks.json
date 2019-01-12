@@ -9,8 +9,11 @@
             "taskName": "build html5",
             "isBuildCommand": true,
             "args": [
-                "build", "./samples/openfl/project.xml", "html5", "-debug", "-v"
+                "build", "./project.xml", "html5", "-debug", "-v"
             ],
+            "options": {
+                "cwd": "${workspaceFolder}/samples/openfl"
+            },
             "presentation": {
                 "echo": false,
                 "focus": false,
@@ -23,8 +26,11 @@
             "taskName": "build export",
             "isBuildCommand": true,
             "args": [
-                "build", "./samples/openfl/project.xml", "html5", "-debug", "-Dexport", "-v"
+                "build", "./project.xml", "html5", "-debug", "-Dexport", "-v"
             ],
+            "options": {
+                "cwd": "${workspaceFolder}/samples/openfl"
+            },
             "presentation": {
                 "echo": false,
                 "focus": false,
@@ -37,8 +43,11 @@
             "taskName": "build html5 exporter",
             "isBuildCommand": true,
             "args": [
-                "build", "./samples/html5-exporter/project.xml", "html5", "-debug", "-Dexport", "-v"
+                "build", "./project.xml", "html5", "-debug", "-Dexport", "-v"
             ],
+            "options": {
+                "cwd": "${workspaceFolder}/samples/html5-exporter"
+            },
             "presentation": {
                 "echo": false,
                 "focus": false,
@@ -51,8 +60,11 @@
             "taskName": "build cli exporter",
             "isBuildCommand": true,
             "args": [
-                "samples/cli-exporter/test-mac.sh"
+                "test-mac.sh"
             ],
+            "options": {
+                "cwd": "${workspaceFolder}/samples/cli-exporter"
+            },
             "presentation": {
                 "echo": false,
                 "focus": false,
@@ -65,21 +77,28 @@
             "taskName": "build hl",
             "isBuildCommand": true,
             "args": [
-                "samples/heaps/make.sh", "-D test"
+                "make.sh", "-D test"
             ],
+            "options": {
+                "cwd": "${workspaceFolder}/samples/heaps"
+            },
             "presentation": {
                 "echo": false,
                 "focus": false,
                 "panel": "dedicated",
                 "reveal": "silent"
             }
-        },{
-            "command": "sh",
+        },
+        {
+            "command": "haxe",
             "taskName": "build js",
             "isBuildCommand": true,
             "args": [
-                "samples/heaps/html5.sh", "-D test"
+                "html5.hxml", "-D", "test"
             ],
+            "options": {
+                "cwd": "${workspaceFolder}/samples/heaps"
+            },
             "presentation": {
                 "echo": false,
                 "focus": false,
@@ -89,7 +108,7 @@
         },
         /*{
             "type": "hxml",
-            "label": "Build",
+            "label": "Heaps JS",
             "file": "build.hxml",
             "problemMatcher": [
                 "$haxe-absolute",
