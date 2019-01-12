@@ -1,0 +1,4 @@
+-D hlopenal=1.4.0
+# @install: lix --silent download "haxelib:/hlopenal#1.4.0" into hlopenal/1.4.0/haxelib
+#-cp ${HAXE_LIBCACHE}/hlopenal/1.4.0/haxelib/
+-cp ../../submodules/hashlink/libs/openal

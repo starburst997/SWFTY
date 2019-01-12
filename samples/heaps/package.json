@@ -1,0 +1,18 @@
+{
+  "name": "swfty-heaps-samples",
+  "version": "0.0.1",
+  "license": "MIT",
+  "scripts": {
+    "preinstall": "mkdir -p ~/haxe",
+    "postinstall": "mkdir -p haxe_libraries; lix download;",
+    "update": "lix download",
+    "download": "lix install",
+    "hl": "haxe build.hxml && hl bin/SWFTY.hl",
+    "html5": "haxe html5.hxml",
+    "watch": "live-server bin --watch=SWFTY.js --wait=250"
+  },
+  "dependencies": {
+    "live-server": "^1.2.1",
+    "lix": "starburst997/lix.client#develop"
+  }
+}

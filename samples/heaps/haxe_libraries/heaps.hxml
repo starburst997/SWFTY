@@ -1,0 +1,4 @@
+-D heaps=1.5.0
+# @install: lix --silent download "gh://github.com/starburst997/heaps#fb2633eaf2ec564581dc70e9976c94041bd81f9c" into heaps/1.5.0/github/fb2633eaf2ec564581dc70e9976c94041bd81f9c
+-lib format
+-cp ${HAXE_LIBCACHE}/heaps/1.5.0/github/fb2633eaf2ec564581dc70e9976c94041bd81f9c/
