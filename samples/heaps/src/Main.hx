@@ -3,6 +3,7 @@ package;
 import swfty.renderer.Layer;
 
 using swfty.extra.Lambda;
+using swfty.extra.Tween;
 
 class Main extends hxd.App {
 
@@ -43,15 +44,14 @@ class Main extends hxd.App {
         s2d.defaultSmooth = true;
         stage.addEventTarget(onEvent);
 
-        var layer = Layer.load(stage.width, stage.height, 'swfty/high/Yokat.swfty', layer -> {    
+        //var layer = Layer.load(stage.width, stage.height, 'swfty/high/Yokat.swfty', (layer:Layer) -> {    
+        var layer = Layer.load(stage.width, stage.height, 'swfty/high/Popup.swfty', (layer:Layer) -> {    
             trace('Done!');
             
             var sprite:Sprite = layer.create('UI');
             layer.add(sprite);
 
             sprite.fit();
-
-            trace(sprite.x, sprite.y, sprite.width, sprite.height);
 
             //sprite.fit();
             //sprite.x += 408;
@@ -61,6 +61,50 @@ class Main extends hxd.App {
             //sprite.rotation = -1.0;
 
             //sprite.get('mc').get('description').getText('title').fitText('A very long title, yes, hello!!!');
+
+            var names = layer.getAllNames();
+            var spawn = function f() {
+                haxe.Timer.delay(function() {
+                    for (layer in layers) {
+                        var name = names[Std.int(Math.random() * names.length)];
+                        var sprite = layer.create(name);
+
+                        var speedX = Math.random() * 50 - 25;
+                        var speedY = Math.random() * 50 - 25;
+                        var speedRotation = (Math.random() * 50 - 25) / 180 * Math.PI * 5;
+                        var speedAlpha = Math.random() * 0.75 + 0.25;
+
+                        speedRotation = speedRotation / Math.PI * 180;
+
+                        sprite.x = Math.random() * stage.width * 0.75;// + stage.stageWidth / 4;
+                        sprite.y = Math.random() * stage.height * 0.75;// + stage.stageHeight / 4;
+
+                        var scale = Math.random() * 0.25 + 0.35;
+                        sprite.scaleX = scale;
+                        sprite.scaleY = scale;
+
+                        sprite.tweenScale(1.5, 0.5, 0.5, BounceOut, function() 
+                            sprite.tweenScale(0.25, 0.5, BackIn));
+
+                        sprite.addRender(function(dt) {
+                            sprite.x += speedX * dt;
+                            sprite.y += speedY * dt;
+                            sprite.rotation += speedRotation * dt;
+                            sprite.alpha -= speedAlpha * dt;
+
+                            if (sprite.alpha <= 0) {
+                                layer.remove(sprite);
+                            }
+                        });
+
+                        layer.add(sprite);
+
+                        f();
+                    }
+                }, Std.int(DateTools.seconds(0.0025)));
+            }
+
+            spawn();
         
         }, error -> {
             trace('Error: $error');
@@ -128,42 +172,6 @@ class Main extends hxd.App {
 
         for (layer in layers) {
             layer.update(dt);
-
-            continue;
-
-            var names = layer.getAllNames();
-
-            var name = names[Std.int(Math.random() * names.length)];
-            var sprite = layer.create(name);
-
-            var speedX = Math.random() * 50 - 25;
-            var speedY = Math.random() * 50 - 25;
-            var speedRotation = (Math.random() * 50 - 25) / 180 * Math.PI * 5;
-            var speedAlpha = Math.random() * 0.75 + 0.25;
-
-            var stage = hxd.Window.getInstance();
-            sprite.x = Math.random() * stage.width * 0.75;// + stage.stageWidth / 4;
-            sprite.y = Math.random() * stage.height * 0.75;// + stage.stageHeight / 4;
-
-            var scale = Math.random() * 0.25 + 0.35;
-            sprite.scaleX = scale;
-            sprite.scaleY = scale;
-
-            sprite.alpha = 1.0;
-            sprite.rotation = 0.0;
-
-            sprite.addRender(function(dt) {
-                sprite.x += speedX * dt;
-                sprite.y += speedY * dt;
-                sprite.rotation += speedRotation * dt;
-                sprite.alpha -= speedAlpha * dt;
-
-                if (sprite.alpha <= 0) {
-                    layer.remove(sprite);
-                }
-            });
-
-            layer.add(sprite);
         }
 
         #if test
