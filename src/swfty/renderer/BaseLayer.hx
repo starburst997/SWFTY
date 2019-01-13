@@ -190,7 +190,9 @@ class BaseLayer extends EngineLayer {
         return if (tiles.exists(id)) {
             tiles.get(id);
         } else {
+            #if (!openfl || !list)
             Log.warn('Missing shape: $id');
+            #end
             var tile = emptyTile(id);
             tiles.set(id, tile);
             tile;
