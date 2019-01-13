@@ -44,8 +44,7 @@ class Main extends hxd.App {
         s2d.defaultSmooth = true;
         stage.addEventTarget(onEvent);
 
-        //var layer = Layer.load(stage.width, stage.height, 'swfty/high/Yokat.swfty', (layer:Layer) -> {    
-        var layer = Layer.load(stage.width, stage.height, 'swfty/high/Popup.swfty', (layer:Layer) -> {    
+        var layer = Layer.load(stage.width, stage.height, 'swfty/high/Yokat.swfty', (layer:Layer) -> {    
             trace('Done!');
             
             var sprite:Sprite = layer.create('UI');

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
     
-    <meta title="SWFTY" package="jd.boivin.swfty" version="1.0.0" company="Jean-Denis Boivin" />
+    <meta title="OpenFL 8" package="jd.boivin.swfty_openfl8" version="1.0.0" company="Jean-Denis Boivin" />
+    <meta title="OpenFL 8 List" if="list" />
+
     <app main="Main" path="bin" file="SWFTY" />
     <window background="#666666" allowHighDPI="true" fps="60" />
     <window hidden="true" if="cli" />

@@ -468,7 +468,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/../../../submodules/turbojpeg/dependencies-lib/lib",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = jd.boivin.swfty;
+				PRODUCT_BUNDLE_IDENTIFIER = "jd.boivin.swfty-heaps";
 				PRODUCT_NAME = SWFTY;
 				SDKROOT = iphoneos;
 			};
@@ -498,7 +498,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/../../../submodules/turbojpeg/dependencies-lib/lib",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = jd.boivin.swfty;
+				PRODUCT_BUNDLE_IDENTIFIER = "jd.boivin.swfty-heaps";
 				PRODUCT_NAME = SWFTY;
 				SDKROOT = iphoneos;
 			};

@@ -8,6 +8,7 @@
     "update": "lix download",
     "download": "lix install",
     "html5": "openl build html5",
+    "ios": "IPHONE_VER=11.2 openfl test ios -final -Dlist",
     "watch": "live-server bin/html5 --watch=debug/bin/SWFTY.js,release/bin/SWFTY.js,final/bin/SWFTY.js --open=debug/bin --wait=750"
   },
   "dependencies": {

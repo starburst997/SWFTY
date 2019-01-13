@@ -228,7 +228,7 @@ class Main extends Sprite {
         #if export
         processSWF('res/Popup.swf', function(layer) {
         #else
-        swfty.Popup.load(stage.stageWidth, stage.stageHeight, function(layer:swfty.Popup) {
+        swfty.Yokat.load(stage.stageWidth, stage.stageHeight, function(layer:swfty.Yokat) {
         #end
             layers.push(layer);
 
