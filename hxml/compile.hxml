@@ -1,0 +1,17 @@
+-lib akifox-asynchttp
+-lib bin-packing
+-lib file-load
+-lib file-save
+-lib format
+-lib haxe-concurrent
+-lib haxe-custom
+-lib haxe-ws
+-lib hxbit
+-lib mcli
+-lib sure
+-lib tweenxcore
+-lib zip
+
+-cp src
+-cp samples/abstracts
+-cp compile

@@ -1,0 +1,7 @@
+hxml/openfl.hxml
+
+-D list
+
+
+-js bin/test.js
+-main Compile

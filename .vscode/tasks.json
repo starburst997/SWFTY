@@ -23,6 +23,23 @@
         },
         {
             "command": "openfl",
+            "taskName": "build html5 display list",
+            "isBuildCommand": true,
+            "args": [
+                "build", "./project.xml", "html5", "-Dlist", "-debug", "-v"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/samples/openfl"
+            },
+            "presentation": {
+                "echo": false,
+                "focus": false,
+                "panel": "dedicated",
+                "reveal": "silent"
+            }
+        },
+        {
+            "command": "openfl",
             "taskName": "build export",
             "isBuildCommand": true,
             "args": [
