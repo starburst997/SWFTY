@@ -255,10 +255,8 @@ class Main extends Sprite {
                     var speedRotation = (Math.random() * 50 - 25) / 180 * Math.PI * 5;
                     var speedAlpha = Math.random() * 0.75 + 0.25;
 
-                    speedRotation = speedRotation / Math.PI * 180;
-
-                    sprite.x = Math.random() * stage.stageWidth * 0.75;// + stage.stageWidth / 4;
-                    sprite.y = Math.random() * stage.stageHeight * 0.75;// + stage.stageHeight / 4;
+                    sprite.x = Math.random() * stage.stageWidth * 0.75;
+                    sprite.y = Math.random() * stage.stageHeight * 0.75;
 
                     var scale = Math.random() * 0.25 + 0.35;
                     sprite.scaleX = scale;
