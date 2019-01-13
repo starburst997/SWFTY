@@ -1,5 +1,7 @@
 package openfl_list.swfty.renderer;
 
+import openfl.geom.Matrix;
+
 typedef EngineSprite = openfl.display.Sprite;
 typedef EngineBitmap = openfl.display.Bitmap;
 
@@ -64,12 +66,7 @@ abstract DisplayBitmap(EngineBitmap) from EngineBitmap to EngineBitmap {
     }
 
     public inline function transform(a:Float, b:Float, c:Float, d:Float, tx:Float, ty:Float) {
-        this.transform.matrix.a = a;
-        this.transform.matrix.b = b;
-        this.transform.matrix.c = c;
-        this.transform.matrix.d = d;
-        this.transform.matrix.tx = tx;
-        this.transform.matrix.ty = ty;
+        this.transform.matrix = new Matrix(a, b, c, d, tx, ty);
     }
 
     public inline function color(r:Int, g:Int, b:Int) {
@@ -85,12 +82,7 @@ abstract DisplaySprite(BaseSprite) from BaseSprite to BaseSprite {
     }
 
     public inline function transform(a:Float, b:Float, c:Float, d:Float, tx:Float, ty:Float) {
-        this.transform.matrix.a = a;
-        this.transform.matrix.b = b;
-        this.transform.matrix.c = c;
-        this.transform.matrix.d = d;
-        this.transform.matrix.tx = tx;
-        this.transform.matrix.ty = ty;
+        this.transform.matrix = new Matrix(a, b, c, d, tx, ty);
     }
 
     public inline function color(r:Float, g:Float, b:Float, rAdd:Float, gAdd:Float, bAdd:Float) {
