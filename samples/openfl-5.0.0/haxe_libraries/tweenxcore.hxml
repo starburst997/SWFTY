@@ -1,0 +1,3 @@
+-D tweenxcore=1.0.4
+# @install: lix --silent download "haxelib:/tweenxcore#1.0.4" into tweenxcore/1.0.4/haxelib
+-cp ${HAXE_LIBCACHE}/tweenxcore/1.0.4/haxelib/

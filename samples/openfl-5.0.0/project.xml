@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+    
+    <meta title="SWFTY" package="jd.boivin.swfty" version="1.0.0" company="Jean-Denis Boivin" />
+    <app main="Main" path="bin" file="SWFTY" />
+    <window background="#666666" allowHighDPI="true" fps="60" />
+    <window hidden="true" if="cli" />
+    
+    <haxelib name="openfl" />
+    <haxelib name="swfty" />
+    <haxelib name="haxe-ws" />
+    <haxelib name="haxe-concurrent" />
+    <haxelib name="tweenxcore" />
+    
+    <haxelib name="haxe-file-save" if="export" />
+    <haxelib name="haxe-file-load" if="export" />
+    <haxelib name="format" if="export" />
+    <haxelib name="binpacking" if="export" />
+    <haxelib name="mcli" if="export" />
+
+    <source path="src" />
+    <source path="../abstracts" />
+
+    <assets path="../../res" rename="res"/>
+    <icon path="../../res/icon.png" />
+    <launchImage path="../../ref/launchImages/Default~iphone.png" width="320" height="480" />
+    <launchImage path="../../ref/launchImages/Default@2x~iphone.png" width="640" height="960" />
+    <launchImage path="../../ref/launchImages/Default-568h@2x~iphone.png" width="640" height="1136" />
+    <launchImage path="../../ref/launchImages/Default-667h.png" width="750" height="1334" />
+    <launchImage path="../../ref/launchImages/Default-736h.png" width="1242" height="2208" />
+    <launchImage path="../../ref/launchImages/Default-Portrait~ipad.png" width="768" height="1024" />
+    <launchImage path="../../ref/launchImages/Default-Portrait@2x~ipad.png" width="1536" height="2048" />
+    
+    <haxedef name="gl_stats" if="debug" />
+    <!--<haxedef name="sync" unless="html5" />-->
+    <haxedef name="trim" if="export" />
+    <haxedef name="use_rtti_doc" unless="html5" if="export" />
+
+    <certificate team-id="FBFX3ZZ2WJ" />
+
+</project>
