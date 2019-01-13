@@ -15,3 +15,6 @@
 -cp src
 -cp samples/abstracts
 -cp compile
+
+-js bin/test.js
+-main Compile
