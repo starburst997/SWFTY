@@ -1,0 +1,5 @@
+-D file-load=0.0.1
+# @install: lix --silent download "gh://github.com/starburst997/haxe-file-load#040abc0c1d6f5df0abe67fc83b775e9c6f89b9e0" into file-load/0.0.1/github/040abc0c1d6f5df0abe67fc83b775e9c6f89b9e0
+-lib akifox-asynchttp
+-lib haxe-custom
+-cp ${HAXE_LIBCACHE}/file-load/0.0.1/github/040abc0c1d6f5df0abe67fc83b775e9c6f89b9e0/src/

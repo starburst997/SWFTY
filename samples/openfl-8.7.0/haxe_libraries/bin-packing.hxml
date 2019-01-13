@@ -1,0 +1,4 @@
+-D bin-packing=1.0.2
+# @install: lix --silent download "gh://github.com/Tw1ddle/Rectangle-Bin-Packing#f620f83ede51bfa59575a3c52265791028f259ac" into bin-packing/1.0.2/github/f620f83ede51bfa59575a3c52265791028f259ac
+-lib sure
+-cp ${HAXE_LIBCACHE}/bin-packing/1.0.2/github/f620f83ede51bfa59575a3c52265791028f259ac/
