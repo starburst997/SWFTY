@@ -10,7 +10,7 @@ class Tools {
         return str == null || str == '' ? '' : str.charAt(0).toUpperCase() + str.substr(1);
     }
 
-    @:generic
+    #if (haxe_ver >= "4.0.0") @:generic #end
     public static inline function sortf<T>(array:Array<T>, f:T->Float) {
         haxe.ds.ArraySort.sort(array, function(a, b):Int {
             var va = f(a);
@@ -22,7 +22,7 @@ class Tools {
         return array;
     }
 
-    @:generic
+    #if (haxe_ver >= "4.0.0") @:generic #end
     public static inline function sortdf<T>(array:Array<T>, f:T->Float) {
         haxe.ds.ArraySort.sort(array, function(a, b):Int {
             var va = f(a);
