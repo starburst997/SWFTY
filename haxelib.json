@@ -9,7 +9,9 @@
   "releasenote" : "Initial Release",
   "contributors" : ["starburst997"],
   "dependencies" : { 
-    "zip": "gh:starburst997/haxe-zip#master",
-    "hxbit": "gh:starburst997/hxbit#jd"
+    "zip": "gh:starburst997/haxe-zip#81143dd39fbd7b5bd53227e1dcaeb70cad71da05",
+    "hxbit": "gh:starburst997/hxbit#e0aebdbdfb590c9cef8dda3cd428acf7c794ca61",
+    "haxe-ws": "gh://github.com/starburst997/haxe-ws#d8b2acc61e18ae26f941dc95bd3654156ab7b21",
+    "haxe-concurrent": "gh://github.com/vegardit/haxe-concurrent#6bfb3de5d9b13f1f273cddfa8f4220ec190bfb70"
   }
 }
