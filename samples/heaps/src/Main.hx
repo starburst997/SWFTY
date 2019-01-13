@@ -201,12 +201,14 @@ class Main extends hxd.App {
     }
 
     static function main() {
-        #if js
+        hxd.Res.initEmbed();
+        
+        /*#if js
         // I really wanted to load SWFTY and not have them embed
         hxd.Res.initEmbed();
         #else
         hxd.Res.initLocal();
-        #end
+        #end*/
 
         new Main();
     }
