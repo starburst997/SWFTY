@@ -1,16 +1,19 @@
-package openfl.swfty.renderer;
+package openfl_list.swfty.renderer;
 
 import haxe.io.Bytes;
 import haxe.ds.IntMap;
 
+import openfl.geom.Point;
 import openfl.geom.Rectangle;
 import openfl.display.BitmapData;
-import openfl.display.Tileset;
 
-typedef EngineLayer = openfl.display.Tilemap;
-typedef DisplayTile = Int;
+typedef EngineLayer = openfl.display.Sprite;
+typedef DisplayTile = openfl.display.BitmapData;
 
 class FinalLayer extends BaseLayer {
+
+    var texture:BitmapData;
+    var rects:IntMap<Rectangle> = new IntMap();
 
     public static inline function create(?width:Int, ?height:Int) {
         return new FinalLayer(width, height);
@@ -18,7 +21,7 @@ class FinalLayer extends BaseLayer {
 
     public function new(?width:Int, ?height:Int) {
         // TODO: If null, it should maybe be the stage's dimensions??? Or at least on the "getter"
-        super(width == null ? 256 : width, height == null ? 256 : height);
+        super();
 
         _width = width;
         _height = height;
@@ -27,36 +30,31 @@ class FinalLayer extends BaseLayer {
     override function get_base() {
         if (base == null) {
             base = FinalSprite.create(this);
-            addTile(base);
+            addChild(base);
         }
         return base;
     }
 
     public override function emptyTile(?id:Int):DisplayTile {
-        return -1;
+        return if (id != null && texture != null && rects.exists(id)) {
+            var rect = rects.get(id);
+            var bmpd = new BitmapData(Std.int(rect.width), Std.int(rect.height), true, 0x00000000);
+            bmpd.copyPixels(texture, rect, new Point(0, 0));
+            bmpd;
+        } else {
+            new DisplayTile(1, 1, true, 0x00000000);
+        }
     }
 
     public override function loadTexture(bytes:Bytes, swfty:SWFTYType, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
         function complete(bmpd:BitmapData) {
             // Create tileset
-            var rects = [];
             tiles = new IntMap();
             for (tile in swfty.tiles) {
-                tiles.set(tile.id, rects.length);
-                rects.push(new Rectangle(tile.x, tile.y, tile.width, tile.height));
+                rects.set(tile.id, new Rectangle(tile.x, tile.y, tile.width, tile.height));
             }
 
-            /*if (this.tileset != null) {
-                this.tileset.bitmapData = bmpd;
-                this.tileset.rectData = new Vector<Float>();
-                for (rect in rects) this.tileset.addRect(rect);
-            } else {
-                var tileset = new Tileset(bmpd, rects);
-                this.tileset = tileset;
-            }*/
-
-            var tileset = new Tileset(bmpd, rects);
-            this.tileset = tileset;
+            texture = bmpd;
 
             trace('Tilemap: ${bmpd.width}, ${bmpd.height}');
 

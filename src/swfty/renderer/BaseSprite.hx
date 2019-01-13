@@ -8,8 +8,11 @@ class BaseSprite extends EngineSprite {
 
     public var og:Bool = false;
 
+    // I was so close to have no custom defined ;_;
+    #if (!openfl || !list)
     public var width(get, set):Float;
     public var height(get, set):Float;
+    #end
 
     public var bounds(get, null):Rect;
 
@@ -80,20 +83,24 @@ class BaseSprite extends EngineSprite {
         return _bounds;
     }
 
-    inline function get_width():Float {
+    #if (openfl && list) override #else inline #end
+    function get_width():Float {
         return bounds.width * scaleX;
     }
 
-    inline function set_width(width:Float) {
+    #if (openfl && list) override #else inline #end
+    function set_width(width:Float) {
         scaleX = width / bounds.width;
         return width;
     }
 
-    inline function get_height():Float {
+    #if (openfl && list) override #else inline #end
+    function get_height():Float {
         return bounds.height * scaleY;
     }
 
-    inline function set_height(height:Float) {
+    #if (openfl && list) override #else inline #end
+    function set_height(height:Float) {
         scaleY = height / bounds.height;
         return height;
     }

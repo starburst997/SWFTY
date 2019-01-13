@@ -39,7 +39,7 @@ class FinalLayer extends BaseLayer {
         super.removeSprite(sprite);
     }
 
-    public override function emptyTile():DisplayTile {
+    public override function emptyTile(?id:Int):DisplayTile {
         return -1;
     }
 

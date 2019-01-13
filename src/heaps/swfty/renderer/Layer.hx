@@ -40,7 +40,7 @@ class FinalLayer extends BaseLayer {
         super.draw(ctx);
     }
 
-    public override function emptyTile():DisplayTile {
+    public override function emptyTile(?id:Int):DisplayTile {
         return null;
     }
 

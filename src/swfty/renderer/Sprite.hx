@@ -14,6 +14,13 @@ typedef DisplaySprite = void.swfty.renderer.Sprite.DisplaySprite;
 typedef DisplayBitmap = void.swfty.renderer.Sprite.DisplayBitmap;
 typedef FinalSprite = void.swfty.renderer.Sprite.FinalSprite;
 
+#elseif (openfl && list)
+typedef EngineSprite = openfl_list.swfty.renderer.Sprite.EngineSprite;
+typedef EngineBitmap = openfl_list.swfty.renderer.Sprite.EngineBitmap;
+typedef DisplaySprite = openfl_list.swfty.renderer.Sprite.DisplaySprite;
+typedef DisplayBitmap = openfl_list.swfty.renderer.Sprite.DisplayBitmap;
+typedef FinalSprite = openfl_list.swfty.renderer.Sprite.FinalSprite;
+
 #elseif openfl
 typedef EngineSprite = openfl.swfty.renderer.Sprite.EngineSprite;
 typedef EngineBitmap = openfl.swfty.renderer.Sprite.EngineBitmap;

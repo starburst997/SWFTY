@@ -8,6 +8,11 @@ typedef DisplayTile = void.swfty.renderer.Layer.DisplayTile;
 typedef EngineLayer = void.swfty.renderer.Layer.EngineLayer;
 typedef FinalLayer = void.swfty.renderer.Layer.FinalLayer;
 
+#elseif (openfl && list)
+typedef DisplayTile = openfl_list.swfty.renderer.Layer.DisplayTile;
+typedef EngineLayer = openfl_list.swfty.renderer.Layer.EngineLayer;
+typedef FinalLayer = openfl_list.swfty.renderer.Layer.FinalLayer;
+
 #elseif openfl
 typedef DisplayTile = openfl.swfty.renderer.Layer.DisplayTile;
 typedef EngineLayer = openfl.swfty.renderer.Layer.EngineLayer;

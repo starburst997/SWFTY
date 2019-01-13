@@ -182,7 +182,7 @@ class BaseLayer extends EngineLayer {
         return DisplayBitmap.create(this, id, og);
     }
 
-    public function emptyTile():DisplayTile {
+    public function emptyTile(?id:Int):DisplayTile {
         throw 'Not implemented';
     }
 
@@ -191,7 +191,7 @@ class BaseLayer extends EngineLayer {
             tiles.get(id);
         } else {
             Log.warn('Missing shape: $id');
-            var tile = emptyTile();
+            var tile = emptyTile(id);
             tiles.set(id, tile);
             tile;
         } 
