@@ -2,7 +2,7 @@
 <project>
     
     <meta title="openFL" package="jd.boivin.swfty_openfl" version="1.0.0" company="Jean-Denis Boivin" />
-    <meta title="OpenFL List" if="list" />
+    <meta title="OpenFL List" package="jd.boivin.swfty_openfl_list" if="list" />
     
     <app main="Main" path="bin" file="SWFTY" />
     <window background="#666666" allowHighDPI="true" fps="60" />
@@ -33,7 +33,7 @@
     <launchImage path="../../ref/launchImages/Default-Portrait~ipad.png" width="768" height="1024" />
     <launchImage path="../../ref/launchImages/Default-Portrait@2x~ipad.png" width="1536" height="2048" />
     
-    <haxedef name="gl_stats" if="debug" />
+    <haxedef name="gl_stats" unless="final" />
     <!--<haxedef name="sync" unless="html5" />-->
     <haxedef name="trim" if="export" />
     <haxedef name="use_rtti_doc" unless="html5" if="export" />

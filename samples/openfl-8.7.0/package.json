@@ -8,8 +8,8 @@
     "update": "lix download",
     "download": "lix install",
     "html5": "openl build html5",
-    "ios": "IPHONE_VER=11.2 openfl test ios -final",
-    "ios-list": "IPHONE_VER=11.2 openfl test ios -final -Dlist",
+    "ios": "HXCPP_COMPILE_CACHE=/Users/jdboivin/projects/cache-3 openfl test ios",
+    "ios-list": "HXCPP_COMPILE_CACHE=/Users/jdboivin/projects/cache-3 openfl test ios -Dlist",
     "watch": "live-server bin/html5/bin --watch=SWFTY.js --wait=750"
   },
   "dependencies": {

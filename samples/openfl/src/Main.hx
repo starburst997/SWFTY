@@ -232,21 +232,33 @@ class Main extends Sprite {
         #end
             layers.push(layer);
 
-            var names = layer.getAllNames();
             //trace(names);
 
             //trace(Report.getReport(layer.json));
 
             addChildAt(layer, 0);
 
-            var sprite = layer.createPopupShop();
+            var sprite = layer.create('UI');
             layer.add(sprite);
 
             sprite.fit();
+        }, function(e) trace('ERROR: $e'));
+	}
 
-            // TODO: VSCode was choking on the naming, not sure why but this did the trick
-            var spawn = function f() {
-                haxe.Timer.delay(function() {
+    var time = 0.0;
+    function render() {
+        dt = (haxe.Timer.stamp() - timer); 
+        timer = haxe.Timer.stamp();
+
+        time -= dt;
+        if (time <= 0) {
+            time = 0.0001;
+
+            for (layer in layers) {
+                layer.update(dt);
+
+                var names = layer.getAllNames();
+                for (i in 0...1) {
                     var name = names[Std.int(Math.random() * names.length)];
                     var sprite = layer.create(name);
 
@@ -265,8 +277,7 @@ class Main extends Sprite {
                     sprite.tweenScale(1.5, 0.5, 0.5, BounceOut, function() 
                         sprite.tweenScale(0.25, 0.5, BackIn));
 
-                    var render = null;
-                    render = function(e) {
+                    sprite.addRender(function(dt) {
                         sprite.x += speedX * dt;
                         sprite.y += speedY * dt;
                         sprite.rotation += speedRotation * dt;
@@ -274,29 +285,12 @@ class Main extends Sprite {
 
                         if (sprite.alpha <= 0) {
                             layer.remove(sprite);
-                            removeEventListener(Event.ENTER_FRAME, render);
                         }
-                    }
-
-                    addEventListener(Event.ENTER_FRAME, render);
+                    });
 
                     layer.add(sprite);
-
-                    f();
-
-                }, Std.int(DateTools.seconds(0.0025)));
+                }
             }
-
-            spawn();
-        }, function(e) trace('ERROR: $e'));
-	}
-
-    function render() {
-        dt = (haxe.Timer.stamp() - timer); 
-        timer = haxe.Timer.stamp();
-
-        for (layer in layers) {
-            layer.update(dt);
         }
     }
 

@@ -60,49 +60,6 @@ class Main extends hxd.App {
             //sprite.rotation = -1.0;
 
             //sprite.get('mc').get('description').getText('title').fitText('A very long title, yes, hello!!!');
-
-            var names = layer.getAllNames();
-            var spawn = function f() {
-                haxe.Timer.delay(function() {
-                    for (layer in layers) {
-                        var name = names[Std.int(Math.random() * names.length)];
-                        var sprite = layer.create(name);
-
-                        var speedX = Math.random() * 50 - 25;
-                        var speedY = Math.random() * 50 - 25;
-                        var speedRotation = (Math.random() * 50 - 25) / 180 * Math.PI * 5;
-                        var speedAlpha = Math.random() * 0.75 + 0.25;
-
-                        sprite.x = Math.random() * stage.width * 0.75;// + stage.stageWidth / 4;
-                        sprite.y = Math.random() * stage.height * 0.75;// + stage.stageHeight / 4;
-
-                        var scale = Math.random() * 0.25 + 0.35;
-                        sprite.scaleX = scale;
-                        sprite.scaleY = scale;
-
-                        sprite.tweenScale(1.5, 0.5, 0.5, BounceOut, function() 
-                            sprite.tweenScale(0.25, 0.5, BackIn));
-
-                        sprite.addRender(function(dt) {
-                            sprite.x += speedX * dt;
-                            sprite.y += speedY * dt;
-                            sprite.rotation += speedRotation * dt;
-                            sprite.alpha -= speedAlpha * dt;
-
-                            if (sprite.alpha <= 0) {
-                                layer.remove(sprite);
-                            }
-                        });
-
-                        layer.add(sprite);
-
-                        f();
-                    }
-                }, Std.int(DateTools.seconds(0.0025)));
-            }
-
-            spawn();
-        
         }, error -> {
             trace('Error: $error');
         });
@@ -164,11 +121,52 @@ class Main extends hxd.App {
     }
 
     var testAlpha = 0.0;
+    var time = 0.0;
     override function update(dt:Float) {
         super.update(dt);
 
-        for (layer in layers) {
-            layer.update(dt);
+        time -= dt;
+        if (time <= 0) {
+            time = 0.0001;
+
+            var stage = hxd.Window.getInstance();
+            for (layer in layers) {
+                layer.update(dt);
+                
+                var names = layer.getAllNames();
+                for (i in 0...5) {
+                    var name = names[Std.int(Math.random() * names.length)];
+                    var sprite = layer.create(name);
+
+                    var speedX = Math.random() * 50 - 25;
+                    var speedY = Math.random() * 50 - 25;
+                    var speedRotation = (Math.random() * 50 - 25) / 180 * Math.PI * 5;
+                    var speedAlpha = Math.random() * 0.75 + 0.25;
+
+                    sprite.x = Math.random() * stage.width * 0.75;
+                    sprite.y = Math.random() * stage.height * 0.75;
+
+                    var scale = Math.random() * 0.25 + 0.35;
+                    sprite.scaleX = scale;
+                    sprite.scaleY = scale;
+
+                    sprite.tweenScale(1.5, 0.5, 0.5, BounceOut, function() 
+                        sprite.tweenScale(0.25, 0.5, BackIn));
+
+                    sprite.addRender(function(dt) {
+                        sprite.x += speedX * dt;
+                        sprite.y += speedY * dt;
+                        sprite.rotation += speedRotation * dt;
+                        sprite.alpha -= speedAlpha * dt;
+
+                        if (sprite.alpha <= 0) {
+                            layer.remove(sprite);
+                        }
+                    });
+
+                    layer.add(sprite);
+                }
+            }
         }
 
         #if test
