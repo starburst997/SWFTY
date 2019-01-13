@@ -1,0 +1,30 @@
+-lib akifox-asynchttp
+-lib bin-packing
+-lib file-load
+-lib file-save
+-lib format
+-lib haxe-concurrent
+-lib haxe-custom
+-lib haxe-ws
+-lib heaps
+-lib hlopenal
+-lib hlsdl
+-lib hxbit
+-lib lime
+-lib mcli
+-lib openfl
+-lib sure
+-lib tweenxcore
+-lib zip
+
+-cp src
+-cp samples/abstracts
+-cp samples/cli-exporter/src
+-cp samples/heaps/src
+-cp samples/html5-exporter/src
+-cp samples/openfl/src
+-cp samples/openfl-8.7.0/src
+-cp compile
+
+-js bin/test.js
+-main Compile

@@ -1,0 +1,3 @@
+-D haxe-custom=0.0.1
+# @install: lix --silent download "gh://github.com/starburst997/haxe-custom#7c0e1dd1f16e037a72066a014722c554bf85956e" into haxe-custom/0.0.1/github/7c0e1dd1f16e037a72066a014722c554bf85956e
+-cp ${HAXE_LIBCACHE}/haxe-custom/0.0.1/github/7c0e1dd1f16e037a72066a014722c554bf85956e/

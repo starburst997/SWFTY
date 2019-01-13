@@ -1,0 +1,4 @@
+-D mcli=0.1.6
+# @install: lix --silent download "gh://github.com/waneck/mcli#be071b87a0c658765d318293690dca1d216980bd" into mcli/0.1.6/github/be071b87a0c658765d318293690dca1d216980bd
+-cp ${HAXE_LIBCACHE}/mcli/0.1.6/github/be071b87a0c658765d318293690dca1d216980bd/
+-D use_rtti_doc
