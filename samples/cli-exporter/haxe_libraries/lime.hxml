@@ -1,5 +1,5 @@
 -D lime=7.2.0
-# @install: lix --silent download "gh://github.com/starburst997/lime#50ead9eeb3d57f2e499c2fbac94ee41c2f6c8054" into lime/7.2.0/github/50ead9eeb3d57f2e499c2fbac94ee41c2f6c8054
-# @run: haxelib run-dir lime ${HAXE_LIBCACHE}/lime/7.2.0/github/50ead9eeb3d57f2e499c2fbac94ee41c2f6c8054
--cp ${HAXE_LIBCACHE}/lime/7.2.0/github/50ead9eeb3d57f2e499c2fbac94ee41c2f6c8054/src
+# @install: lix --submodules --silent download "git:git@github.com:starburst997/lime#50ead9eeb3d57f2e499c2fbac94ee41c2f6c8054" into lime/7.2.0/git/50ead9eeb3d57f2e499c2fbac94ee41c2f6c8054
+# @run: haxelib run-dir lime ${HAXE_LIBCACHE}/lime/7.2.0/git/50ead9eeb3d57f2e499c2fbac94ee41c2f6c8054
+-cp ${HAXE_LIBCACHE}/lime/7.2.0/git/50ead9eeb3d57f2e499c2fbac94ee41c2f6c8054/src
 --macro lime._internal.macros.DefineMacro.run()
