@@ -1,6 +1,7 @@
 # Libraries
 -lib heaps
 -lib swfty
+-lib tweenxcore
 
 # Resource path
 -D resourcesPath=res
