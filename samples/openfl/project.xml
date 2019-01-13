@@ -7,23 +7,21 @@
     <window hidden="true" if="cli" />
     
     <haxelib name="openfl" />
+    <haxelib name="swfty" />
     <haxelib name="haxe-ws" />
-    <haxelib name="haxe-zip" />
     <haxelib name="haxe-concurrent" />
+    <haxelib name="tweenxcore" />
+    
     <haxelib name="haxe-file-save" if="export" />
     <haxelib name="haxe-file-load" if="export" />
-    <haxelib name="format" />
+    <haxelib name="format" if="export" />
     <haxelib name="binpacking" if="export" />
     <haxelib name="mcli" if="export" />
-    <haxelib name="swfty" />
-    <haxelib name="hxbit" />
-    <haxelib name="tweenxcore" />
 
     <source path="src" />
     <source path="../abstracts" />
-    <source path="../../submodules/openfl/scripts" />
 
-    <assets path="../../res" rename="res" />
+    <assets path="../../res" rename="res"/>
     <icon path="../../res/icon.png" />
     <launchImage path="../../ref/launchImages/Default~iphone.png" width="320" height="480" />
     <launchImage path="../../ref/launchImages/Default@2x~iphone.png" width="640" height="960" />
