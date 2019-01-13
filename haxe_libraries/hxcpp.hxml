@@ -1,0 +1,4 @@
+-D hxcpp=3.4.0
+# @install: lix --submodules --silent download "git:git@github.com:MinoGames/hxcpp#17c00542fe5b259c3e50323d91222690b9c58409" into hxcpp/3.4.0/git/17c00542fe5b259c3e50323d91222690b9c58409
+# @run: haxelib run-dir hxcpp ${HAXE_LIBCACHE}/hxcpp/3.4.0/git/17c00542fe5b259c3e50323d91222690b9c58409
+-cp ${HAXE_LIBCACHE}/hxcpp/3.4.0/git/17c00542fe5b259c3e50323d91222690b9c58409/
