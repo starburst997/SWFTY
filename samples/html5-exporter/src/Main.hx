@@ -5,7 +5,6 @@ import haxe.io.Bytes;
 
 #if export
 import swfty.exporter.Exporter;
-import file.save.FileSave;
 #end
 
 import swfty.renderer.Layer;
@@ -56,7 +55,7 @@ class Main extends Sprite {
 
         // Load new layers
         layers = [];
-        Layer.load(bytes, stage.stageWidth, stage.stageHeight, function(layer) {
+        Layer.load(stage.stageWidth, stage.stageHeight, bytes, function(layer) {
             layers.push(layer);
             addChildAt(layer, 0);
 

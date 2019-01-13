@@ -1,0 +1,5 @@
+-D zip=1.1.0
+# @install: lix --silent download "gh://github.com/starburst997/haxe-zip#68c9d2202f3508733b09fae07cce6702420aafb4" into zip/1.1.0/github/68c9d2202f3508733b09fae07cce6702420aafb4
+-lib format
+-cp ${HAXE_LIBCACHE}/zip/1.1.0/github/68c9d2202f3508733b09fae07cce6702420aafb4/src/
+--macro zip.Macro.init()

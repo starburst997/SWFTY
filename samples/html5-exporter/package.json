@@ -1,0 +1,17 @@
+{
+  "name": "swfty-html5-exporter",
+  "version": "0.0.1",
+  "license": "MIT",
+  "scripts": {
+    "preinstall": "mkdir -p ~/haxe",
+    "postinstall": "mkdir -p haxe_libraries; lix download;",
+    "update": "lix download",
+    "download": "lix install",
+    "build": "openl build html5",
+    "watch": "live-server bin/html5/bin --watch=SWFTYExporter.js --wait=750"
+  },
+  "dependencies": {
+    "live-server": "^1.2.1",
+    "lix": "starburst997/lix.client#develop"
+  }
+}

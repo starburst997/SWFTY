@@ -7,17 +7,13 @@
     <window hidden="true" if="cli" />
     
     <haxelib name="openfl" />
-    <haxelib name="haxe-zip" />
-    <haxelib name="haxe-file-save" if="export" />
-    <haxelib name="haxe-file-load" if="export" />
-    <haxelib name="format" />
-    <haxelib name="binpacking" />
+    <haxelib name="openfl-scripts" />
     <haxelib name="swfty" />
-    <haxelib name="hxbit" />
+    <haxelib name="format" />
+    <haxelib name="bin-packing" />
     <haxelib name="tweenxcore" />
 
     <source path="src" />
-    <source path="../../submodules/openfl/scripts" />
 
     <haxedef name="gl_stats" if="debug" />
     <!--<haxedef name="sync" unless="html5" />-->
