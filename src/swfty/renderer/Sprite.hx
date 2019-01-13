@@ -39,6 +39,17 @@ abstract Sprite(FinalSprite) from FinalSprite to FinalSprite {
         return new FinalSprite(layer, definition, linkage);
     }
 
+    #if openfl
+    public var rotation(get, set):Float;
+    inline function get_rotation():Float {
+        return this.rotation / 180 * Math.PI;
+    }
+
+    inline function set_rotation(value:Float):Float {
+        return this.rotation = value / Math.PI * 180;
+    }
+    #end
+
     public var parent(get, never):Sprite;
     public inline function get_parent():Sprite {
         return this.getParent();
