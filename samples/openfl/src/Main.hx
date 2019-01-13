@@ -53,7 +53,7 @@ class Main extends Sprite {
             // TODO: Get rid of message if it been over X sec
 
             var stop = false;
-            var ws = WebSocket.create("ws://192.168.101.236:49463/", [], false);
+            var ws = WebSocket.create("ws://192.168.0.192:49463/", [], false);
             ws.onopen = function() {
                 trace('open!');
 
@@ -222,15 +222,14 @@ class Main extends Sprite {
     function process() {
 		// Process SWF
 
+        trace('Hello!');
+
         // Asynchronous creation
-        /*#if export
+        #if export
         processSWF('res/Popup.swf', function(layer) {
         #else
-        Layer.load('res/swfty/high/Popup.swfty', stage.stageWidth, stage.stageHeight, function(layer) {
-        #end*/
-
         swfty.Popup.load(stage.stageWidth, stage.stageHeight, function(layer:swfty.Popup) {
-        
+        #end
             layers.push(layer);
 
             var names = layer.getAllNames();
@@ -243,11 +242,7 @@ class Main extends Sprite {
             var sprite = layer.createPopupShop();
             layer.add(sprite);
 
-            sprite.mc.description.title.fitText('A very long title, yes, hello!!!');
-
             sprite.fit();
-
-            return;
 
             // TODO: VSCode was choking on the naming, not sure why but this did the trick
             var spawn = function f() {
