@@ -9,7 +9,7 @@
             "taskName": "build html5",
             "isBuildCommand": true,
             "args": [
-                "build", "./project.xml", "html5", "-debug", "-v"
+                "build", "./project.xml", "html5", "-v"
             ],
             "options": {
                 "cwd": "${workspaceFolder}/samples/openfl"
@@ -26,7 +26,7 @@
             "taskName": "build html5 display list",
             "isBuildCommand": true,
             "args": [
-                "build", "./project.xml", "html5", "-Dlist", "-debug", "-v"
+                "build", "./project.xml", "html5", "-Dlist", "-v"
             ],
             "options": {
                 "cwd": "${workspaceFolder}/samples/openfl"
