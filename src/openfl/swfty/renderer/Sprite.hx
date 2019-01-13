@@ -20,6 +20,10 @@ class FinalSprite extends BaseSprite {
         tileset = layer.tileset;
     }
 
+    override function set_rotation(value:Float):Float {
+        return super.set_rotation(value / Math.PI * 180);
+    }
+
     public override function calcBounds(?relative:BaseSprite):Rect {
         var rect = this.getBounds(relative == null ? this : relative);
         return {
