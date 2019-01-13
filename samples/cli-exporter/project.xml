@@ -8,23 +8,20 @@
     <window hidden="false" width="256" height="128" if="windows" /><!-- Can't close from terminal in windows, process is still going on... -->
     
     <haxelib name="openfl" />
+    <haxelib name="openfl-scripts" />
+    <haxelib name="file-save" />
+    <haxelib name="swfty" />
     <haxelib name="haxe-files" />
     <haxelib name="haxe-ws" />
-    <haxelib name="haxe-zip" />
-    <haxelib name="haxe-file-save" />
-    <haxelib name="haxe-file-load" />
     <haxelib name="format" />
-    <haxelib name="binpacking" />
-    <haxelib name="mcli" />
-    <haxelib name="swfty" />
-    <haxelib name="hxbit" />
-    <haxelib name="tweenxcore" />
+    <haxelib name="bin-packing" />
     <haxelib name="console.hx" />
+    <haxelib name="mcli" />
+    <haxelib name="tweenxcore" />
 
     <haxeflag name="-dce full" if="final" />
 
     <source path="src" />
-    <source path="../../submodules/openfl/scripts" />
 
     <icon path="../../res/icon.png" />
 

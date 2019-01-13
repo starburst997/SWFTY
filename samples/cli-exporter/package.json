@@ -1,0 +1,16 @@
+{
+  "name": "swfty-cli",
+  "version": "0.0.1",
+  "license": "MIT",
+  "scripts": {
+    "preinstall": "mkdir -p ~/haxe",
+    "postinstall": "mkdir -p haxe_libraries; lix download;",
+    "update": "lix download",
+    "download": "lix install",
+    "mac": "openfl build mac -Dsync -final -v && ./bin/macos/bin/SWFTY.app/Contents/MacOS/SWFTY -r $PWD/../../",
+    "pkg": "mkdir -p bin/mac-installer && pkgbuild --root bin/macos/bin/SWFTY.app --identifier jd.boivin.swfty --scripts scripts/mac --install-location /Applications/SWFTY.app bin/mac-installer/SWFTY.pkg --sign \"Developer ID Installer: Jean-Denis Boivin (P7K4SUSDX6)\""
+  },
+  "dependencies": {
+    "lix": "starburst997/lix.client#develop"
+  }
+}

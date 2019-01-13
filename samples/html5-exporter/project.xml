@@ -10,8 +10,8 @@
     <haxelib name="openfl-scripts" />
     <haxelib name="swfty" />
     <haxelib name="format" />
+    <haxelib name="mcli" />
     <haxelib name="bin-packing" />
-    <haxelib name="tweenxcore" />
 
     <source path="src" />
 
