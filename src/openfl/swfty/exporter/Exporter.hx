@@ -1,8 +1,7 @@
 package openfl.swfty.exporter;
 
-import haxe.crypto.Base64;
 import swfty.exporter.Exporter.CharSet;
-import format.swf.data.filters.Filter;
+
 import openfl.swfty.exporter.Shape;
 import openfl.swfty.exporter.MovieClip;
 import openfl.swfty.exporter.FontExporter;
@@ -10,6 +9,7 @@ import openfl.swfty.exporter.TilemapExporter;
 
 import zip.ZipWriter;
 
+import haxe.crypto.Base64;
 import haxe.ds.IntMap;
 import haxe.ds.StringMap;
 import haxe.ds.Option;
@@ -31,6 +31,7 @@ import lime.math.Vector2;
 import format.png.Data;
 import format.png.Writer;
 
+import format.swf.data.filters.Filter;
 import format.swf.timeline.FrameObject;
 import format.swf.exporters.ShapeBitmapExporter;
 import format.swf.exporters.ShapeCommandExporter;
@@ -394,7 +395,23 @@ class Exporter {
                 // Create Tilemap based on all bitmapDatas
                 var keys = [for (key in bitmapDatas.keys()) key];
                 var bmpds = keys.map(function(key) return bitmapKeeps.exists(key) ? bitmapDatas.get(key) : null);
-                var tilemap = TilemapExporter.pack(bmpds, false);
+                
+                //var tilemap = TilemapExporter.pack(bmpds, false);
+
+                // Trim, then back to power of 2
+                var tilemap = TilemapExporter.pack(bmpds, true);
+                var w = 1, h = 1;
+                while((w *= 2) < tilemap.bitmapData.width) {}
+                while((h *= 2) < tilemap.bitmapData.height) {}
+
+                var bitmapData = if (tilemap.bitmapData.width == w && tilemap.bitmapData.height == h) {
+                    tilemap.bitmapData;
+                } else {
+                    var bmpd = new BitmapData(w, h, true, 0x00000000);
+                    bmpd.copyPixels(tilemap.bitmapData, tilemap.bitmapData.rect, new Point(0, 0));
+                    bmpd;
+                }
+                tilemap.bitmapData = bitmapData;
 
                 // Remove all duplicates
                 // TODO: !!!

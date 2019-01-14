@@ -16,7 +16,7 @@
 
     <source path="src" />
 
-    <haxedef name="gl_stats" if="debug" />
+    <haxedef name="gl_stats" unless="final" />
     <!--<haxedef name="sync" unless="html5" />-->
     <haxedef name="trim" if="export" />
     <haxedef name="use_rtti_doc" unless="html5" if="export" />

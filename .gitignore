@@ -5,3 +5,6 @@ _site
 node_modules
 **/xcuserdata/*
 **/xcshareddata/*
+ref/fonts/*.eot
+ref/fonts/*.svg
+ref/fonts/*.woff
