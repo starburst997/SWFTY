@@ -55,16 +55,16 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		6D07D36F20A8BBE40033DFDD /* vorbisfile.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vorbisfile.c; path = ../../../submodules/hashlink/include/vorbis/vorbisfile.c; sourceTree = "<group>"; };
+		6D07D36F20A8BBE40033DFDD /* vorbisfile.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vorbisfile.c; path = ../../submodules/hashlink/include/vorbis/vorbisfile.c; sourceTree = "<group>"; };
 		6D11BFEC20A75AC9004B6083 /* libhl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libhl.a; path = "../../../../Library/Developer/Xcode/DerivedData/hl-fnlafmqtellvpbevuiocxfhusrxl/Build/Products/Debug/libhl.a"; sourceTree = "<group>"; };
 		6D1E7B8620A75D4400C2FB60 /* libhl-MacOSX.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = "libhl-MacOSX.xcodeproj"; sourceTree = "<group>"; };
-		6D59117F20A8BA6800674147 /* openal.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = openal.c; path = ../../../submodules/hashlink/libs/openal/openal.c; sourceTree = "<group>"; };
-		6D59118120A8BA7600674147 /* ui_stub.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ui_stub.c; path = ../../../submodules/hashlink/libs/ui/ui_stub.c; sourceTree = "<group>"; };
-		6D59118320A8BA8100674147 /* gl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gl.c; path = ../../../submodules/hashlink/libs/sdl/gl.c; sourceTree = "<group>"; };
-		6D59118420A8BA8100674147 /* sdl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sdl.c; path = ../../../submodules/hashlink/libs/sdl/sdl.c; sourceTree = "<group>"; };
-		6D59118720A8BA8F00674147 /* fmt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = fmt.c; path = ../../../submodules/hashlink/libs/fmt/fmt.c; sourceTree = "<group>"; };
-		6D59118820A8BA8F00674147 /* sha1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sha1.c; path = ../../../submodules/hashlink/libs/fmt/sha1.c; sourceTree = "<group>"; };
-		6D59118B20A8BAA000674147 /* _main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _main.c; path = ../../../submodules/hashlink/src/_main.c; sourceTree = "<group>"; };
+		6D59117F20A8BA6800674147 /* openal.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = openal.c; path = ../../submodules/hashlink/libs/openal/openal.c; sourceTree = "<group>"; };
+		6D59118120A8BA7600674147 /* ui_stub.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ui_stub.c; path = ../../submodules/hashlink/libs/ui/ui_stub.c; sourceTree = "<group>"; };
+		6D59118320A8BA8100674147 /* gl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gl.c; path = ../../submodules/hashlink/libs/sdl/gl.c; sourceTree = "<group>"; };
+		6D59118420A8BA8100674147 /* sdl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sdl.c; path = ../../submodules/hashlink/libs/sdl/sdl.c; sourceTree = "<group>"; };
+		6D59118720A8BA8F00674147 /* fmt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = fmt.c; path = ../../submodules/hashlink/libs/fmt/fmt.c; sourceTree = "<group>"; };
+		6D59118820A8BA8F00674147 /* sha1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sha1.c; path = ../../submodules/hashlink/libs/fmt/sha1.c; sourceTree = "<group>"; };
+		6D59118B20A8BAA000674147 /* _main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _main.c; path = ../../submodules/hashlink/src/_main.c; sourceTree = "<group>"; };
 		6DAE0AE120A643AD009812F8 /* SWFTY */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SWFTY; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DAE1C2120A739A6009812F8 /* libjpeg.8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libjpeg.8.dylib; path = "../../../../../../usr/local/Cellar/jpeg-turbo/1.5.3/lib/libjpeg.8.dylib"; sourceTree = "<group>"; };
 		6DAE1C2320A739B2009812F8 /* libturbojpeg.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libturbojpeg.0.dylib; path = "../../../../../../usr/local/Cellar/jpeg-turbo/1.5.3/lib/libturbojpeg.0.dylib"; sourceTree = "<group>"; };
@@ -331,7 +331,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/../../../submodules/hashlink/src",
+					"$(SRCROOT)/../../submodules/hashlink/src",
 					/usr/local/include,
 					"/usr/local/opt/openal-soft/include",
 					"/usr/local/opt/libjpeg-turbo/include",
@@ -344,7 +344,7 @@
 					/usr/local/Cellar/libvorbis/1.3.6/lib,
 					/usr/local/Cellar/libogg/1.3.3/lib,
 					/usr/local/Cellar/mbedtls/2.9.0/lib,
-					"$(SRCROOT)/../../../submodules/hashlink",
+					"$(SRCROOT)/../../submodules/hashlink",
 					"/opt/libjpeg-turbo/lib",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
@@ -401,7 +401,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/../../../submodules/hashlink/src",
+					"$(SRCROOT)/../../submodules/hashlink/src",
 					/usr/local/include,
 					"/usr/local/opt/openal-soft/include",
 					"/usr/local/opt/libjpeg-turbo/include",
@@ -414,7 +414,7 @@
 					/usr/local/Cellar/libvorbis/1.3.6/lib,
 					/usr/local/Cellar/libogg/1.3.3/lib,
 					/usr/local/Cellar/mbedtls/2.9.0/lib,
-					"$(SRCROOT)/../../../submodules/hashlink",
+					"$(SRCROOT)/../../submodules/hashlink",
 					"/opt/libjpeg-turbo/lib",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.12;

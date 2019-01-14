@@ -101,18 +101,18 @@
 		6D1E7ECF20A75FC600C2FB60 /* libhl-iOS.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = "libhl-iOS.xcodeproj"; sourceTree = "<group>"; };
 		6D1E7EEC20A76C5100C2FB60 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		6D1E7EF220A770C100C2FB60 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
-		6D28A90B20A8AD7D00C7E67F /* fmt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = fmt.c; path = ../../../../submodules/hashlink/libs/fmt/fmt.c; sourceTree = "<group>"; };
-		6D28A90C20A8AD7D00C7E67F /* sha1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sha1.c; path = ../../../../submodules/hashlink/libs/fmt/sha1.c; sourceTree = "<group>"; };
-		6D28A90F20A8AD9000C7E67F /* gl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gl.c; path = ../../../../submodules/hashlink/libs/sdl/gl.c; sourceTree = "<group>"; };
-		6D28A91020A8AD9000C7E67F /* sdl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sdl.c; path = ../../../../submodules/hashlink/libs/sdl/sdl.c; sourceTree = "<group>"; };
-		6D28A91320A8AD9B00C7E67F /* ui_stub.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ui_stub.c; path = ../../../../submodules/hashlink/libs/ui/ui_stub.c; sourceTree = "<group>"; };
-		6D28A91520A8ADB300C7E67F /* openal.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = openal.c; path = ../../../../submodules/hashlink/libs/openal/openal.c; sourceTree = "<group>"; };
-		6D28A91720A8ADCC00C7E67F /* _main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _main.c; path = ../../../../submodules/hashlink/src/_main.c; sourceTree = "<group>"; };
-		6D28A9F120A8B39700C7E67F /* Ogg.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Ogg.framework; path = ../../../../submodules/IDZPrecompiledOgg/Ogg.framework; sourceTree = "<group>"; };
-		6D28A9F320A8B3A100C7E67F /* Vorbis.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Vorbis.framework; path = ../../../../submodules/IDZPrecompiledVorbis/Vorbis.framework; sourceTree = "<group>"; };
-		6D4FB3C220A8D38D00364EF5 /* libpng.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = libpng.xcodeproj; path = "../../../../submodules/libpng-for-iOS/libpng.xcodeproj"; sourceTree = "<group>"; };
-		6D4FB3D020A8D92700364EF5 /* libturbojpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libturbojpeg.a; path = "../../../../submodules/turbojpeg/dependencies-lib/lib/libturbojpeg.a"; sourceTree = "<group>"; };
-		6D4FB3D120A8D92700364EF5 /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjpeg.a; path = "../../../../submodules/turbojpeg/dependencies-lib/lib/libjpeg.a"; sourceTree = "<group>"; };
+		6D28A90B20A8AD7D00C7E67F /* fmt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = fmt.c; path = ../../submodules/hashlink/libs/fmt/fmt.c; sourceTree = "<group>"; };
+		6D28A90C20A8AD7D00C7E67F /* sha1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sha1.c; path = ../../submodules/hashlink/libs/fmt/sha1.c; sourceTree = "<group>"; };
+		6D28A90F20A8AD9000C7E67F /* gl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gl.c; path = ../../submodules/hashlink/libs/sdl/gl.c; sourceTree = "<group>"; };
+		6D28A91020A8AD9000C7E67F /* sdl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sdl.c; path = ../../submodules/hashlink/libs/sdl/sdl.c; sourceTree = "<group>"; };
+		6D28A91320A8AD9B00C7E67F /* ui_stub.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ui_stub.c; path = ../../submodules/hashlink/libs/ui/ui_stub.c; sourceTree = "<group>"; };
+		6D28A91520A8ADB300C7E67F /* openal.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = openal.c; path = ../../submodules/hashlink/libs/openal/openal.c; sourceTree = "<group>"; };
+		6D28A91720A8ADCC00C7E67F /* _main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = _main.c; path = ../../submodules/hashlink/src/_main.c; sourceTree = "<group>"; };
+		6D28A9F120A8B39700C7E67F /* Ogg.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Ogg.framework; path = ../../submodules/IDZPrecompiledOgg/Ogg.framework; sourceTree = "<group>"; };
+		6D28A9F320A8B3A100C7E67F /* Vorbis.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Vorbis.framework; path = ../../submodules/IDZPrecompiledVorbis/Vorbis.framework; sourceTree = "<group>"; };
+		6D4FB3C220A8D38D00364EF5 /* libpng.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = libpng.xcodeproj; path = "../../submodules/libpng-for-iOS/libpng.xcodeproj"; sourceTree = "<group>"; };
+		6D4FB3D020A8D92700364EF5 /* libturbojpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libturbojpeg.a; path = "../../submodules/turbojpeg/dependencies-lib/lib/libturbojpeg.a"; sourceTree = "<group>"; };
+		6D4FB3D120A8D92700364EF5 /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjpeg.a; path = "../../submodules/turbojpeg/dependencies-lib/lib/libjpeg.a"; sourceTree = "<group>"; };
 		6D731BA920C4525A00840AB7 /* res */ = {isa = PBXFileReference; lastKnownFileType = folder; name = res; path = ../../res; sourceTree = "<group>"; };
 		6D90BD6B20A89BDF001E63C4 /* pattern.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = pattern.png; path = images/pattern.png; sourceTree = "<group>"; };
 		6D90BD7120A89BEC001E63C4 /* logo_1024.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logo_1024.png; path = images/logo_1024.png; sourceTree = "<group>"; };
@@ -123,7 +123,7 @@
 		FABA34D31D8B5E5600915323 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		FAE0E9691BAF96A00098DFA4 /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = System/Library/Frameworks/GameController.framework; sourceTree = SDKROOT; };
 		FD15FCB20E086866003BDF25 /* SWFTY.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SWFTY.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		FD1B48920E313154007AB34E /* SDL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL.xcodeproj; path = "../../../../submodules/SDL2/Xcode-iOS/SDL/SDL.xcodeproj"; sourceTree = SOURCE_ROOT; };
+		FD1B48920E313154007AB34E /* SDL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL.xcodeproj; path = "../../submodules/SDL2/Xcode-iOS/SDL/SDL.xcodeproj"; sourceTree = SOURCE_ROOT; };
 		FDB96ED30DEFC9C700FAF19F /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		FDB96EDF0DEFC9DC00FAF19F /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		FDF0D71D0E12D2AB00247964 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
@@ -451,23 +451,23 @@
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/../../../../submodules/IDZPrecompiledOgg",
-					"$(PROJECT_DIR)/../../../../submodules/IDZPrecompiledVorbis",
+					"$(PROJECT_DIR)/../../submodules/IDZPrecompiledOgg",
+					"$(PROJECT_DIR)/../../submodules/IDZPrecompiledVorbis",
 				);
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				HEADER_SEARCH_PATHS = (
-					"$(PROJECT_DIR)/../../../../submodules/SDL2/include",
-					"$(PROJECT_DIR)/../../../../submodules/hashlink/src",
-					"$(PROJECT_DIR)/../../../../submodules/hashlink/include/**",
-					"$(PROJECT_DIR)/../../../../submodules/turbojpeg/dependencies-lib/include",
+					"$(PROJECT_DIR)/../../submodules/SDL2/include",
+					"$(PROJECT_DIR)/../../submodules/hashlink/src",
+					"$(PROJECT_DIR)/../../submodules/hashlink/include/**",
+					"$(PROJECT_DIR)/../../submodules/turbojpeg/dependencies-lib/include",
 				);
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/../../../../submodules/turbojpeg/dependencies-lib/lib",
+					"$(PROJECT_DIR)/../../submodules/turbojpeg/dependencies-lib/lib",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "jd.boivin.swfty-heaps";
 				PRODUCT_NAME = SWFTY;
@@ -483,22 +483,22 @@
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/../../../../submodules/IDZPrecompiledOgg",
-					"$(PROJECT_DIR)/../../../../submodules/IDZPrecompiledVorbis",
+					"$(PROJECT_DIR)/../../submodules/IDZPrecompiledOgg",
+					"$(PROJECT_DIR)/../../submodules/IDZPrecompiledVorbis",
 				);
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				HEADER_SEARCH_PATHS = (
-					"$(PROJECT_DIR)/../../../../submodules/SDL2/include",
-					"$(PROJECT_DIR)/../../../../submodules/hashlink/src",
-					"$(PROJECT_DIR)/../../../../submodules/hashlink/include/**",
-					"$(PROJECT_DIR)/../../../../submodules/turbojpeg/dependencies-lib/include",
+					"$(PROJECT_DIR)/../../submodules/SDL2/include",
+					"$(PROJECT_DIR)/../../submodules/hashlink/src",
+					"$(PROJECT_DIR)/../../submodules/hashlink/include/**",
+					"$(PROJECT_DIR)/../../submodules/turbojpeg/dependencies-lib/include",
 				);
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/../../../../submodules/turbojpeg/dependencies-lib/lib",
+					"$(PROJECT_DIR)/../../submodules/turbojpeg/dependencies-lib/lib",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "jd.boivin.swfty-heaps";
 				PRODUCT_NAME = SWFTY;

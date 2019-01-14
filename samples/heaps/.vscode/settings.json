@@ -7,8 +7,8 @@
         "bin":true
     },
     "haxe.displayConfigurations": [
-        ["build.hxml"],
-        ["html5.hxml"],
+        ["hxml/build.hxml"],
+        ["hxml/html5.hxml"],
     ],
     "haxe.enableCompilationServer": true,
     "haxe.buildCompletionCache": true,

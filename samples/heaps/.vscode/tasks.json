@@ -14,14 +14,14 @@
             "command": "haxe",
             "label": "Hashlink",
             "args": [
-                "build.hxml", "-D", "test"
+                "hxml/build.hxml", "-D", "test"
             ]
         },
         {
             "command": "haxe",
             "label": "HTML5",
             "args": [
-                "html5.hxml", "-D", "test", "--connect", "6005", "-debug"
+                "hxml/html5.hxml", "-D", "test", "--connect", "6005", "-debug"
             ]
         },
         /*{
