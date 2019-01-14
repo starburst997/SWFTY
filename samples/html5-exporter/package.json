@@ -7,7 +7,7 @@
     "postinstall": "mkdir -p haxe_libraries; lix download;",
     "update": "lix download",
     "download": "lix install",
-    "build": "openl build html5",
+    "build": "openfl build html5",
     "watch": "live-server bin/html5/bin --watch=SWFTYExporter.js --wait=750"
   },
   "dependencies": {

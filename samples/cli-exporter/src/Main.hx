@@ -163,6 +163,7 @@ class CLI extends mcli.CommandLine {
         if (config.fontFolder == null) config.fontFolder = FontExporter.path;
         if (config.abstractFolder == null) config.abstractFolder = 'src/swfty';
         if (config.quality == null) config.quality = [];
+        if (config.bakeColor == null) config.bakeColor = true;
         if (config.pngquant == null) config.pngquant = true;
         if (config.fontEnabled == null) config.fontEnabled = true;
         if (config.sharedFonts == null) config.sharedFonts = false;

@@ -157,6 +157,7 @@ typedef Config = {
     ?quality: Array<InnerQuality>,
     ?pngquant: Bool,
     ?fontEnabled: Bool,
+    ?bakeColor: Bool,
     ?sharedFonts:Bool,
     ?maxDimension: Rectangle,
     ?files: Array<{

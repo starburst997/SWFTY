@@ -1,0 +1,6 @@
+hxml/compile.hxml
+
+-lib openfl
+-lib lime
+
+-cp samples/html5-exporter/src

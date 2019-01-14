@@ -9,7 +9,9 @@
     "haxe.displayConfigurations": [
         ["hxml/openfl.hxml"],
         ["hxml/openfl-list.hxml"],
-        ["hxml/heaps.hxml"]
+        ["hxml/heaps.hxml"],
+        ["hxml/html5-cli.hxml"],
+        ["hxml/cli.hxml"]
     ],
     "haxe.enableCompilationServer": true,
     "haxe.buildCompletionCache": true,
