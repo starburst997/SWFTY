@@ -3,19 +3,19 @@
 	url = https://github.com/starburst997/hashlink
 [submodule "samples/heaps/submodules/SDL2"]
 	path = samples/heaps/submodules/SDL2
-	url = git@github.com:spurious/SDL-mirror.git
+	url = https://github.com/spurious/SDL-mirror
 [submodule "samples/heaps/submodules/IDZPrecompiledVorbis"]
 	path = samples/heaps/submodules/IDZPrecompiledVorbis
-	url = git@github.com:iosdevzone/IDZPrecompiledVorbis.git
+	url = https://github.com/iosdevzone/IDZPrecompiledVorbis
 [submodule "samples/heaps/submodules/IDZPrecompiledOgg"]
 	path = samples/heaps/submodules/IDZPrecompiledOgg
-	url = git@github.com:iosdevzone/IDZPrecompiledOgg.git
+	url = https://github.com/iosdevzone/IDZPrecompiledOgg
 [submodule "samples/heaps/submodules/libpng-for-iOS"]
 	path = samples/heaps/submodules/libpng-for-iOS
-	url = git@github.com:starburst997/libpng-for-iOS.git
+	url = https://github.com/starburst997/libpng-for-iOS
 [submodule "samples/heaps/submodules/openal-soft"]
 	path = samples/heaps/submodules/openal-soft
-	url = git@github.com:kcat/openal-soft.git
+	url = https://github.com/kcat/openal-soft
 [submodule "samples/heaps/submodules/turbojpeg"]
 	path = samples/heaps/submodules/turbojpeg
-	url = git@github.com:starburst997/turbojpeg.git
+	url = https://github.com/starburst997/turbojpeg
