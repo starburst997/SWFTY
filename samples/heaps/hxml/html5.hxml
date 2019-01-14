@@ -1,0 +1,16 @@
+# class paths
+-cp src
+
+# entry point
+-main Main
+
+# libraries
+hxml/common.hxml
+
+-D html5
+
+# only embed font, the rest is loaded from URL
+-D resourcesPath=../../res/fonts
+
+# output
+-js bin/SWFTY.js

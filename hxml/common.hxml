@@ -1,20 +1,23 @@
 -lib akifox-asynchttp
 -lib bin-packing
+-lib console.hx
 -lib file-load
 -lib file-save
 -lib format
 -lib haxe-concurrent
 -lib haxe-custom
+-lib haxe-strings
+-lib haxe-files
 -lib haxe-ws
 -lib hxbit
 -lib mcli
 -lib sure
+-lib hxmustache
 -lib tweenxcore
 -lib zip
 
 -cp src
 -cp samples/abstracts
--cp compile
+-cp tests
 
--js bin/test.js
--main Compile
+-main Test

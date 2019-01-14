@@ -1,0 +1,10 @@
+# Libraries
+-lib heaps
+-lib swfty
+-lib tweenxcore
+
+# Resource path
+-D resourcesPath=res
+
+# Defs
+-D hl_disable_mikkt

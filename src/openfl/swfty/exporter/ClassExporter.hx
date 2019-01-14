@@ -1,8 +1,19 @@
 package openfl.swfty.exporter;
 
+import hx.files.*;
+
 import haxe.ds.StringMap;
 import haxe.ds.IntMap;
 import haxe.io.Bytes;
+
+#if macro
+import haxe.io.Path;
+import haxe.macro.Context;
+import haxe.macro.Expr;
+import haxe.macro.Type;
+import sys.FileSystem;
+import sys.io.File;
+#end
 
 using Lambda;
 
@@ -17,8 +28,18 @@ using Lambda;
  */
 class ClassExporter {
 
+    macro
+    public static function readString(filePath:String):ExprOf<String> {
+        var posInfos = Context.getPosInfos(Context.currentPos());
+        var directory = Path.directory(posInfos.file);
+        var file = File.of(Context.resolvePath(Dir.of('$directory/../../../templates/$filePath').toString()));
+        var content = file.readAsString();
+        return toExpr(content);
+    }
+
     // Export root abstract
     public static function exportRoot(?quality:StringMap<String>) {
+        #if (filesystem_support || macro)
         if (quality == null) quality = ['normal' => ''];
 
         var qualities = '';
@@ -27,10 +48,23 @@ class ClassExporter {
             qualities += '    var ${key.capitalize()} = "${path}";\n';
         }
 
+        // Read all the files in 
+        var layers = '';
+        for (file in Dir.of(quality.get('normal')).findFiles("**/*.swfty")) {
+            trace(file);
+        }
+        
+
         var q = '
 @:enum
 abstract Quality(String) from String to String {
 $qualities
+}';
+
+        var l = '
+@:enum
+abstract Quality(String) from String to String {
+$layers
 }';
 
         var file = 'package swfty;
@@ -38,16 +72,23 @@ $qualities
 /** This file is auto-generated! **/
 $q
 
+$l
+
 class SWFTY {
 
 }';
 
         return file;
+        #else
+        return '';
+        #end
     }
 
     // Export to a String
     public static function export(swfty:SWFTYType, name:String, path:String = '', resPath:String = '') {
         var capitalizedName = name.capitalize();
+
+        var defaultTemplate = readString('Layer.hx.mustache');
 
         // First get the top leveled named MovieClip, the rest are innacessible 
         // but we will create definition for any named children with a dummy class name
@@ -161,23 +202,26 @@ abstract $capitalizedName(Layer) from Layer to Layer {
 
     inline function _load(?path:String = "", ?onComplete:Void->Void, ?onError:Dynamic->Void) {
         this.path = path;
-        File.loadBytes("$resPath" + path + "$name.swfty", function(bytes) {
+        File.loadBytes(path, function(bytes) {
             this.loadBytes(bytes, onComplete, onError);
         }, onError);
     }
-
 
     inline function _loadBytes(?bytes:Bytes, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
         this.loadBytes(bytes, onComplete, onError);
     }
 
-    public static inline function load(?quality:Quality, ?width:Int, ?height:Int, ?bytes:Bytes, ?onComplete:$capitalizedName->Void, ?onError:Dynamic->Void):$capitalizedName {
+    public static inline function getPath(?quality:Quality) {
         if (quality == null) quality = Normal;
+        return "$resPath" + quality + "$name.swfty";
+    }
+
+    public static inline function load(?quality:Quality, ?width:Int, ?height:Int, ?bytes:Bytes, ?onComplete:$capitalizedName->Void, ?onError:Dynamic->Void):$capitalizedName {
         var layer:$capitalizedName = Layer.empty(width, height);
         if (bytes != null) {
             layer._loadBytes(bytes, function() if (onComplete != null) onComplete(layer), onError);
         } else {
-            layer._load(quality, function() if (onComplete != null) onComplete(layer), onError);
+            layer._load(getPath(quality), function() if (onComplete != null) onComplete(layer), onError);
         }
         return layer;
     }

@@ -1,3 +1,3 @@
 -D haxe-ws=1.0.5
-# @install: lix --silent download "gh://github.com/starburst997/haxe-ws#d8b2acc61e18ae26f941dc95bd3654156ab7b215" into haxe-ws/1.0.5/github/d8b2acc61e18ae26f941dc95bd3654156ab7b215
--cp ${HAXE_LIBCACHE}/haxe-ws/1.0.5/github/d8b2acc61e18ae26f941dc95bd3654156ab7b215/src
+# @install: lix --silent download "gh://github.com/starburst997/haxe-ws#4d66b3186ec80cb15b0c8081e91b3f1e699835bd" into haxe-ws/1.0.5/github/4d66b3186ec80cb15b0c8081e91b3f1e699835bd
+-cp ${HAXE_LIBCACHE}/haxe-ws/1.0.5/github/4d66b3186ec80cb15b0c8081e91b3f1e699835bd/src

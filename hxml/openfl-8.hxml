@@ -3,6 +3,6 @@ hxml/common.hxml
 -lib openfl
 -lib lime
 
--cp samples/openfl/src
+-cp samples/openfl-8.7.0/src
 
 -js bin/test.js

@@ -4,7 +4,8 @@
   "license": "MIT",
   "scripts": {
     "preinstall": "mkdir -p ~/haxe",
-    "postinstall": "mkdir -p haxe_libraries; lix download;"
+    "postinstall": "mkdir -p haxe_libraries; lix download;",
+    "haxelib": "./scripts/haxelib.sh"
   },
   "dependencies": {
     "lix": "starburst997/lix.client#develop"

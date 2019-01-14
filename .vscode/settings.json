@@ -10,8 +10,8 @@
         ["hxml/openfl.hxml"],
         ["hxml/openfl-list.hxml"],
         ["hxml/heaps.hxml"],
-        ["hxml/html5-cli.hxml"],
-        ["hxml/cli.hxml"]
+        ["hxml/html5-exporter.hxml"],
+        ["hxml/cli-exporter.hxml"]
     ],
     "haxe.enableCompilationServer": true,
     "haxe.buildCompletionCache": true,

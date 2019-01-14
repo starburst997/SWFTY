@@ -1,0 +1,4 @@
+-D hxmustache=0.2.2
+# @install: lix --silent download "gh://github.com/nadako/hxmustache#553c82b77f064da7245a153dd0d6c9d869c186de" into hxmustache/0.2.2/github/553c82b77f064da7245a153dd0d6c9d869c186de
+# @run: haxelib run-dir hxmustache ${HAXE_LIBCACHE}/hxmustache/0.2.2/github/553c82b77f064da7245a153dd0d6c9d869c186de
+-cp ${HAXE_LIBCACHE}/hxmustache/0.2.2/github/553c82b77f064da7245a153dd0d6c9d869c186de/src

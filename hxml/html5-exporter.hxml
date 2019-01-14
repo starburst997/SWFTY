@@ -1,8 +1,9 @@
 hxml/common.hxml
 
 -lib openfl
+-lib openfl-scripts
 -lib lime
 
--cp samples/openfl/src
+-cp samples/html5-exporter/src
 
 -js bin/test.js

@@ -1,7 +1,9 @@
-hxml/compile.hxml
+hxml/common.hxml
 
 -lib heaps
 -lib hlopenal
 -lib hlsdl
 
 -cp samples/heaps/src
+
+-hl bin/test.hl

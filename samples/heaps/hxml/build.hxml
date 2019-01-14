@@ -1,0 +1,16 @@
+# class paths
+-cp src
+
+# entry point
+-main Main
+
+# libraries
+common.hxml
+
+#-lib hldx
+-lib hlsdl
+
+-D windowSize=800x450
+
+# output
+-hl bin/SWFTY.hl

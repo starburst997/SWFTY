@@ -1,5 +1,8 @@
 #!/bin/bash
 
+cd "$(dirname "$0")"
+cd ..
+
 rm -Rf temp
 mkdir temp
 

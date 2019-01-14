@@ -1,0 +1,3 @@
+-D haxe-strings=5.2.2
+# @install: lix --silent download "gh://github.com/vegardit/haxe-strings#82723977edb870a661024305fff592270cd4b0e0" into haxe-strings/5.2.2/github/82723977edb870a661024305fff592270cd4b0e0
+-cp ${HAXE_LIBCACHE}/haxe-strings/5.2.2/github/82723977edb870a661024305fff592270cd4b0e0/src/

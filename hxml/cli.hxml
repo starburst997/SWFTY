@@ -1,6 +1,0 @@
-hxml/compile.hxml
-
--lib openfl
--lib lime
-
--cp samples/cli-exporter/src

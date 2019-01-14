@@ -1,6 +1,0 @@
--D swfty=0.1.0
-# @install: lix --silent download "gh://github.com/starburst997/SWFTY#1f7b9190f724bd1b57e93457acecf1cfd23d421e" into SWFTY/0.1.0/github/1f7b9190f724bd1b57e93457acecf1cfd23d421e
-#-cp ${HAXE_LIBCACHE}/SWFTY/0.1.0/github/1f7b9190f724bd1b57e93457acecf1cfd23d421e/src/
--lib zip
--lib hxbit
--cp ../../SWFTY

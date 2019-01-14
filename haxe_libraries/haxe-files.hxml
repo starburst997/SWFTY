@@ -1,0 +1,6 @@
+-D haxe-files=1.1.1
+# @install: lix --silent download "gh://github.com/vegardit/haxe-files#3e51ffe8444d79f03967bd293ba1592f0df27f30" into haxe-files/1.1.1/github/3e51ffe8444d79f03967bd293ba1592f0df27f30
+-lib haxe-concurrent
+-lib haxe-strings
+-cp ${HAXE_LIBCACHE}/haxe-files/1.1.1/github/3e51ffe8444d79f03967bd293ba1592f0df27f30/src/
+--macro hx.files.internal.Macros.addDefines()
