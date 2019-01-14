@@ -4,6 +4,7 @@
     <meta title="openFL" package="jd.boivin.swfty_openfl" version="1.0.0" company="Jean-Denis Boivin" />
     <meta title="OpenFL List" package="jd.boivin.swfty_openfl_list" if="list" />
     <meta title="OpenFL SWFLite" package="jd.boivin.swfty_openfl_swflite" if="swflite" />
+    <meta title="OpenFL SWF" package="jd.boivin.swfty_openfl_swf" if="swf" />
     
     <app main="Main" path="bin" file="SWFTY" />
     <window background="#666666" allowHighDPI="true" fps="60" />
@@ -25,6 +26,7 @@
     <source path="../abstracts" />
 
     <assets path="../../res" rename="res" />
+    <assets path="../../ref/fonts" rename="fonts" />
     <library path="../../res/Yokat.swf" preload="true" type="swf" if="swf" />
     <library path="../../res/Yokat.swf" preload="true" type="swflite" if="swflite" />
 

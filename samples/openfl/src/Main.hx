@@ -1,6 +1,5 @@
 package;
 
-import openfl.events.MouseEvent;
 #if export
 import swfty.exporter.Exporter;
 import file.save.FileSave;
@@ -15,6 +14,7 @@ import swfty.renderer.Layer;
 import openfl.Assets;
 import openfl.display.Sprite;
 import openfl.events.Event;
+import openfl.events.MouseEvent;
 import openfl.text.TextFormat;
 
 import hx.concurrent.executor.*;
@@ -41,7 +41,7 @@ class Main extends Sprite {
             test = (test + 1) % 2;
         });
 
-        #if (!swflite && !swf)
+        #if (!swflite && !swf && !noServer)
         // This should be in your DEV code only
         // Start server
         var executor = Executor.create(1);
@@ -210,7 +210,7 @@ class Main extends Sprite {
         process();
 
         stage.addEventListener(Event.ENTER_FRAME, function(_) {
-            #if (!swflite && !swf)
+            #if (!swflite && !swf && !noServer)
             if (retry) {
                 retry = false;
                 haxe.Timer.delay(function() {
@@ -269,10 +269,9 @@ class Main extends Sprite {
 
         time -= dt;
         if (time <= 0) {
-            time = 1.10;
+            time = 0.60;
 
             #if (swflite || swf)
-
             var sprite = Assets.getMovieClip('Yokat:UI');
 
             var speedX = Math.random() * 50 - 25;

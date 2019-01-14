@@ -47,10 +47,9 @@ class Main extends hxd.App {
         var layer = Layer.load(stage.width, stage.height, 'swfty/high/Yokat.swfty', (layer:Layer) -> {    
             trace('Done!');
             
-            var sprite:Sprite = layer.create('UI');
-            layer.add(sprite);
-
-            sprite.fit();
+            //var sprite:Sprite = layer.create('UI');
+            //layer.add(sprite);
+            //sprite.fit();
 
             //sprite.fit();
             //sprite.x += 408;
@@ -125,17 +124,20 @@ class Main extends hxd.App {
     override function update(dt:Float) {
         super.update(dt);
 
+        for (layer in layers) {
+            layer.update(dt);
+        }
+
         time -= dt;
         if (time <= 0) {
-            time = 0.0001;
+            time = 0.1;
 
             var stage = hxd.Window.getInstance();
             for (layer in layers) {
-                layer.update(dt);
                 
                 var names = layer.getAllNames();
-                for (i in 0...5) {
-                    var name = names[Std.int(Math.random() * names.length)];
+                for (i in 0...1) {
+                    var name = 'UI';//names[Std.int(Math.random() * names.length)];
                     var sprite = layer.create(name);
 
                     var speedX = Math.random() * 50 - 25;
@@ -150,8 +152,8 @@ class Main extends hxd.App {
                     sprite.scaleX = scale;
                     sprite.scaleY = scale;
 
-                    sprite.tweenScale(1.5, 0.5, 0.5, BounceOut, function() 
-                        sprite.tweenScale(0.25, 0.5, BackIn));
+                    //sprite.tweenScale(1.5, 0.5, 0.5, BounceOut, function() 
+                    //    sprite.tweenScale(0.25, 0.5, BackIn));
 
                     sprite.addRender(function(dt) {
                         sprite.x += speedX * dt;

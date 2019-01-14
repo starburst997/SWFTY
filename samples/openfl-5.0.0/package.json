@@ -7,10 +7,19 @@
     "postinstall": "mkdir -p haxe_libraries; lix download;",
     "update": "lix download",
     "download": "lix install",
-    "html5": "openl build html5",
-    "ios": "HXCPP_COMPILE_CACHE=/Users/jdboivin/projects/cache-2 IPHONE_VER=11.2 openfl test ios -Dlist",
+    "html5": "openfl build html5",
+    "html5-list": "openfl build html5 -Dlist",
+    "html5-swflite": "mkdir -p bin/html5/haxe/_generated && NEKOPATH=`haxelib path lime | sed -n 2p`/ndll/Mac64 lix run lime -v build html5 -Dswflite",
+    "html5-swf": "mkdir -p bin/html5/haxe/_generated && NEKOPATH=`haxelib path lime | sed -n 2p`/ndll/Mac64 lix run lime -v build html5 -Dswf",
+    "ios": "HXCPP_COMPILE_CACHE=/Users/jdboivin/projects/cache-2 IPHONE_VER=11.2 openfl test ios",
     "ios-list": "HXCPP_COMPILE_CACHE=/Users/jdboivin/projects/cache-2 IPHONE_VER=11.2 openfl test ios -Dlist",
-    "watch": "live-server bin/html5 --watch=debug/bin/SWFTY.js,release/bin/SWFTY.js,final/bin/SWFTY.js --open=debug/bin --wait=750"
+    "ios-swflite": "mkdir -p bin/ios/SWFTY/haxe/_generated && NEKOPATH=`haxelib path lime | sed -n 2p`/ndll/Mac64 HXCPP_COMPILE_CACHE=/Users/jdboivin/projects/cache-2 IPHONE_VER=11.2 openfl test ios -Dswflite",
+    "ios-swf": "mkdir -p bin/ios/SWFTY/haxe/_generated && NEKOPATH=`haxelib path lime | sed -n 2p`/ndll/Mac64 HXCPP_COMPILE_CACHE=/Users/jdboivin/projects/cache-2 IPHONE_VER=11.2 openfl test ios -Dswf",
+    "android": "HXCPP_COMPILE_CACHE=/Users/jdboivin/projects/cache-6 openfl test android",
+    "android-list": "HXCPP_COMPILE_CACHE=/Users/jdboivin/projects/cache-6 openfl test android -Dlist",
+    "android-swflite": "mkdir -p bin/ios/SWFTY/haxe/_generated && NEKOPATH=`haxelib path lime | sed -n 2p`/ndll/Mac64 HXCPP_COMPILE_CACHE=/Users/jdboivin/projects/cache-6 openfl test android -Dswflite",
+    "android-swf": "mkdir -p bin/ios/SWFTY/haxe/_generated && NEKOPATH=`haxelib path lime | sed -n 2p`/ndll/Mac64 HXCPP_COMPILE_CACHE=/Users/jdboivin/projects/cache-6 openfl test android -Dswf",
+    "watch": "live-server bin/html5 --watch=release/bin/SWFTY.js,release/bin/SWFTY.js,final/bin/SWFTY.js --open=release/bin --wait=750"
   },
   "dependencies": {
     "live-server": "^1.2.1",

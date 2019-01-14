@@ -16,6 +16,13 @@ Currently works on Heaps and OpenFL but other engine are in the work (Kha, PixiJ
 ## TODO
 Create a README with online (HTML5) example
 
+## Samples
+Samples projects include 3 different version of OpenFL (8.4.0, 8.7.0 and 5.0.0) for benchmarks testing, you can also try different renderers: pure SWFTY (1 draw call), SWFTY display list (individual bitmaps) and OpenFL's SWF Lite.
+
+It currently puzzles me as to why OpenFL's SWF Lite is sooooo slow compared to SWFTY display list, the two basically use individual bitmaps, so why is there such a huge discrepency? TextFields? GlowFilters? MovieClip class? mouseEnabled?
+
+OpenFL 8.7.0 is also incredibly slow in html5 compared to 8.4.0, huge performance regression issue. Will send test to Granick to figure this out.
+
 ## Similar Projects
 
 * [Flump](https://github.com/tconkling/flump), AIR-based approach focused on animation

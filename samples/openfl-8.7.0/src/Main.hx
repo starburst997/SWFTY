@@ -1,6 +1,5 @@
 package;
 
-import lime.media.HTML5AudioContext;
 #if export
 import swfty.exporter.Exporter;
 import file.save.FileSave;
@@ -12,8 +11,10 @@ import haxe.io.Bytes;
 
 import swfty.renderer.Layer;
 
+import openfl.Assets;
 import openfl.display.Sprite;
 import openfl.events.Event;
+import openfl.events.MouseEvent;
 import openfl.text.TextFormat;
 
 import hx.concurrent.executor.*;
@@ -29,11 +30,18 @@ class Main extends Sprite {
     var dt = 0.0;
     var timer = 0.0;
 
+    var test = 0;
+
 	public function new() {	
 		super();
 
         var retry = false;
 
+        addEventListener(MouseEvent.CLICK, function(_) {
+            test = (test + 1) % 2;
+        });
+
+        #if (!swflite && !swf)
         // This should be in your DEV code only
         // Start server
         var executor = Executor.create(1);
@@ -183,6 +191,7 @@ class Main extends Sprite {
             }, 500);
             #end
         };
+        #end
 
         // Test
         layers = [];
@@ -201,6 +210,7 @@ class Main extends Sprite {
         process();
 
         stage.addEventListener(Event.ENTER_FRAME, function(_) {
+            #if (!swflite && !swf)
             if (retry) {
                 retry = false;
                 haxe.Timer.delay(function() {
@@ -214,6 +224,7 @@ class Main extends Sprite {
                     messages.remove(message.id);
                 }
             }
+            #end
 
             render();
         });
@@ -225,6 +236,7 @@ class Main extends Sprite {
         trace('Hello!');
 
         // Asynchronous creation
+        #if (!swflite && !swf)
         #if export
         processSWF('res/Popup.swf', function(layer) {
         #else
@@ -232,18 +244,18 @@ class Main extends Sprite {
         #end
             layers.push(layer);
 
-            var names = layer.getAllNames();
             //trace(names);
 
             //trace(Report.getReport(layer.json));
 
             addChildAt(layer, 0);
 
-            var sprite = layer.create('UI');
-            layer.add(sprite);
+            //var sprite = layer.create('UI');
+            //layer.add(sprite);
+            //sprite.fit();
 
-            sprite.fit();
         }, function(e) trace('ERROR: $e'));
+        #end
 	}
 
     var time = 0.0;
@@ -251,16 +263,47 @@ class Main extends Sprite {
         dt = (haxe.Timer.stamp() - timer); 
         timer = haxe.Timer.stamp();
 
+        for (layer in layers) {
+            layer.update(dt);
+        }
+
         time -= dt;
         if (time <= 0) {
-            time = 0.0001;
+            time = 1.10;
 
+            #if (swflite || swf)
+            var sprite = Assets.getMovieClip('Yokat:UI');
+
+            var speedX = Math.random() * 50 - 25;
+            var speedY = Math.random() * 50 - 25;
+            var speedRotation = (Math.random() * 50 - 25) / 180 * Math.PI * 5;
+            var speedAlpha = Math.random() * 0.75 + 0.25;
+
+            sprite.x = Math.random() * stage.stageWidth * 0.75;
+            sprite.y = Math.random() * stage.stageHeight * 0.75;
+
+            var render = null;
+            render = function(e) {
+                sprite.x += speedX * dt;
+                sprite.y += speedY * dt;
+                sprite.rotation += speedRotation * dt;
+                sprite.alpha -= speedAlpha * dt;
+
+                if (sprite.alpha <= 0) {
+                    removeChild(sprite);
+                    removeEventListener(Event.ENTER_FRAME, render);
+                }
+            }
+
+            addEventListener(Event.ENTER_FRAME, render);
+
+            addChild(sprite);
+
+            #else
             for (layer in layers) {
-                layer.update(dt);
-                
                 var names = layer.getAllNames();
-                for (i in 0...5) {
-                    var name = names[Std.int(Math.random() * names.length)];
+                for (i in 0...1) {
+                    var name = 'UI';//names[Std.int(Math.random() * names.length)];
                     var sprite = layer.create(name);
 
                     var speedX = Math.random() * 50 - 25;
@@ -275,8 +318,8 @@ class Main extends Sprite {
                     sprite.scaleX = scale;
                     sprite.scaleY = scale;
 
-                    sprite.tweenScale(1.5, 0.5, 0.5, BounceOut, function() 
-                        sprite.tweenScale(0.25, 0.5, BackIn));
+                    //sprite.tweenScale(1.5, 0.5, 0.5, BounceOut, function() 
+                    //    sprite.tweenScale(0.25, 0.5, BackIn));
 
                     sprite.addRender(function(dt) {
                         sprite.x += speedX * dt;
@@ -292,6 +335,7 @@ class Main extends Sprite {
                     layer.add(sprite);
                 }
             }
+            #end
         }
     }
 

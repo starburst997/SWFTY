@@ -1,5 +1,5 @@
 -D openfl=8.7.0
-# @install: lix --silent download "gh://github.com/starburst997/openfl#0e1f8ecd5dca9824d6d8e4ae09da5d4ce257fbe9" into openfl/8.7.0/github/0e1f8ecd5dca9824d6d8e4ae09da5d4ce257fbe9
-# @run: haxelib run-dir openfl ${HAXE_LIBCACHE}/openfl/8.7.0/github/0e1f8ecd5dca9824d6d8e4ae09da5d4ce257fbe9
--cp ${HAXE_LIBCACHE}/openfl/8.7.0/github/0e1f8ecd5dca9824d6d8e4ae09da5d4ce257fbe9/src
+# @install: lix --silent download "gh://github.com/starburst997/openfl#2ae1a4dde92d16f6d14129107b21025c33b8dcec" into openfl/8.7.0/github/2ae1a4dde92d16f6d14129107b21025c33b8dcec
+# @run: haxelib run-dir openfl ${HAXE_LIBCACHE}/openfl/8.7.0/github/2ae1a4dde92d16f6d14129107b21025c33b8dcec
+-cp ${HAXE_LIBCACHE}/openfl/8.7.0/github/2ae1a4dde92d16f6d14129107b21025c33b8dcec/src
 --macro openfl._internal.macros.ExtraParams.include()

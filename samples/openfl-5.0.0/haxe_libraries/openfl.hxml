@@ -1,5 +1,5 @@
 -D openfl=5.0.0
-# @install: lix --silent download "gh://github.com/MinoGames/openfl#df25d0273fc59115a2a2b161e44a51ae1659860e" into openfl/5.0.0/github/df25d0273fc59115a2a2b161e44a51ae1659860e
-# @run: haxelib run-dir openfl ${HAXE_LIBCACHE}/openfl/5.0.0/github/df25d0273fc59115a2a2b161e44a51ae1659860e
--cp ${HAXE_LIBCACHE}/openfl/5.0.0/github/df25d0273fc59115a2a2b161e44a51ae1659860e/
+# @install: lix --silent download "gh://github.com/MinoGames/openfl#998f933fd81e2138b22f2f4ba04881c11d3d0fc7" into openfl/5.0.0/github/998f933fd81e2138b22f2f4ba04881c11d3d0fc7
+# @run: haxelib run-dir openfl ${HAXE_LIBCACHE}/openfl/5.0.0/github/998f933fd81e2138b22f2f4ba04881c11d3d0fc7
+-cp ${HAXE_LIBCACHE}/openfl/5.0.0/github/998f933fd81e2138b22f2f4ba04881c11d3d0fc7/
 --macro openfl._internal.utils.ExtraParams.include()

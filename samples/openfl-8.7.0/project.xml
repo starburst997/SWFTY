@@ -3,6 +3,8 @@
     
     <meta title="OpenFL 8" package="jd.boivin.swfty_openfl8" version="1.0.0" company="Jean-Denis Boivin" />
     <meta title="OpenFL 8 List" package="jd.boivin.swfty_openfl8_list" if="list" />
+    <meta title="OpenFL 8 SWFLite" package="jd.boivin.swfty_openfl8_swflite" if="swflite" />
+    <meta title="OpenFL 8 SWF" package="jd.boivin.swfty_openfl8_swf" if="swf" />
 
     <app main="Main" path="bin" file="SWFTY" />
     <window background="#666666" allowHighDPI="true" fps="60" />
@@ -23,7 +25,11 @@
     <source path="src" />
     <source path="../abstracts" />
 
-    <assets path="../../res" rename="res"/>
+    <assets path="../../res" rename="res" />
+    <assets path="../../ref/fonts" rename="fonts" />
+    <library path="../../res/Yokat.swf" preload="true" type="swf" if="swf" />
+    <library path="../../res/Yokat.swf" preload="true" type="swflite" if="swflite" />
+
     <icon path="../../res/icon.png" />
     <launchImage path="../../ref/launchImages/Default~iphone.png" width="320" height="480" />
     <launchImage path="../../ref/launchImages/Default@2x~iphone.png" width="640" height="960" />

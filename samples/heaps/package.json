@@ -8,6 +8,7 @@
     "update": "lix download",
     "download": "lix install",
     "hl": "haxe build.hxml && hl bin/SWFTY.hl",
+    "hlc": "haxe build-hlc.hxml && echo 'Open the XCode project and hit Run! (TODO: call this automatically)'",
     "html5": "haxe html5.hxml",
     "watch": "live-server bin --watch=SWFTY.js --wait=250"
   },
