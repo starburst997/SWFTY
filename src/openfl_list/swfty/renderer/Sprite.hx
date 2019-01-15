@@ -24,6 +24,8 @@ class FinalSprite extends BaseSprite {
         if (_parent != null) {
             @:privateAccess _parent._names.set(name, this);
         }
+
+        this.name = name;
         
         return super.set__name(name);
     }
