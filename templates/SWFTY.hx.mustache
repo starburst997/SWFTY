@@ -1,0 +1,17 @@
+package swfty{{path}};
+
+/** This file is auto-generated! **/
+
+@:enum
+abstract Quality(String) from String to String {
+    {{#qualities}}
+    var {{capitalizedName}} = "{{path}}";
+    {{/qualities}}
+}
+
+@:enum
+abstract SWFTYLayer(String) from String to String {
+    {{#files}}
+    var {{capitalizedName}}Layer = "{{name}}";
+    {{/files}}
+}

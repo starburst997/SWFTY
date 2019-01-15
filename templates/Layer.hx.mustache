@@ -1,0 +1,94 @@
+package swfty{{path}};
+
+/** This file is auto-generated! **/
+
+import haxe.io.Bytes;
+
+import swfty.SWFTY;
+import swfty.utils.File;
+import swfty.renderer.Sprite;
+import swfty.renderer.Text;
+import swfty.renderer.Layer;
+
+@:forward(x, y, scaleX, scaleY, rotation, alpha, dispose, pause, layout, mouse, base, baseLayout, width, height, getAllNames, update, create, add, remove, addRender, removeRender, addMouseDown, removeMouseDown, addMouseUp, removeMouseUp, mouseX, mouseY)
+abstract {{capitalizedName}}(Layer) from Layer to Layer {
+    
+    {{#definitions}}
+        {{#definition}}
+    public inline function create{{name}}():{{capitalizedName}}_{{name}} {
+        return this.create("{{definition}}");
+    }
+
+        {{/definition}}    
+    {{/definitions}}
+    public inline function reload(?bytes:Bytes, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
+        function complete() {
+            this.reload();
+            if (onComplete != null) onComplete();
+        }
+
+        if (bytes != null) {
+            this.loadBytes(bytes, complete, onError);
+        } else {
+            _load(this.path, complete, onError);
+        }
+    }
+
+    inline function _load(?path:String = "", ?onComplete:Void->Void, ?onError:Dynamic->Void) {
+        this.path = path;
+        File.loadBytes(path, function(bytes) {
+            this.loadBytes(bytes, onComplete, onError);
+        }, onError);
+    }
+
+    inline function _loadBytes(?bytes:Bytes, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
+        this.loadBytes(bytes, onComplete, onError);
+    }
+
+    public static inline function getPath(?quality:Quality) {
+        if (quality == null) quality = Normal;
+        return "{{resPath}}" + quality + "{{name}}.swfty";
+    }
+
+    public static inline function load(?quality:Quality, ?width:Int, ?height:Int, ?bytes:Bytes, ?onComplete:{{capitalizedName}}->Void, ?onError:Dynamic->Void):{{capitalizedName}} {
+        var layer:{{capitalizedName}} = Layer.empty(width, height);
+        if (bytes != null) {
+            layer._loadBytes(bytes, function() if (onComplete != null) onComplete(layer), onError);
+        } else {
+            layer._load(getPath(quality), function() if (onComplete != null) onComplete(layer), onError);
+        }
+        return layer;
+    }
+
+    public static inline function create(?width:Int, ?height:Int):{{capitalizedName}} {
+        return Layer.empty(width, height);
+    }
+}
+
+{{#definitions}}
+@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
+abstract {{capitalizedName}}_{{name}}(Sprite) from Sprite to Sprite {
+    
+    {{#children}}
+        {{#text}}
+    public var {{name}}(get, never):Text;
+    public inline function get_{{name}}():Text {
+        return this.getText("{{name}}");
+    }
+        {{/text}}
+        {{#sprite}}
+    public var {{name}}(get, never):{{abstractName}};
+    public inline function get_{{name}}():{{abstractName}} {
+        return this.get("{{name}}");
+    }
+        {{/sprite}}
+    
+    {{/children}}
+    {{#definition}}
+    public static inline function create(layer:{{capitalizedName}}):{{capitalizedName}}_{{name}} {
+        return layer.create{{name}}();
+    }
+    {{/definition}}
+}
+
+{{/definitions}}

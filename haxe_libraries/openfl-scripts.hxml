@@ -1,3 +1,3 @@
--D openfl-scripts=8.7.0
-# @install: lix --silent download "gh://github.com/starburst997/openfl-scripts#4bd278137e837c4dc00d04bfebe88aca27a86b09" into openfl-scripts/8.7.0/github/4bd278137e837c4dc00d04bfebe88aca27a86b09
--cp ${HAXE_LIBCACHE}/openfl-scripts/8.7.0/github/4bd278137e837c4dc00d04bfebe88aca27a86b09/src/
+-D openfl-scripts=8.4.0
+# @install: lix --silent download "gh://github.com/starburst997/openfl-scripts#6b7e6176090d64c5392b4751eba2adb41ba45f9b" into openfl-scripts/8.4.0/github/6b7e6176090d64c5392b4751eba2adb41ba45f9b
+-cp ${HAXE_LIBCACHE}/openfl-scripts/8.4.0/github/6b7e6176090d64c5392b4751eba2adb41ba45f9b/src/

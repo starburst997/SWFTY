@@ -153,6 +153,7 @@ typedef Config = {
     ?watchFolder: String,
     ?outputFolder: String,
     ?abstractFolder: String,
+    ?templateFolder: String,
     ?fontFolder: String,
     ?quality: Array<InnerQuality>,
     ?pngquant: Bool,

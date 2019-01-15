@@ -16,6 +16,7 @@
     <haxelib name="format" />
     <haxelib name="bin-packing" />
     <haxelib name="console.hx" />
+    <haxelib name="hxmustache" />
     <haxelib name="mcli" />
     <haxelib name="tweenxcore" />
 

@@ -1,21 +1,50 @@
 package openfl.swfty.exporter;
 
-import hx.files.*;
-
 import haxe.ds.StringMap;
-import haxe.ds.IntMap;
-import haxe.io.Bytes;
 
-#if macro
-import haxe.io.Path;
-import haxe.macro.Context;
-import haxe.macro.Expr;
-import haxe.macro.Type;
-import sys.FileSystem;
-import sys.io.File;
-#end
+import swfty.utils.Macro;
 
 using Lambda;
+
+typedef ChildTemplate = {
+    @:optional var text:Bool;
+    @:optional var sprite:Bool;
+
+    var name:String;
+    var abstractName:String;
+}
+
+typedef DefinitionTemplate = {
+    var definition:String;
+    var name:String;
+    var children:Array<ChildTemplate>;
+}
+
+typedef LayerTemplate = {
+    var name:String;
+    var capitalizedName:String;
+    var path:String;
+    @:optional var resPath:String;
+
+    var definitions:Array<DefinitionTemplate>;
+}
+
+typedef QualityTemplate = {
+    var path:String;
+    var name:String;
+    var capitalizedName:String;
+}
+
+typedef FileTemplate = {
+    var path:String;
+    var name:String;
+    var capitalizedName:String;
+}
+
+typedef SWFTYTemplate = {
+    var qualities:Array<QualityTemplate>;
+    var files:Array<FileTemplate>;
+}
 
 /**
  * Goal isn't performance but rather type safety, we want the code to fail to compile if a sprite or textfield is missing
@@ -28,67 +57,34 @@ using Lambda;
  */
 class ClassExporter {
 
-    macro
-    public static function readString(filePath:String):ExprOf<String> {
-        var posInfos = Context.getPosInfos(Context.currentPos());
-        var directory = Path.directory(posInfos.file);
-        var file = File.of(Context.resolvePath(Dir.of('$directory/../../../templates/$filePath').toString()));
-        var content = file.readAsString();
-        return toExpr(content);
-    }
-
     // Export root abstract
-    public static function exportRoot(?quality:StringMap<String>) {
-        #if (filesystem_support || macro)
+    public static function exportRoot(?quality:StringMap<String>, ?files:Array<FileTemplate>, template:String = '') {
         if (quality == null) quality = ['normal' => ''];
+        if (files == null) files = [];
 
-        var qualities = '';
+        var qualities:Array<QualityTemplate> = [];
         for (key in quality.keys()) {
             var path = quality.get(key).replace('\\', '/');
-            qualities += '    var ${key.capitalize()} = "${path}";\n';
+            qualities.push({
+                name: key,
+                capitalizedName: key.capitalize(),
+                path: path
+            });
         }
 
-        // Read all the files in 
-        var layers = '';
-        for (file in Dir.of(quality.get('normal')).findFiles("**/*.swfty")) {
-            trace(file);
-        }
-        
+        // Mustache template
+        var context:SWFTYTemplate = {
+            qualities: qualities,
+            files: files
+        };
 
-        var q = '
-@:enum
-abstract Quality(String) from String to String {
-$qualities
-}';
-
-        var l = '
-@:enum
-abstract Quality(String) from String to String {
-$layers
-}';
-
-        var file = 'package swfty;
-
-/** This file is auto-generated! **/
-$q
-
-$l
-
-class SWFTY {
-
-}';
-
-        return file;
-        #else
-        return '';
-        #end
+        var defaultTemplate = Macro.readTemplate('SWFTY.hx');
+        return Mustache.render(template.empty() ? defaultTemplate : template, context);
     }
 
     // Export to a String
-    public static function export(swfty:SWFTYType, name:String, path:String = '', resPath:String = '') {
+    public static function export(swfty:SWFTYType, name:String, path:String = '', resPath:String = '', template:String = '') {
         var capitalizedName = name.capitalize();
-
-        var defaultTemplate = readString('Layer.hx.mustache');
 
         // First get the top leveled named MovieClip, the rest are innacessible 
         // but we will create definition for any named children with a dummy class name
@@ -129,122 +125,48 @@ class SWFTY {
         }
 
         // Once we have all type that we want to include, build them up!
-        var getLayerFile = '';
-        var abstractsFile = '';
+        var definitions:Array<DefinitionTemplate> = [];
         for (definition in abstractNames.keys()) {
             var name = abstractNames.get(definition);
 
-            var childsFile = '';
+            var children:Array<ChildTemplate> = [];
             for (child in definition.children) {
                 if (!child.name.empty()) {
                     if (child.text != null) {
-                        childsFile += '
-    public var ${child.name}(get, never):Text;
-    public inline function get_${child.name}():Text {
-        return this.getText("${child.name}");
-    }
-                        ';
+                        children.push({
+                            name: child.name,
+                            text: true,
+                            abstractName: 'Text'
+                        });
                     } else if (child.mc != null) {
-                         var abstractName = abstractNames.exists(child.mc) ? (capitalizedName + '_' + abstractNames.get(child.mc)) : 'Sprite';
-
-                        childsFile += '
-    public var ${child.name}(get, never):$abstractName;
-    public inline function get_${child.name}():$abstractName {
-        return this.get("${child.name}");
-    }
-                        ';
+                        var abstractName = abstractNames.exists(child.mc) ? (capitalizedName + '_' + abstractNames.get(child.mc)) : 'Sprite';
+                        children.push({
+                            name: child.name,
+                            sprite: true,
+                            abstractName: abstractName
+                        });
                     }
                 }
             }
 
-            if (!definition.name.empty()) getLayerFile += '
-    public inline function create$name():${capitalizedName}_${name} {
-        return this.create("${definition.name}");
-    }
-            ';
-
-            if (definition.name.empty()) {
-                abstractsFile += '
-@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract ${capitalizedName}_${name}(Sprite) from Sprite to Sprite {
-    $childsFile
-}
-                ';
-            } else {
-                abstractsFile += '
-@:forward(x, y, scaleX, scaleY, rotation, alpha, loaded, add, remove, width, height, addRender, removeRender, get, getText)
-abstract ${capitalizedName}_${name}(Sprite) from Sprite to Sprite {
-    $childsFile
-    public static inline function create(layer:$capitalizedName):${capitalizedName}_${name} {
-        return layer.create$name();
-    }
-}
-                ';
-            }
+            definitions.push({
+                definition: definition.name.empty() ? null : definition.name,
+                name: name,
+                children: children
+            });
         }
 
-        var layer = '
-@:forward(x, y, scaleX, scaleY, rotation, alpha, dispose, pause, layout, mouse, base, baseLayout, width, height, getAllNames, update, create, add, remove, addRender, removeRender, addMouseDown, removeMouseDown, addMouseUp, removeMouseUp, mouseX, mouseY)
-abstract $capitalizedName(Layer) from Layer to Layer {
-    $getLayerFile
-    public inline function reload(?bytes:Bytes, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
-        function complete() {
-            this.reload();
-            if (onComplete != null) onComplete();
-        }
+        // Mustache template
+        var context:LayerTemplate = {
+            path: path,
+            resPath: resPath, 
+            name: name,
+            capitalizedName: capitalizedName,
 
-        if (bytes != null) {
-            this.loadBytes(bytes, complete, onError);
-        } else {
-            _load(this.path, complete, onError);
-        }
-    }
+            definitions: definitions
+        };
 
-    inline function _load(?path:String = "", ?onComplete:Void->Void, ?onError:Dynamic->Void) {
-        this.path = path;
-        File.loadBytes(path, function(bytes) {
-            this.loadBytes(bytes, onComplete, onError);
-        }, onError);
-    }
-
-    inline function _loadBytes(?bytes:Bytes, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
-        this.loadBytes(bytes, onComplete, onError);
-    }
-
-    public static inline function getPath(?quality:Quality) {
-        if (quality == null) quality = Normal;
-        return "$resPath" + quality + "$name.swfty";
-    }
-
-    public static inline function load(?quality:Quality, ?width:Int, ?height:Int, ?bytes:Bytes, ?onComplete:$capitalizedName->Void, ?onError:Dynamic->Void):$capitalizedName {
-        var layer:$capitalizedName = Layer.empty(width, height);
-        if (bytes != null) {
-            layer._loadBytes(bytes, function() if (onComplete != null) onComplete(layer), onError);
-        } else {
-            layer._load(getPath(quality), function() if (onComplete != null) onComplete(layer), onError);
-        }
-        return layer;
-    }
-
-    public static inline function create(?width:Int, ?height:Int):$capitalizedName {
-        return Layer.empty(width, height);
-    }
-}';
-
-        var file = 'package swfty$path;
-
-import haxe.io.Bytes;
-
-import swfty.SWFTY;
-import swfty.utils.File;
-import swfty.renderer.Sprite;
-import swfty.renderer.Text;
-import swfty.renderer.Layer;
-
-/** This file is auto-generated! **/
-$layer
-$abstractsFile';
-
-        return file;
+        var defaultTemplate = Macro.readTemplate('Layer.hx');
+        return Mustache.render(template.empty() ? defaultTemplate : template, context);
     }
 }

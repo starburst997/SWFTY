@@ -6,6 +6,7 @@ import openfl.swfty.exporter.Shape;
 import openfl.swfty.exporter.MovieClip;
 import openfl.swfty.exporter.FontExporter;
 import openfl.swfty.exporter.TilemapExporter;
+import openfl.swfty.exporter.ClassExporter;
 
 import zip.ZipWriter;
 
@@ -563,18 +564,18 @@ class Exporter {
     }
 
     // This gives us optional compile-time swfty to our safety
-    public function getAbstracts() {
+    public function getAbstracts(?template:String = '') {
         var swfty = SWFTYType.fromJson(getSWFTYJson());
 
         var i = name.lastIndexOf('/');
         if (i == -1) i = name.lastIndexOf('\\');
 
         var abstractName = i == -1 ? name : name.substr(i + 1);
-        return ClassExporter.export(swfty, abstractName, name.replace(abstractName, '').replace('/', '.').replace('\\', '.'));
+        return ClassExporter.export(swfty, abstractName, name.replace(abstractName, '').replace('/', '.').replace('\\', '.'), '', template);
     }
 
-    public function getRootAbstract(?quality:StringMap<String>) {
-        return ClassExporter.exportRoot(quality);
+    public function getRootAbstract(?quality:StringMap<String>, ?files:Array<FileTemplate>, ?template:String = '') {
+        return ClassExporter.exportRoot(quality, files, template);
     }
 
     function getTransform(matrix:Matrix):Transform {

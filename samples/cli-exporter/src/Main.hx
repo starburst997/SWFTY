@@ -162,6 +162,7 @@ class CLI extends mcli.CommandLine {
         if (config.outputFolder == null) config.outputFolder = config.watchFolder;
         if (config.fontFolder == null) config.fontFolder = FontExporter.path;
         if (config.abstractFolder == null) config.abstractFolder = 'src/swfty';
+        if (config.templateFolder == null) config.templateFolder = '';
         if (config.quality == null) config.quality = [];
         if (config.bakeColor == null) config.bakeColor = true;
         if (config.pngquant == null) config.pngquant = true;
@@ -247,12 +248,33 @@ class CLI extends mcli.CommandLine {
                 // Makes sure dir exists
                 Dir.of(Path.of(abstractPath).parent).create();
 
+                // Grab template files
+                inline function getTemplate(name:String) {
+                    if (config.templateFolder.empty()) return '';
+                    var templatePath = Path.of(getDir(config.templateFolder)).join(name + '.mustache');
+                    return templatePath.toFile().readAsString('');
+                }
+
                 log('Saving', '$abstractPath', 2);
-                FileSave.writeBytes(Bytes.ofString(exporter.getAbstracts()), abstractPath);
+                FileSave.writeBytes(Bytes.ofString(exporter.getAbstracts(getTemplate('Layer.hx'))), abstractPath);
 
                 var rootPath = Path.of(getDir(config.abstractFolder)).join('SWFTY.hx').toString();
                 log('Saving', '$rootPath', 2);
-                FileSave.writeBytes(Bytes.ofString(exporter.getRootAbstract(quality)), rootPath);
+
+                // Get list of all swfty files
+                var files = [];
+                #if (filesystem_support || macro)
+                for (file in Dir.of(getDir(quality.get('normal'))).findFiles("**/*.swfty")) {
+                    var name = file.path.filenameStem; 
+                    files.push({
+                        path: file.path.toString(),
+                        name: name,
+                        capitalizedName: name.capitalize()
+                    });
+                }
+                #end
+
+                FileSave.writeBytes(Bytes.ofString(exporter.getRootAbstract(quality, files, getTemplate('SWFTY.hx'))), rootPath);
 
                 // Craft message to be sent to server
                 var idBytes = Bytes.ofString(exporter.name);
