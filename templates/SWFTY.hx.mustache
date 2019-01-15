@@ -5,7 +5,7 @@ package swfty{{path}};
 @:enum
 abstract Quality(String) from String to String {
     {{#qualities}}
-    var {{capitalizedName}} = "{{path}}";
+    var {{capitalizedName}} = "{{{path}}}";
     {{/qualities}}
 }
 
