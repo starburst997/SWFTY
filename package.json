@@ -5,7 +5,9 @@
   "scripts": {
     "preinstall": "mkdir -p ~/haxe",
     "postinstall": "mkdir -p haxe_libraries; lix download;",
-    "haxelib": "./scripts/haxelib.sh"
+    "haxelib": "./scripts/haxelib.sh",
+    "test": "cd samples/cli-exporter && openfl build mac -Dsync -final -v && ./bin/macos/bin/SWFTY.app/Contents/MacOS/SWFTY -r $PWD",
+    "mac": "cd samples/cli-exporter && openfl build mac -Dsync -final -v"
   },
   "dependencies": {
     "lix": "starburst997/lix.client#develop"
