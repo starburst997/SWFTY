@@ -30,7 +30,7 @@ class BaseSprite extends EngineSprite {
 
     // Using underscore to prevent var clasing with base class
     // TODO: All private var should have an underscore?
-    var _name:String;
+    var _name(default, set):String;
     var _parent:FinalSprite;
     var _sprites:Array<FinalSprite>;
     var _names:StringMap<FinalSprite>;
@@ -66,6 +66,15 @@ class BaseSprite extends EngineSprite {
         load(definition);
     }
 
+    function set__name(name:String) {
+        if (_parent != null) {
+            @:privateAccess _parent._names.remove(_name);
+        }
+        
+        _name = name;
+        return _name;
+    }
+
     public function calcBounds(?relative:BaseSprite):Rect {
         throw 'Not implemented';
     }
@@ -83,23 +92,23 @@ class BaseSprite extends EngineSprite {
         return _bounds;
     }
 
-    #if (openfl && list) override #else inline #end
+    #if (openfl && list && openfl > "5.0.0") override #else inline #end
     function get_width():Float {
         return bounds.width * scaleX;
     }
 
-    #if (openfl && list) override #else inline #end
+    #if (openfl && list && openfl > "5.0.0") override #else inline #end
     function set_width(width:Float) {
         scaleX = width / bounds.width;
         return width;
     }
 
-    #if (openfl && list) override #else inline #end
+    #if (openfl && list && openfl > "5.0.0") override #else inline #end
     function get_height():Float {
         return bounds.height * scaleY;
     }
 
-    #if (openfl && list) override #else inline #end
+    #if (openfl && list && openfl > "5.0.0") override #else inline #end
     function set_height(height:Float) {
         scaleY = height / bounds.height;
         return height;
@@ -313,6 +322,11 @@ class BaseSprite extends EngineSprite {
 
             loaded = true;
         }
+    }
+
+    public function addSpriteAt(sprite:FinalSprite, index:Int = 0) {
+        // TODO: Does the position in the array matter?
+        addSprite(sprite);
     }
 
     public function addSprite(sprite:FinalSprite) {

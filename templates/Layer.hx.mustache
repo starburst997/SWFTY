@@ -77,8 +77,8 @@ abstract {{capitalizedName}}_{{name}}(Sprite) from Sprite to Sprite {
     }
         {{/text}}
         {{#sprite}}
-    public var {{name}}(get, never):{{abstractName}};
-    public inline function get_{{name}}():{{abstractName}} {
+    public var {{name}}(get, never):{{#abstractName}}{{abstractName}}{{/abstractName}}{{^abstractName}}Sprite{{/abstractName}};
+    public inline function get_{{name}}():{{#abstractName}}{{abstractName}}{{/abstractName}}{{^abstractName}}Sprite{{/abstractName}} {
         return this.get("{{name}}");
     }
         {{/sprite}}

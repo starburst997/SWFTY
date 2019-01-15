@@ -20,6 +20,14 @@ class FinalSprite extends BaseSprite {
         
     }
 
+    override function set__name(name:String) {
+        if (_parent != null) {
+            @:privateAccess _parent._names.set(name, this);
+        }
+        
+        return super.set__name(name);
+    }
+
     public override function calcBounds(?relative:BaseSprite):Rect {
         var rect = this.getBounds(relative == null ? this : relative);
         return {
@@ -36,6 +44,12 @@ class FinalSprite extends BaseSprite {
 
     public override function bottom() {
         if (this.parent != null) parent.setChildIndex(this, 0);
+    }
+
+    public override function addSpriteAt(sprite:FinalSprite, index:Int = 0) {
+        sprite._parent = this;
+        super.addSpriteAt(sprite, index);
+        addChildAt(sprite, index);
     }
 
     public override function addSprite(sprite:FinalSprite) {

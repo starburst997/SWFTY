@@ -46,6 +46,20 @@ abstract Sprite(FinalSprite) from FinalSprite to FinalSprite {
         return new FinalSprite(layer, definition, linkage);
     }
 
+    public var sprites(get, never):Array<Sprite>;
+    inline function get_sprites():Array<Sprite> {
+        @:privateAccess return this._sprites;
+    }
+
+    public var name(get, set):String;
+    inline function get_name():String {
+        @:privateAccess return this._name;
+    }
+
+    inline function set_name(name:String):String {
+        @:privateAccess return this._name = name;
+    }
+
     #if openfl
     public var rotation(get, set):Float;
     inline function get_rotation():Float {
@@ -83,6 +97,12 @@ abstract Sprite(FinalSprite) from FinalSprite to FinalSprite {
     
     public inline function add(sprite:Sprite) {
         this.addSprite(sprite);
+    }
+
+    public inline function addAt(sprite:Sprite, index:Int = 0) {
+        // TODO: Is this check necessary?
+        var total = sprites.length;
+        this.addSpriteAt(sprite, index < 0 ? 0 : index > total ? total : index);
     }
 
     public inline function remove(sprite:Sprite) {

@@ -11,6 +11,7 @@ typedef ChildTemplate = {
     @:optional var sprite:Bool;
 
     var name:String;
+    var capitalizedName:String;
     var abstractName:String;
 }
 
@@ -23,6 +24,7 @@ typedef DefinitionTemplate = {
 typedef LayerTemplate = {
     var name:String;
     var capitalizedName:String;
+    var layerName:String;
     var path:String;
     @:optional var resPath:String;
 
@@ -135,13 +137,15 @@ class ClassExporter {
                     if (child.text != null) {
                         children.push({
                             name: child.name,
+                            capitalizedName: child.name.capitalize(),
                             text: true,
-                            abstractName: 'Text'
+                            abstractName: null
                         });
                     } else if (child.mc != null) {
-                        var abstractName = abstractNames.exists(child.mc) ? (capitalizedName + '_' + abstractNames.get(child.mc)) : 'Sprite';
+                        var abstractName = abstractNames.exists(child.mc) ? (capitalizedName + '_' + abstractNames.get(child.mc)) : null;
                         children.push({
                             name: child.name,
+                            capitalizedName: child.name.capitalize(),
                             sprite: true,
                             abstractName: abstractName
                         });
@@ -161,6 +165,7 @@ class ClassExporter {
             path: path,
             resPath: resPath, 
             name: name,
+            layerName: capitalizedName,
             capitalizedName: capitalizedName,
 
             definitions: definitions

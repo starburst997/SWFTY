@@ -13,6 +13,15 @@ class FinalText extends BaseText {
     public function new(layer:BaseLayer, ?definition:TextType) {
         super(layer, definition);
     }
+
+    override function set__name(name:String) {
+        if (_parent != null) {
+            @:privateAccess _parent._texts.remove(_name);
+            @:privateAccess _parent._texts.set(name, this);
+        }
+        
+        return super.set__name(name);
+    }
 }
 
 @:forward(x, y, scaleX, scaleY, rotation, text, short, fit, fitVertically, addRender, removeRender)

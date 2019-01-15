@@ -24,6 +24,14 @@ class FinalSprite extends BaseSprite {
         super(layer, definition, linkage);
     }
 
+    override function set__name(name:String) {
+        if (_parent != null) {
+            @:privateAccess _parent._names.set(name, this);
+        }
+        
+        return super.set__name(name);
+    }
+
     override function getBoundsRec( relativeTo : h2d.Object, out : h2d.col.Bounds, forSize : Bool ) {
 		super.getBoundsRec(relativeTo, out, forSize);
 		if( tile != null ) addBounds(relativeTo, out, tile.dx, tile.dy, tile.width, tile.height);
@@ -77,6 +85,12 @@ class FinalSprite extends BaseSprite {
                 MathUtils.scaleY(matA, matB, matC, matD), 
                 MathUtils.rotation(matB, matC, matD), color, tile);
         }
+    }
+
+    public override function addSpriteAt(sprite:FinalSprite, index:Int = 0) {
+        sprite._parent = this;
+        super.addSpriteAt(sprite, index);
+        addChildAt(sprite, index);
     }
 
     public override function addSprite(sprite:FinalSprite) {

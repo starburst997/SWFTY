@@ -174,6 +174,10 @@ class BaseLayer extends EngineLayer {
         baseLayout.addSprite(sprite);
     }
 
+    public function addSpriteAt(sprite:Sprite, index:Int = 0) {
+        baseLayout.addSpriteAt(sprite, index);
+    }
+
     public function removeSprite(sprite:Sprite) {
         baseLayout.removeSprite(sprite);
     }

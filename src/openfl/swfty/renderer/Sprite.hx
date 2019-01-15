@@ -16,6 +16,14 @@ class FinalSprite extends BaseSprite {
         super(layer, definition, linkage);
     }
 
+    override function set__name(name:String) {
+        if (_parent != null) {
+            @:privateAccess _parent._names.set(name, this);
+        }
+        
+        return super.set__name(name);
+    }
+
     override function refresh() {
         tileset = layer.tileset;
     }
@@ -36,6 +44,12 @@ class FinalSprite extends BaseSprite {
 
     public override function bottom() {
         if (this.parent != null) parent.setTileIndex(this, 0);
+    }
+
+    public override function addSpriteAt(sprite:FinalSprite, index:Int = 0) {
+        sprite._parent = this;
+        super.addSpriteAt(sprite, index);
+        addTileAt(sprite, index);
     }
 
     public override function addSprite(sprite:FinalSprite) {

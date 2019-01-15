@@ -92,6 +92,11 @@ abstract Layer(BaseLayer) from BaseLayer to BaseLayer {
         return this;
     }
 
+    public inline function addAt(sprite:Sprite, index = 0) {
+        this.addSpriteAt(sprite, 0);
+        return this;
+    }
+
     public inline function add(sprite:Sprite) {
         this.addSprite(sprite);
         return this;
