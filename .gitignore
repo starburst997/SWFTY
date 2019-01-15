@@ -1,5 +1,6 @@
 bin
 .tmp
+.log
 .DS_Store
 _site
 node_modules
