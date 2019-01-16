@@ -38,9 +38,14 @@ class FinalLayer extends BaseLayer {
     public override function emptyTile(?id:Int):DisplayTile {
         return if (id != null && texture != null && rects.exists(id)) {
             var rect = rects.get(id);
-            var bmpd = new BitmapData(Std.int(rect.width), Std.int(rect.height), true, 0x00000000);
-            bmpd.copyPixels(texture, rect, new Point(0, 0));
-            bmpd;
+
+            if (Std.int(rect.width) > 0 && Std.int(rect.height) > 0) {
+                var bmpd = new BitmapData(Std.int(rect.width), Std.int(rect.height), true, 0x00000000);
+                bmpd.copyPixels(texture, rect, new Point(0, 0));
+                bmpd;
+            } else {
+                new BitmapData(1, 1, true, 0x00000000);
+            }
         } else {
             new DisplayTile(1, 1, true, 0x00000000);
         }
