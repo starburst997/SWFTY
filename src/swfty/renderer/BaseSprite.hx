@@ -324,9 +324,12 @@ class BaseSprite extends EngineSprite {
         }
     }
 
+    public function getIndex(sprite:FinalSprite) {
+        return _sprites.indexOf(sprite);
+    }
+
     public function addSpriteAt(sprite:FinalSprite, index:Int = 0) {
-        // TODO: Does the position in the array matter?
-        addSprite(sprite);
+        _sprites.insert(index, sprite);
     }
 
     public function addSprite(sprite:FinalSprite) {
