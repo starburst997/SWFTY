@@ -1223,6 +1223,7 @@ class Exporter {
             color: 0x000000,
             text: '',
             html: '',
+            multiline: false,
             leftMargin: 0,
             rightMargin: 0,
             indent: 0,
@@ -1242,6 +1243,7 @@ class Exporter {
         // Always have a new line at the end, remove
         definition.text = definition.text.substr(0, definition.text.length - 1);
 
+        definition.multiline = tag.multiline;
         definition.size = tag.fontHeight / 20.0;
 
         if (tag.hasLayout) {

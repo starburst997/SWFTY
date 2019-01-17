@@ -22,8 +22,10 @@ class BaseText extends FinalSprite {
 
     public var textWidth(default, null):Float = 0.0;
     public var textHeight(default, null):Float = 0.0;
+    public var multiline(default, null):Bool = false;
+    public var originalText(default, null):String = '';
 
-    public var originalText:String = '';
+    var originalLines:Int = 0;
 
     // Add "..." at the end of the text if cannot fit within the boundaries
     public var short = false;
@@ -45,6 +47,7 @@ class BaseText extends FinalSprite {
         textDefinition = definition;
         if (text == null && definition != null) {
             text = definition.text;
+            multiline = definition.multiline;
             originalText = text;
         } else if (this.text != null) {
             // Force refresh
@@ -240,6 +243,9 @@ class BaseText extends FinalSprite {
         }
 
         currentLine.textWidth = x - textDefinition.x;
+
+        // We assume this is from the original text, might not be the bvest approach...
+        if (originalLines == 0) originalLines = lines.length;
 
         // Center vertically
         if (fit && fitVertically) {

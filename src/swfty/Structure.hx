@@ -84,6 +84,7 @@ typedef TextDefinition = {
     align: Align,
     size: Float,
     color: UInt,
+    multiline: Bool,
     text: String,
     html: String,
     leftMargin: Float,
@@ -332,6 +333,7 @@ class TextType #if !macro implements hxbit.Serializable #end {
     @:s public var rightMargin:Float;
     @:s public var leading:Float;
     @:s public var indent:Float;
+    @:s public var multiline:Bool;
     @:s public var x:Float;
     @:s public var y:Float;
     @:s public var width:Float;
@@ -344,6 +346,7 @@ class TextType #if !macro implements hxbit.Serializable #end {
             size: json.size,
             color: json.color,
             text: json.text,
+            multiline: json.multiline,
             html: json.html,
             leftMargin: json.leftMargin,
             rightMargin: json.rightMargin,
@@ -356,13 +359,14 @@ class TextType #if !macro implements hxbit.Serializable #end {
         };
     }
 
-    public function new(?font:FontType, ?align:Align, ?size:Float, ?color:UInt, ?text:String, ?html:String, ?leftMargin:Float, ?rightMargin:Float, ?leading:Float, ?indent:Float, ?x:Float, ?y:Float, ?width:Float, ?height:Float) {
+    public function new(?font:FontType, ?align:Align, ?size:Float, ?color:UInt, ?text:String, ?html:String, ?leftMargin:Float, ?rightMargin:Float, ?leading:Float, ?indent:Float, ?x:Float, ?y:Float, ?multiline:Bool, ?width:Float, ?height:Float) {
         this.font = font;
         this.align = align;
         this.size = size;
         this.color = color;
         this.text = text;
         this.html = html;
+        this.multiline = multiline;
         this.leftMargin = leftMargin;
         this.rightMargin = rightMargin;
         this.leading = leading;
