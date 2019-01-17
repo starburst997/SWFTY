@@ -18,6 +18,7 @@ typedef ChildTemplate = {
 typedef DefinitionTemplate = {
     var definition:String;
     var name:String;
+    var className:String;
     var children:Array<ChildTemplate>;
 }
 
@@ -155,6 +156,7 @@ class ClassExporter {
 
             definitions.push({
                 definition: definition.name.empty() ? null : definition.name,
+                className: name,
                 name: name,
                 children: children
             });
