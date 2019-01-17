@@ -356,6 +356,8 @@ class BaseSprite extends EngineSprite {
     public function get(name:String):FinalSprite {
         return if (_names.exists(name)) {
             _names.get(name);
+        } else if (_texts.exists(name)) {
+            _texts.get(name);
         } else {
             if (_definition != null) Log.warn('Child: $name does not exists!');
             var sprite = FinalSprite.create(layer);
