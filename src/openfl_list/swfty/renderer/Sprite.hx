@@ -91,7 +91,7 @@ abstract DisplayBitmap(EngineBitmap) from EngineBitmap to EngineBitmap {
     }
 
     public inline function color(r:Int, g:Int, b:Int) {
-        this.transform.colorTransform = new openfl.geom.ColorTransform(r / 255.0, g / 255.0, b / 255.0, 1.0);
+        this.transform.colorTransform = new openfl.geom.ColorTransform(r / 255.0, g / 255.0, b / 255.0, this.alpha);
     }
 }
 
@@ -107,11 +107,11 @@ abstract DisplaySprite(BaseSprite) from BaseSprite to BaseSprite {
     }
 
     public inline function color(r:Float, g:Float, b:Float, rAdd:Float, gAdd:Float, bAdd:Float) {
-        this.transform.colorTransform = new openfl.geom.ColorTransform(r / 255.0, g / 255.0, b / 255.0, 1.0, rAdd, gAdd, bAdd, 0.0);
+        this.transform.colorTransform = new openfl.geom.ColorTransform(r / 255.0, g / 255.0, b / 255.0, this.alpha, rAdd, gAdd, bAdd, 0.0);
     }
 
     public inline function resetColor() {
-        this.transform.colorTransform = new openfl.geom.ColorTransform(1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0);
+        this.transform.colorTransform = new openfl.geom.ColorTransform(1.0, 1.0, 1.0, this.alpha, 0.0, 0.0, 0.0, 0.0);
     }
 
     public inline function blend(mode:BlendMode) {
