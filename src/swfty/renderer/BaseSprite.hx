@@ -19,6 +19,7 @@ class BaseSprite extends EngineSprite {
     public var layer:BaseLayer;
 
     public var loaded = false;
+    public var debug = false;
 
     // TODO: Only used on heaps, kind of a hack, I think saving the ColorType instead might solve this
     public var r:Float = 1.0;
@@ -92,6 +93,17 @@ class BaseSprite extends EngineSprite {
         return _bounds;
     }
 
+    inline function setBounds(x:Float, y:Float, width:Float, height:Float) {
+        if (_bounds == null) 
+            _bounds = {x: x, y: y, width: width, height: height};
+        else {
+            _bounds.x = x;
+            _bounds.y = y;
+            _bounds.width = width;
+            _bounds.height = height;
+        }
+    }
+
     #if (openfl && list && !flash) override #else inline #end
     function get_width():Float {
         return bounds.width * scaleX;
@@ -114,8 +126,10 @@ class BaseSprite extends EngineSprite {
         return height;
     }
 
-    public inline function addRender(?name:String, f:Float->Void) {
-        _renders.push(f);
+    public inline function addRender(?name:String, f:Float->Void, ?priority = false) {
+        if (priority) _renders.unshift(f);
+        else _renders.push(f);
+        
         if (name != null) {
             if (!_rendersMap.exists(name)) _rendersMap.set(name, []);
             _rendersMap.get(name).push(f);
@@ -339,6 +353,12 @@ class BaseSprite extends EngineSprite {
     public function removeSprite(sprite:FinalSprite) {
         sprite._parent = null;
         _pruneSprites.push(sprite);
+    }
+
+    public function setIndex(sprite:FinalSprite, index:Int) {
+        if (_sprites.remove(sprite)) {
+            _sprites.insert(index, sprite);
+        }
     }
 
     public function addBitmap(shape:EngineBitmap) {

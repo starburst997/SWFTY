@@ -72,6 +72,11 @@ class FinalSprite extends BaseSprite {
     public override function removeBitmap(bitmap:EngineBitmap) {
         removeChild(bitmap);
     }
+
+    public override function setIndex(sprite:FinalSprite, index:Int) {
+        super.setIndex(sprite, index);
+        setChildIndex(sprite, index);
+    }
 }
 
 @:forward(x, y, scaleX, scaleY, rotation, alpha)

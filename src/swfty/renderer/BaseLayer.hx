@@ -15,6 +15,7 @@ enum ButtonState {
 }
 
 class Mouse {
+    
     public var x:Float = 0.0;
     public var y:Float = 0.0;
     
@@ -75,6 +76,8 @@ class BaseLayer extends EngineLayer {
     var _width:Int;
     var _height:Int;
     
+    public var time:Float = 0;
+
     public var id = '';
     public var pause = false;
 
@@ -123,6 +126,8 @@ class BaseLayer extends EngineLayer {
     public function update(dt:Float) {
         if (pause) return;
 
+        time = haxe.Timer.stamp() * 1000;
+
         for (f in renders) f(dt);
         
         if (mouse.leftChanged) {
@@ -146,24 +151,27 @@ class BaseLayer extends EngineLayer {
         baseLayout.removeAll();
     }
 
-    public function addRender(f:Float->Void) {
-        renders.push(f);
+    public function addRender(f:Float->Void, ?priority = false) {
+        if (priority) renders.unshift(f);
+        else renders.push(f);
     }
 
     public function removeRender(f:Float->Void) {
         renders.remove(f);
     }
 
-    public function addMouseDown(f:Float->Float->Void) {
-        mouseDowns.push(f);
+    public function addMouseDown(f:Float->Float->Void, ?priority = false) {
+        if (priority) mouseDowns.unshift(f); 
+        else mouseDowns.push(f);
     }
 
     public function removeMouseDown(f:Float->Float->Void) {
         mouseDowns.remove(f);
     }
 
-    public function addMouseUp(f:Float->Float->Void) {
-        mouseUps.push(f);
+    public function addMouseUp(f:Float->Float->Void, ?priority = false) {
+        if (priority) mouseUps.unshift(f); 
+        else mouseUps.push(f);
     }
 
     public function removeMouseUp(f:Float->Float->Void) {
@@ -240,7 +248,9 @@ class BaseLayer extends EngineLayer {
     }
 
     public inline function empty() {
-        return Sprite.create(this);
+        var sprite = Sprite.create(this);
+        sprite.loaded = true;
+        return sprite;
     }
 
     public function get(linkage:String) {

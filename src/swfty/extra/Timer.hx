@@ -4,7 +4,7 @@ import swfty.renderer.Sprite;
 
 using swfty.extra.Timer;
 
-class Timer {
+class TimerExtra {
 
     static inline var RENDER_ID = 'wait';
 
