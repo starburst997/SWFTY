@@ -23,6 +23,7 @@ import openfl.display.BitmapData;
 import openfl.events.Event;
 import openfl.geom.Matrix;
 import openfl.geom.Point;
+import openfl.geom.Rectangle;
 import openfl.utils.ByteArray;
 
 import lime.graphics.Image;
@@ -927,36 +928,98 @@ class Exporter {
             //processShapes.push(tag);
             //onComplete();
 
-            var id = --processShapesId;
-            var definition:ShapeDefinition = {
-                id: 0,
-                bitmap: id,
-                a: 1.0,
-                b: 0.0,
-                c: 0.0,
-                d: 1.0,
-                tx: 0.0,
-                ty: 0.0
-            }
-
-            processShapes.set(id, {tag: tag, definition: definition});
-            shapes.push(definition);
-
+            var sendRect = false;
             var bitmaps = [];
+            var rect = new Rectangle();
+            var rects = [];
             for (command in handler.commands) {
                 switch(command) {
 					case BeginBitmapFill(bitmapID, _, _, _):
                         bitmaps.push(command);
-					default:
+                        sendRect = true;
+					
+                    case MoveTo (x, y):
+                        rect.x = x;
+                        rect.y = y;
+                    case LineTo (x, y):
+                        if (x > rect.right) rect.right = x;
+                        if (x < rect.left) rect.left = x;
+                        if (y > rect.bottom) rect.bottom = y;
+                        if (y < rect.top) rect.top = y;
+                    case EndFill:
                         
+                        if (sendRect) {
+                            rects.push(rect);
+                        }
+
+                        sendRect = false;
+                        rect = new Rectangle();
+
+                    
+                    default:
 				}
             }
 
+            // No bitmap, then add for screenshot processing
+            if (bitmaps.length == 0) {
+                var id = --processShapesId;
+                var definition:ShapeDefinition = {
+                    id: 0,
+                    bitmap: id,
+                    a: 1.0,
+                    b: 0.0,
+                    c: 0.0,
+                    d: 1.0,
+                    tx: 0.0,
+                    ty: 0.0
+                }
+
+                processShapes.set(id, {tag: tag, definition: definition});
+                shapes.push(definition);
+            }
+
+            var n = 0;
             var process = function f(i) {
                 var command = bitmaps[i];
+                var rect = rects[i];
                 switch(command) {
-					case BeginBitmapFill(bitmapID, _, _, _):
+					case BeginBitmapFill(bitmapID, matrix, repeat, smooth):
                         processTag(cast data.getCharacter(bitmapID), function() {
+                            // Add tiling bitmap shapes
+                            if (i < rects.length) {
+                                var bmpd = bitmapDatas.get(bitmapID);
+                                
+                                var scaleX = MathUtils.scaleX(matrix.a, matrix.b, matrix.c, matrix.d);
+                                var scaleY = MathUtils.scaleY(matrix.a, matrix.b, matrix.c, matrix.d);
+                                var bmpdWidth = Math.abs(Std.int(bmpd.width * scaleX)) - 1;
+                                var bmpdHeight = Math.abs(Std.int(bmpd.height * scaleY)) - 1;
+
+                                var col = Std.int(Math.max(rect.width / bmpdWidth, 1));
+                                var row = Std.int(Math.max(rect.height / bmpdHeight, 1));
+
+                                if (rect.width / bmpdWidth - col > 0.25) col++;
+                                if (rect.height / bmpdHeight - row > 0.25) row++;
+
+                                for (x in 0...col) {
+                                    for (y in 0...row) {
+                                        var definition:ShapeDefinition = {
+                                            id: n++,
+                                            bitmap: bitmapID,
+                                            a: matrix.a,
+                                            b: matrix.b,
+                                            c: matrix.c,
+                                            d: matrix.d,
+                                            tx: rect.x + (scaleX > 0 ? x : x + 1) * bmpdWidth,
+                                            ty: rect.y + (scaleY > 0 ? y : y + 1) * bmpdHeight
+                                        }
+
+                                        shapes.push(definition);
+                                    }
+                                }
+
+                                bitmapKeeps.set(bitmapID, true);
+                            }
+                            
                             if (i + 1 < bitmaps.length) {
                                 if (processFrame++ < MAX_STACK) {
                                     f(i + 1);
@@ -1313,6 +1376,13 @@ class Exporter {
 
         if (Std.is(tag, TagDefineSprite)) {
             addSprite(cast tag, onComplete);
+
+            // TODO: Maybe eventually support this aka "scale9Grid"
+            /*var grid = data.getScalingGrid(tag.characterId);
+			if (grid != null) {
+				var rect:Rectangle = grid.splitter.rect.clone();
+				cast(displayObject, MovieClip).scale9BitmapGrid = rect;
+			}*/
 
         } else if (Std.is(tag, TagDefineBits) || Std.is(tag, TagDefineBitsJPEG2) || Std.is(tag, TagDefineBitsLossless)) {
             addBitmap(cast tag, onComplete);
