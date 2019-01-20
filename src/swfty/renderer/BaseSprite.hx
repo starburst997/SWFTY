@@ -262,7 +262,6 @@ class BaseSprite extends EngineSprite {
                 sprite.og = true;
                 
                 if (updatePosition && updateScale && updateRotation) sprite.display().transform(child.a, child.b, child.c, child.d, child.tx, child.ty);
-                if (updateAlpha) sprite.alpha = child.alpha;
                 if (updateVisible) sprite.visible = child.visible;
 
                 // This will add drawCalls, so big no no unless you really want them
@@ -280,6 +279,8 @@ class BaseSprite extends EngineSprite {
                 } else {
                     sprite.display().resetColor();
                 }
+
+                if (updateAlpha) sprite.alpha = child.alpha;
 
                 for (shape in child.shapes) {
                     var tile = layer.createBitmap(shape.bitmap.id, true);
