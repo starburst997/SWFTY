@@ -32,7 +32,7 @@ class TilemapExporter {
         var originalWidth = bmpd.width;
         var originalHeight = bmpd.height;
        
-        var notAlphaBounds = bmpd.getColorBoundsRect(0xFF000000, 0x00000000, false);
+        var notAlphaBounds = bmpd.getColorBoundsRect(0xF0000000, 0x00000000, false);
         var trimed = new BitmapData(Std.int(notAlphaBounds.width), Std.int(notAlphaBounds.height), true, 0x00000000);
         trimed.copyPixels(bmpd, notAlphaBounds, new Point());
         bmpd.dispose();
