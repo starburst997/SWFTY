@@ -7,6 +7,8 @@ typedef Line = {
     textWidth: Float,
     tiles: Array<{
         code: Int,
+        x: Float,
+        width: Float,
         tile: DisplayBitmap
     }>
 }
@@ -134,6 +136,8 @@ class BaseText extends FinalSprite {
 
                 currentLine.tiles.push({
                     code: code,
+                    x: x,
+                    width: w,
                     tile: tile
                 });
 
@@ -146,6 +150,8 @@ class BaseText extends FinalSprite {
                         // Take all tiles and scale them down
                         for (line in lines) {
                             for (tile in line.tiles) {
+                                tile.x *= scaleDown;
+                                tile.width *= scaleDown;
                                 tile.tile.scaleX *= scaleDown;
                                 tile.tile.scaleY *= scaleDown;
                                 tile.tile.x *= scaleDown;
@@ -175,19 +181,21 @@ class BaseText extends FinalSprite {
                             char = textDefinition.font.get(code);
                             tile = layer.createBitmap(char.bitmap.id, true);
                             tile.color(r, g, b);
-                            tile.x = x + char.tx;
-                            tile.y = y + char.ty;
+                            tile.x = x + char.tx * scale;
+                            tile.y = y + char.ty * scale;
 
                             tile.scaleX = tile.scaleY = scale;
 
                             addBitmap(tile);
 
+                            w = char.advance * scale;
                             currentLine.tiles.push({
                                 code: code,
+                                x: x,
+                                width: w,
                                 tile: tile
                             });
 
-                            w = char.advance * scale;
                             x += w;
                         }
                         break;
@@ -199,24 +207,29 @@ class BaseText extends FinalSprite {
                     // Take all characters until a space and move them to next line (ignoring the space)
                     var tiles = [];
                     var tile = currentLine.tiles.pop();
-                    while(tile != null && tile.code == SPACE) {
+                    while(tile != null && tile.code == SPACE) { // Trim spaces
                         tile = currentLine.tiles.pop();
                     }
 
                     var offsetX = 0.0;
-                    var maxWidth = (tile != null && tile.tile != null) ? tile.tile.x : 0.0;
-                    while(tile != null && tile.code != SPACE) {
+                    var maxWidth = (tile != null && tile.tile != null) ? (tile.x + tile.width) : 0.0; // TODO: Add the width of the tile also
+                    while(tile != null && tile.code != SPACE) { // Remove any tiles until we reach a space
                         if (tile.tile != null) {
                             tile.tile.y += lineHeight;
-                            offsetX = tile.tile.x;
+                            offsetX = tile.x;
                         }
-                        tiles.push(tile);
+                        tiles.unshift(tile);
 
                         tile = currentLine.tiles.pop();
-                        if (tile != null && tile.tile != null) maxWidth = tile.tile.x;
+                        if (tile != null && tile.tile != null) {
+                            maxWidth = tile.x + tile.width;
+                        }
                     }
 
-                    for (tile in tiles) tile.tile.x -= offsetX - textDefinition.x;
+                    for (tile in tiles) {
+                        tile.x -= offsetX - textDefinition.x;
+                        tile.tile.x -= offsetX - textDefinition.x;
+                    }
 
                     currentLine.textWidth = maxWidth - textDefinition.x;
                     if (currentLine.textWidth > textWidth) textWidth = currentLine.textWidth;
@@ -265,7 +278,7 @@ class BaseText extends FinalSprite {
                         if (tile.tile != null) tile.tile.x += textDefinition.width - line.textWidth;
             case Center  : 
                 for (line in lines)
-                    for (tile in line.tiles) 
+                    for (tile in line.tiles)
                         if (tile.tile != null) tile.tile.x += textDefinition.width / 2 - line.textWidth / 2;
             case Justify : trace('Justify not supported!!!');
         }
