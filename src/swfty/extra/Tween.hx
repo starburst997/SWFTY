@@ -159,15 +159,15 @@ class Tween {
         return sprite;
     }
 
-    public static inline function tweenX(sprite:Sprite, x:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void) {
-        setup(sprite, sprite.x, x, duration, delay, easing, onComplete, function(val) {
+    public static inline function tweenX(sprite:Sprite, x:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?repeat:Bool = false, ?onComplete:Void->Void) {
+        setup(sprite, sprite.x, x, duration, delay, easing, repeat, onComplete, function(val) {
             sprite.x = val;
         });
         return sprite;
     }
 
-    public static inline function tweenY(sprite:Sprite, y:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void) {
-        setup(sprite, sprite.y, y, duration, delay, easing, onComplete, function(val) {
+    public static inline function tweenY(sprite:Sprite, y:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?repeat:Bool = false, ?onComplete:Void->Void) {
+        setup(sprite, sprite.y, y, duration, delay, easing, repeat, onComplete, function(val) {
             sprite.y = val;
         });
         return sprite;
@@ -200,7 +200,7 @@ class Tween {
 
     /* Helpers */
 
-    static inline function setup(sprite:Sprite, from:Float, to:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void, setVal:Float->Void) {
+    static inline function setup(sprite:Sprite, from:Float, to:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?repeat:Bool = false, ?onComplete:Void->Void, setVal:Float->Void) {
         var ease = getEasing(from, to, easing);
         var time = delay == null ? 0.0 : -delay;
         var done = false;
@@ -208,13 +208,21 @@ class Tween {
             if (time >= duration) {
                 time = duration;
                 done = true;
-                sprite.removeRender(RENDER_ID, render);
+                if (!repeat) sprite.removeRender(RENDER_ID, render);
+            } else if (repeat && done && time <= 0) {
+                time = 0;
+                done = false;
             }
 
             if (time >= 0.0) setVal(ease(time / duration));
-            time += dt;
             
-            if (done && onComplete != null) onComplete();
+            if (repeat && done) {
+                time -= dt;
+            } else {
+                time += dt;
+            }
+            
+            if (done && !repeat && onComplete != null) onComplete();
         });
     }
 
