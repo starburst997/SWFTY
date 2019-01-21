@@ -384,10 +384,13 @@ class Exporter {
     }
 
     function isNumeric(str:String) {
+        var n = 0;
         for (i in 0...str.length) {
             if (CharSet.NUMERIC.indexOf(str.charCodeAt(i)) == -1) return false;
+            if (str.charCodeAt(i) != 45) n++; // But not only "-"
         }
-        return true;
+
+        return true && (n > 0);
     }
 
     public function getTilemap() {

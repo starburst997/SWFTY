@@ -493,4 +493,8 @@ class Rect {
             }
         }
     }
+
+    public inline function toString() {
+        return '{x: $x, y: $y, width: $width, height: $height}';
+    }
 }
