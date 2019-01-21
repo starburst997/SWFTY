@@ -93,7 +93,7 @@ class BaseSprite extends EngineSprite {
         return _bounds;
     }
 
-    inline function setBounds(x:Float, y:Float, width:Float, height:Float) {
+    public inline function setBounds(x:Float, y:Float, width:Float, height:Float) {
         if (_bounds == null) 
             _bounds = {x: x, y: y, width: width, height: height};
         else {
@@ -475,22 +475,22 @@ class Rect {
     }
 
     public inline function union(rect:Rect):Rect {
-        if (width == 0 || height == 0) {
-			return rect.clone();
+        return if (width == 0 || height == 0) {
+			rect.clone();
 		} else if (rect.width == 0 || rect.height == 0) {
-			return clone();
-		}
-		
-		var x0 = x > rect.x ? rect.x : x;
-		var x1 = right < rect.right ? rect.right : right;
-		var y0 = y > rect.y ? rect.y : y;
-		var y1 = bottom < rect.bottom ? rect.bottom : bottom;
-		
-        return {
-            x: x0,
-            y: y0,
-            width: x1 - x0,
-            height: y1 - y0
+			clone();
+		} else {
+            var x0 = x > rect.x ? rect.x : x;
+            var x1 = right < rect.right ? rect.right : right;
+            var y0 = y > rect.y ? rect.y : y;
+            var y1 = bottom < rect.bottom ? rect.bottom : bottom;
+            
+            {
+                x: x0,
+                y: y0,
+                width: x1 - x0,
+                height: y1 - y0
+            }
         }
     }
 }
