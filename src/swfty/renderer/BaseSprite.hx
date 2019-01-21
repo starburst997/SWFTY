@@ -370,11 +370,11 @@ class BaseSprite extends EngineSprite {
         throw 'Not implemented';
     }
 
-    public inline function exists(name:String):Bool {
-        return _names.exists(name);
+    public inline function exists(name:String, og = true):Bool {
+        return _names.exists(name) && (!og || _names.get(name).og);
     }
 
-    public function get(name:String):FinalSprite {
+    public function get(?name:String):FinalSprite {
         return if (_names.exists(name)) {
             _names.get(name);
         } else if (_texts.exists(name)) {
@@ -433,6 +433,11 @@ class Rect {
     public var width:Float = 0.0;
     public var height:Float = 0.0;
 
+    public var top(get, never):Float;
+    public var bottom(get, never):Float;
+    public var left(get, never):Float;
+    public var right(get, never):Float;
+
     public function new(?x:Float, ?y:Float, ?width:Float, ?height:Float) {
         this.x = x;
         this.y = y;
@@ -440,7 +445,52 @@ class Rect {
         this.height = height;
     }
 
+    public inline function clone():Rect {
+        return {
+            x: x,
+            y: y,
+            width: width,
+            height: height
+        }
+    }
+
+    public inline function get_top() {
+        return y;
+    }
+
+    public inline function get_bottom() {
+        return y + height;
+    }
+
+    public inline function get_right() {
+        return x + width;
+    }
+
+    public inline function get_left() {
+        return x;
+    }
+
     public inline function inside(x:Float, y:Float) {
         return (x >= this.x) && (x < this.x + this.width) && (y >= this.y) && (y < this.y + this.height);
+    }
+
+    public inline function union(rect:Rect):Rect {
+        if (width == 0 || height == 0) {
+			return rect.clone();
+		} else if (rect.width == 0 || rect.height == 0) {
+			return clone();
+		}
+		
+		var x0 = x > rect.x ? rect.x : x;
+		var x1 = right < rect.right ? rect.right : right;
+		var y0 = y > rect.y ? rect.y : y;
+		var y1 = bottom < rect.bottom ? rect.bottom : bottom;
+		
+        return {
+            x: x0,
+            y: y0,
+            width: x1 - x0,
+            height: y1 - y0
+        }
     }
 }
