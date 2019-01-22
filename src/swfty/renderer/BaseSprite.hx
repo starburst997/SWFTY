@@ -344,14 +344,17 @@ class BaseSprite extends EngineSprite {
     }
 
     public function addSpriteAt(sprite:FinalSprite, index:Int = 0) {
+        @:privateAccess if (sprite._name != null) _names.set(sprite._name, sprite);
         _sprites.insert(index, sprite);
     }
 
     public function addSprite(sprite:FinalSprite) {
+        @:privateAccess if (sprite._name != null) _names.set(sprite._name, sprite);
         _sprites.push(sprite);
     }
 
     public function removeSprite(sprite:FinalSprite) {
+        @:privateAccess if (sprite._name != null) _names.remove(sprite._name);
         sprite._parent = null;
         _pruneSprites.push(sprite);
     }
@@ -370,7 +373,7 @@ class BaseSprite extends EngineSprite {
         throw 'Not implemented';
     }
 
-    public inline function exists(name:String, og = true):Bool {
+    public inline function exists(name:String, og = false):Bool {
         return _names.exists(name) && (!og || _names.get(name).og);
     }
 
