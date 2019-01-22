@@ -249,7 +249,7 @@ class BaseLayer extends EngineLayer {
 
     public inline function empty() {
         var sprite = Sprite.create(this);
-        sprite.loaded = true;
+        //sprite.loaded = true;
         return sprite;
     }
 

@@ -44,6 +44,16 @@ class LambdaSprite {
         return sprite;
     }
 
+    public static inline function renderOnce(sprite:Sprite, ?name:String, f:Void->Void) {
+        var child = name == null ? sprite : sprite.get(name);
+        function once(dt) {
+            f();
+            child.removeRender(once);    
+        }
+        child.addRender(once);
+        return sprite;
+    }
+
     public static inline function removeFromParent(sprite:Sprite, ?name:String) {
         var child = name == null ? sprite : sprite.get(name);
         if (child.parent != null) child.parent.remove(child);

@@ -141,7 +141,7 @@ class BaseText extends FinalSprite {
                     tile: tile
                 });
 
-                if (fit) {
+                if (!multiline && fit) {
                     // TODO: For multiline check the "height" as well?
                     // TODO: Could probably be done simply at the end of each line?
                     if (code != SPACE && (x - textDefinition.x) + w > textDefinition.width) {

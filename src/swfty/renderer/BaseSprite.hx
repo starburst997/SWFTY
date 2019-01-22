@@ -2,6 +2,7 @@ package swfty.renderer;
 
 import haxe.ds.StringMap;
 
+@:allow(swfty.renderer.BaseSprite)
 class BaseSprite extends EngineSprite {
 
     var disposed = false;
@@ -292,19 +293,19 @@ class BaseSprite extends EngineSprite {
             }
         }
 
+        loaded = true;
+        
         // Re-add non-og tile
         for (child in childs) {
             if (!child.og) {
                 if (!child._name.empty()) Log.warn('Missing Child: ${child._name}');
 
-                child.reload();
+                //child.reload();
 
                 // TODO: Usually non-og sprites are added on top, figure out a better way to preserve order
                 addSprite(child);
             }
         }
-
-        loaded = true;
     }
 
     public inline function getParent() {
@@ -344,19 +345,21 @@ class BaseSprite extends EngineSprite {
     }
 
     public function addSpriteAt(sprite:FinalSprite, index:Int = 0) {
-        @:privateAccess if (sprite._name != null) _names.set(sprite._name, sprite);
+        if (sprite._name != null) _names.set(sprite._name, sprite);
         _sprites.insert(index, sprite);
+        if (loaded && !sprite.loaded) sprite.reload();
     }
 
     public function addSprite(sprite:FinalSprite) {
-        @:privateAccess if (sprite._name != null) _names.set(sprite._name, sprite);
+        if (sprite._name != null) _names.set(sprite._name, sprite);
         _sprites.push(sprite);
+        if (loaded && !sprite.loaded) sprite.reload();
     }
 
     public function removeSprite(sprite:FinalSprite) {
-        @:privateAccess if (sprite._name != null) _names.remove(sprite._name);
-        sprite._parent = null;
+        if (sprite._name != null) _names.remove(sprite._name);
         _pruneSprites.push(sprite);
+        sprite._parent = null;
     }
 
     public function setIndex(sprite:FinalSprite, index:Int) {
@@ -426,6 +429,17 @@ class BaseSprite extends EngineSprite {
             _parent = null;
             _bounds = null;
         }
+    }
+}
+
+@:structInit
+class Point {
+    public var x:Float = 0.0;
+    public var y:Float = 0.0;
+
+    public function new(?x:Float, ?y:Float) {
+        this.x = x;
+        this.y = y;
     }
 }
 
