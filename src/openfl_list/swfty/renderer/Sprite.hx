@@ -8,6 +8,8 @@ typedef EngineBitmap = openfl.display.Bitmap;
 @:keepSub // Fix DCE=full
 class FinalSprite extends BaseSprite {
 
+    static var pt = new openfl.geom.Point();
+
     public static inline function create(layer:BaseLayer, ?definition:MovieClipType, ?linkage:String) {
         return new FinalSprite(layer, definition, linkage);
     }    
@@ -30,7 +32,23 @@ class FinalSprite extends BaseSprite {
         return super.set__name(name);
     }
 
-    public override function calcBounds(?relative:BaseSprite):Rect {
+    public override function localToLayer(x:Float, y:Float):Point {
+        pt.x = x;
+        pt.y = y;
+        pt = this.localToGlobal(pt);
+
+        return { x: pt.x, y: pt.y };
+    }
+
+    public override function layerToLocal(x:Float, y:Float):Point {
+        pt.x = x;
+        pt.y = y;
+        pt = this.globalToLocal(pt);
+
+        return { x: pt.x, y: pt.y };
+    }
+
+    public override function calcBounds(?relative:BaseSprite):Rectangle {
         var rect = this.getBounds(relative == null ? this : relative);
         return {
             x: rect.x,
@@ -51,6 +69,11 @@ class FinalSprite extends BaseSprite {
     public override function addSpriteAt(sprite:FinalSprite, index:Int = 0) {
         sprite._parent = this;
         super.addSpriteAt(sprite, index);
+
+        // TODO: This shouldn't be necessary!
+        #if !dev
+        if (index >= 0 && index <= numChildren)
+        #end
         addChildAt(sprite, index);
     }
 

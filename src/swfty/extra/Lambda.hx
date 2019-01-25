@@ -72,6 +72,13 @@ class LambdaSprite {
         return sprite;
     }
 
+    public static inline function setScaleXY(sprite:Sprite, ?name:String, scaleX:Float, scaleY:Float) {
+        var child = name == null ? sprite : sprite.get(name);
+        child.scaleX = scaleX;
+        child.scaleY = scaleY;
+        return sprite;
+    }
+
     public static inline function setScaleX(sprite:Sprite, ?name:String, scale:Float) {
         var child = name == null ? sprite : sprite.get(name);
         child.scaleX = scale;
@@ -103,11 +110,22 @@ class LambdaSprite {
         return sprite;
     }
 
+    public static inline function setRotation(sprite:Sprite, ?name:String, radian:Float) {
+        var child = name == null ? sprite : sprite.get(name);
+        child.rotation = radian;
+        return sprite;
+    }
+
     public static inline function shortText(sprite:Sprite, name:String, text:String) {
         sprite.getText(name).shortText(text);
         return sprite;
     }
 
+    public static inline function getLayerBpounds(sprite:Sprite) {
+        return sprite.calcBounds(sprite.layer.base);
+    }
+
+    // Fit as tight as possible, we see everything
     public static inline function fit(sprite:Sprite, ?width:Float, ?height:Float) {
         var bounds = sprite.calcBounds(sprite.parent);
 
@@ -126,6 +144,36 @@ class LambdaSprite {
             var scale = width / bounds.width;
             if ((bounds.height * scale).greater(height)) {
                 scale = height / bounds.height;
+            } else {
+                scale;
+            }
+        }
+
+        sprite.setScale(scale);
+        sprite.setPosition(-bounds.x * scale - (bounds.width * scale - width) / 2, -bounds.y * scale - (bounds.height * scale - height) / 2);
+
+        return sprite;
+    }
+
+    // Mainly for background, makes sure the whole area is covered
+    public static inline function cover(sprite:Sprite, padding = 0, ?width:Float, ?height:Float) {
+        var bounds = sprite.calcBounds(sprite.parent);
+
+        if (width == null) width = sprite.layer.width;
+        if (height == null) height = sprite.layer.height;
+
+        // Try to fit
+        var scale = if (bounds.width < bounds.height) {
+            var scale = width / (bounds.width - padding * 2);
+            if (((bounds.height - padding * 2) * scale).lower(height)) {
+                scale = height / (bounds.height - padding * 2);
+            } else {
+                scale;
+            }
+        } else {
+            var scale = height / (bounds.height - padding * 2);
+            if (((bounds.width - padding * 2) * scale).lower(width)) {
+                scale = width / (bounds.width - padding * 2);
             } else {
                 scale;
             }

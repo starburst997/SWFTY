@@ -15,7 +15,7 @@ class BaseSprite extends EngineSprite {
     public var height(get, set):Float;
     #end
 
-    public var bounds(get, null):Rect;
+    public var bounds(get, null):Rectangle;
 
     public var layer:BaseLayer;
 
@@ -38,7 +38,7 @@ class BaseSprite extends EngineSprite {
     var _names:StringMap<FinalSprite>;
     var _texts:StringMap<FinalText>;
     var _definition:Null<MovieClipType>;
-    var _bounds:Rect;
+    var _bounds:Rectangle;
 
     // Being able to add a render loop is a pretty nice tool
     // The map allows you to give it a name so you can easily remove all render loop from a specific name 
@@ -70,14 +70,18 @@ class BaseSprite extends EngineSprite {
 
     function set__name(name:String) {
         if (_parent != null) {
-            @:privateAccess _parent._names.remove(_name);
+            _parent._names.remove(_name);
         }
         
         _name = name;
         return _name;
     }
 
-    public function calcBounds(?relative:BaseSprite):Rect {
+    public function calcBounds(?relative:BaseSprite):Rectangle {
+        throw 'Not implemented';
+    }
+
+    public function hasParent():Bool {
         throw 'Not implemented';
     }
 
@@ -341,6 +345,9 @@ class BaseSprite extends EngineSprite {
     }
 
     public function getIndex(sprite:FinalSprite) {
+        #if dev
+        if (_pruneSprites.length > 0) trace('Error: This value is incorrect!!!!');
+        #end
         return _sprites.indexOf(sprite);
     }
 
@@ -358,7 +365,7 @@ class BaseSprite extends EngineSprite {
 
     public function removeSprite(sprite:FinalSprite) {
         if (sprite._name != null) _names.remove(sprite._name);
-        _pruneSprites.push(sprite);
+        _pruneSprites.push(sprite); // TODO: This might screw the "getIndex"
         sprite._parent = null;
     }
 
@@ -373,6 +380,14 @@ class BaseSprite extends EngineSprite {
     }
 
     public function removeBitmap(shape:EngineBitmap) {
+        throw 'Not implemented';
+    }
+
+    public function localToLayer(x:Float, y:Float):Point {
+        throw 'Not implemented';
+    }
+
+    public function layerToLocal(x:Float, y:Float):Point {
         throw 'Not implemented';
     }
 
@@ -429,89 +444,5 @@ class BaseSprite extends EngineSprite {
             _parent = null;
             _bounds = null;
         }
-    }
-}
-
-@:structInit
-class Point {
-    public var x:Float = 0.0;
-    public var y:Float = 0.0;
-
-    public function new(?x:Float, ?y:Float) {
-        this.x = x;
-        this.y = y;
-    }
-}
-
-@:structInit
-class Rect {
-    public var x:Float = 0.0;
-    public var y:Float = 0.0;
-    public var width:Float = 0.0;
-    public var height:Float = 0.0;
-
-    public var top(get, never):Float;
-    public var bottom(get, never):Float;
-    public var left(get, never):Float;
-    public var right(get, never):Float;
-
-    public function new(?x:Float, ?y:Float, ?width:Float, ?height:Float) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-    }
-
-    public inline function clone():Rect {
-        return {
-            x: x,
-            y: y,
-            width: width,
-            height: height
-        }
-    }
-
-    public inline function get_top() {
-        return y;
-    }
-
-    public inline function get_bottom() {
-        return y + height;
-    }
-
-    public inline function get_right() {
-        return x + width;
-    }
-
-    public inline function get_left() {
-        return x;
-    }
-
-    public inline function inside(x:Float, y:Float) {
-        return (x >= this.x) && (x < this.x + this.width) && (y >= this.y) && (y < this.y + this.height);
-    }
-
-    public inline function union(rect:Rect):Rect {
-        return if (width == 0 || height == 0) {
-			rect.clone();
-		} else if (rect.width == 0 || rect.height == 0) {
-			clone();
-		} else {
-            var x0 = x > rect.x ? rect.x : x;
-            var x1 = right < rect.right ? rect.right : right;
-            var y0 = y > rect.y ? rect.y : y;
-            var y1 = bottom < rect.bottom ? rect.bottom : bottom;
-            
-            {
-                x: x0,
-                y: y0,
-                width: x1 - x0,
-                height: y1 - y0
-            }
-        }
-    }
-
-    public inline function toString() {
-        return '{x: $x, y: $y, width: $width, height: $height}';
     }
 }

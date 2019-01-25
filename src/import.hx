@@ -2,6 +2,7 @@
 import swfty.utils.*;
 
 import swfty.Structure;
+import swfty.utils.MathUtils;
 
 import swfty.renderer.BaseSprite;
 import swfty.renderer.BaseLayer;

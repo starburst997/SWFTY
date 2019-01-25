@@ -46,6 +46,8 @@ class FinalLayer extends BaseLayer {
 
     public override function loadTexture(bytes:Bytes, swfty:SWFTYType, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
         function complete(tile:h2d.Tile) {
+            swfty.addAll(tile.width, tile.height);
+
             this.tile = tile;
 
             tiles = new IntMap();

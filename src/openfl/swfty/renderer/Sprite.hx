@@ -28,7 +28,7 @@ class FinalSprite extends BaseSprite {
         tileset = layer.tileset;
     }
 
-    public override function calcBounds(?relative:BaseSprite):Rect {
+    public override function calcBounds(?relative:BaseSprite):Rectangle {
         var rect = this.getBounds(relative == null ? this : relative);
         return {
             x: rect.x,
@@ -36,6 +36,10 @@ class FinalSprite extends BaseSprite {
             width: rect.width,
             height: rect.height
         }
+    }
+
+    override function hasParent():Bool {
+        return this.parent != null;
     }
 
     public override function top() {

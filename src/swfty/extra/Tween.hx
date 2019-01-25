@@ -124,72 +124,78 @@ class Tween {
 
     /* Tween */
 
-    public static inline function tweenWidth(sprite:Sprite, width:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void) {
-        setup(sprite, sprite.width, width, duration, delay, easing, onComplete, function(val) {
+    public static inline function tweenWidth(sprite:Sprite, width:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?repeat:Int = 0, ?onComplete:Void->Void) {
+        setup(sprite, sprite.width, width, duration, delay, easing, repeat, onComplete, function(val) {
             sprite.width = val;
         });
         return sprite;
     }
 
-    public static inline function tweenHeight(sprite:Sprite, height:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void) {
-        setup(sprite, sprite.height, height, duration, delay, easing, onComplete, function(val) {
+    public static inline function tweenHeight(sprite:Sprite, height:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?repeat:Int = 0, ?onComplete:Void->Void) {
+        setup(sprite, sprite.height, height, duration, delay, easing, repeat, onComplete, function(val) {
             sprite.height = val;
         });
         return sprite;
     }
 
-    public static inline function tweenScale(sprite:Sprite, scale:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void) {
-        setup(sprite, sprite.scaleX, scale, duration, delay, easing, onComplete, function(val) {
+    public static inline function tweenScale(sprite:Sprite, scale:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?repeat:Int = 0, ?onComplete:Void->Void) {
+        setup(sprite, sprite.scaleX, scale, duration, delay, easing, repeat, onComplete, function(val) {
             sprite.scaleX = sprite.scaleY = val;
         });
         return sprite;
     }
 
-    public static inline function tweenScaleX(sprite:Sprite, scale:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void) {
-        setup(sprite, sprite.scaleX, scale, duration, delay, easing, onComplete, function(val) {
+    public static inline function tweenScaleXY(sprite:Sprite, scaleX:Float, scaleY:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?repeat:Int = 0, ?onComplete:Void->Void) {
+        return sprite 
+        .tweenScaleX(scaleX, duration, delay, easing, repeat)
+        .tweenScaleY(scaleY, duration, delay, easing, repeat, onComplete);
+    }
+
+    public static inline function tweenScaleX(sprite:Sprite, scale:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?repeat:Int = 0, ?onComplete:Void->Void) {
+        setup(sprite, sprite.scaleX, scale, duration, delay, easing, repeat, onComplete, function(val) {
             sprite.scaleX = val;
         });
         return sprite;
     }
 
-    public static inline function tweenScaleY(sprite:Sprite, scale:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void) {
-        setup(sprite, sprite.scaleY, scale, duration, delay, easing, onComplete, function(val) {
+    public static inline function tweenScaleY(sprite:Sprite, scale:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?repeat:Int = 0, ?onComplete:Void->Void) {
+        setup(sprite, sprite.scaleY, scale, duration, delay, easing, repeat, onComplete, function(val) {
             sprite.scaleY = val;
         });
         return sprite;
     }
 
-    public static inline function tweenX(sprite:Sprite, x:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?repeat:Bool = false, ?onComplete:Void->Void) {
+    public static inline function tweenX(sprite:Sprite, x:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?repeat:Int = 0, ?onComplete:Void->Void) {
         setup(sprite, sprite.x, x, duration, delay, easing, repeat, onComplete, function(val) {
             sprite.x = val;
         });
         return sprite;
     }
 
-    public static inline function tweenY(sprite:Sprite, y:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?repeat:Bool = false, ?onComplete:Void->Void) {
+    public static inline function tweenY(sprite:Sprite, y:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?repeat:Int = 0, ?onComplete:Void->Void) {
         setup(sprite, sprite.y, y, duration, delay, easing, repeat, onComplete, function(val) {
             sprite.y = val;
         });
         return sprite;
     }
 
-    public static inline function tweenAlpha(sprite:Sprite, alpha:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void) {
-        setup(sprite, sprite.alpha, alpha, duration, delay, easing, onComplete, function(val) {
+    public static inline function tweenAlpha(sprite:Sprite, alpha:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?repeat:Int = 0, ?onComplete:Void->Void) {
+        setup(sprite, sprite.alpha, alpha, duration, delay, easing, repeat, onComplete, function(val) {
             sprite.alpha = val;
         });
         return sprite;
     }
 
-    public static inline function tweenRotation(sprite:Sprite, angle:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void) {
-        setup(sprite, sprite.rotation, angle, duration, delay, easing, onComplete, function(val) {
+    public static inline function tweenRotation(sprite:Sprite, angle:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?repeat:Int = 0, ?onComplete:Void->Void) {
+        setup(sprite, sprite.rotation, angle, duration, delay, easing, repeat, onComplete, function(val) {
             sprite.rotation = val;
         });
         return sprite;
     }
 
-    public static inline function tweenPosition(sprite:Sprite, x:Float, y:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?onComplete:Void->Void) {
-        tweenY(sprite, y, duration, delay, easing);
-        tweenX(sprite, x, duration, delay, easing, onComplete);
+    public static inline function tweenPosition(sprite:Sprite, x:Float, y:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?repeat:Int = 0, ?onComplete:Void->Void) {
+        tweenY(sprite, y, duration, delay, easing, repeat);
+        tweenX(sprite, x, duration, delay, easing, repeat, onComplete);
         return sprite;
     }
 
@@ -200,7 +206,9 @@ class Tween {
 
     /* Helpers */
 
-    static inline function setup(sprite:Sprite, from:Float, to:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?repeat:Bool = false, ?onComplete:Void->Void, setVal:Float->Void) {
+    // Repeat = -1 is infinite repeat
+    // TODO: Create abstract Enums over Int for "repeat" params
+    static inline function setup(sprite:Sprite, from:Float, to:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?repeat:Int = 0, ?onComplete:Void->Void, setVal:Float->Void) {
         var ease = getEasing(from, to, easing);
         var time = delay == null ? 0.0 : -delay;
         var done = false;
@@ -208,21 +216,22 @@ class Tween {
             if (time >= duration) {
                 time = duration;
                 done = true;
-                if (!repeat) sprite.removeRender(RENDER_ID, render);
-            } else if (repeat && done && time <= 0) {
-                time = 0;
+                if (repeat-- == 0) sprite.removeRender(RENDER_ID, render);
+            } else if ((repeat != 0) && done && time <= -delay) {
+                time = -delay;
                 done = false;
             }
 
             if (time >= 0.0) setVal(ease(time / duration));
             
-            if (repeat && done) {
+            if (done) {
+                if (time > 0 && time - dt < 0) setVal(ease(0));
                 time -= dt;
             } else {
                 time += dt;
             }
             
-            if (done && !repeat && onComplete != null) onComplete();
+            if (done && (repeat == -1) && onComplete != null) onComplete();
         });
     }
 

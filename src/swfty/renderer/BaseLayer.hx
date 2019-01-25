@@ -8,67 +8,6 @@ import haxe.io.Bytes;
 import zip.Zip;
 import zip.ZipReader;
 
-enum ButtonState {
-    Down;
-    Up;
-    Normal;
-}
-
-class Mouse {
-    
-    public var x:Float = 0.0;
-    public var y:Float = 0.0;
-    
-    public var leftChanged:Bool = false;
-    public var middleChanged:Bool = false;
-    public var rightChanged:Bool = false;
-
-    public var left(default, set):ButtonState = Normal;
-    public var middle(default, set):ButtonState = Normal;
-    public var right(default, set):ButtonState = Normal;
-
-    public function new() {
-        
-    }
-
-    inline function set_left(state:ButtonState) {
-        left = state;
-        leftChanged = true;
-        return state;
-    }
-
-    inline function set_middle(state:ButtonState) {
-        middle = state;
-        middleChanged = true;
-        return state;
-    }
-
-    inline function set_right(state:ButtonState) {
-        right = state;
-        rightChanged = true;
-        return state;
-    }
-
-    public inline function reset() {
-        switch(left) {
-            case Up : left = Normal;
-            case _  :
-        }
-        switch(middle) {
-            case Up : middle = Normal;
-            case _  :
-        }
-        switch(right) {
-            case Up : right = Normal;
-            case _  :
-        }
-
-        leftChanged = false;
-        rightChanged = false;
-        middleChanged = false;
-    }
-}
-
 class BaseLayer extends EngineLayer {
 
     var disposed = false;
@@ -198,6 +137,10 @@ class BaseLayer extends EngineLayer {
         throw 'Not implemented';
     }
 
+    public function hasParent():Bool {
+        throw 'Not implemented';
+    }
+
     public inline function getTile(id:Int):DisplayTile {
         return if (tiles.exists(id)) {
             tiles.get(id);
@@ -295,6 +238,32 @@ class BaseLayer extends EngineLayer {
         this.id = swfty.name;
     }
 
+    // Load a single image into a layer
+    // The Sprite you can create from this layer is called "All"
+    public function loadImage(bytes:Bytes, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
+        var swfty:SWFTYType = {
+            name: 'no-name-${bytes.length}',
+            tilemap_width: 0,
+            tilemap_height: 0,
+            definitions: new IntMap(),
+            tiles: new IntMap(),
+            fonts: new IntMap()
+        };
+        
+        loadTexture(bytes, swfty, function() {
+            if (disposed) return;
+
+            loadSWFTY(swfty);
+            reload();
+            if (onComplete != null) onComplete();
+        }, function(e) {
+            if (disposed) return;
+            
+            if (onError != null) onError(e);
+        });
+    }
+
+    // Load SWFTY file format
     public function loadBytes(bytes:Bytes, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
         if (disposed) {
             if (onError != null) onError('Layer was disposed');

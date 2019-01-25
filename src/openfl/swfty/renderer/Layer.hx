@@ -38,6 +38,8 @@ class FinalLayer extends BaseLayer {
 
     public override function loadTexture(bytes:Bytes, swfty:SWFTYType, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
         function complete(bmpd:BitmapData) {
+            swfty.addAll(bmpd.width, bmpd.height);
+
             // Create tileset
             var rects = [];
             tiles = new IntMap();

@@ -13,7 +13,7 @@ class Interaction {
 
         // Cache bounds with transform to stage coordinate
         // TODO: 99% of case the bounds doesn't change, but maybe we shouldn't cache it? We still take into account local x / y
-        var bounds:Rect = null;
+        var bounds:Rectangle = null;
         inline function getBounds() {
             if (!cache || bounds == null) bounds = child.calcBounds(child.layer.base);
             return bounds;
@@ -52,7 +52,7 @@ class Interaction {
 
         // Cache bounds with transform to stage coordinate
         // TODO: 99% of case the bounds doesn't change, but maybe we shouldn't cache it? We still take into account local x / y
-        var bounds:Rect = null;
+        var bounds:Rectangle = null;
         inline function getBounds() {
             if (!cache || bounds == null) bounds = child.calcBounds(child.layer.base);
             return bounds;
@@ -89,7 +89,7 @@ class Interaction {
 
         // Cache bounds with transform to stage coordinate
         // TODO: 99% of case the bounds doesn't change, but maybe we shouldn't cache it? We still take into account local x / y
-        var bounds:Rect = null;
+        var bounds:Rectangle = null;
         inline function getBounds() {
             if (!cache || bounds == null) bounds = child.calcBounds(child.layer.base);
             return bounds;

@@ -35,6 +35,10 @@ class FinalLayer extends BaseLayer {
         return base;
     }
 
+    override function hasParent():Bool {
+        return parent != null;
+    }
+
     public override function emptyTile(?id:Int):DisplayTile {
         return if (id != null && texture != null && rects.exists(id)) {
             var rect = rects.get(id);
@@ -53,7 +57,8 @@ class FinalLayer extends BaseLayer {
 
     public override function loadTexture(bytes:Bytes, swfty:SWFTYType, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
         function complete(bmpd:BitmapData) {
-            // Create tileset
+            swfty.addAll(bmpd.width, bmpd.height);
+
             tiles = new IntMap();
             for (tile in swfty.tiles) {
                 rects.set(tile.id, new Rectangle(tile.x, tile.y, tile.width, tile.height));

@@ -47,3 +47,99 @@ class MathUtils {
         return a > b - precision && a < b + precision;
     }
 }
+
+@:structInit
+class Point {
+    public var x:Float = 0.0;
+    public var y:Float = 0.0;
+
+    public function new(?x:Float, ?y:Float) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public inline function toString() {
+        return '{x: $x, y: $y}';
+    }
+}
+
+@:structInit
+class Rectangle {
+    public var x:Float = 0.0;
+    public var y:Float = 0.0;
+    public var width:Float = 0.0;
+    public var height:Float = 0.0;
+
+    public var top(get, never):Float;
+    public var bottom(get, never):Float;
+    public var left(get, never):Float;
+    public var right(get, never):Float;
+
+    public function new(?x:Float, ?y:Float, ?width:Float, ?height:Float) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
+
+    public inline function clone():Rectangle {
+        return {
+            x: x,
+            y: y,
+            width: width,
+            height: height
+        }
+    }
+
+    public inline function get_top() {
+        return y;
+    }
+
+    public inline function get_bottom() {
+        return y + height;
+    }
+
+    public inline function get_right() {
+        return x + width;
+    }
+
+    public inline function get_left() {
+        return x;
+    }
+
+    public inline function inside(x:Float, y:Float, margin = 0) {
+        return (x >= this.x - margin) && (x < this.x + this.width + margin) && (y >= this.y - margin) && (y < this.y + this.height + margin);
+    }
+
+    public inline function around(x:Float, y:Float, margin = 100) {
+        var centerX = this.x + this.width / 2;
+        var centerY = this.y + this.height / 2;
+        var dx = x - centerX;
+        var dy = x - centerY;
+        return dx * dx + dy * dy < margin * margin;
+    }
+
+    public inline function union(rect:Rectangle):Rectangle {
+        return if (width == 0 || height == 0) {
+			rect.clone();
+		} else if (rect.width == 0 || rect.height == 0) {
+			clone();
+		} else {
+            var x0 = x > rect.x ? rect.x : x;
+            var x1 = right < rect.right ? rect.right : right;
+            var y0 = y > rect.y ? rect.y : y;
+            var y1 = bottom < rect.bottom ? rect.bottom : bottom;
+            
+            {
+                x: x0,
+                y: y0,
+                width: x1 - x0,
+                height: y1 - y0
+            }
+        }
+    }
+
+    public inline function toString() {
+        return '{x: $x, y: $y, width: $width, height: $height}';
+    }
+}

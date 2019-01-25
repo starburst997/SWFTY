@@ -37,7 +37,7 @@ class FinalSprite extends BaseSprite {
 		if( tile != null ) addBounds(relativeTo, out, tile.dx, tile.dy, tile.width, tile.height);
 	}
 
-    override function calcBounds(?relative:BaseSprite):Rect {
+    override function calcBounds(?relative:BaseSprite):Rectangle {
         var bounds = getBounds(relative);
         return {
             x: bounds.x,

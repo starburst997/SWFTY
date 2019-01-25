@@ -8,14 +8,14 @@ class TimerExtra {
 
     static inline var RENDER_ID = 'wait';
 
-    public static inline function wait(sprite:Sprite, duration:Float, ?stop = false, ?onComplete:Void->Void) {
+    public static inline function wait(sprite:Sprite, duration:Float, ?stop = false, ?repeat:Int = 0, ?onComplete:Void->Void) {
         if (stop) sprite.waitStop();
         
         var time = 0.0;
         sprite.addRender(RENDER_ID, function render(dt) {
             if (time >= duration) {
-                time = duration;
-                sprite.removeRender(RENDER_ID, render);
+                time = 0.0;
+                if (repeat-- == 0) sprite.removeRender(RENDER_ID, render);
 
                 if (onComplete != null) onComplete();
             }

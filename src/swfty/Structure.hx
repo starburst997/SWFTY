@@ -525,4 +525,60 @@ class SWFTYType #if !macro implements hxbit.Serializable #end {
         this.tiles = tiles;
         this.fonts = fonts;
     }
+
+    inline function getRandomId<T>(map:IntMap<T>) {
+        var r = 481516234;//2
+        var n = 1000;
+        while (map.exists(r) && (--n > 0)) r = Std.int(Math.random() * 0xFFFFFFFF);
+        return r;
+    }
+
+    // Add a special "All" Sprite that is the whole Tilemap
+    public function addAll(width:Int, height:Int) {
+        var bmp:BitmapType = {
+            id: getRandomId(tiles),
+            x: 0,
+            y: 0,
+            width: width,
+            height: height  
+        };
+
+        tilemap_width = width;
+        tilemap_height = height;
+        
+        var id = getRandomId(definitions);
+        definitions.set(id, { 
+            id: id,
+            name: 'All',
+            children: [{
+                mc: null,
+                id: 0,
+                a: 1,
+                b: 0,
+                c: 0,
+                d: 1,
+                tx: 0,
+                ty: 0,
+                shapes: [ {
+                    id: bmp.id,
+                    a: 1,
+                    b: 0,
+                    c: 0,
+                    d: 1,
+                    tx: 0,
+                    ty: 0,
+                    bitmap: bmp
+                } ],
+                mask: 0,
+                text: null,
+                blendMode: null,
+                color: null,
+                alpha: 1.0,
+                name: null,
+                visible: true
+            }]
+        });
+
+        tiles.set(bmp.id, bmp);
+    }
 }
