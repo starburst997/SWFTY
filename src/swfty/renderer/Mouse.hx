@@ -19,8 +19,10 @@ class Mouse {
     public var middle(default, set):ButtonState = Normal;
     public var right(default, set):ButtonState = Normal;
 
-    public function new() {
-        
+    var disableReset = false;
+
+    public function new(disableReset = false) {
+        this.disableReset = disableReset;
     }
 
     inline function set_left(state:ButtonState) {
@@ -41,7 +43,9 @@ class Mouse {
         return state;
     }
 
-    public inline function reset() {
+    public inline function reset(force = false) {
+        if (!force && disableReset) return;
+
         switch(left) {
             case Up : left = Normal;
             case _  :

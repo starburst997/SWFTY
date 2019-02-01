@@ -6,6 +6,8 @@ using swfty.utils.MathUtils;
 // Extra Functional Programming shorthand
 class LambdaSprite {
 
+    static inline var FOLLOW_ID = 'follow';
+
     public static function iter(sprite:Sprite, ?name:String, f:Sprite->Void) {
         var i = 0;
         // Grab either name0 or name1 first, then continue by incrementing until there is none
@@ -183,6 +185,22 @@ class LambdaSprite {
         sprite.setPosition(-bounds.x * scale - (bounds.width * scale - width) / 2, -bounds.y * scale - (bounds.height * scale - height) / 2);
 
         return sprite;
+    }
+
+    // TODO: Need some sort of priority to makes sure we grab the position of "object" after it updates
+    // TODO: If object is destroyed / disposed whatever, we should "unfollow"
+    public static inline function follow(sprite:Sprite, object:Sprite, ?x = 0.0, ?y = 0.0) {
+        sprite.addRender(FOLLOW_ID, function(dt) {
+            var global = object.localToLayer(object.x, object.y);
+            var local = sprite.layerToLocal(global.x, global.y);
+            
+            sprite.x = local.x + x;
+            sprite.y = local.y + y;
+        });
+    }
+
+    public static inline function unfollow(sprite:Sprite) {
+        sprite.removeRender(FOLLOW_ID);
     }
 }
 

@@ -39,11 +39,19 @@ typedef FinalSprite = heaps.swfty.renderer.Sprite.FinalSprite;
 #error 'Unsupported framework (please use OpenFL or Heaps)'
 #end
 
-@:forward(x, y, scaleX, scaleY, rotation, alpha, visible, loaded, width, height, exists, calcBounds, bounds, getIndex, addRender, removeRender, setBounds, setIndex, debug, addBitmap, localToLayer, layerToLocal)
+@:forward(x, y, scaleX, scaleY, rotation, alpha, visible, interactive, loaded, width, height, exists, calcBounds, bounds, addRender, removeRender, setBounds, setIndex, debug, addBitmap, localToLayer, layerToLocal)
 abstract Sprite(FinalSprite) from FinalSprite to FinalSprite {
 
     public static inline function create(layer:BaseLayer, ?definition:MovieClipType, ?linkage:String):Sprite {
         return new FinalSprite(layer, definition, linkage);
+    }
+
+    public function getIndex(?sprite:Sprite):Int {
+        return if (sprite == null) {
+            parent == null ? -1 : parent.getIndex(this);
+        } else {
+            this.getIndex(sprite);
+        }
     }
 
     public var sprites(get, never):Array<Sprite>;

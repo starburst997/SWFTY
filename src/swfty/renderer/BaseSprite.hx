@@ -27,6 +27,9 @@ class BaseSprite extends EngineSprite {
     public var g:Float = 1.0;
     public var b:Float = 1.0;
 
+    // TODO: I don't like having this as part of BaseSprite, might remove...
+    public var interactive:Bool = false;
+
     // For reload if definition didn't exists
     var _linkage:String;
 
@@ -158,14 +161,24 @@ class BaseSprite extends EngineSprite {
     }
 
     public function update(dt:Float) {
+        // TODO: Wonder if that's the best solution... If it's invisible I wouldn't want anything called...
+        if (!visible) return;
+
         for (sprite in _sprites) {
             sprite.update(dt);
         }
 
         for (f in _renders) f(dt);
 
-        while(_pruneRenders.length > 0) _renders.remove(_pruneRenders.pop());
-        while(_pruneSprites.length > 0) _sprites.remove(_pruneSprites.pop());
+        if (_pruneRenders.length > 0) {
+            for (f in _pruneRenders) _renders.remove(f);
+            _pruneRenders = [];
+        }
+
+        if (_pruneSprites.length > 0) {
+            for (s in _pruneSprites) _sprites.remove(s);
+            _pruneSprites = [];
+        }
     }
 
     public inline function display():DisplaySprite {
@@ -344,7 +357,7 @@ class BaseSprite extends EngineSprite {
         }
     }
 
-    public function getIndex(sprite:FinalSprite) {
+    public function getIndex(?sprite:FinalSprite) {
         #if dev
         if (_pruneSprites.length > 0) trace('Error: This value is incorrect!!!!');
         #end

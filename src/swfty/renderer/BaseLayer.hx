@@ -10,7 +10,7 @@ import zip.ZipReader;
 
 class BaseLayer extends EngineLayer {
 
-    var disposed = false;
+    public var disposed = false;
 
     var _width:Int;
     var _height:Int;
@@ -33,6 +33,10 @@ class BaseLayer extends EngineLayer {
     var renders:Array<Float->Void> = [];
     var mouseDowns:Array<Float->Float->Void> = [];
     var mouseUps:Array<Float->Float->Void> = [];
+
+    var pruneRenders:Array<Float->Void> = [];
+    var pruneMouseDowns:Array<Float->Float->Void> = [];
+    var pruneMouseUps:Array<Float->Float->Void> = [];
 
     // TODO: Disable all transform on this object, should be equivalent to "stage" in Flash
     //       Create StageSprite or RootSprite, only a container with no matrix or position
@@ -82,6 +86,21 @@ class BaseLayer extends EngineLayer {
 
         base.update(dt);
 
+        if (pruneRenders.length > 0) {
+            for (f in pruneRenders) renders.remove(f);
+            pruneRenders = [];
+        }
+
+        if (pruneMouseDowns.length > 0) {
+            for (f in pruneMouseDowns) mouseDowns.remove(f);
+            pruneMouseDowns = [];
+        }
+        
+        if (pruneMouseUps.length > 0) {
+            for (f in pruneMouseUps) mouseUps.remove(f);
+            pruneMouseUps = [];
+        }
+
         // Reset mouse properties
         mouse.reset();
     }
@@ -96,7 +115,7 @@ class BaseLayer extends EngineLayer {
     }
 
     public function removeRender(f:Float->Void) {
-        renders.remove(f);
+        pruneRenders.push(f);
     }
 
     public function addMouseDown(f:Float->Float->Void, ?priority = false) {
@@ -105,7 +124,7 @@ class BaseLayer extends EngineLayer {
     }
 
     public function removeMouseDown(f:Float->Float->Void) {
-        mouseDowns.remove(f);
+        pruneMouseDowns.push(f);
     }
 
     public function addMouseUp(f:Float->Float->Void, ?priority = false) {
@@ -114,7 +133,7 @@ class BaseLayer extends EngineLayer {
     }
 
     public function removeMouseUp(f:Float->Float->Void) {
-        mouseUps.remove(f);
+        pruneMouseUps.push(f);
     }
 
     public function addSprite(sprite:Sprite) {

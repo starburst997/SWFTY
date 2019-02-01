@@ -37,6 +37,8 @@ class BaseText extends FinalSprite {
     public var fit = false;
     public var fitVertically = true;
 
+    public var color(default, set):Null<UInt> = null;
+
     var textDefinition:Null<TextType>;
 
     public function new(layer:BaseLayer, ?definition:TextType) {
@@ -68,7 +70,19 @@ class BaseText extends FinalSprite {
             textDefinition.font = layer.getFont(textDefinition.font.id);
             loadText(textDefinition);
         }
-    } 
+    }
+
+    function set_color(color:Null<UInt>) {
+        if (color != this.color) {
+            this.color = color;
+            
+            // Force refresh
+            set_text('');
+            set_text(text);
+        }
+
+        return color;
+    }
 
     function set_text(text:String) {
         if (this.text == text) return text;
@@ -90,7 +104,7 @@ class BaseText extends FinalSprite {
         var x = textDefinition.x;
         var y = textDefinition.y;
 
-        var c = textDefinition.color;
+        var c = color == null ? textDefinition.color : color;
         var r = (c & 0xFF0000) >> 16;
         var g = (c & 0xFF00) >> 8;
         var b = c & 0xFF;
