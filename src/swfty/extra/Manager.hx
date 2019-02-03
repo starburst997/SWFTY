@@ -19,10 +19,12 @@ class Manager {
     public var mouse(default, null) = new Mouse(true);
 
     var renders:Array<Void->Void> = [];
+    var preRenders:Array<Void->Void> = [];
     var timer = 0.0;
 
     var pruneLayers:Array<Layer> = [];
     var pruneRenders:Array<Void->Void> = [];
+    var prunePreRenders:Array<Void->Void> = [];
 
     var onRemoves:Array<Layer->Void> = [];
     var pruneOnRemoves:Array<Layer->Void> = [];
@@ -31,6 +33,11 @@ class Manager {
 
     public function new(interaction = true) {
         @:privateAccess if (interaction) Interactions.manage(this);
+    }
+
+    public function interactAll() {
+        for (layer in layers) layer.shared.canInteract = true;
+        return this;
     }
 
     public inline function add(layer:Layer) {
@@ -60,8 +67,18 @@ class Manager {
         return this;
     }
 
+    public inline function addPreRender(f:Void->Void) {
+        preRenders.push(f);
+        return this;
+    }
+
     public inline function removeRender(f:Void->Void) {
         pruneRenders.push(f);
+        return this;
+    }
+
+    public inline function removePreRender(f:Void->Void) {
+        prunePreRenders.push(f);
         return this;
     }
 
@@ -85,6 +102,8 @@ class Manager {
 
         if (dt > 1/10.0) dt = 1/10.0;
 
+        for (f in preRenders) f();
+
         for (layer in layers) {
             if (layer.disposed) {
                 remove(layer);
@@ -103,6 +122,11 @@ class Manager {
         if (pruneRenders.length > 0) {
             for (f in pruneRenders) renders.remove(f);
             pruneRenders = [];
+        }
+
+        if (prunePreRenders.length > 0) {
+            for (f in prunePreRenders) preRenders.remove(f);
+            prunePreRenders = [];
         }
 
         if (pruneOnRemoves.length > 0) {

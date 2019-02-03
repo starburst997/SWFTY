@@ -27,7 +27,7 @@ typedef FinalLayer = heaps.swfty.renderer.Layer.FinalLayer;
 #error 'Unsupported framework (please use OpenFL or Heaps)'
 #end
 
-@:forward(id, empty, x, y, scaleX, scaleY, rotation, alpha, dispose, pause, path, removeAll, addRender, removeRender, addMouseDown, removeMouseDown, addMouseUp, removeMouseUp, mouse, base, baseLayout, loadBytes, loadImage, reload, update, getAllNames, time, hasParent, disposed)
+@:forward(id, empty, x, y, scaleX, scaleY, rotation, alpha, dispose, pause, path, removeAll, addRender, removeRender, addMouseDown, removeMouseDown, addMouseUp, removeMouseUp, mouse, base, baseLayout, loadBytes, loadImage, reload, update, getAllNames, time, hasParent, disposed, shared)
 abstract Layer(BaseLayer) from BaseLayer to BaseLayer {
     public static inline function load(?width:Int, ?height:Int, ?path:String, ?bytes:Bytes, ?onComplete:Layer->Void, ?onError:Dynamic->Void):Layer {
         var layer = FinalLayer.create(width, height);
@@ -55,6 +55,11 @@ abstract Layer(BaseLayer) from BaseLayer to BaseLayer {
 
     public var mouseX(get, never):Float;
     public var mouseY(get, never):Float;
+
+    var _base(get, never):BaseLayer;
+    inline function get__base():BaseLayer {
+        return this;
+    }
 
     inline function get_mouseX() {
         return this.getMouseX();

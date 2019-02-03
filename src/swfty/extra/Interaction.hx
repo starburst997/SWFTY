@@ -4,6 +4,8 @@ import swfty.renderer.Sprite;
 
 using swfty.extra.Tween;
 
+@:access(swfty.renderer.BaseLayer)
+@:access(swfty.renderer.Layer)
 class Interactions {
 
     static inline var RENDER_ID = 'interaction';
@@ -15,12 +17,11 @@ class Interactions {
     static var nInteractions = 0;
     static var lastInteraction:Interaction = null;
 
+    // You need to be carefull here as you need to makes sure to remove it! Put behind private until I figure a safer way
+    static var exclusive:Sprite = null;
+
     // Inject the layer resolver interaction
     static inline function manage(manager:Manager) {
-        // TODO: Basically the individual "addRender" add the interactions to this static array
-        //       We determine which get the "exclusive" click (it doesn't make sense that more than one gets a click, unless we're in a mutli-touch environment... but then we'll get one exclusive click per "touch id")
-        //       The top-most interaction of the layer gets the click, every other layers will ignore interactions
-
         // We switch to manager mode
         useManager = true;
 
@@ -102,6 +103,20 @@ class Interactions {
         } else {
             interactions.get(sprite.layer).push(lastInteraction);
         }
+    }
+
+    static function checkExclusive(sprite:Sprite) {
+        if (exclusive == null) {
+            return false;
+        }
+
+        var parent = sprite;
+        while (parent != null) {
+            if (parent == exclusive) return false;
+            parent = sprite.parent;
+        }
+
+        return true;
     } 
 
     public static function click(sprite:Sprite, ?name:String, ?cache = true, f:Void->Void) {
@@ -120,7 +135,7 @@ class Interactions {
         // Detect left click inside and wait for mouse up inside to trigger handler
         var wasInside = false;
         child.addRender(RENDER_ID, function render(dt) {
-            if (child.layer == null || !child.loaded) return;
+            if (child.layer == null || !child.loaded || !child.layer.shared.canInteract || child.layer._base.cancelInteract || checkExclusive(sprite)) return;
 
             var mouse = child.layer.mouse;
             if (mouse.leftChanged) {
@@ -165,7 +180,7 @@ class Interactions {
         // Detect left click inside and wait for mouse up inside to trigger handler
         var wasInside = false;
         child.addRender(RENDER_ID, function render(dt) {
-            if (child.layer == null || !child.loaded) return;
+            if (child.layer == null || !child.loaded || !child.layer.shared.canInteract || child.layer._base.cancelInteract || checkExclusive(sprite)) return;
 
             var mouse = child.layer.mouse;
             if (mouse.leftChanged) {
@@ -204,7 +219,7 @@ class Interactions {
         // Detect left click inside and wait for mouse up inside to trigger handler
         var wasInside = false;
         child.addRender(RENDER_ID, function render(dt) {
-            if (child.layer == null || !child.loaded) return;
+            if (child.layer == null || !child.loaded || !child.layer.shared.canInteract || child.layer._base.cancelInteract || checkExclusive(sprite)) return;
 
             var mouse = child.layer.mouse;
             if (mouse.leftChanged) {

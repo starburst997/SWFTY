@@ -208,6 +208,12 @@ class Tween {
         return sprite;
     }
 
+    public static inline function tweenDimension(sprite:Sprite, ?name:String, width:Float, height:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?repeat:Int = 0, ?onComplete:Void->Void) {
+        tweenWidth(sprite, name, width, duration, delay, easing, repeat);
+        tweenHeight(sprite, name, height, duration, delay, easing, repeat, onComplete);
+        return sprite;
+    }
+
     public static inline function tweenStop(sprite:Sprite, ?name:String) {
         var child = name == null ? sprite : sprite.get(name);
         child.removeRender(RENDER_ID);
@@ -391,28 +397,6 @@ class TweenText {
     public static inline function bounce(text:Text, ?to = 1.0, ?strength = 1.20, ?duration:Float = 0.5, ?delay = 0.0, ?onComplete:Void->Void) {
         return Tween.bounce(text.sprite(), to, strength, duration, delay, onComplete);
     }
-
-    /*public static inline function incrementBounce(text:Text, i:Int, ?duration:Float = 1.0, ?delay = 0.0, ?onComplete:Void->Void) {
-        var current = 0;
-        var time = duration / i;
-        var timer = 0.0;
-        
-        text.addRender(Tween.RENDER_ID, function render(dt) {
-            if (timer >= time) {
-                timer = 0.0;
-                current++;
-
-                text.text = '$current';
-                Tween.bounce(text.sprite(), 1.0, 1.0 + 0.05 * Math.min(1 - current / 200, 1.00001), 0.40, false, true, 2.5, current >= i ? onComplete : null);
-
-                if (current >= i) {
-                    text.removeRender(Tween.RENDER_ID, render);
-                }
-            }
-
-            timer += dt;
-        });
-    }*/
 
     // Require the Sprite to have a "label" child
     public static inline function incrementBounce(sprite:Sprite, i:Int, ?duration:Float = 0.5, ?delay = 0.0, ?onComplete:Void->Void) {

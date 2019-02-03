@@ -18,11 +18,13 @@ class BaseLayer extends EngineLayer {
     public var time:Float = 0;
 
     public var id = '';
-    public var pause = false;
 
     public var path:String = '';
 
     public var swfty:Option<SWFTYType> = None;
+
+    public var shared:Shared = {};
+    var cancelInteract = false;
 
     // Mouse need to be updated from the engine
     public var mouse = new Mouse();
@@ -67,7 +69,7 @@ class BaseLayer extends EngineLayer {
     }
 
     public function update(dt:Float) {
-        if (pause) return;
+        if (shared.pause) return;
 
         time = haxe.Timer.stamp() * 1000;
 
@@ -359,5 +361,16 @@ class BaseLayer extends EngineLayer {
             base.dispose();
             base = null;
         }
+    }
+}
+
+@:structInit
+class Shared {
+    public var canInteract = true;
+    public var pause = true;
+
+    public function new(?canInteract:Bool = true, ?pause:Bool = false) {
+        this.canInteract = canInteract;
+        this.pause = pause;
     }
 }
