@@ -43,6 +43,20 @@ class Mouse {
         return state;
     }
 
+    public inline function isLeftDown() {
+        return switch(left) {
+            case Down : true;
+            case _    : false;
+        }
+    }
+
+    public inline function isRightDown() {
+        return switch(right) {
+            case Down : true;
+            case _    : false;
+        }
+    }
+
     public inline function reset(force = false) {
         if (!force && disableReset) return;
 
