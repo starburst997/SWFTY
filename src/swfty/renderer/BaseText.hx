@@ -54,6 +54,8 @@ class BaseText extends FinalSprite {
         loadText(definition);
     }
 
+    // TODO: Meh, maybe rewrite those setter / getter, don't especially like it but not that much of a big deal anyway
+
     function set_align(align:Align) {
         _align = Some(align);
         return align;
