@@ -132,7 +132,7 @@ abstract DisplaySprite(BaseSprite) from BaseSprite to BaseSprite {
         #end
     }
 
-    public inline function blend(mode:BlendMode) {
+    public inline function blend(mode:openfl.display.BlendMode) {
         #if (openfl >= "8.4.0")
         this.blendMode = mode;
         #end

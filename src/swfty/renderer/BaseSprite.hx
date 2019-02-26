@@ -112,23 +112,23 @@ class BaseSprite extends EngineSprite {
         }
     }
 
-    #if (openfl && list && !flash) override #else inline #end
+    #if (openfl && list && !flash) override #end
     function get_width():Float {
         return bounds.width * scaleX;
     }
 
-    #if (openfl && list && !flash) override #else inline #end
+    #if (openfl && list && !flash) override #end
     function set_width(width:Float) {
         scaleX = width / bounds.width;
         return width;
     }
 
-    #if (openfl && list && !flash) override #else inline #end
+    #if (openfl && list && !flash) override #end
     function get_height():Float {
         return bounds.height * scaleY;
     }
 
-    #if (openfl && list && !flash) override #else inline #end
+    #if (openfl && list && !flash) override #end
     function set_height(height:Float) {
         scaleY = height / bounds.height;
         return height;

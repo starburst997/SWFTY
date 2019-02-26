@@ -1,5 +1,7 @@
 package swfty.renderer;
 
+import haxe.ds.Option;
+
 import swfty.renderer.Sprite.FinalSprite;
 
 // TODO: Switch to class instead of Typedef?
@@ -38,6 +40,11 @@ class BaseText extends FinalSprite {
     public var fitVertically = true;
 
     public var color(default, set):Null<UInt> = null;
+    public var align(get, set):Align;
+
+    var _align:Option<Align> = None;
+    var _width:Option<Float> = None;
+    var _height:Option<Float> = None;
 
     var textDefinition:Null<TextType>;
 
@@ -45,6 +52,45 @@ class BaseText extends FinalSprite {
         super(layer);
 
         loadText(definition);
+    }
+
+    function set_align(align:Align) {
+        _align = Some(align);
+        return align;
+    }
+
+    function get_align():Align {
+        return switch(_align) {
+            case Some(a) : a;
+            case None if (textDefinition != null) : textDefinition.align;
+            case _ : Left;
+        };
+    }
+
+    override function get_width():Float {
+        return switch(_width) {
+            case Some(w) : w;
+            case None if (textDefinition != null) : textDefinition.width;
+            case _ : 1;
+        };
+    }
+
+    override function set_width(width:Float) {
+        _width = Some(width);
+        return width;
+    }
+
+    override function get_height():Float {
+        return switch(_height) {
+            case Some(h) : h;
+            case None if (textDefinition != null) : textDefinition.height;
+            case _ : 1;
+        };
+    }
+
+    override function set_height(height:Float) {
+        _height = Some(height);
+        return height;
     }
 
     public function loadText(definition:TextType) {
@@ -158,8 +204,8 @@ class BaseText extends FinalSprite {
                 if (!multiline && fit) {
                     // TODO: For multiline check the "height" as well?
                     // TODO: Could probably be done simply at the end of each line?
-                    if (code != SPACE && (x - textDefinition.x) + w > textDefinition.width) {
-                        var scaleDown =  textDefinition.width / ((x - textDefinition.x) + w);
+                    if (code != SPACE && (x - textDefinition.x) + w > width) {
+                        var scaleDown =  width / ((x - textDefinition.x) + w);
 
                         // Take all tiles and scale them down
                         for (line in lines) {
@@ -188,7 +234,7 @@ class BaseText extends FinalSprite {
 
                 } else if (short) {
                     // TODO: For multiline "short" text we should check the "height" and do it on the last line only!
-                    if ((x - textDefinition.x) + w > (textDefinition.width - scale * dot.advance * 3) && (i <= text.length - 3)) {
+                    if ((x - textDefinition.x) + w > (width - scale * dot.advance * 3) && (i <= text.length - 3)) {
                         // Set the remaining charaters as "..." and call it a day
                         for (j in 0...3) {
                             code = DOT;
@@ -214,7 +260,7 @@ class BaseText extends FinalSprite {
                         }
                         break;
                     }
-                } else if ((x - textDefinition.x) + w > textDefinition.width && hasSpace) {
+                } else if ((x - textDefinition.x) + w > width && hasSpace) {
                     y += lineHeight;
                     hasSpace = false;
 
@@ -284,16 +330,16 @@ class BaseText extends FinalSprite {
         if (currentLine.textWidth > textWidth) textWidth = currentLine.textWidth;
         textHeight = y + lineHeight;
 
-        switch(textDefinition.align) {
+        switch(align) {
             case Left    : 
             case Right   : 
                 for (line in lines)
                     for (tile in line.tiles) 
-                        if (tile.tile != null) tile.tile.x += textDefinition.width - line.textWidth;
+                        if (tile.tile != null) tile.tile.x += width - line.textWidth;
             case Center  : 
                 for (line in lines)
                     for (tile in line.tiles)
-                        if (tile.tile != null) tile.tile.x += textDefinition.width / 2 - line.textWidth / 2;
+                        if (tile.tile != null) tile.tile.x += width / 2 - line.textWidth / 2;
             case Justify : trace('Justify not supported!!!');
         }
 
