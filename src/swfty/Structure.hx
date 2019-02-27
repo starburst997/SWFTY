@@ -2,6 +2,8 @@ package swfty;
 
 import haxe.ds.IntMap;
 
+// TODO: These should be absract over Int or simple Enum maybe?
+
 @:enum abstract BlendMode(String) from String to String {
     var Normal      = 'normal';
     var LayerBlend  = 'layer';

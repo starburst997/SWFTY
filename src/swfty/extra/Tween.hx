@@ -13,6 +13,12 @@ using swfty.extra.Timer;
 // Will die with the sprite or when it finishes running
 // Not exactly super mega optimised, but should do the job just fine
 
+enum Repeat {
+    Once;
+    Infinite;
+    Repeat(n:Int);
+}
+
 class Tween {
 
     static inline var RENDER_ID = 'tween';
