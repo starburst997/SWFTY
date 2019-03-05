@@ -53,6 +53,12 @@ class Point {
     public var x:Float = 0.0;
     public var y:Float = 0.0;
 
+    public static inline function distance(a:Point, b:Point) {
+        var x = b.x - a.x;
+        var y = b.y - a.y;
+        return Math.sqrt(x * x + y * y);
+    }
+
     public function new(?x:Float, ?y:Float) {
         this.x = x;
         this.y = y;
@@ -105,6 +111,14 @@ class Rectangle {
 
     public inline function get_left() {
         return x;
+    }
+
+    public inline function inflate(width:Float, height:Float) {
+        this.x -= width;
+        this.width += width * 2;
+        this.y -= height;
+        this.height += height * 2;
+        return this;
     }
 
     public inline function inside(x:Float, y:Float, margin = 0) {

@@ -130,6 +130,87 @@ class Tween {
 
     /* Tween */
 
+    public static inline function tweenFromWidth(sprite:Sprite, ?name:String, width:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?repeat:Int = 0, ?onComplete:Void->Void) {
+        var child = name == null ? sprite : sprite.get(name);
+        var value = child.width;
+        child.width = width;
+        return tweenWidth(child, name, value, duration, delay, easing, repeat, onComplete);
+    }
+
+    public static inline function tweenFromHeight(sprite:Sprite, ?name:String, height:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?repeat:Int = 0, ?onComplete:Void->Void) {
+        var child = name == null ? sprite : sprite.get(name);
+        var value = child.height;
+        child.height = height;
+        return tweenHeight(child, value, duration, delay, easing, repeat, onComplete);
+    }
+
+    public static inline function tweenFromScale(sprite:Sprite, ?name:String, scale:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?repeat:Int = 0, ?onComplete:Void->Void) {
+        var child = name == null ? sprite : sprite.get(name);
+        var value = child.scaleX;
+        child.scaleX = child.scaleY = scale;
+        return tweenScale(child, value, duration, delay, easing, repeat, onComplete);
+    }
+
+    public static inline function tweenFomScaleXY(sprite:Sprite, ?name:String, scaleX:Float, scaleY:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?repeat:Int = 0, ?onComplete:Void->Void) {
+        return sprite 
+        .tweenFromScaleX(name, scaleX, duration, delay, easing, repeat)
+        .tweenFromScaleY(name, scaleY, duration, delay, easing, repeat, onComplete);
+    }
+
+    public static inline function tweenFromScaleX(sprite:Sprite, ?name:String, scale:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?repeat:Int = 0, ?onComplete:Void->Void) {
+        var child = name == null ? sprite : sprite.get(name);
+        var value = child.scaleX;
+        child.scaleX = scale;
+        return tweenScaleX(child, value, duration, delay, easing, repeat, onComplete);
+    }
+
+    public static inline function tweenFromScaleY(sprite:Sprite, ?name:String, scale:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?repeat:Int = 0, ?onComplete:Void->Void) {
+        var child = name == null ? sprite : sprite.get(name);
+        var value = child.scaleY;
+        child.scaleY = scale;
+        return tweenScaleY(child, value, duration, delay, easing, repeat, onComplete);
+    }
+
+    public static inline function tweenFromX(sprite:Sprite, ?name:String, x:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?repeat:Int = 0, ?onComplete:Void->Void) {
+        var child = name == null ? sprite : sprite.get(name);
+        var value = child.x;
+        child.x = x;
+        return tweenX(child, value, duration, delay, easing, repeat, onComplete);
+    }
+
+    public static inline function tweenFromY(sprite:Sprite, ?name:String, y:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?repeat:Int = 0, ?onComplete:Void->Void) {
+        var child = name == null ? sprite : sprite.get(name);
+        var value = child.y;
+        child.y = y;
+        return tweenY(child, value, duration, delay, easing, repeat, onComplete);
+    }
+
+    public static inline function tweenFromAlpha(sprite:Sprite, ?name:String, alpha:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?repeat:Int = 0, ?onComplete:Void->Void) {
+        var child = name == null ? sprite : sprite.get(name);
+        var value = child.alpha;
+        child.alpha = alpha;
+        return tweenAlpha(child, value, duration, delay, easing, repeat, onComplete);
+    }
+
+    public static inline function tweenFromRotation(sprite:Sprite, ?name:String, angle:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?repeat:Int = 0, ?onComplete:Void->Void) {
+        var child = name == null ? sprite : sprite.get(name);
+        var value = child.rotation;
+        child.rotation = angle;
+        return tweenAlpha(child, value, duration, delay, easing, repeat, onComplete);
+    }
+
+    public static inline function tweenFromPosition(sprite:Sprite, ?name:String, x:Float, y:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?repeat:Int = 0, ?onComplete:Void->Void) {
+        tweenFromY(sprite, name, y, duration, delay, easing, repeat);
+        tweenFromX(sprite, name, x, duration, delay, easing, repeat, onComplete);
+        return sprite;
+    }
+
+    public static inline function tweenFromDimension(sprite:Sprite, ?name:String, width:Float, height:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?repeat:Int = 0, ?onComplete:Void->Void) {
+        tweenFromWidth(sprite, name, width, duration, delay, easing, repeat);
+        tweenFromHeight(sprite, name, height, duration, delay, easing, repeat, onComplete);
+        return sprite;
+    }
+
     public static inline function tweenWidth(sprite:Sprite, ?name:String, width:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?repeat:Int = 0, ?onComplete:Void->Void) {
         var child = name == null ? sprite : sprite.get(name);
         setup(child, child.width, width, duration, delay, easing, repeat, onComplete, function(val) {

@@ -26,8 +26,9 @@ OpenFL 8.7.0 is also incredibly slow in html5 compared to 8.4.0, huge performanc
 ## Similar Projects
 
 * [Flump](https://github.com/tconkling/flump), AIR-based approach focused on animation
+* [Scaleform](https://www.autodesk.com/products/scaleform), My inspiration at first as I wanted to have a fast way of rendering SWF authored in Animate CC on top of existing engine but without the "flash part"
 
 ## Copyright
 Exporter powered by OpenFL
 
-MIT license and copyright 2018 JD, blablabla
+MIT license and copyright 2018 - 2019 JD, blablabla

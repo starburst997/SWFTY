@@ -113,7 +113,7 @@ class Interactions {
         var parent = sprite;
         while (parent != null) {
             if (parent == exclusive) return false;
-            parent = sprite.parent;
+            parent = parent.parent;
         }
 
         return true;
@@ -299,6 +299,18 @@ class Interactions {
 
         child.removeRender(RENDER_ID);
         return sprite;
+    }
+
+    public static inline function getMouse(sprite:Sprite) {
+        return sprite.layerToLocal(sprite.layer.mouse.x, sprite.layer.mouse.y);
+    }
+
+    public static inline function getMouseX(sprite:Sprite) {
+        return getMouse(sprite).x;
+    }
+    
+    public static inline function getMouseY(sprite:Sprite) {
+        return getMouse(sprite).y;
     }
 }
 

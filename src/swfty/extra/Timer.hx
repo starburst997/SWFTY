@@ -26,6 +26,17 @@ class TimerExtra {
         return sprite;
     }
 
+    /*public static inline function waitFrame(sprite:Sprite, ?stop = false, ?onComplete:Void->Void) {
+        if (stop) sprite.waitStop();
+        
+        sprite.addRender(RENDER_ID, function render(dt) {
+            sprite.removeRender(RENDER_ID, render);
+            if (onComplete != null) onComplete();
+        });
+
+        return sprite;
+    }*/
+
     public static inline function waitStop(sprite:Sprite) {
         sprite.removeRender(RENDER_ID);
         return sprite;

@@ -134,6 +134,24 @@ class BaseSprite extends EngineSprite {
         return height;
     }
 
+    function getAllBitmaps():Array<DisplayBitmap> {
+        var all = getBitmaps();
+        for (sprite in _sprites) {
+            all = all.concat(sprite.getBitmaps());
+        }
+        return all;
+    }
+
+    function getBitmaps():Array<DisplayBitmap> {
+        throw 'Not implemented';
+    }
+
+    public function colorize(color:UInt) {
+        for (bitmap in getAllBitmaps()) {
+            bitmap.color(color >> 16, (color & 0xFF00) >> 8, color & 0xFF);
+        }
+    }
+
     public inline function addRender(?name:String, f:Float->Void, ?priority = false) {
         if (priority) _renders.unshift(f);
         else _renders.push(f);

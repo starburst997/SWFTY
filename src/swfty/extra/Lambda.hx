@@ -8,6 +8,14 @@ class LambdaSprite {
 
     static inline var FOLLOW_ID = 'follow';
 
+    public static inline function empty(sprite:Sprite) {
+        for (child in sprite.sprites) {
+            child.removeFromParent();
+        }
+
+        return sprite;
+    }
+
     public static function iter(sprite:Sprite, ?name:String, f:Sprite->Void) {
         var i = 0;
         // Grab either name0 or name1 first, then continue by incrementing until there is none
@@ -16,6 +24,8 @@ class LambdaSprite {
             f(child);
             child = sprite.exists('$name${++i}') ? sprite.get('$name$i') : null;
         }
+
+        return sprite;
     }
 
     public static function iteri(sprite:Sprite, ?name:String, f:Sprite->Int->Void) {
@@ -26,6 +36,8 @@ class LambdaSprite {
             f(child, i);
             child = sprite.exists('$name${++i}') ? sprite.get('$name$i') : null;
         }
+
+        return sprite;
     }
 
     public static inline function show(sprite:Sprite, ?name:String, visible = true) {
@@ -50,7 +62,7 @@ class LambdaSprite {
         var child = name == null ? sprite : sprite.get(name);
         function once(dt) {
             f();
-            child.removeRender(once);    
+            child.removeRender(once);
         }
         child.addRender(once);
         return sprite;
@@ -197,10 +209,14 @@ class LambdaSprite {
             sprite.x = local.x + x;
             sprite.y = local.y + y;
         });
+
+        return sprite;
     }
 
     public static inline function unfollow(sprite:Sprite) {
         sprite.removeRender(FOLLOW_ID);
+
+        return sprite;
     }
 }
 

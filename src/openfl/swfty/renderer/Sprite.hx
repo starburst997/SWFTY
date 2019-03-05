@@ -16,6 +16,16 @@ class FinalSprite extends BaseSprite {
         super(layer, definition, linkage);
     }
 
+    override function getBitmaps():Array<DisplayBitmap> {
+        var all = [];
+        for (i in 0...numTiles) {
+            var tile = getTileAt(i);
+            
+            all.push(tile);
+        }
+        return all;
+    }
+
     override function set__name(name:String) {
         if (_parent != null) {
             @:privateAccess _parent._names.set(name, this);

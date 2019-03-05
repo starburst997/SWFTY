@@ -8,7 +8,7 @@
     "update": "lix download",
     "download": "lix install",
     "build": "openfl build html5",
-    "watch": "live-server bin/html5/bin --watch=SWFTYExporter.js --wait=750"
+    "watch": "live-server bin/html5/bin --watch=SWFTYExporter.js --port=8286 --wait=750"
   },
   "dependencies": {
     "live-server": "^1.2.1",
