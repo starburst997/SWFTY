@@ -38,6 +38,7 @@ class BaseText extends FinalSprite {
     // TODO: Use an Enum instead of bools
     public var fit = false;
     public var fitVertically = true;
+    public var singleLine = false;
 
     public var color(default, set):Null<UInt> = null;
     public var align(get, set):Align;
@@ -303,6 +304,8 @@ class BaseText extends FinalSprite {
                     lines.push(currentLine);
 
                     x -= offsetX - textDefinition.x;
+
+                    if (singleLine) break;
                 }
 
                 x += w;
@@ -312,6 +315,7 @@ class BaseText extends FinalSprite {
                     case NEW_LINE | RETURN : 
                         y += lineHeight;
                         x = textDefinition.x;
+                        if (singleLine) break;
                     case _ : 
                 }
             }
