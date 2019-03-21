@@ -119,6 +119,14 @@ class Interactions {
         return true;
     } 
 
+    public static function removeExclusive() {
+        exclusive = null;
+    }
+
+    public static function hasExclusive() {
+        return exclusive != null;
+    }
+
     public static function click(sprite:Sprite, ?name:String, ?cache = true, f:Void->Void) {
         var child = name == null ? sprite : sprite.get(name);
 

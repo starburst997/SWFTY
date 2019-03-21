@@ -40,6 +40,14 @@ class BaseLayer extends EngineLayer {
     var pruneMouseDowns:Array<Float->Float->Void> = [];
     var pruneMouseUps:Array<Float->Float->Void> = [];
 
+    public var pause(get, set):Bool;
+    inline function set_pause(value:Bool):Bool {
+        return shared.pause = value;
+    }
+    inline function get_pause():Bool {
+        return shared.pause;
+    }
+
     // TODO: Disable all transform on this object, should be equivalent to "stage" in Flash
     //       Create StageSprite or RootSprite, only a container with no matrix or position
     public var base(get, null):FinalSprite;
@@ -262,8 +270,10 @@ class BaseLayer extends EngineLayer {
     // Load a single image into a layer
     // The Sprite you can create from this layer is called "All"
     public function loadImage(bytes:Bytes, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
+        if (bytes == null) trace('Warning loading empty bytes SWFTY');
+        
         var swfty:SWFTYType = {
-            name: 'no-name-${bytes.length}',
+            name: 'no-name-${bytes == null ? 0 : bytes.length}',
             tilemap_width: 0,
             tilemap_height: 0,
             definitions: new IntMap(),

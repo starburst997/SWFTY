@@ -5,9 +5,13 @@ import haxe.ds.StringMap;
 @:allow(swfty.renderer.BaseSprite)
 class BaseSprite extends EngineSprite {
 
+    static var COUNTER = 0;
+
     var disposed = false;
 
     public var og:Bool = false;
+
+    public var uuid:Int = COUNTER++;
 
     // I was so close to have no custom defined ;_;
     #if (!openfl || !list)

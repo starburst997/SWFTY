@@ -62,6 +62,27 @@ class Manager {
         return this;
     }
 
+    public inline function addRenderOnce(f:Void->Void) {
+        function handler() {
+            f();
+            removeRender(handler);
+        }
+        
+        return addRender(handler);
+    }
+
+    public inline function wait(wait:Float, f:Void->Void) {
+        var time = haxe.Timer.stamp();
+        function handler() {
+            if (haxe.Timer.stamp() - time > wait) {
+                f();
+                removeRender(handler);
+            }
+        }
+        
+        return addRender(handler);
+    }
+
     public inline function addRender(f:Void->Void) {
         renders.push(f);
         return this;
@@ -96,6 +117,8 @@ class Manager {
         return this;
     }
 
+    var debug = 0;
+
     public function update() {
         dt = (haxe.Timer.stamp() - timer); 
         timer = haxe.Timer.stamp();
@@ -104,12 +127,22 @@ class Manager {
 
         for (f in preRenders) f();
 
+        var n = 0;
         for (layer in layers) {
             if (layer.disposed) {
                 remove(layer);
             } else {
+                n++;
                 layer.update(dt);
             }
+        }
+
+        if (debug++ % 20 == 0) {
+            //trace('Layers render: $n');
+
+            /*for (layer in layers) {
+                trace('    - ${layer.path}');
+            }*/
         }
 
         for (f in renders) f();
