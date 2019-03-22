@@ -70,6 +70,23 @@ class Point {
 }
 
 @:structInit
+class Vector {
+    public var x:Float = 0.0;
+    public var y:Float = 0.0;
+    public var z:Float = 0.0;
+
+    public function new(?x:Float, ?y:Float, ?z:Float) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
+    public inline function toString() {
+        return '{x: $x, y: $y, z: $z}';
+    }
+}
+
+@:structInit
 class Rectangle {
     public var x:Float = 0.0;
     public var y:Float = 0.0;

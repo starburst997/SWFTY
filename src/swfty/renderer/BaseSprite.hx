@@ -166,6 +166,11 @@ class BaseSprite extends EngineSprite {
         }
     }
 
+    public inline function addRenderNow(?name:String, f:Float->Void, ?priority = false) {
+        addRender(name, f, priority);
+        f(0.0);
+    }
+
     public inline function removeRender(?name:String, ?f:Float->Void) {
         if (f != null) {
             _pruneRenders.push(f);
@@ -418,7 +423,7 @@ class BaseSprite extends EngineSprite {
         throw 'Not implemented';
     }
 
-    public function localToLayer(x:Float, y:Float):Point {
+    public function localToLayer(x:Float = 0.0, y:Float = 0.0):Point {
         throw 'Not implemented';
     }
 

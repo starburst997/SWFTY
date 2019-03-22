@@ -32,7 +32,7 @@ class FinalSprite extends BaseSprite {
         return super.set__name(name);
     }
 
-    public override function localToLayer(x:Float, y:Float):Point {
+    public override function localToLayer(x:Float = 0.0, y:Float = 0.0):Point {
         pt.x = x;
         pt.y = y;
         pt = this.localToGlobal(pt);

@@ -115,50 +115,55 @@ class BaseLayer extends EngineLayer {
         mouse.reset();
     }
 
-    public function removeAll() {
+    public inline function removeAll() {
         baseLayout.removeAll();
     }
 
-    public function addRender(f:Float->Void, ?priority = false) {
+    public inline function addRender(f:Float->Void, ?priority = false) {
         if (priority) renders.unshift(f);
         else renders.push(f);
     }
 
-    public function removeRender(f:Float->Void) {
+    public inline function addRenderNow(f:Float->Void, ?priority = false) {
+        addRender(f, priority);
+        f(0.0);
+    }
+
+    public inline function removeRender(f:Float->Void) {
         pruneRenders.push(f);
     }
 
-    public function addMouseDown(f:Float->Float->Void, ?priority = false) {
+    public inline function addMouseDown(f:Float->Float->Void, ?priority = false) {
         if (priority) mouseDowns.unshift(f); 
         else mouseDowns.push(f);
     }
 
-    public function removeMouseDown(f:Float->Float->Void) {
+    public inline function removeMouseDown(f:Float->Float->Void) {
         pruneMouseDowns.push(f);
     }
 
-    public function addMouseUp(f:Float->Float->Void, ?priority = false) {
+    public inline function addMouseUp(f:Float->Float->Void, ?priority = false) {
         if (priority) mouseUps.unshift(f); 
         else mouseUps.push(f);
     }
 
-    public function removeMouseUp(f:Float->Float->Void) {
+    public inline function removeMouseUp(f:Float->Float->Void) {
         pruneMouseUps.push(f);
     }
 
-    public function addSprite(sprite:Sprite) {
+    public inline function addSprite(sprite:Sprite) {
         baseLayout.addSprite(sprite);
     }
 
-    public function addSpriteAt(sprite:Sprite, index:Int = 0) {
+    public inline function addSpriteAt(sprite:Sprite, index:Int = 0) {
         baseLayout.addSpriteAt(sprite, index);
     }
 
-    public function removeSprite(sprite:Sprite) {
+    public inline function removeSprite(sprite:Sprite) {
         baseLayout.removeSprite(sprite);
     }
 
-    public inline function createBitmap(id:Int, og:Bool = false) {
+    public inline inline function createBitmap(id:Int, og:Bool = false) {
         return DisplayBitmap.create(this, id, og);
     }
 

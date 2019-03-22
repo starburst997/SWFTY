@@ -203,7 +203,7 @@ class LambdaSprite {
     // TODO: If object is destroyed / disposed whatever, we should "unfollow"
     public static inline function follow(sprite:Sprite, object:Sprite, ?x = 0.0, ?y = 0.0) {
         sprite.addRender(FOLLOW_ID, function(dt) {
-            var global = object.localToLayer(object.x, object.y);
+            var global = object.localToLayer();//(object.x, object.y);
             var local = sprite.layerToLocal(global.x, global.y);
             
             sprite.x = local.x + x;
