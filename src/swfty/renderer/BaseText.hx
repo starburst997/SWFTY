@@ -99,8 +99,8 @@ class BaseText extends FinalSprite {
     public function loadText(definition:TextType) {
         textDefinition = definition;
         if (text == null && definition != null) {
-            text = definition.text;
             multiline = definition.multiline;
+            text = definition.text;
             originalText = text;
         } else if (this.text != null) {
             // Force refresh
@@ -137,6 +137,10 @@ class BaseText extends FinalSprite {
         if (this.text == text) return text;
 
         this.text = text;
+
+        // TODO: Somehow it seems like this doesn't work well in flash?
+        var width = get_width();
+        var height = get_height();
 
         // Clear tiles
         removeAll();
