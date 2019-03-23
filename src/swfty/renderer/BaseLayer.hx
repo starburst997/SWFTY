@@ -171,7 +171,7 @@ class BaseLayer extends EngineLayer {
         baseLayout.removeSprite(sprite);
     }
 
-    public inline inline function createBitmap(id:Int, og:Bool = false) {
+    public inline function createBitmap(id:Int, og:Bool = false) {
         return DisplayBitmap.create(this, id, og);
     }
 

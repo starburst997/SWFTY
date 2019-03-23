@@ -98,10 +98,14 @@ class BaseText extends FinalSprite {
 
     public function loadText(definition:TextType) {
         textDefinition = definition;
-        if (text == null && definition != null) {
+
+        if (definition != null) {
             multiline = definition.multiline;
+            originalText = definition.text;
+        }
+
+        if (text == null && definition != null) {
             text = definition.text;
-            originalText = text;
         } else if (this.text != null) {
             // Force refresh
             var text = this.text == originalText ? originalText = definition.text : this.text;
@@ -267,7 +271,7 @@ class BaseText extends FinalSprite {
                         }
                         break;
                     }
-                } else if ((x - textDefinition.x) + w > width && hasSpace) {
+                } else if ((x - textDefinition.x) + w > width && hasSpace && multiline) {
                     y += lineHeight;
                     hasSpace = false;
 
