@@ -342,7 +342,7 @@ class BaseSprite extends EngineSprite {
         // Re-add non-og tile
         for (child in childs) {
             if (!child.og) {
-                if (!child._name.empty()) Log.warn('Missing Child: ${child._name}');
+                if (!child._name.empty()) Log.warn('Missing Child: ${child._name} (${layer.path})');
 
                 //child.reload();
 

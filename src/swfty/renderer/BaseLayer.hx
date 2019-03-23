@@ -48,6 +48,14 @@ class BaseLayer extends EngineLayer {
         return shared.pause;
     }
 
+    public var canInteract(get, set):Bool;
+    inline function set_canInteract(value:Bool):Bool {
+        return shared.canInteract = value;
+    }
+    inline function get_canInteract():Bool {
+        return shared.canInteract;
+    }
+
     // TODO: Disable all transform on this object, should be equivalent to "stage" in Flash
     //       Create StageSprite or RootSprite, only a container with no matrix or position
     public var base(get, null):FinalSprite;
@@ -77,7 +85,7 @@ class BaseLayer extends EngineLayer {
     }
 
     public function update(dt:Float) {
-        if (shared.pause) return;
+        if (pause) return;
 
         time = haxe.Timer.stamp() * 1000;
 
@@ -382,7 +390,7 @@ class BaseLayer extends EngineLayer {
 @:structInit
 class Shared {
     public var canInteract = true;
-    public var pause = true;
+    public var pause = false;
 
     public function new(?canInteract:Bool = true, ?pause:Bool = false) {
         this.canInteract = canInteract;
