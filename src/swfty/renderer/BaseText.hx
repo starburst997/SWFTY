@@ -212,38 +212,7 @@ class BaseText extends FinalSprite {
                     tile: tile
                 });
 
-                if (!multiline && fit) {
-                    // TODO: For multiline check the "height" as well?
-                    // TODO: Could probably be done simply at the end of each line?
-                    if (code != SPACE && (x - textDefinition.x) + w > width) {
-                        var scaleDown =  width / ((x - textDefinition.x) + w);
-
-                        // Take all tiles and scale them down
-                        for (line in lines) {
-                            for (tile in line.tiles) {
-                                tile.x *= scaleDown;
-                                tile.width *= scaleDown;
-                                tile.tile.scaleX *= scaleDown;
-                                tile.tile.scaleY *= scaleDown;
-                                tile.tile.x *= scaleDown;
-                                tile.tile.y *= scaleDown;
-                            }
-                        }
-
-                        x *= scaleDown;
-                        y *= scaleDown;
-
-                        size *= scaleDown;
-                        scale = size / textDefinition.font.size;
-
-                        if (!fitVertically) {
-                            lineHeight = (textDefinition.font.ascent + textDefinition.font.descent + textDefinition.font.leading) / 20 / 1024 * size;
-                        }
-                        
-                        w = char.advance * scale;
-                    }
-
-                } else if (short) {
+                if (short) {
                     // TODO: For multiline "short" text we should check the "height" and do it on the last line only!
                     if ((x - textDefinition.x) + w > (width - scale * dot.advance * 3) && (i <= text.length - 3)) {
                         // Set the remaining charaters as "..." and call it a day
@@ -333,6 +302,46 @@ class BaseText extends FinalSprite {
 
         // We assume this is from the original text, might not be the bvest approach...
         if (originalLines == 0) originalLines = lines.length;
+
+        // Makes sure everything fits within the bounding box
+        if (!multiline && (fit || short)) {
+            if (currentLine.textWidth > width) {
+                var scaleDown =  width / currentLine.textWidth;
+
+                // Take all tiles and scale them down
+                for (line in lines) {
+                    for (tile in line.tiles) {
+                        // I agree not the most elegant way to do it, but works great and is cheap
+                        // TODO: We could wrap around all glyphs into another Sprite and set the scale on it...
+                        tile.x -= textDefinition.x;
+                        tile.x *= scaleDown;
+                        tile.x += textDefinition.x;
+
+                        tile.width *= scaleDown;
+                        tile.tile.scaleX *= scaleDown;
+                        tile.tile.scaleY *= scaleDown;
+
+                        // TODO: Is this necessary??
+                        tile.tile.x -= textDefinition.x;
+                        tile.tile.x *= scaleDown;
+                        tile.tile.x += textDefinition.x;
+                        
+                        tile.tile.y -= textDefinition.y;
+                        tile.tile.y *= scaleDown;
+                        tile.tile.y += textDefinition.y;
+                    }
+                }
+
+                currentLine.textWidth *= scaleDown;
+
+                size *= scaleDown;
+                scale = size / textDefinition.font.size;
+
+                if (!fitVertically) {
+                    lineHeight = (textDefinition.font.ascent + textDefinition.font.descent + textDefinition.font.leading) / 20 / 1024 * size;
+                }
+            }
+        }
 
         // Center vertically
         if (fit && fitVertically) {
