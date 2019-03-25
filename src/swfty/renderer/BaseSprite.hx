@@ -47,6 +47,15 @@ class BaseSprite extends EngineSprite {
     var _definition:Null<MovieClipType>;
     var _bounds:Rectangle;
 
+    // Keep some original values that can be usefull
+    public var originalX:Float = 0.0;
+    public var originalY:Float = 0.0;
+    public var originalScaleX:Float = 1.0;
+    public var originalScaleY:Float = 1.0;
+    public var originalAlpha:Float = 1.0;
+    public var originalRotation:Float = 0.0;
+    public var originalVisible:Bool = false;
+
     // Being able to add a render loop is a pretty nice tool
     // The map allows you to give it a name so you can easily remove all render loop from a specific name 
     // TODO: Would using an IntMap bring more performance?
@@ -278,6 +287,21 @@ class BaseSprite extends EngineSprite {
                 if (updateAlpha) text.alpha = child.alpha;
                 if (updateVisible) text.visible = child.visible;
 
+                // Save original values
+                if (updatePosition) {
+                    text.originalX = text.x;
+                    text.originalY = text.y;
+                }
+
+                if (updateScale) {
+                    text.originalScaleX = text.scaleX;
+                    text.originalScaleY = text.scaleY;
+                }
+
+                if (updateRotation) text.originalRotation = text.rotation;
+                if (updateAlpha) text.originalAlpha = text.alpha;
+                if (updateVisible) text.originalVisible = text.visible;
+
                 addSprite(text);
             } else {
                 var sprite:FinalSprite = if (!child.name.empty() && _names.exists(child.name)) {
@@ -332,6 +356,20 @@ class BaseSprite extends EngineSprite {
                     tile.transform(shape.a, shape.b, shape.c, shape.d, shape.tx, shape.ty);
                     sprite.addBitmap(tile);
                 }
+
+                // Save original values
+                if (updatePosition) {
+                    sprite.originalX = sprite.x;
+                    sprite.originalY = sprite.y;
+                }
+
+                if (updateScale) {
+                    sprite.originalScaleX = sprite.scaleX;
+                    sprite.originalScaleY = sprite.scaleY;
+                }
+
+                if (updateRotation) sprite.originalRotation = sprite.rotation;
+                if (updateVisible) sprite.originalAlpha = sprite.alpha;
 
                 addSprite(sprite);
             }
