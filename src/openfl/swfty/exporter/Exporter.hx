@@ -1306,8 +1306,10 @@ class Exporter {
         var r = ~/<[^<]*>/g;
         definition.text = r.replace(definition.html.replace('</p>', '\n').replace('&apos;', '\''), '');
         
-        // Always have a new line at the end, remove
-        definition.text = definition.text.substr(0, definition.text.length - 1);
+        // Clean up if new line at the end
+        if (definition.text.charAt(definition.text.length - 1) == '\n') {
+            definition.text = definition.text.substr(0, definition.text.length - 1);
+        }
 
         definition.multiline = tag.multiline;
         definition.size = tag.fontHeight / 20.0;
