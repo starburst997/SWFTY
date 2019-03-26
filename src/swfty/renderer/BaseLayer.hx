@@ -234,7 +234,7 @@ class BaseLayer extends EngineLayer {
 
     public inline function empty() {
         var sprite = Sprite.create(this);
-        //sprite.loaded = true;
+        sprite.loaded = true;
         return sprite;
     }
 
@@ -283,7 +283,7 @@ class BaseLayer extends EngineLayer {
     // Load a single image into a layer
     // The Sprite you can create from this layer is called "All"
     public function loadImage(bytes:Bytes, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
-        if (bytes == null) trace('Warning loading empty bytes SWFTY');
+        if (bytes == null) trace('Warning loading empty bytes SWFTY (${path})');
         
         var swfty:SWFTYType = {
             name: 'no-name-${bytes == null ? 0 : bytes.length}',
@@ -294,17 +294,25 @@ class BaseLayer extends EngineLayer {
             fonts: new IntMap()
         };
         
-        loadTexture(bytes, swfty, function() {
+        if (bytes == null) {
+            // Empty layer... (something wrong happens, but better to show nothing than crash...)
             if (disposed) return;
-
             loadSWFTY(swfty);
             reload();
             if (onComplete != null) onComplete();
-        }, function(e) {
-            if (disposed) return;
-            
-            if (onError != null) onError(e);
-        });
+        } else {
+            loadTexture(bytes, swfty, function() {
+                if (disposed) return;
+
+                loadSWFTY(swfty);
+                reload();
+                if (onComplete != null) onComplete();
+            }, function(e) {
+                if (disposed) return;
+                
+                if (onError != null) onError(e);
+            });
+        }
     }
 
     // Load SWFTY file format

@@ -329,7 +329,7 @@ class BaseSprite extends EngineSprite {
                 }
 
                 sprite.og = true;
-                
+
                 if (updatePosition && updateScale && updateRotation) sprite.display().transform(child.a, child.b, child.c, child.d, child.tx, child.ty);
                 if (updateVisible) sprite.visible = child.visible;
 
@@ -369,7 +369,8 @@ class BaseSprite extends EngineSprite {
                 }
 
                 if (updateRotation) sprite.originalRotation = sprite.rotation;
-                if (updateVisible) sprite.originalAlpha = sprite.alpha;
+                if (updateAlpha) sprite.originalAlpha = sprite.alpha;
+                if (updateVisible) sprite.originalVisible = sprite.visible;
 
                 addSprite(sprite);
             }
