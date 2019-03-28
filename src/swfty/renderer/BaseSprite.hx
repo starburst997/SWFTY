@@ -93,6 +93,15 @@ class BaseSprite extends EngineSprite {
         return _name;
     }
 
+    // TODO: Not super optimized, usually getting the X we would also get the Y so we could cache it for one frame
+    public inline function getMouseX():Float {
+        return layer.getMouseX() - calcBounds(layer.base).x;
+    }
+
+    public inline function getMouseY():Float {
+        return layer.getMouseY() - calcBounds(layer.base).y;
+    }
+
     public function calcBounds(?relative:BaseSprite):Rectangle {
         throw 'Not implemented';
     }
@@ -400,6 +409,7 @@ class BaseSprite extends EngineSprite {
     }
 
     public function reload() {
+
         // We cannot use definition.id because it can change... would've been nice if it was using the "itemID" instead...
         /*if (_definition != null) {
             if (layer.hasDefinition(_definition.id)) {
@@ -433,13 +443,21 @@ class BaseSprite extends EngineSprite {
     public function addSpriteAt(sprite:FinalSprite, index:Int = 0) {
         if (sprite._name != null) _names.set(sprite._name, sprite);
         _sprites.insert(index, sprite);
-        if (loaded && !sprite.loaded) sprite.reload();
+        
+        // TODO: Was that necessary?
+        /*if (loaded && !sprite.loaded) {
+            sprite.reload();
+        }*/
     }
 
     public function addSprite(sprite:FinalSprite) {
         if (sprite._name != null) _names.set(sprite._name, sprite);
         _sprites.push(sprite);
-        if (loaded && !sprite.loaded) sprite.reload();
+        
+        // TODO: Was that necessary?
+        /*if (loaded && !sprite.loaded) {
+            sprite.reload();
+        }*/
     }
 
     public function removeSprite(sprite:FinalSprite) {

@@ -1304,7 +1304,7 @@ class Exporter {
 		if (tag.hasText) definition.html = tag.initialText;
 
         var r = ~/<[^<]*>/g;
-        definition.text = r.replace(definition.html.replace('</p>', '\n').replace('&apos;', '\''), '');
+        definition.text = r.replace(definition.html.replace('</p>', '\n').replace('&apos;', '\'').replace('&gt;', '>').replace('&lt;', '<'), '');
         
         // Clean up if new line at the end
         if (definition.text.charAt(definition.text.length - 1) == '\n') {

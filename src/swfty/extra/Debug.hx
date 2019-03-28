@@ -3,10 +3,15 @@ package swfty.extra;
 // TODO: Made for openfl display list for now...
 class Debug {
 
-    public static function traverse(sprite:Sprite) {
+    public static function traverse(?sprite:Sprite, ?layer:Layer, ?flash:openfl.display.DisplayObjectContainer) {
         #if (openfl && list)
         
-        var display:openfl.display.DisplayObjectContainer = cast sprite;
+        var display:openfl.display.DisplayObjectContainer = null;
+
+        if (sprite != null) display = cast sprite;
+        if (layer != null) display = cast layer;
+        if (flash != null) display = cast flash;
+        
         if (display == null) return;
 
         trace('Traversing ${display.name} (${display.numChildren})');
@@ -18,7 +23,9 @@ class Debug {
             var display:openfl.display.DisplayObjectContainer = cast sprite;
             if (display == null) return;
             
-            trace('$str | ${display.name} (${display.numChildren}, ${display.x}, ${display.y})', display);
+            var bounds = display.getBounds(openfl.Lib.current);
+
+            trace('$str | ${display.name} (${display.numChildren}, ${display.x}, ${display.y}, ${display.alpha}, ${display.visible}, ${bounds})', display);
             for (i in 0...display.numChildren) {
                 if (Std.is(display.getChildAt(i), FinalSprite)) {
                     traverseOpenFL(cast display.getChildAt(i), depth + 1);
@@ -34,12 +41,13 @@ class Debug {
             }
         }
 
-        traverseOpenFL(cast sprite);
-
+        if (sprite != null) traverseOpenFL(cast sprite);
+        if (layer != null) traverseOpenFL(cast layer);
+        if (flash != null) traverseOpenFL(cast flash);
         #end
     }
 
-    public static function traverseParent(sprite:Sprite) {
+    public static function traverseParent(?sprite:Sprite, ?layer:Layer, ?flash:openfl.display.DisplayObjectContainer) {
         #if (openfl && list)
         
         function traverseOpenFL(sprite:openfl.display.DisplayObjectContainer, depth = 0) {
@@ -48,10 +56,12 @@ class Debug {
             var str = '';
             for (i in 0...depth) str += '-';
             
+            var bounds = sprite.getBounds(openfl.Lib.current);
+
             if (Std.is(sprite, FinalSprite)) {
-                trace('$str | ${sprite.name} (${sprite.numChildren}, ${sprite.x}, ${sprite.y})');
+                trace('$str | ${sprite.name} (${sprite.numChildren}, ${sprite.x}, ${sprite.y}, ${sprite.alpha}, ${sprite.visible}, ${bounds})');
             } else {
-                trace('$str | ${sprite.name} (${sprite.numChildren}, ${sprite.x}, ${sprite.y}) (DISPLAY OBJECT) (${sprite == openfl.Lib.current})');
+                trace('$str | ${sprite.name} (${sprite.numChildren}, ${sprite.x}, ${sprite.y}, ${sprite.alpha}, ${sprite.visible}, ${bounds}) (DISPLAY OBJECT) (${sprite == openfl.Lib.current})');
             }
 
             if (sprite.parent != null) {
@@ -59,7 +69,9 @@ class Debug {
             }
         }
 
-        traverseOpenFL(cast sprite);
+        if (sprite != null) traverseOpenFL(cast sprite);
+        if (layer != null) traverseOpenFL(cast layer);
+        if (flash != null) traverseOpenFL(cast flash);
         #end
     }
 

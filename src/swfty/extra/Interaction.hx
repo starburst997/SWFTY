@@ -147,8 +147,8 @@ class Interactions {
 
             var mouse = child.layer.mouse;
             if (mouse.leftChanged) {
-                var y = mouse.y;
                 var x = mouse.x;
+                var y = mouse.y;
 
                 switch(mouse.left) {
                     case Down : 

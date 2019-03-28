@@ -232,9 +232,10 @@ class BaseLayer extends EngineLayer {
 
     }
 
-    public inline function empty() {
+    public inline function empty(add:Bool = false) {
         var sprite = Sprite.create(this);
         sprite.loaded = true;
+        if (add) base.addSprite(sprite);
         return sprite;
     }
 

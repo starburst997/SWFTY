@@ -68,6 +68,16 @@ abstract Sprite(FinalSprite) from FinalSprite to FinalSprite {
         @:privateAccess return this._name = name;
     }
 
+    public var mouseX(get, never):Float;
+    public var mouseY(get, never):Float;
+
+    inline function get_mouseX() {
+        return this.getMouseX();
+    }
+    inline function get_mouseY() {
+        return this.getMouseY();
+    }
+
     #if openfl
     public var rotation(get, set):Float;
     inline function get_rotation():Float {

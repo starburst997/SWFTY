@@ -70,6 +70,28 @@ class Point {
 }
 
 @:structInit
+class Size {
+    public var width:Float = 0.0;
+    public var height:Float = 0.0;
+
+    public static inline function getSize(sprite:Sprite):Size {
+        return {
+            width: sprite.width,
+            height: sprite.height
+        }
+    }
+
+    public function new(?width:Float, ?height:Float) {
+        this.width = width;
+        this.height = height;
+    }
+
+    public inline function toString() {
+        return '{width: $width, height: $height}';
+    }
+}
+
+@:structInit
 class Vector {
     public var x:Float = 0.0;
     public var y:Float = 0.0;

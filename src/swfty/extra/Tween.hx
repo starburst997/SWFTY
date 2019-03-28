@@ -316,6 +316,8 @@ class Tween {
         var time = delay == null ? 0.0 : -delay;
         var done = false;
         sprite.addRender(RENDER_ID, function render(dt) {
+            if (!sprite.loaded) return;
+
             if (time >= duration) {
                 time = duration;
                 done = true;
