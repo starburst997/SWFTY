@@ -102,6 +102,13 @@ class BaseText extends FinalSprite {
         if (definition != null) {
             multiline = definition.multiline;
             originalText = definition.text;
+
+            forceBounds = {
+                x: definition.x,
+                y: definition.y,
+                width: definition.width,
+                height: definition.height
+            };
         }
 
         if (text == null && definition != null) {

@@ -7,6 +7,7 @@ import openfl.geom.Point;
 import openfl.geom.Rectangle;
 import openfl.display.BitmapData;
 
+typedef EngineContainer = openfl.display.Sprite;
 typedef EngineLayer = openfl.display.Sprite;
 typedef DisplayTile = openfl.display.BitmapData;
 
@@ -28,6 +29,15 @@ class FinalLayer extends BaseLayer {
         _height = height;
     }
 
+    override function get_container() {
+        if (container == null) {
+            trace('++++ CREATE LAYER');
+            container = new EngineContainer();
+            container.addChild(this);
+        }
+        return container;
+    }
+
     override function get_base() {
         if (base == null) {
             base = FinalSprite.create(this);
@@ -39,7 +49,7 @@ class FinalLayer extends BaseLayer {
     }
 
     override function hasParent():Bool {
-        return parent != null;
+        return container.parent != null;
     }
 
     public override function emptyTile(?id:Int):DisplayTile {

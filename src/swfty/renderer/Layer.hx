@@ -5,21 +5,25 @@ import haxe.io.Bytes;
 
 #if (macro || void)
 typedef DisplayTile = void.swfty.renderer.Layer.DisplayTile;
+typedef EngineContainer = void.swfty.renderer.Layer.EngineContainer;
 typedef EngineLayer = void.swfty.renderer.Layer.EngineLayer;
 typedef FinalLayer = void.swfty.renderer.Layer.FinalLayer;
 
 #elseif (openfl && list)
 typedef DisplayTile = openfl_list.swfty.renderer.Layer.DisplayTile;
+typedef EngineContainer = openfl_list.swfty.renderer.Layer.EngineContainer;
 typedef EngineLayer = openfl_list.swfty.renderer.Layer.EngineLayer;
 typedef FinalLayer = openfl_list.swfty.renderer.Layer.FinalLayer;
 
 #elseif openfl
 typedef DisplayTile = openfl.swfty.renderer.Layer.DisplayTile;
+typedef EngineContainer = openfl.swfty.renderer.Layer.EngineContainer;
 typedef EngineLayer = openfl.swfty.renderer.Layer.EngineLayer;
 typedef FinalLayer = openfl.swfty.renderer.Layer.FinalLayer;
 
 #elseif heaps
 typedef DisplayTile = heaps.swfty.renderer.Layer.DisplayTile;
+typedef EngineContainer = heaps.swfty.renderer.Layer.EngineContainer;
 typedef EngineLayer = heaps.swfty.renderer.Layer.EngineLayer;
 typedef FinalLayer = heaps.swfty.renderer.Layer.FinalLayer;
 
@@ -27,7 +31,7 @@ typedef FinalLayer = heaps.swfty.renderer.Layer.FinalLayer;
 #error 'Unsupported framework (please use OpenFL or Heaps)'
 #end
 
-@:forward(id, empty, sleeping, loaded, textureMemory, x, y, scaleX, scaleY, rotation, alpha, visible, dispose, pause, canInteract, path, removeAll, addRender, addRenderNow, removeRender, removeWake, removeSleep, addWake, addSleep, addMouseDown, removeMouseDown, addMouseUp, removeMouseUp, mouse, base, baseLayout, loadBytes, loadImage, reload, update, getAllNames, time, hasParent, disposed, shared)
+@:forward(id, container, empty, sleeping, loaded, textureMemory, scale, x, y, scaleX, scaleY, rotation, alpha, visible, dispose, pause, canInteract, path, removeAll, addRender, addRenderNow, removeRender, removeWake, removeSleep, addWake, addSleep, addMouseDown, removeMouseDown, addMouseUp, removeMouseUp, mouse, base, baseLayout, loadBytes, loadImage, reload, update, getAllNames, time, hasParent, disposed, shared)
 abstract Layer(BaseLayer) from BaseLayer to BaseLayer {
     public static inline function load(?width:Int, ?height:Int, ?path:String, ?bytes:Bytes, ?onComplete:Layer->Void, ?onError:Dynamic->Void):Layer {
         var layer = FinalLayer.create(width, height);

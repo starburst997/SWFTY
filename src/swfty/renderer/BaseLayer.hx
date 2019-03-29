@@ -16,6 +16,16 @@ class BaseLayer extends EngineLayer {
     var _width:Int;
     var _height:Int;
     
+    // The layer will be added as a child of this container and used when mixing layer together
+    @:isVar public var container(get, null):EngineContainer;
+    function get_container() {
+        trace('!! OVERRIDE ME get_container()');
+        if (container == null) {
+            container = new EngineContainer();
+        }
+        return container;
+    }
+
     public var time:Float = 0;
 
     public var sleeping = false;
@@ -65,6 +75,15 @@ class BaseLayer extends EngineLayer {
     }
     inline function get_canInteract():Bool {
         return shared.canInteract;
+    }
+
+    public var scale(get, set):Float;
+    inline function get_scale() {
+        return this.base.scaleX;
+    }
+    inline function set_scale(value:Float) {
+        this.base.scaleX = this.base.scaleY = value;
+        return value;
     }
 
     // TODO: Disable all transform on this object, should be equivalent to "stage" in Flash
@@ -302,7 +321,7 @@ class BaseLayer extends EngineLayer {
     public inline function empty(add:Bool = false) {
         var sprite = Sprite.create(this);
         sprite.loaded = true;
-        if (add) base.addSprite(sprite);
+        if (add) baseLayout.addSprite(sprite);
         return sprite;
     }
 

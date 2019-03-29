@@ -8,6 +8,7 @@ import h2d.Tile;
 
 import swfty.renderer.BaseLayer;
 
+typedef EngineContainer = h2d.Object;
 typedef EngineLayer = h2d.TileGroup;
 typedef DisplayTile = h2d.Tile;
 
@@ -24,6 +25,14 @@ class FinalLayer extends BaseLayer {
         // TODO: If null, it should maybe be the stage's dimensions??? Or at least on the "getter"
         _width = width;
         _height = height;
+    }
+
+    override function get_container() {
+        if (container == null) {
+            container = new EngineContainer();
+            container.addChild(this);
+        }
+        return container;
     }
 
     override function get_base() {

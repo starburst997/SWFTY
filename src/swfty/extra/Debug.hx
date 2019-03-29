@@ -59,7 +59,12 @@ class Debug {
                         var r = ~/([^\/\\]+)\.swfty/i;
                         r.match(layer.path);
 
-                        layersName += (layersName == '' ? '' : ', ') + r.matched(1);
+                        try {
+                            layersName += (layersName == '' ? '' : ', ') + r.matched(1);
+                        } catch(e:Dynamic) {
+                            var display:openfl.display.DisplayObject = cast layer;
+                            layersName += (layersName == '' ? '' : ', ') + 'no path (${display.name})';
+                        }
                     }
                     
                     layers++;
@@ -133,7 +138,8 @@ class Debug {
                     try {
                         str += (str == '' ? '' : ', ') + r.matched(1);
                     } catch(e:Dynamic) {
-                        // Whatev
+                        var display:openfl.display.DisplayObject = cast layer;
+                        str += (str == '' ? '' : ', ') + 'no path (${display.name})';
                     }
                 }
 
@@ -141,6 +147,8 @@ class Debug {
             }
             
             trace('Layers: ${layersName}');
+
+            //traverse(stage);
         }
 
         #end
@@ -176,7 +184,7 @@ class Debug {
                     var displayObject = display.getChildAt(i);
 
                     if (Std.is(displayObject, openfl.display.DisplayObjectContainer)) {
-                        traverseOpenFL(cast displayObject, depth);
+                        traverseOpenFL(cast displayObject, depth + 1);
                     } else {
                         trace('$str- | ${displayObject.name} (DISPLAY OBJECT END)');
                     }
@@ -202,9 +210,9 @@ class Debug {
             var bounds = sprite.getBounds(openfl.Lib.current);
 
             if (Std.is(sprite, FinalSprite)) {
-                trace('$str | ${sprite.name} (${sprite.numChildren}, ${sprite.x}, ${sprite.y}, ${sprite.alpha}, ${sprite.visible}, ${bounds})');
+                trace('$str | ${sprite.name} (${sprite.numChildren}, ${sprite.x}, ${sprite.scaleX}, ${sprite.y}, ${sprite.alpha}, ${sprite.visible}, ${bounds})');
             } else {
-                trace('$str | ${sprite.name} (${sprite.numChildren}, ${sprite.x}, ${sprite.y}, ${sprite.alpha}, ${sprite.visible}, ${bounds}) (DISPLAY OBJECT) (${sprite == openfl.Lib.current})');
+                trace('$str | ${sprite.name} (${sprite.numChildren}, ${sprite.x}, ${sprite.scaleX}, ${sprite.y}, ${sprite.alpha}, ${sprite.visible}, ${bounds}) (DISPLAY OBJECT) (${sprite == openfl.Lib.current})');
             }
 
             if (sprite.parent != null) {

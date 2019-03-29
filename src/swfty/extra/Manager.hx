@@ -9,10 +9,22 @@ import swfty.extra.Interaction;
 
 class Manager {
 
-    public static var ref:Manager = null;
+    public static var ref(get, null):Manager;
+    static inline function get_ref() {
+        if (ref == null) ref = create();
+        return ref;
+    }
 
     public static inline function create() {
         return new Manager();
+    }
+
+    // Global scaled factor applied to all layers, usefull when dealing with multiple screen size
+    public var scale(default, set):Float = 1.0;
+    inline function set_scale(value:Float) {
+        scale = value;
+        for (layer in layers) layer.scale = scale;
+        return value;
     }
 
     public var layers:Array<Layer> = [];
@@ -43,6 +55,7 @@ class Manager {
     }
 
     public inline function add(layer:Layer) {
+        layer.scale = scale;
         layer.mouse = mouse;
         layers.push(layer);
         return this;

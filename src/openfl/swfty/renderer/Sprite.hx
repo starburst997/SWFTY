@@ -38,13 +38,23 @@ class FinalSprite extends BaseSprite {
         tileset = layer.tileset;
     }
 
-    public override function calcBounds(?relative:BaseSprite):Rectangle {
-        var rect = this.getBounds(relative == null ? this : relative);
-        return {
-            x: rect.x,
-            y: rect.y,
-            width: rect.width,
-            height: rect.height
+    public override function calcBounds(?relative:BaseSprite, ?global = false):Rectangle {
+        return if (global) {
+            var rect = this.getBounds(layer.base);
+            {
+                x: rect.x * layer.scale,
+                y: rect.y * layer.scale,
+                width: rect.width * layer.scale,
+                height: rect.height * layer.scale
+            }
+        } else {
+            var rect = this.getBounds(relative == null ? this : relative);
+            {
+                x: rect.x,
+                y: rect.y,
+                width: rect.width,
+                height: rect.height
+            }
         }
     }
 

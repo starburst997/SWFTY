@@ -7,6 +7,7 @@ import openfl.geom.Rectangle;
 import openfl.display.BitmapData;
 import openfl.display.Tileset;
 
+typedef EngineContainer = openfl.display.Sprite;
 typedef EngineLayer = openfl.display.Tilemap;
 typedef DisplayTile = Int;
 
@@ -25,10 +26,18 @@ class FinalLayer extends BaseLayer {
         _height = height;
     }
 
+    override function get_container() {
+        if (container == null) {
+            container = new EngineContainer();
+            container.addChild(this);
+        }
+        return container;
+    }
+
     override function get_base() {
         if (base == null) {
             base = FinalSprite.create(this);
-            ase._name = 'base';
+            base._name = 'base';
             base.countVisible = false;
             addTile(base);
         }

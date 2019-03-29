@@ -38,6 +38,9 @@ class BaseSprite extends EngineSprite {
     // For reload if definition didn't exists
     var _linkage:String;
 
+    // Force a certain dimension, usefull for Text
+    var forceBounds:Rectangle = null;
+
     // Using underscore to prevent var clasing with base class
     // TODO: All private var should have an underscore?
     var _name(default, set):String;
@@ -121,7 +124,7 @@ class BaseSprite extends EngineSprite {
         return layer.getMouseY() - calcBounds(layer.base).y;
     }
 
-    public function calcBounds(?relative:BaseSprite):Rectangle {
+    public function calcBounds(?relative:BaseSprite, ?global = false):Rectangle {
         throw 'Not implemented';
     }
 
@@ -313,6 +316,7 @@ class BaseSprite extends EngineSprite {
                 }
                 
                 text.og = true;
+                text.loaded = true;
 
                 if (updatePosition && updateScale && updateRotation) text.display().transform(child.a, child.b, child.c, child.d, child.tx, child.ty);
                 if (updateAlpha) text.alpha = child.alpha;
@@ -322,6 +326,10 @@ class BaseSprite extends EngineSprite {
                 if (updatePosition) {
                     text.originalX = text.x;
                     text.originalY = text.y;
+                }
+
+                if (text._name == 'nameText') {
+                    trace('POPOPOPOPOPO', text._name, child.text.x, text.x);
                 }
 
                 if (updateScale) {

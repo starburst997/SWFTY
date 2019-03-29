@@ -135,8 +135,8 @@ class LambdaSprite {
         return sprite;
     }
 
-    public static inline function getLayerBpounds(sprite:Sprite) {
-        return sprite.calcBounds(sprite.layer.base);
+    public static inline function getLayerBounds(sprite:Sprite) {
+        return sprite.calcBounds(true);
     }
 
     // Fit as tight as possible, we see everything

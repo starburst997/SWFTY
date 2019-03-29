@@ -136,19 +136,26 @@ class Interactions {
         // TODO: 99% of case the bounds doesn't change, but maybe we shouldn't cache it? We still take into account local x / y
         var bounds:Rectangle = null;
         inline function getBounds() {
-            if (!cache || bounds == null) bounds = child.calcBounds(child.layer.base);
+            // TODO: Think of a better way to cache bounds
+            /*if (!cache || bounds == null)*/ bounds = child.calcBounds(true);
             return bounds;
         }
 
         // Detect left click inside and wait for mouse up inside to trigger handler
         var wasInside = false;
         child.addRender(RENDER_ID, function render(dt) {
-            if (child.layer == null || !child.loaded || !child.layer.shared.canInteract || child.layer._base.cancelInteract || checkExclusive(sprite)) return;
+
+            if (child.layer == null) return;
 
             var mouse = child.layer.mouse;
             if (mouse.leftChanged) {
+
+                if (!child.loaded || !child.layer.shared.canInteract || child.layer._base.cancelInteract || checkExclusive(sprite)) return;
+
                 var x = mouse.x;
                 var y = mouse.y;
+
+                trace('CHEKC CLICK', child.name, getBounds(), x, y);
 
                 switch(mouse.left) {
                     case Down : 
@@ -181,7 +188,7 @@ class Interactions {
         // TODO: 99% of case the bounds doesn't change, but maybe we shouldn't cache it? We still take into account local x / y
         var bounds:Rectangle = null;
         inline function getBounds() {
-            if (!cache || bounds == null) bounds = child.calcBounds(child.layer.base);
+            if (!cache || bounds == null) bounds = child.calcBounds(true);
             return bounds;
         }
 
@@ -220,7 +227,7 @@ class Interactions {
         // TODO: 99% of case the bounds doesn't change, but maybe we shouldn't cache it? We still take into account local x / y
         var bounds:Rectangle = null;
         inline function getBounds() {
-            if (!cache || bounds == null) bounds = child.calcBounds(child.layer.base);
+            if (!cache || bounds == null) bounds = child.calcBounds(true);
             return bounds;
         }
 

@@ -48,14 +48,72 @@ class FinalSprite extends BaseSprite {
         return { x: pt.x, y: pt.y };
     }
 
-    public override function calcBounds(?relative:BaseSprite):Rectangle {
-        var rect = this.getBounds(relative == null ? this : relative);
-        return {
-            x: rect.x,
-            y: rect.y,
-            width: rect.width,
-            height: rect.height
+    public override function calcBounds(?relative:BaseSprite, ?global = false):Rectangle {
+        return if (global) {
+            if (forceBounds != null) {
+                var pt = localToLayer(x + forceBounds.x, y + forceBounds.y);
+                var pt2 = localToLayer(x + forceBounds.x + forceBounds.width, y + forceBounds.y + forceBounds.height);
+                
+                var display:openfl.display.DisplayObjectContainer = cast layer;
+
+                swfty.extra.Debug.traverseParent(this);
+
+
+                trace('!!!', _name, layer.scale, x + forceBounds.x, forceBounds.width, pt.x);
+
+                {
+                    x: pt.x,
+                    y: pt.y,
+                    width: pt2.x - pt.x,
+                    height: pt2.y - pt.y
+                }
+            } else {
+                var rect = this.getBounds(layer);
+
+                #if dev
+                if (rect.width <= 0 || rect.height <= 0) trace('Calc bounds bad values!!!!! $_name');
+                #end
+
+                {
+                    x: rect.x,
+                    y: rect.y,
+                    width: rect.width,
+                    height: rect.height
+                }
+            }
+
+        } else {
+            if (relative == null) relative = this;
+            
+            if (forceBounds != null) {
+                var pt = localToLayer(x + forceBounds.x, y + forceBounds.y);
+                var pt2 = localToLayer(x + forceBounds.x + forceBounds.width, y + forceBounds.y + forceBounds.height);
+                
+                pt = relative.layerToLocal(pt.x, pt.y);
+                pt2 = relative.layerToLocal(pt2.x, pt2.y);
+                
+                {
+                    x: pt.x,
+                    y: pt.y,
+                    width: pt2.x - pt.x,
+                    height: pt2.y - pt.y
+                }
+            } else {
+                var rect = this.getBounds(relative);
+
+                #if dev
+                if (rect.width <= 0 || rect.height <= 0) trace('Calc bounds bad values!!!!! $_name');
+                #end
+
+                {
+                    x: rect.x,
+                    y: rect.y,
+                    width: rect.width,
+                    height: rect.height
+                }
+            }
         }
+        
     }
 
     public override function top() {
@@ -71,9 +129,9 @@ class FinalSprite extends BaseSprite {
         super.addSpriteAt(sprite, index);
 
         // TODO: This shouldn't be necessary!
-        #if !dev
+        /*#if !dev
         if (index >= 0 && index <= numChildren)
-        #end
+        #end*/
         addChildAt(sprite, index);
     }
 

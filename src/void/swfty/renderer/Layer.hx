@@ -2,6 +2,13 @@ package void.swfty.renderer;
 
 import haxe.io.Bytes;
 
+class EngineContainer {
+
+    public function new() {
+        
+    }
+}
+
 class EngineLayer {
 
     public function new() {
