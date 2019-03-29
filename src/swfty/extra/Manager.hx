@@ -9,6 +9,8 @@ import swfty.extra.Interaction;
 
 class Manager {
 
+    public static var ref:Manager = null;
+
     public static inline function create() {
         return new Manager();
     }
@@ -117,8 +119,6 @@ class Manager {
         return this;
     }
 
-    var debug = 0;
-
     public function update() {
         dt = (haxe.Timer.stamp() - timer); 
         timer = haxe.Timer.stamp();
@@ -127,22 +127,12 @@ class Manager {
 
         for (f in preRenders) f();
 
-        var n = 0;
         for (layer in layers) {
             if (layer.disposed) {
                 remove(layer);
             } else {
-                n++;
                 layer.update(dt);
             }
-        }
-
-        if (debug++ % 20 == 0) {
-            //trace('Layers render: $n');
-
-            /*for (layer in layers) {
-                trace('    - ${layer.path}');
-            }*/
         }
 
         for (f in renders) f();

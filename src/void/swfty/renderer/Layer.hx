@@ -11,6 +11,7 @@ class EngineLayer {
 
 typedef DisplayTile = Int;
 
+@:access(swfty.renderer.BaseSprite)
 class FinalLayer extends BaseLayer {
 
     public static inline function create(?width:Int, ?height:Int) {
@@ -27,6 +28,8 @@ class FinalLayer extends BaseLayer {
     override function get_base() {
         if (base == null) {
             base = FinalSprite.create(this);
+            base._name = 'base';
+            base.countVisible = false;
         }
         return base;
     }

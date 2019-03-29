@@ -10,6 +10,7 @@ import openfl.display.BitmapData;
 typedef EngineLayer = openfl.display.Sprite;
 typedef DisplayTile = openfl.display.BitmapData;
 
+@:access(swfty.renderer.BaseSprite)
 class FinalLayer extends BaseLayer {
 
     var texture:BitmapData;
@@ -30,6 +31,8 @@ class FinalLayer extends BaseLayer {
     override function get_base() {
         if (base == null) {
             base = FinalSprite.create(this);
+            base._name = 'base';
+            base.countVisible = false;
             addChild(base);
         }
         return base;
@@ -65,6 +68,7 @@ class FinalLayer extends BaseLayer {
             }
 
             texture = bmpd;
+            textureMemory = bmpd.width * bmpd.height * 4;
 
             trace('Tilemap: ${bmpd.width}, ${bmpd.height}');
 
@@ -76,5 +80,18 @@ class FinalLayer extends BaseLayer {
         #else
         BitmapData.loadFromBytes(bytes).onComplete(complete).onError(onError);
         #end
+    }
+
+    public override function dispose() {
+        if (!disposed) {
+            // Never too prudent, immediately dispose of all bitmap data associated with this layer
+            if (texture != null) texture.dispose();
+            for (tile in tiles) {
+                tile.dispose();
+            }
+            tiles = new IntMap();
+        }
+
+        super.dispose();
     }
 }

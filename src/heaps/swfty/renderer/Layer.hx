@@ -11,6 +11,7 @@ import swfty.renderer.BaseLayer;
 typedef EngineLayer = h2d.TileGroup;
 typedef DisplayTile = h2d.Tile;
 
+@:access(swfty.renderer.BaseSprite)
 class FinalLayer extends BaseLayer {
 
     public static inline function create(?width:Int, ?height:Int) {
@@ -28,6 +29,8 @@ class FinalLayer extends BaseLayer {
     override function get_base() {
         if (base == null) {
             base = FinalSprite.create(this);
+            base._name = 'base';
+            base.countVisible = false;
             addChild(base);
         }
         return base;

@@ -39,7 +39,7 @@ typedef FinalSprite = heaps.swfty.renderer.Sprite.FinalSprite;
 #error 'Unsupported framework (please use OpenFL or Heaps)'
 #end
 
-@:forward(originalX, originalY, originalScaleX, originalScaleY, originalRotation, originalAlpha, originalVisible, x, y, scaleX, scaleY, rotation, alpha, visible, interactive, loaded, width, height, exists, calcBounds, bounds, addRender, addRenderNow, removeRender, setBounds, setIndex, debug, addBitmap, localToLayer, layerToLocal, colorize, uuid)
+@:forward(originalX, originalY, originalScaleX, originalScaleY, originalRotation, originalAlpha, originalVisible, x, y, scaleX, scaleY, rotation, alpha, interactive, loaded, width, height, exists, calcBounds, bounds, addRender, addRenderNow, removeRender, setBounds, setIndex, debug, addBitmap, localToLayer, layerToLocal, colorize, uuid)
 abstract Sprite(FinalSprite) from FinalSprite to FinalSprite {
 
     public static inline function create(layer:BaseLayer, ?definition:MovieClipType, ?linkage:String):Sprite {
@@ -66,6 +66,15 @@ abstract Sprite(FinalSprite) from FinalSprite to FinalSprite {
 
     inline function set_name(name:String):String {
         @:privateAccess return this._name = name;
+    }
+
+    public var visible(get, set):Bool;
+    inline function get_visible():Bool {
+        @:privateAccess return this._visible;
+    }
+
+    inline function set_visible(value:Bool):Bool {
+        @:privateAccess return this._visible = value;
     }
 
     public var mouseX(get, never):Float;

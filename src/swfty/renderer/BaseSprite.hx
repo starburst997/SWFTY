@@ -23,6 +23,7 @@ class BaseSprite extends EngineSprite {
 
     public var layer:BaseLayer;
 
+    public var countVisible = true;
     public var loaded = false;
     public var debug = false;
 
@@ -40,12 +41,30 @@ class BaseSprite extends EngineSprite {
     // Using underscore to prevent var clasing with base class
     // TODO: All private var should have an underscore?
     var _name(default, set):String;
-    var _parent:FinalSprite;
     var _sprites:Array<FinalSprite>;
     var _names:StringMap<FinalSprite>;
     var _texts:StringMap<FinalText>;
     var _definition:Null<MovieClipType>;
     var _bounds:Rectangle;
+
+    var _parent(default, set):FinalSprite;
+    inline function set__parent(value:FinalSprite) {
+        if (_parent == null && _visible) {
+            layer.wake();
+        }
+
+        _parent = value;
+        return value;
+    }
+
+    var _visible(default, set):Bool = true;
+    inline function set__visible(value:Bool) {
+        if (value) layer.wake();
+
+        _visible = value;
+        visible = value;
+        return value;
+    }
 
     // Keep some original values that can be usefull
     public var originalX:Float = 0.0;
@@ -207,7 +226,10 @@ class BaseSprite extends EngineSprite {
 
     public function update(dt:Float) {
         // TODO: Wonder if that's the best solution... If it's invisible I wouldn't want anything called...
-        if (!visible) return;
+        //       Maybe sleep() / awake() sprite?
+        if (!_visible) return;
+
+        if (countVisible) layer.hasVisible = true;
 
         for (sprite in _sprites) {
             sprite.update(dt);
@@ -265,7 +287,7 @@ class BaseSprite extends EngineSprite {
                     var text = _texts.get(child.name);
 
                     if (!loaded) {
-                        if (!text.visible) updateVisible = false;
+                        if (!text._visible) updateVisible = false;
                         if (text.x != 0 || text.y != 0) updatePosition = false;
                         if (text.scaleX != 1 || text.scaleY != 1) updateScale = false;
                         if (text.rotation != 0) updateRotation = false;
@@ -294,7 +316,7 @@ class BaseSprite extends EngineSprite {
 
                 if (updatePosition && updateScale && updateRotation) text.display().transform(child.a, child.b, child.c, child.d, child.tx, child.ty);
                 if (updateAlpha) text.alpha = child.alpha;
-                if (updateVisible) text.visible = child.visible;
+                if (updateVisible) text._visible = child.visible;
 
                 // Save original values
                 if (updatePosition) {
@@ -309,7 +331,7 @@ class BaseSprite extends EngineSprite {
 
                 if (updateRotation) text.originalRotation = text.rotation;
                 if (updateAlpha) text.originalAlpha = text.alpha;
-                if (updateVisible) text.originalVisible = text.visible;
+                if (updateVisible) text.originalVisible = text._visible;
 
                 addSprite(text);
             } else {
@@ -317,7 +339,7 @@ class BaseSprite extends EngineSprite {
                     var sprite:FinalSprite = _names.get(child.name);
 
                     if (!loaded) {
-                        if (!sprite.visible) updateVisible = false;
+                        if (!sprite._visible) updateVisible = false;
                         if (sprite.x != 0 || sprite.y != 0) updatePosition = false;
                         if (sprite.scaleX != 1 || sprite.scaleY != 1) updateScale = false;
                         if (sprite.rotation != 0) updateRotation = false;
@@ -340,7 +362,7 @@ class BaseSprite extends EngineSprite {
                 sprite.og = true;
 
                 if (updatePosition && updateScale && updateRotation) sprite.display().transform(child.a, child.b, child.c, child.d, child.tx, child.ty);
-                if (updateVisible) sprite.visible = child.visible;
+                if (updateVisible) sprite._visible = child.visible;
 
                 // This will add drawCalls, so big no no unless you really want them
                 #if allowBlendMode
@@ -379,7 +401,7 @@ class BaseSprite extends EngineSprite {
 
                 if (updateRotation) sprite.originalRotation = sprite.rotation;
                 if (updateAlpha) sprite.originalAlpha = sprite.alpha;
-                if (updateVisible) sprite.originalVisible = sprite.visible;
+                if (updateVisible) sprite.originalVisible = sprite._visible;
 
                 addSprite(sprite);
             }

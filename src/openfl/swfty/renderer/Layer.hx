@@ -10,6 +10,7 @@ import openfl.display.Tileset;
 typedef EngineLayer = openfl.display.Tilemap;
 typedef DisplayTile = Int;
 
+@:access(swfty.renderer.BaseSprite)
 class FinalLayer extends BaseLayer {
 
     public static inline function create(?width:Int, ?height:Int) {
@@ -27,6 +28,8 @@ class FinalLayer extends BaseLayer {
     override function get_base() {
         if (base == null) {
             base = FinalSprite.create(this);
+            ase._name = 'base';
+            base.countVisible = false;
             addTile(base);
         }
         return base;
@@ -56,6 +59,8 @@ class FinalLayer extends BaseLayer {
                 var tileset = new Tileset(bmpd, rects);
                 this.tileset = tileset;
             }*/
+
+            textureMemory = bmpd.width * bmpd.height * 4;
 
             var tileset = new Tileset(bmpd, rects);
             this.tileset = tileset;

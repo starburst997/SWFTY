@@ -8,6 +8,7 @@ import haxe.io.Bytes;
 import zip.Zip;
 import zip.ZipReader;
 
+@:access(swfty.renderer.BaseSprite)
 class BaseLayer extends EngineLayer {
 
     public var disposed = false;
@@ -17,9 +18,15 @@ class BaseLayer extends EngineLayer {
     
     public var time:Float = 0;
 
+    public var sleeping = false;
+    public var hasVisible = false;
+    public var loaded = false;
+
     public var id = '';
 
     public var path:String = '';
+
+    public var textureMemory:Int = 0;
 
     public var swfty:Option<SWFTYType> = None;
 
@@ -32,10 +39,14 @@ class BaseLayer extends EngineLayer {
     var tiles:IntMap<DisplayTile> = new IntMap();
     var mcs:StringMap<MovieClipType> = new StringMap();
 
+    var wakes:Array<Void->Void> = [];
+    var sleeps:Array<Void->Void> = [];
     var renders:Array<Float->Void> = [];
     var mouseDowns:Array<Float->Float->Void> = [];
     var mouseUps:Array<Float->Float->Void> = [];
 
+    var pruneWakes:Array<Void->Void> = [];
+    var pruneSleeps:Array<Void->Void> = [];
     var pruneRenders:Array<Float->Void> = [];
     var pruneMouseDowns:Array<Float->Float->Void> = [];
     var pruneMouseUps:Array<Float->Float->Void> = [];
@@ -60,7 +71,11 @@ class BaseLayer extends EngineLayer {
     //       Create StageSprite or RootSprite, only a container with no matrix or position
     public var base(get, null):FinalSprite;
     function get_base() {
-        if (base == null) base = FinalSprite.create(this);
+        if (base == null) {
+            base = FinalSprite.create(this);
+            base._name = 'base';
+            base.countVisible = false;
+        }
         return base;
     }
 
@@ -70,9 +85,31 @@ class BaseLayer extends EngineLayer {
     function get_baseLayout() {
         if (baseLayout == null) {
             baseLayout = FinalSprite.create(this);
+            baseLayout._name = 'baseLayout';
+            baseLayout.countVisible = false;
             base.addSprite(baseLayout);
         }
         return baseLayout;
+    }
+
+    public function wake() {
+        if (sleeping) {
+            sleeping = false;
+
+            // TODO: Re-add to display list?
+
+            for (f in wakes) f();
+        }
+    }
+
+    public function sleep() {
+        if (!sleeping) {
+            sleeping = true;
+
+            // TODO: Remove from display list?
+
+            for (f in sleeps) f();
+        }
     }
 
     // TODO: Add individual mouseX / mouseY on Sprite object instead
@@ -85,7 +122,9 @@ class BaseLayer extends EngineLayer {
     }
 
     public function update(dt:Float) {
-        if (pause) return;
+        if (pause || sleeping) return;
+
+        hasVisible = false;
 
         time = haxe.Timer.stamp() * 1000;
 
@@ -104,6 +143,16 @@ class BaseLayer extends EngineLayer {
 
         base.update(dt);
 
+        if (pruneWakes.length > 0) {
+            for (f in pruneWakes) wakes.remove(f);
+            pruneWakes = [];
+        }
+
+        if (pruneSleeps.length > 0) {
+            for (f in pruneSleeps) sleeps.remove(f);
+            pruneSleeps = [];
+        }
+
         if (pruneRenders.length > 0) {
             for (f in pruneRenders) renders.remove(f);
             pruneRenders = [];
@@ -121,10 +170,20 @@ class BaseLayer extends EngineLayer {
 
         // Reset mouse properties
         mouse.reset();
+
+        if (!hasVisible) sleep();
     }
 
     public inline function removeAll() {
         baseLayout.removeAll();
+    }
+
+    public inline function addWake(f:Void->Void) {
+        wakes.push(f);
+    }
+
+    public inline function addSleep(f:Void->Void) {
+        sleeps.push(f);
     }
 
     public inline function addRender(f:Float->Void, ?priority = false) {
@@ -135,6 +194,14 @@ class BaseLayer extends EngineLayer {
     public inline function addRenderNow(f:Float->Void, ?priority = false) {
         addRender(f, priority);
         f(0.0);
+    }
+
+    public inline function removeWake(f:Void->Void) {
+        pruneWakes.push(f);
+    }
+
+    public inline function removeSleep(f:Void->Void) {
+        pruneSleeps.push(f);
     }
 
     public inline function removeRender(f:Float->Void) {
@@ -277,6 +344,7 @@ class BaseLayer extends EngineLayer {
             if (definition.name != null && definition.name != '') mcs.set(definition.name, definition);
         }
         
+        loaded = true;
         this.swfty = Some(swfty);
         this.id = swfty.name;
     }
@@ -382,6 +450,14 @@ class BaseLayer extends EngineLayer {
             renders = [];
             mouseDowns = [];
             mouseUps = [];
+            wakes = [];
+            sleeps = [];
+            
+            pruneWakes = [];
+            pruneSleeps = [];
+            pruneRenders = [];
+            pruneMouseDowns = [];
+            pruneMouseUps = [];
 
             swfty = None;
             tiles = new IntMap();
