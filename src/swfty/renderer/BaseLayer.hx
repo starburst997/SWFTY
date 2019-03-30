@@ -86,6 +86,16 @@ class BaseLayer extends EngineLayer {
         return value;
     }
 
+    public var screenWidth(get, null):Float;
+    inline function get_screenWidth() {
+        return _width / this.base.scaleX;
+    }
+
+    public var screenHeight(get, null):Float;
+    inline function get_screenHeight() {
+        return _height / this.base.scaleY;
+    }
+
     // TODO: Disable all transform on this object, should be equivalent to "stage" in Flash
     //       Create StageSprite or RootSprite, only a container with no matrix or position
     public var base(get, null):FinalSprite;
