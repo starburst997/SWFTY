@@ -104,8 +104,8 @@ class BaseText extends FinalSprite {
             originalText = definition.text;
 
             forceBounds = {
-                x: definition.x,
-                y: definition.y,
+                x: 0,
+                y: 0,
                 width: definition.width,
                 height: definition.height
             };
@@ -165,8 +165,8 @@ class BaseText extends FinalSprite {
         if (textDefinition == null || textDefinition.font == null) return text;
 
         // Show characters
-        var x = textDefinition.x;
-        var y = textDefinition.y;
+        var x = 0.0;
+        var y = 0.0;
 
         var c = color == null ? textDefinition.color : color;
         var r = (c & 0xFF0000) >> 16;
@@ -221,7 +221,7 @@ class BaseText extends FinalSprite {
 
                 if (short) {
                     // TODO: For multiline "short" text we should check the "height" and do it on the last line only!
-                    if ((x - textDefinition.x) + w > (width - scale * dot.advance * 3) && (i <= text.length - 3)) {
+                    if (x + w > (width - scale * dot.advance * 3) && (i <= text.length - 3)) {
                         // Set the remaining charaters as "..." and call it a day
                         for (j in 0...3) {
                             code = DOT;
@@ -247,7 +247,7 @@ class BaseText extends FinalSprite {
                         }
                         break;
                     }
-                } else if ((x - textDefinition.x) + w > width && hasSpace && multiline) {
+                } else if (x + w > width && hasSpace && multiline) {
                     y += lineHeight;
                     hasSpace = false;
 
@@ -274,11 +274,11 @@ class BaseText extends FinalSprite {
                     }
 
                     for (tile in tiles) {
-                        tile.x -= offsetX - textDefinition.x;
-                        tile.tile.x -= offsetX - textDefinition.x;
+                        tile.x -= offsetX;
+                        tile.tile.x -= offsetX;
                     }
 
-                    currentLine.textWidth = maxWidth - textDefinition.x;
+                    currentLine.textWidth = maxWidth;
                     if (currentLine.textWidth > textWidth) textWidth = currentLine.textWidth;
 
                     currentLine = {
@@ -287,7 +287,7 @@ class BaseText extends FinalSprite {
                     };
                     lines.push(currentLine);
 
-                    x -= offsetX - textDefinition.x;
+                    x -= offsetX;
 
                     if (singleLine) break;
                 }
@@ -298,14 +298,14 @@ class BaseText extends FinalSprite {
                 switch(code) {
                     case NEW_LINE | RETURN : 
                         y += lineHeight;
-                        x = textDefinition.x;
+                        x = 0.0;
                         if (singleLine) break;
                     case _ : 
                 }
             }
         }
 
-        currentLine.textWidth = x - textDefinition.x;
+        currentLine.textWidth = x;
 
         // We assume this is from the original text, might not be the bvest approach...
         if (originalLines == 0) originalLines = lines.length;
@@ -320,22 +320,15 @@ class BaseText extends FinalSprite {
                     for (tile in line.tiles) {
                         // I agree not the most elegant way to do it, but works great and is cheap
                         // TODO: We could wrap around all glyphs into another Sprite and set the scale on it...
-                        tile.x -= textDefinition.x;
                         tile.x *= scaleDown;
-                        tile.x += textDefinition.x;
 
                         tile.width *= scaleDown;
                         tile.tile.scaleX *= scaleDown;
                         tile.tile.scaleY *= scaleDown;
 
                         // TODO: Is this necessary??
-                        tile.tile.x -= textDefinition.x;
                         tile.tile.x *= scaleDown;
-                        tile.tile.x += textDefinition.x;
-                        
-                        tile.tile.y -= textDefinition.y;
                         tile.tile.y *= scaleDown;
-                        tile.tile.y += textDefinition.y;
                     }
                 }
 

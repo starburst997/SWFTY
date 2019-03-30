@@ -155,8 +155,6 @@ class Interactions {
                 var x = mouse.x;
                 var y = mouse.y;
 
-                trace('CHEKC CLICK', child.name, getBounds(), x, y);
-
                 switch(mouse.left) {
                     case Down : 
                         if (getBounds().inside(x, y)) {

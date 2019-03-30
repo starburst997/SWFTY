@@ -51,15 +51,8 @@ class FinalSprite extends BaseSprite {
     public override function calcBounds(?relative:BaseSprite, ?global = false):Rectangle {
         return if (global) {
             if (forceBounds != null) {
-                var pt = localToLayer(x + forceBounds.x, y + forceBounds.y);
-                var pt2 = localToLayer(x + forceBounds.x + forceBounds.width, y + forceBounds.y + forceBounds.height);
-                
-                var display:openfl.display.DisplayObjectContainer = cast layer;
-
-                swfty.extra.Debug.traverseParent(this);
-
-
-                trace('!!!', _name, layer.scale, x + forceBounds.x, forceBounds.width, pt.x);
+                var pt = localToLayer(forceBounds.x, forceBounds.y);
+                var pt2 = localToLayer(forceBounds.x + forceBounds.width, forceBounds.y + forceBounds.height);
 
                 {
                     x: pt.x,
@@ -86,8 +79,8 @@ class FinalSprite extends BaseSprite {
             if (relative == null) relative = this;
             
             if (forceBounds != null) {
-                var pt = localToLayer(x + forceBounds.x, y + forceBounds.y);
-                var pt2 = localToLayer(x + forceBounds.x + forceBounds.width, y + forceBounds.y + forceBounds.height);
+                var pt = localToLayer(forceBounds.x, forceBounds.y);
+                var pt2 = localToLayer(forceBounds.x + forceBounds.width, forceBounds.y + forceBounds.height);
                 
                 pt = relative.layerToLocal(pt.x, pt.y);
                 pt2 = relative.layerToLocal(pt2.x, pt2.y);
@@ -113,7 +106,6 @@ class FinalSprite extends BaseSprite {
                 }
             }
         }
-        
     }
 
     public override function top() {

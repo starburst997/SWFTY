@@ -318,7 +318,7 @@ class BaseSprite extends EngineSprite {
                 text.og = true;
                 text.loaded = true;
 
-                if (updatePosition && updateScale && updateRotation) text.display().transform(child.a, child.b, child.c, child.d, child.tx, child.ty);
+                if (updatePosition && updateScale && updateRotation) text.display().transform(child.a, child.b, child.c, child.d, child.tx + child.text.x, child.ty + child.text.y);
                 if (updateAlpha) text.alpha = child.alpha;
                 if (updateVisible) text._visible = child.visible;
 
@@ -326,10 +326,6 @@ class BaseSprite extends EngineSprite {
                 if (updatePosition) {
                     text.originalX = text.x;
                     text.originalY = text.y;
-                }
-
-                if (text._name == 'nameText') {
-                    trace('POPOPOPOPOPO', text._name, child.text.x, text.x);
                 }
 
                 if (updateScale) {
