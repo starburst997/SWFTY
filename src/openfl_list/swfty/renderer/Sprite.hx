@@ -64,7 +64,7 @@ class FinalSprite extends BaseSprite {
                 var rect = this.getBounds(layer);
 
                 #if dev
-                if (rect.width <= 0 || rect.height <= 0) trace('Calc bounds bad values!!!!! $_name');
+                //if (rect.width <= 0 || rect.height <= 0) trace('Calc bounds bad values!!!!! $_name');
                 #end
 
                 {
@@ -95,7 +95,7 @@ class FinalSprite extends BaseSprite {
                 var rect = this.getBounds(relative);
 
                 #if dev
-                if (rect.width <= 0 || rect.height <= 0) trace('Calc bounds bad values!!!!! $_name');
+                //if (rect.width <= 0 || rect.height <= 0) trace('Calc bounds bad values!!!!! $_name');
                 #end
 
                 {
