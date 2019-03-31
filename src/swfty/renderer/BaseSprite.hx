@@ -155,7 +155,12 @@ class BaseSprite extends EngineSprite {
     }
 
     inline function get_bounds() {
-        if (_bounds == null) _bounds = calcBounds();
+        if (_bounds == null) {
+            var rect = calcBounds();
+
+            // Prevent caching invalid bounds
+            if (rect.width > 0 || rect.height > 0) _bounds = rect;
+        }
         return _bounds;
     }
 
