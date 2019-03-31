@@ -159,7 +159,11 @@ class BaseSprite extends EngineSprite {
             var rect = calcBounds();
 
             // Prevent caching invalid bounds
-            if (rect.width > 0 || rect.height > 0) _bounds = rect;
+            if (rect.width > 0 || rect.height > 0) {
+                return _bounds = rect;
+            } else {
+                return rect;
+            }
         }
         return _bounds;
     }
