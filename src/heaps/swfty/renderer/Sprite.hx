@@ -88,15 +88,15 @@ class FinalSprite extends BaseSprite {
     }
 
     public override function addSpriteAt(sprite:FinalSprite, index:Int = 0) {
-        sprite._parent = this;
         super.addSpriteAt(sprite, index);
         addChildAt(sprite, index);
+        sprite._parent = this;
     }
 
     public override function addSprite(sprite:FinalSprite) {
-        sprite._parent = this;
         super.addSprite(sprite);
         addChild(sprite);
+        sprite._parent = this;
     }
 
     public override function removeSprite(sprite:FinalSprite) {
@@ -105,13 +105,13 @@ class FinalSprite extends BaseSprite {
     }
 
     public override function addBitmap(bitmap:EngineBitmap) {
-        bitmap._parent = this;
         addChild(bitmap);
+        bitmap._parent = this;
     }
 
     public override function removeBitmap(bitmap:EngineBitmap) {
-        bitmap._parent = null;
         bitmap.remove();
+        bitmap._parent = null;
     }
 }
 

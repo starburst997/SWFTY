@@ -10,7 +10,7 @@ class Debug {
         var timer = new haxe.Timer(5000);
         timer.run = function() {
 
-            var n = 0, childInLayer = 0, layers = 0, sprites = 0, bitmaps = 0, texts = 0, glyphs = 0, nonEmptyLayers = 0, textureMemory = 0;
+            var n = 0, movieClips = 0, childInLayer = 0, layers = 0, sprites = 0, bitmaps = 0, texts = 0, glyphs = 0, nonEmptyLayers = 0, textureMemory = 0;
             var bitmapsMemory = 0, bitmapDatas = 0;
             var layersName = '';
 
@@ -89,7 +89,11 @@ class Debug {
                     } else {
                         var displayObject = display.getChildAt(i);
 
-                        if (Std.is(displayObject, openfl.display.DisplayObjectContainer)) {
+                        if (Std.is(displayObject, openfl.display.MovieClip)) {
+                            n++;
+                            movieClips++;
+
+                        } else if (Std.is(displayObject, openfl.display.DisplayObjectContainer)) {
                             traverseOpenFL(cast displayObject, depth);
                         } else {
                             // End
@@ -122,7 +126,7 @@ class Debug {
             var mem = openfl.system.System.totalMemory / 1024 / 1024;
             trace('-------------------------------');
             trace('RAM: ${round(mem)} MB, Texture: ${round(textureMemory / 1024 / 1024)} MB, Layers: ${layers}, Non-empty layers: ${nonEmptyLayers}');
-            trace('Total: ${n}, Sprites: ${sprites}, Bitmaps: ${bitmaps}, Texts: ${texts}, Glyphs: ${glyphs}');
+            trace('Total: ${n}, MovieClips: ${movieClips}, Sprites: ${sprites}, Bitmaps: ${bitmaps}, Texts: ${texts}, Glyphs: ${glyphs}');
             trace('Display List: ${bitmapDatas}, memory: ${round(bitmapsMemory / 1024 / 1024)} MB');
             
             if (swfty.extra.Manager.ref != null) {

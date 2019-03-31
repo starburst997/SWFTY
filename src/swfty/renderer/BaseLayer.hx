@@ -203,7 +203,7 @@ class BaseLayer extends EngineLayer {
         if (!hasVisible) sleep();
     }
 
-    public inline function removeAll() {
+    inline function removeAll() {
         baseLayout.removeAll();
     }
 

@@ -173,8 +173,8 @@ class LambdaSprite {
     public static inline function cover(sprite:Sprite, padding = 0, ?width:Float, ?height:Float) {
         var bounds = sprite.calcBounds(sprite.parent);
 
-        if (width == null) width = sprite.layer.width;
-        if (height == null) height = sprite.layer.height;
+        if (width == null) width = sprite.layer.screenWidth;
+        if (height == null) height = sprite.layer.screenHeight;
 
         // Try to fit
         var scale = if (bounds.width < bounds.height) {

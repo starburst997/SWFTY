@@ -57,6 +57,10 @@ class BaseSprite extends EngineSprite {
         }
 
         _parent = value;
+        
+        if (value == null) for (f in _removed) f();
+        else for (f in _added) f();
+
         return value;
     }
 
@@ -83,7 +87,12 @@ class BaseSprite extends EngineSprite {
     // TODO: Would using an IntMap bring more performance?
     var _renders:Array<Float->Void>;
     var _rendersMap:StringMap<Array<Float->Void>>;
+    
+    var _added:Array<Void->Void>;
+    var _removed:Array<Void->Void>;
 
+    var _pruneAdded:Array<Void->Void>;
+    var _pruneRemoved:Array<Void->Void>;
     var _pruneRenders:Array<Float->Void>;
     var _pruneSprites:Array<FinalSprite>;
 
@@ -93,6 +102,9 @@ class BaseSprite extends EngineSprite {
         this.layer = layer;
         _linkage = linkage;
 
+        _added = [];
+        _removed = [];
+
         _renders = [];
         _rendersMap = new StringMap();
 
@@ -100,6 +112,8 @@ class BaseSprite extends EngineSprite {
         _names = new StringMap();
         _texts = new StringMap();
 
+        _pruneAdded = [];
+        _pruneRemoved = [];
         _pruneRenders = [];
         _pruneSprites = [];
 
@@ -154,6 +168,8 @@ class BaseSprite extends EngineSprite {
             _bounds.width = width;
             _bounds.height = height;
         }
+
+        forceBounds = _bounds;
     }
 
     #if (openfl && list && !flash) override #end
@@ -194,6 +210,23 @@ class BaseSprite extends EngineSprite {
         for (bitmap in getAllBitmaps()) {
             bitmap.color(color >> 16, (color & 0xFF00) >> 8, color & 0xFF);
         }
+    }
+
+    // TODO: Change "add" to "on" ?
+    public inline function addAdded(f:Void->Void) {
+        _added.push(f);
+    }
+
+    public inline function addRemoved(f:Void->Void) {
+        _removed.push(f);
+    }
+
+    public inline function removeAdded(f:Void->Void) {
+        _pruneAdded.push(f);
+    }
+
+    public inline function removeRemoved(f:Void->Void) {
+        _pruneRemoved.push(f);
     }
 
     public inline function addRender(?name:String, f:Float->Void, ?priority = false) {
@@ -238,7 +271,20 @@ class BaseSprite extends EngineSprite {
             sprite.update(dt);
         }
 
-        for (f in _renders) f(dt);
+        if (loaded) for (f in _renders) f(dt);
+
+        // TODO: Migh be interesting to move to an entity architecture, most of the time these wouldn't be used
+        //       But it's kinda cheap operation, if it really impact performance we can have a "Particle" class
+
+        if (_pruneAdded.length > 0) {
+            for (f in _pruneAdded) _added.remove(f);
+            _pruneAdded = [];
+        }
+
+        if (_pruneRemoved.length > 0) {
+            for (f in _pruneRemoved) _removed.remove(f);
+            _pruneRemoved = [];
+        }
 
         if (_pruneRenders.length > 0) {
             for (f in _pruneRenders) _renders.remove(f);
@@ -255,7 +301,8 @@ class BaseSprite extends EngineSprite {
         return this;
     }
 
-    public function removeAll() {
+    // This is a "soft" clear, it won't call any event
+    function removeAll() {
         display().removeAll();
         _sprites = [];
     }
@@ -548,8 +595,11 @@ class BaseSprite extends EngineSprite {
 
     public function dispose() {
         // TODO: Not really necessary... I guess it can help a bit the GC...
+        // TODO: Should we remove from parent as well?
         if (!disposed) {
             disposed = true;
+
+            _parent = null;
 
             for (sprite in _sprites) sprite.dispose();
             
@@ -561,10 +611,14 @@ class BaseSprite extends EngineSprite {
             _names = new StringMap();
             _texts = new StringMap();
 
+            _added = [];
+            _removed = [];
+
+            _pruneAdded = [];
+            _pruneRemoved = [];
             _pruneRenders = [];
             _pruneSprites = [];
 
-            _parent = null;
             _bounds = null;
         }
     }

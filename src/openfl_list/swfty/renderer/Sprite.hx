@@ -117,20 +117,21 @@ class FinalSprite extends BaseSprite {
     }
 
     public override function addSpriteAt(sprite:FinalSprite, index:Int = 0) {
-        sprite._parent = this;
         super.addSpriteAt(sprite, index);
 
         // TODO: This shouldn't be necessary!
         /*#if !dev
         if (index >= 0 && index <= numChildren)
         #end*/
+
         addChildAt(sprite, index);
+        sprite._parent = this;
     }
 
     public override function addSprite(sprite:FinalSprite) {
-        sprite._parent = this;
         super.addSprite(sprite);
         addChild(sprite);
+        sprite._parent = this;
     }
 
     public override function removeSprite(sprite:FinalSprite) {

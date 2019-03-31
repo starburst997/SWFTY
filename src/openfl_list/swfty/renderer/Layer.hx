@@ -31,8 +31,8 @@ class FinalLayer extends BaseLayer {
 
     override function get_container() {
         if (container == null) {
-            trace('++++ CREATE LAYER');
             container = new EngineContainer();
+            container.name = 'EngineContainer';
             container.addChild(this);
         }
         return container;
