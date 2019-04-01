@@ -126,8 +126,8 @@ class BaseText extends FinalSprite {
     public override function reload() {
         super.reload();
         
-        if (textDefinition != null && textDefinition.font != null && layer.hasFont(textDefinition.font.id)) {
-            textDefinition.font = layer.getFont(textDefinition.font.id);
+        if (textDefinition != null && textDefinition.font != null && _layer.hasFont(textDefinition.font.id)) {
+            textDefinition.font = _layer.getFont(textDefinition.font.id);
             loadText(textDefinition);
         }
     }
@@ -203,7 +203,7 @@ class BaseText extends FinalSprite {
                 var char = textDefinition.font.get(code);
                 var w = char.advance * scale;
 
-                var tile = layer.createBitmap(char.bitmap.id, true);
+                var tile = _layer.createBitmap(char.bitmap.id, true);
                 tile.color(r, g, b);
                 tile.x = x + char.tx * scale;
                 tile.y = y + char.ty * scale;
@@ -226,7 +226,7 @@ class BaseText extends FinalSprite {
                         for (j in 0...3) {
                             code = DOT;
                             char = textDefinition.font.get(code);
-                            tile = layer.createBitmap(char.bitmap.id, true);
+                            tile = _layer.createBitmap(char.bitmap.id, true);
                             tile.color(r, g, b);
                             tile.x = x + char.tx * scale;
                             tile.y = y + char.ty * scale;

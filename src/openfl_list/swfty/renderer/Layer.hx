@@ -48,6 +48,14 @@ class FinalLayer extends BaseLayer {
         return base;
     }
 
+    override function getIndex():Int {
+        return if (this.parent == container) {
+            container.getChildIndex(this);
+        } else {
+            container.numChildren;
+        }
+    }
+
     override function hasParent():Bool {
         return container.parent != null;
     }

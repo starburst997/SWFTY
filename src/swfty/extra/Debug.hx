@@ -106,10 +106,14 @@ class Debug {
                                 if (!bmpds.exists(bitmap.bitmapData)) {
                                     bitmapDatas++;
 
-                                    var mem = bitmap.bitmapData.width * bitmap.bitmapData.height * 4;
-                                    bmpds.set(bitmap.bitmapData, mem);
+                                    try {
+                                        var mem = bitmap.bitmapData.width * bitmap.bitmapData.height * 4;
+                                        bmpds.set(bitmap.bitmapData, mem);
 
-                                    bitmapsMemory += mem;
+                                        bitmapsMemory += mem;
+                                    } catch(e:Dynamic) {
+                                        
+                                    }
                                 }
                             }
                         }

@@ -43,7 +43,9 @@ typedef FinalSprite = heaps.swfty.renderer.Sprite.FinalSprite;
 abstract Sprite(FinalSprite) from FinalSprite to FinalSprite {
 
     public static inline function create(layer:BaseLayer, ?definition:MovieClipType, ?linkage:String):Sprite {
-        return new FinalSprite(layer, definition, linkage);
+        var sprite = new FinalSprite(layer, definition, linkage);
+        if (definition == null && linkage == null) sprite.loaded = true;
+        return sprite;
     }
 
     public function getIndex(?sprite:Sprite):Int {

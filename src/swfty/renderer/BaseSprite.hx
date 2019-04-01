@@ -21,7 +21,8 @@ class BaseSprite extends EngineSprite {
 
     public var bounds(get, null):Rectangle;
 
-    public var layer:BaseLayer;
+    public var layer:Layer;
+    var _layer:BaseLayer;
 
     public var countVisible = true;
     public var loaded = false;
@@ -53,7 +54,7 @@ class BaseSprite extends EngineSprite {
     var _parent(default, set):FinalSprite;
     inline function set__parent(value:FinalSprite) {
         if (_parent == null && _visible) {
-            layer.wake();
+            _layer.wake();
         }
 
         _parent = value;
@@ -66,7 +67,7 @@ class BaseSprite extends EngineSprite {
 
     var _visible(default, set):Bool = true;
     inline function set__visible(value:Bool) {
-        if (value) layer.wake();
+        if (value) _layer.wake();
 
         _visible = value;
         visible = value;
@@ -100,6 +101,7 @@ class BaseSprite extends EngineSprite {
         super();
 
         this.layer = layer;
+        this._layer = layer;
         _linkage = linkage;
 
         _added = [];
@@ -131,11 +133,11 @@ class BaseSprite extends EngineSprite {
 
     // TODO: Not super optimized, usually getting the X we would also get the Y so we could cache it for one frame
     public inline function getMouseX():Float {
-        return layer.getMouseX() - calcBounds(layer.base).x;
+        return _layer.getMouseX() - calcBounds(layer.base).x;
     }
 
     public inline function getMouseY():Float {
-        return layer.getMouseY() - calcBounds(layer.base).y;
+        return _layer.getMouseY() - calcBounds(layer.base).y;
     }
 
     public function calcBounds(?relative:BaseSprite, ?global = false):Rectangle {
@@ -274,7 +276,7 @@ class BaseSprite extends EngineSprite {
         //       Maybe sleep() / awake() sprite?
         if (!_visible) return;
 
-        if (countVisible) layer.hasVisible = true;
+        if (countVisible) _layer.hasVisible = true;
 
         for (sprite in _sprites) {
             sprite.update(dt);
@@ -443,7 +445,7 @@ class BaseSprite extends EngineSprite {
                 if (updateAlpha) sprite.alpha = child.alpha;
 
                 for (shape in child.shapes) {
-                    var tile = layer.createBitmap(shape.bitmap.id, true);
+                    var tile = _layer.createBitmap(shape.bitmap.id, true);
                     tile.transform(shape.a, shape.b, shape.c, shape.d, shape.tx, shape.ty);
                     sprite.addBitmap(tile);
                 }
@@ -501,8 +503,8 @@ class BaseSprite extends EngineSprite {
                 Log.warn('Definition does no longer exists: ${_definition.name} (${_definition.id})');
             }
         } else*/ if (_linkage != null) {
-            if (layer.hasMC(_linkage)) {
-                var definition = layer.getMC(_linkage);
+            if (_layer.hasMC(_linkage)) {
+                var definition = _layer.getMC(_linkage);
                 load(definition);
             } else {
                 Log.warn('Definition does not exists: ${_linkage}');

@@ -13,8 +13,8 @@ class BaseLayer extends EngineLayer {
 
     public var disposed = false;
 
-    var _width:Int;
-    var _height:Int;
+    var _width:Int = 1;
+    var _height:Int = 1;
     
     // The layer will be added as a child of this container and used when mixing layer together
     @:isVar public var container(get, null):EngineContainer;
@@ -52,12 +52,14 @@ class BaseLayer extends EngineLayer {
     var wakes:Array<Void->Void> = [];
     var sleeps:Array<Void->Void> = [];
     var renders:Array<Float->Void> = [];
+    var postRenders:Array<Float->Void> = [];
     var mouseDowns:Array<Float->Float->Void> = [];
     var mouseUps:Array<Float->Float->Void> = [];
 
     var pruneWakes:Array<Void->Void> = [];
     var pruneSleeps:Array<Void->Void> = [];
     var pruneRenders:Array<Float->Void> = [];
+    var prunePostRenders:Array<Float->Void> = [];
     var pruneMouseDowns:Array<Float->Float->Void> = [];
     var pruneMouseUps:Array<Float->Float->Void> = [];
 
@@ -172,6 +174,8 @@ class BaseLayer extends EngineLayer {
 
         base.update(dt);
 
+        for (f in postRenders) f(dt);
+
         if (pruneWakes.length > 0) {
             for (f in pruneWakes) wakes.remove(f);
             pruneWakes = [];
@@ -185,6 +189,11 @@ class BaseLayer extends EngineLayer {
         if (pruneRenders.length > 0) {
             for (f in pruneRenders) renders.remove(f);
             pruneRenders = [];
+        }
+
+        if (prunePostRenders.length > 0) {
+            for (f in prunePostRenders) postRenders.remove(f);
+            prunePostRenders = [];
         }
 
         if (pruneMouseDowns.length > 0) {
@@ -220,6 +229,16 @@ class BaseLayer extends EngineLayer {
         else renders.push(f);
     }
 
+    public inline function addPostRender(f:Float->Void, ?priority = false) {
+        if (priority) postRenders.unshift(f);
+        else postRenders.push(f);
+    }
+
+    public inline function addPostRenderNow(f:Float->Void, ?priority = false) {
+        addPostRender(f, priority);
+        f(0.0);
+    }
+
     public inline function addRenderNow(f:Float->Void, ?priority = false) {
         addRender(f, priority);
         f(0.0);
@@ -235,6 +254,10 @@ class BaseLayer extends EngineLayer {
 
     public inline function removeRender(f:Float->Void) {
         pruneRenders.push(f);
+    }
+
+    public inline function removePostRender(f:Float->Void) {
+        prunePostRenders.push(f);
     }
 
     public inline function addMouseDown(f:Float->Float->Void, ?priority = false) {
@@ -276,6 +299,10 @@ class BaseLayer extends EngineLayer {
     }
 
     public function hasParent():Bool {
+        throw 'Not implemented';
+    }
+
+    public function getIndex():Int {
         throw 'Not implemented';
     }
 
