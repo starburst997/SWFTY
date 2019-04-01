@@ -133,11 +133,11 @@ class BaseSprite extends EngineSprite {
 
     // TODO: Not super optimized, usually getting the X we would also get the Y so we could cache it for one frame
     public inline function getMouseX():Float {
-        return _layer.getMouseX() - calcBounds(layer.base).x;
+        return layerToLocal(layer.mouse.x, layer.mouse.y).x;
     }
 
     public inline function getMouseY():Float {
-        return _layer.getMouseY() - calcBounds(layer.base).y;
+        return layerToLocal(layer.mouse.x, layer.mouse.y).y;
     }
 
     public function calcBounds(?relative:BaseSprite, ?global = false):Rectangle {
