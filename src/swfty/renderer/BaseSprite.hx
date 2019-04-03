@@ -498,9 +498,9 @@ class BaseSprite extends EngineSprite {
                 if (!child._name.empty() && skipChilds.indexOf(child) == -1) Log.warn('Missing Child: ${child._name} (${layer.path})');
                 #end
 
-                //child.reload();
+                child.reload();
 
-                // TODO: Usually non-og sprites are added on top, figure out a better way to preserve order
+                // TODO: Usually non-og sprites are added on top, figure out a better way to preserve order!!
                 addSprite(child);
             }
         }
@@ -545,7 +545,9 @@ class BaseSprite extends EngineSprite {
                 var definition = _layer.getMC(_linkage);
                 load(definition);
             } else {
+                #if dev
                 Log.warn('Definition does not exists: ${_linkage}');
+                #end
             }
         } else {
             // Simply reload all sprites
@@ -569,9 +571,10 @@ class BaseSprite extends EngineSprite {
         _sprites.insert(index, sprite);
         
         // TODO: Was that necessary?
-        /*if (loaded && !sprite.loaded) {
+        if (loaded && !sprite.loaded) {
+            //trace('WARNING !!! loaded && !sprite.loaded');
             sprite.reload();
-        }*/
+        }
     }
 
     public function addSprite(sprite:FinalSprite) {
@@ -579,9 +582,10 @@ class BaseSprite extends EngineSprite {
         _sprites.push(sprite);
         
         // TODO: Was that necessary?
-        /*if (loaded && !sprite.loaded) {
+        if (loaded && !sprite.loaded) {
+            //trace('WARNING !!! loaded && !sprite.loaded');
             sprite.reload();
-        }*/
+        }
     }
 
     public function removeSprite(sprite:FinalSprite) {
@@ -652,7 +656,6 @@ class BaseSprite extends EngineSprite {
 
     public function dispose() {
         // TODO: Not really necessary... I guess it can help a bit the GC...
-        // TODO: Should we remove from parent as well?
         if (!disposed) {
             disposed = true;
 

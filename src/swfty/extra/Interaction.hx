@@ -20,6 +20,8 @@ class Interactions {
     // You need to be carefull here as you need to makes sure to remove it! Put behind private until I figure a safer way
     public static var exclusive:Sprite = null;
 
+    public static var debugCount = 0;
+
     // Inject the layer resolver interaction
     static inline function manage(manager:Manager) {
         // We switch to manager mode
@@ -30,6 +32,12 @@ class Interactions {
         });
 
         manager.addRender(function() {
+
+            if (debugCount > 0) {
+                trace('N INTERACTIONS $debugCount');
+                debugCount = 0;
+            }
+
             // Look interactions in all layers and resolve it, if there was only one we can skip all this
             if (nInteractions == 1) {
                 if (lastInteraction != null) {
@@ -57,6 +65,7 @@ class Interactions {
                             if (sprites.length > 0) interactions.set(layer, []);
                         } else if (sprites.length > 0) {
                             // Count the number of parents, the lowest should be on top
+                            // TODO: This doesn't work!
                             found = true;
                             var n = 9999999;
                             var interaction = null;
@@ -150,6 +159,8 @@ class Interactions {
             var mouse = child.layer.mouse;
             if (mouse.leftChanged) {
 
+                debugCount++;
+
                 if (!child.loaded || !child.layer.shared.canInteract || child.layer._base.cancelInteract || checkExclusive(sprite)) return;
 
                 var x = mouse.x;
@@ -193,10 +204,16 @@ class Interactions {
         // Detect left click inside and wait for mouse up inside to trigger handler
         var wasInside = false;
         child.addRender(RENDER_ID, function render(dt) {
-            if (child.layer == null || !child.loaded || !child.layer.shared.canInteract || child.layer._base.cancelInteract || checkExclusive(sprite)) return;
-
+            
+            if (child.layer == null) return;
+            
             var mouse = child.layer.mouse;
             if (mouse.leftChanged) {
+                
+                debugCount++;
+                
+                if (child.layer == null || !child.loaded || !child.layer.shared.canInteract || child.layer._base.cancelInteract || checkExclusive(sprite)) return;
+                
                 var y = mouse.y;
                 var x = mouse.x;
 
@@ -232,10 +249,16 @@ class Interactions {
         // Detect left click inside and wait for mouse up inside to trigger handler
         var wasInside = false;
         child.addRender(RENDER_ID, function render(dt) {
-            if (child.layer == null || !child.loaded || !child.layer.shared.canInteract || child.layer._base.cancelInteract || checkExclusive(sprite)) return;
-
+            
+            if (child.layer == null) return;
+            
             var mouse = child.layer.mouse;
             if (mouse.leftChanged) {
+                
+                debugCount++;
+
+                if (child.layer == null || !child.loaded || !child.layer.shared.canInteract || child.layer._base.cancelInteract || checkExclusive(sprite)) return;
+                
                 var y = mouse.y;
                 var x = mouse.x;
 
@@ -261,6 +284,9 @@ class Interactions {
 
             var mouse = child.layer.mouse;
             if (mouse.leftChanged) {
+
+                debugCount++;
+
                 switch(mouse.left) {
                     case Down : 
                     case Up : f();
@@ -280,6 +306,9 @@ class Interactions {
 
             var mouse = child.layer.mouse;
             if (mouse.leftChanged) {
+
+                debugCount++;
+
                 switch(mouse.left) {
                     case Down : f();
                     case Up : 
