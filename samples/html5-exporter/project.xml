@@ -15,6 +15,8 @@
     <haxelib name="hxmustache" />
     <haxelib name="tweenxcore" />
 
+    <haxeflag name="-D no-deprecation-warnings" />
+
     <source path="src" />
 
     <haxedef name="gl_stats" unless="final" />
