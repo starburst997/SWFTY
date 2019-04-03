@@ -323,6 +323,7 @@ class BaseSprite extends EngineSprite {
         if (definition != null) _linkage = definition.name;
         
         var childs = _sprites;
+        var skipChilds = [];
 
         // Clear all childrens
         removeAll();
@@ -371,6 +372,25 @@ class BaseSprite extends EngineSprite {
                         _texts.set(child.name, text);
                     }
                     text;
+                }
+
+                // If a previous sprite existed with same name
+                if (!child.name.empty() && _names.exists(child.name) && _names.get(child.name) != text) {
+                    var textSprite = _names.get(child.name);
+
+                    if (!loaded) {
+                        if (!textSprite._visible) updateVisible = false;
+                        if (textSprite.x != 0 || textSprite.y != 0) updatePosition = false;
+                        if (textSprite.scaleX != 1 || textSprite.scaleY != 1) updateScale = false;
+                        if (textSprite.rotation != 0) updateRotation = false;
+                        if (textSprite.alpha != 1) updateAlpha = false;
+                    }
+
+                    text.copy(textSprite);
+                    _names.set(child.name, text);
+
+                    skipChilds.push(textSprite);
+                    textSprite.dispose();
                 }
                 
                 text.og = true;
@@ -474,7 +494,9 @@ class BaseSprite extends EngineSprite {
         // Re-add non-og tile
         for (child in childs) {
             if (!child.og) {
-                if (!child._name.empty()) Log.warn('Missing Child: ${child._name} (${layer.path})');
+                #if dev
+                if (!child._name.empty() && skipChilds.indexOf(child) == -1) Log.warn('Missing Child: ${child._name} (${layer.path})');
+                #end
 
                 //child.reload();
 
@@ -482,6 +504,22 @@ class BaseSprite extends EngineSprite {
                 addSprite(child);
             }
         }
+    }
+
+    inline function copy(sprite:BaseSprite) {
+        this.x = sprite.x;
+        this.y = sprite.y;
+        this.scaleX = sprite.scaleX;
+        this.scaleY = sprite.scaleY;
+        this.rotation = sprite.rotation;
+        this.alpha = sprite.alpha;
+        this._visible = sprite._visible;
+
+        this._renders = sprite._renders;
+        this._rendersMap = sprite._rendersMap;
+        
+        this._added = sprite._added;
+        this._removed = sprite._removed;
     }
 
     public inline function getParent() {
@@ -519,6 +557,8 @@ class BaseSprite extends EngineSprite {
 
     public function getIndex(?sprite:FinalSprite) {
         #if dev
+        // TODO: Not that big of a deal, but we should compensate and calculate the real index after those child are moved
+        //       We can always override this and used the engine's specific way of doing it, should give the correct value
         if (_pruneSprites.length > 0) trace('Error: This value is incorrect!!!!');
         #end
         return _sprites.indexOf(sprite);
@@ -545,6 +585,8 @@ class BaseSprite extends EngineSprite {
     }
 
     public function removeSprite(sprite:FinalSprite) {
+        if (disposed) return;
+
         if (sprite._name != null) _names.remove(sprite._name);
         _pruneSprites.push(sprite); // TODO: This might screw the "getIndex"
         sprite._parent = null;
@@ -554,6 +596,10 @@ class BaseSprite extends EngineSprite {
         if (_sprites.remove(sprite)) {
             _sprites.insert(index, sprite);
         }
+    }
+
+    public function removeFromParent() {
+        throw 'Not implemented';
     }
 
     public function addBitmap(shape:EngineBitmap) {
@@ -610,9 +656,13 @@ class BaseSprite extends EngineSprite {
         if (!disposed) {
             disposed = true;
 
+            removeFromParent();
             _parent = null;
 
-            for (sprite in _sprites) sprite.dispose();
+            for (sprite in _sprites) {
+                sprite._parent = null;
+                sprite.dispose();
+            }
             
             // TODO: Should I null everything?
             _renders = [];

@@ -18,7 +18,7 @@ class Interactions {
     static var lastInteraction:Interaction = null;
 
     // You need to be carefull here as you need to makes sure to remove it! Put behind private until I figure a safer way
-    static var exclusive:Sprite = null;
+    public static var exclusive:Sprite = null;
 
     // Inject the layer resolver interaction
     static inline function manage(manager:Manager) {

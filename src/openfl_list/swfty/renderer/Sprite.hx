@@ -48,6 +48,7 @@ class FinalSprite extends BaseSprite {
         return { x: pt.x, y: pt.y };
     }
 
+    // TODO: Should probably abstract that into BaseSprite and keep a one-line getBounds
     public override function calcBounds(?relative:BaseSprite, ?global = false):Rectangle {
         return if (global) {
             if (forceBounds != null) {
@@ -109,11 +110,15 @@ class FinalSprite extends BaseSprite {
     }
 
     public override function top() {
-        if (this.parent != null) parent.setChildIndex(this, parent.numChildren - 1);
+        if (this._parent != null) _parent.setIndex(this, parent.numChildren - 1);
     }
 
     public override function bottom() {
-        if (this.parent != null) parent.setChildIndex(this, 0);
+        if (this._parent != null) _parent.setIndex(this, 0);
+    }
+
+    public override function removeFromParent() {
+        if (this._parent != null) _parent.removeSprite(this);
     }
 
     public override function addSpriteAt(sprite:FinalSprite, index:Int = 0) {
@@ -136,7 +141,15 @@ class FinalSprite extends BaseSprite {
 
     public override function removeSprite(sprite:FinalSprite) {
         super.removeSprite(sprite);
-        removeChild(sprite);
+        if (sprite.parent != null) sprite.parent.removeChild(sprite);
+    }
+
+    public override function getIndex(?sprite:FinalSprite) {
+        return if (sprite.parent == null) {
+            -1;
+        } else {
+            sprite.parent.getChildIndex(sprite);
+        }
     }
 
     public override function addBitmap(bitmap:EngineBitmap) {
@@ -144,12 +157,12 @@ class FinalSprite extends BaseSprite {
     }
 
     public override function removeBitmap(bitmap:EngineBitmap) {
-        removeChild(bitmap);
+        if (bitmap.parent != null) bitmap.parent.removeChild(bitmap);
     }
 
     public override function setIndex(sprite:FinalSprite, index:Int) {
         super.setIndex(sprite, index);
-        setChildIndex(sprite, index);
+        if (sprite.parent != null) sprite.parent.setChildIndex(sprite, index);
     }
 }
 
