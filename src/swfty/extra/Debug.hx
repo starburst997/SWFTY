@@ -62,8 +62,12 @@ class Debug {
                         try {
                             layersName += (layersName == '' ? '' : ', ') + r.matched(1);
                         } catch(e:Dynamic) {
-                            var display:openfl.display.DisplayObject = cast layer;
-                            layersName += (layersName == '' ? '' : ', ') + 'no path (${display.name})';
+                            if (layer.path != null && layer.path != '') {
+                                layersName += (layersName == '' ? '' : ', ') + layer.path;
+                            } else {
+                                var display:openfl.display.DisplayObject = cast layer;
+                                layersName += (layersName == '' ? '' : ', ') + 'no path (${display.name})';
+                            }
                         }
                     }
                     
@@ -138,6 +142,7 @@ class Debug {
                 var nLayer = 0;
                 var texMem = 0;
                 for (layer in swfty.extra.Manager.ref.layers) if (layer.loaded) {
+                    
                     var r = ~/([^\/\\]+)\.swfty/i;
                     r.match(layer.path);
                     nLayer++;
@@ -146,8 +151,12 @@ class Debug {
                     try {
                         str += (str == '' ? '' : ', ') + r.matched(1);
                     } catch(e:Dynamic) {
-                        var display:openfl.display.DisplayObject = cast layer;
-                        str += (str == '' ? '' : ', ') + 'no path (${display.name})';
+                        if (layer.path != null && layer.path != '') {
+                            str += (str == '' ? '' : ', ') + layer.path;
+                        } else {
+                            var display:openfl.display.DisplayObject = cast layer;
+                            str += (str == '' ? '' : ', ') + 'no path (${display.name})';
+                        }
                     }
                 }
 

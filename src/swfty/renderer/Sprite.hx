@@ -70,6 +70,24 @@ abstract Sprite(FinalSprite) from FinalSprite to FinalSprite {
         @:privateAccess return this._name = name;
     }
 
+    public var width(get, set):Float;
+    inline function get_width():Float {
+        @:privateAccess return this._width;
+    }
+
+    inline function set_width(width:Float):Float {
+        @:privateAccess return this._width = width;
+    }
+
+    public var height(get, set):Float;
+    inline function get_height():Float {
+        @:privateAccess return this._height;
+    }
+
+    inline function set_height(height:Float):Float {
+        @:privateAccess return this._height = height;
+    }
+
     public var visible(get, set):Bool;
     inline function get_visible():Bool {
         @:privateAccess return this._visible;

@@ -161,7 +161,7 @@ class Interactions {
 
                 debugCount++;
 
-                if (!child.loaded || !child.layer.shared.canInteract || child.layer._base.cancelInteract || checkExclusive(sprite)) return;
+                if (!child.loaded || !child.visible || !child.layer.shared.canInteract || child.layer._base.cancelInteract || checkExclusive(sprite)) return;
 
                 var x = mouse.x;
                 var y = mouse.y;
@@ -212,7 +212,7 @@ class Interactions {
                 
                 debugCount++;
                 
-                if (child.layer == null || !child.loaded || !child.layer.shared.canInteract || child.layer._base.cancelInteract || checkExclusive(sprite)) return;
+                if (child.layer == null || !child.visible || !child.loaded || !child.layer.shared.canInteract || child.layer._base.cancelInteract || checkExclusive(sprite)) return;
                 
                 var y = mouse.y;
                 var x = mouse.x;
@@ -257,7 +257,7 @@ class Interactions {
                 
                 debugCount++;
 
-                if (child.layer == null || !child.loaded || !child.layer.shared.canInteract || child.layer._base.cancelInteract || checkExclusive(sprite)) return;
+                if (!child.loaded || !child.visible || !child.layer.shared.canInteract || child.layer._base.cancelInteract || checkExclusive(sprite)) return;
                 
                 var y = mouse.y;
                 var x = mouse.x;
@@ -280,7 +280,7 @@ class Interactions {
         var child = name == null ? sprite : sprite.get(name);
 
         child.addRender(RENDER_ID, function render(dt) {
-            if (child.layer == null || !child.loaded) return;
+            if (child.layer == null || !child.loaded || !child.visible) return;
 
             var mouse = child.layer.mouse;
             if (mouse.leftChanged) {
@@ -302,7 +302,7 @@ class Interactions {
         var child = name == null ? sprite : sprite.get(name);
 
         child.addRender(RENDER_ID, function render(dt) {
-            if (child.layer == null || !child.loaded) return;
+            if (child.layer == null || !child.loaded || !child.visible) return;
 
             var mouse = child.layer.mouse;
             if (mouse.leftChanged) {

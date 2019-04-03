@@ -13,11 +13,8 @@ class BaseSprite extends EngineSprite {
 
     public var uuid:Int = COUNTER++;
 
-    // I was so close to have no custom defined ;_;
-    #if (!openfl || !list)
-    public var width(get, set):Float;
-    public var height(get, set):Float;
-    #end
+    public var _width(get, set):Float;
+    public var _height(get, set):Float;
 
     public var bounds(get, null):Rectangle;
 
@@ -183,24 +180,20 @@ class BaseSprite extends EngineSprite {
         forceBounds = _bounds;
     }
 
-    #if (openfl && list && !flash) override #end
-    function get_width():Float {
+    function get__width():Float {
         return bounds.width * scaleX;
     }
 
-    #if (openfl && list && !flash) override #end
-    function set_width(width:Float) {
+    function set__width(width:Float) {
         scaleX = width / bounds.width;
         return width;
     }
 
-    #if (openfl && list && !flash) override #end
-    function get_height():Float {
+    function get__height():Float {
         return bounds.height * scaleY;
     }
 
-    #if (openfl && list && !flash) override #end
-    function set_height(height:Float) {
+    function set__height(height:Float) {
         scaleY = height / bounds.height;
         return height;
     }
@@ -274,7 +267,7 @@ class BaseSprite extends EngineSprite {
     public function update(dt:Float) {
         // TODO: Wonder if that's the best solution... If it's invisible I wouldn't want anything called...
         //       Maybe sleep() / awake() sprite?
-        if (!_visible) return;
+        //if (!_visible) return;
 
         if (countVisible) _layer.hasVisible = true;
 

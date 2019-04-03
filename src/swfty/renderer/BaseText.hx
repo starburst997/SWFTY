@@ -44,8 +44,8 @@ class BaseText extends FinalSprite {
     public var align(get, set):Align;
 
     var _align:Option<Align> = None;
-    var _width:Option<Float> = None;
-    var _height:Option<Float> = None;
+    var __width:Option<Float> = None;
+    var __height:Option<Float> = None;
 
     var textDefinition:Null<TextType>;
 
@@ -70,29 +70,29 @@ class BaseText extends FinalSprite {
         };
     }
 
-    override function get_width():Float {
-        return switch(_width) {
+    override function get__width():Float {
+        return switch(__width) {
             case Some(w) : w;
             case None if (textDefinition != null) : textDefinition.width;
             case _ : 1;
         };
     }
 
-    override function set_width(width:Float) {
-        _width = Some(width);
+    override function set__width(width:Float) {
+        __width = Some(width);
         return width;
     }
 
-    override function get_height():Float {
-        return switch(_height) {
+    override function get__height():Float {
+        return switch(__height) {
             case Some(h) : h;
             case None if (textDefinition != null) : textDefinition.height;
             case _ : 1;
         };
     }
 
-    override function set_height(height:Float) {
-        _height = Some(height);
+    override function set__height(height:Float) {
+        __height = Some(height);
         return height;
     }
 
@@ -148,10 +148,6 @@ class BaseText extends FinalSprite {
         if (this.text == text) return text;
 
         this.text = text;
-
-        // TODO: Somehow it seems like this doesn't work well in flash?
-        var width = get_width();
-        var height = get_height();
 
         // Clear tiles
         removeAll();
@@ -221,7 +217,7 @@ class BaseText extends FinalSprite {
 
                 if (short) {
                     // TODO: For multiline "short" text we should check the "height" and do it on the last line only!
-                    if (x + w > (width - scale * dot.advance * 3) && (i <= text.length - 3)) {
+                    if (x + w > (_width - scale * dot.advance * 3) && (i <= text.length - 3)) {
                         // Set the remaining charaters as "..." and call it a day
                         for (j in 0...3) {
                             code = DOT;
@@ -247,7 +243,7 @@ class BaseText extends FinalSprite {
                         }
                         break;
                     }
-                } else if (x + w > width && hasSpace && multiline) {
+                } else if (x + w > _width && hasSpace && multiline) {
                     y += lineHeight;
                     hasSpace = false;
 
@@ -312,8 +308,8 @@ class BaseText extends FinalSprite {
 
         // Makes sure everything fits within the bounding box
         if (!multiline && (fit || short)) {
-            if (currentLine.textWidth > width) {
-                var scaleDown =  width / currentLine.textWidth;
+            if (currentLine.textWidth > _width) {
+                var scaleDown =  _width / currentLine.textWidth;
 
                 // Take all tiles and scale them down
                 for (line in lines) {
@@ -358,11 +354,11 @@ class BaseText extends FinalSprite {
             case Right   : 
                 for (line in lines)
                     for (tile in line.tiles) 
-                        if (tile.tile != null) tile.tile.x += width - line.textWidth;
+                        if (tile.tile != null) tile.tile.x += _width - line.textWidth;
             case Center  : 
                 for (line in lines)
                     for (tile in line.tiles)
-                        if (tile.tile != null) tile.tile.x += width / 2 - line.textWidth / 2;
+                        if (tile.tile != null) tile.tile.x += _width / 2 - line.textWidth / 2;
             case Justify : trace('Justify not supported!!!');
         }
 

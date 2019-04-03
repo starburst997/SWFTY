@@ -212,7 +212,7 @@ class BaseLayer extends EngineLayer {
         if (!hasVisible) sleep();
     }
 
-    inline function removeAll() {
+    public inline function removeAll() {
         baseLayout.removeAll();
     }
 
@@ -418,7 +418,7 @@ class BaseLayer extends EngineLayer {
             tiles: new IntMap(),
             fonts: new IntMap()
         };
-        
+
         if (bytes == null) {
             // Empty layer... (something wrong happens, but better to show nothing than crash...)
             if (disposed) return;
