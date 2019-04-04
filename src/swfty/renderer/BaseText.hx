@@ -43,6 +43,8 @@ class BaseText extends FinalSprite {
     public var color(default, set):Null<UInt> = null;
     public var align(get, set):Align;
 
+    public var scaleFont = 1.0;
+
     var _align:Option<Align> = None;
     var __width:Option<Float> = None;
     var __height:Option<Float> = None;
@@ -73,7 +75,7 @@ class BaseText extends FinalSprite {
     override function get__width():Float {
         return switch(__width) {
             case Some(w) : w;
-            case None if (textDefinition != null) : textDefinition.width;
+            case None if (textDefinition != null) : textDefinition.width * scaleFont;
             case _ : 1;
         };
     }
@@ -86,7 +88,7 @@ class BaseText extends FinalSprite {
     override function get__height():Float {
         return switch(__height) {
             case Some(h) : h;
-            case None if (textDefinition != null) : textDefinition.height;
+            case None if (textDefinition != null) : textDefinition.height * scaleFont;
             case _ : 1;
         };
     }
@@ -147,7 +149,7 @@ class BaseText extends FinalSprite {
     inline function getLineHeight() {
         if (textDefinition == null || textDefinition.font == null) return 0.0;
 
-        var size = textDefinition.size;
+        var size = textDefinition.size * scaleFont;
         return (textDefinition.font.ascent + textDefinition.font.descent + textDefinition.font.leading) / 20 / 1024 * size;
     }
 
@@ -180,7 +182,7 @@ class BaseText extends FinalSprite {
         var g = (c & 0xFF00) >> 8;
         var b = c & 0xFF;
 
-        var size = textDefinition.size;
+        var size = textDefinition.size * scaleFont;
         var scale = size / textDefinition.font.size;
 
         y += (1 - (textDefinition.font.ascent / (textDefinition.font.ascent + textDefinition.font.descent))) * size; 
@@ -366,13 +368,18 @@ class BaseText extends FinalSprite {
         switch(align) {
             case Left    : 
             case Right   : 
-                for (line in lines)
-                    for (tile in line.tiles) 
+                // TODO: We still have an issue here, investigate
+                //trace('--- RIGHT', _name, text, _width);
+                for (line in lines) {
+                    //trace('LINE', _width - line.textWidth);
+                    for (tile in line.tiles)
                         if (tile.tile != null) tile.tile.x += _width - line.textWidth;
+                }
             case Center  : 
-                for (line in lines)
+                for (line in lines) {
                     for (tile in line.tiles)
                         if (tile.tile != null) tile.tile.x += _width / 2 - line.textWidth / 2;
+                }
             case Justify : trace('Justify not supported!!!');
         }
 

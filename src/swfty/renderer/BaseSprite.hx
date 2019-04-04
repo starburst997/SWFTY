@@ -342,6 +342,41 @@ class BaseSprite extends EngineSprite {
             }
             
             if (child.text != null) {
+                
+                // Scaling TextField is tricky, we scaleY back to 1.0 and scale the Font Size instead
+                function adjustTransform(text:FinalText) {
+                    // If a previous sprite existed with same name
+                    if (!child.name.empty() && _names.exists(child.name) && _names.get(child.name) != text) {
+                        var textSprite = _names.get(child.name);
+
+                        if (!loaded) {
+                            if (!textSprite._visible) updateVisible = false;
+                            if (textSprite.x != 0 || textSprite.y != 0) updatePosition = false;
+                            if (textSprite.scaleX != 1 || textSprite.scaleY != 1) updateScale = false;
+                            if (textSprite.rotation != 0) updateRotation = false;
+                            if (textSprite.alpha != 1) updateAlpha = false;
+                        }
+
+                        text.copy(textSprite);
+                        _names.set(child.name, text);
+
+                        skipChilds.push(textSprite);
+                        textSprite.dispose();
+                    }
+
+                    if (updatePosition && updateScale && updateRotation) {
+                        var scaleX = MathUtils.scaleX(child.a, child.b, child.c, child.d);
+                        var scaleY = MathUtils.scaleY(child.a, child.b, child.c, child.d);
+
+                        text.display().transform(child.a, child.b, child.c, child.d, child.tx + child.text.x * scaleX, child.ty + child.text.y * scaleY);
+
+                        text.scaleFont = text.scaleY;
+
+                        text.scaleX = text.scaleX / text.scaleY;
+                        text.scaleY = 1.0;
+                    }
+                }
+                
                 var text = if (!child.name.empty() && _texts.exists(child.name)) {
                     var text = _texts.get(child.name);
 
@@ -353,6 +388,7 @@ class BaseSprite extends EngineSprite {
                         if (text.alpha != 1) updateAlpha = false;
                     }
 
+                    adjustTransform(text);
                     text.loadText(child.text);
 
                     text.refresh();
@@ -362,7 +398,10 @@ class BaseSprite extends EngineSprite {
 
                     text;
                 } else {
-                    var text = FinalText.create(layer, child.text);
+                    var text = FinalText.create(layer);
+                    
+                    adjustTransform(text);
+                    text.loadText(child.text);
 
                     if (!child.name.empty()) {
                         text._name = child.name;
@@ -370,30 +409,10 @@ class BaseSprite extends EngineSprite {
                     }
                     text;
                 }
-
-                // If a previous sprite existed with same name
-                if (!child.name.empty() && _names.exists(child.name) && _names.get(child.name) != text) {
-                    var textSprite = _names.get(child.name);
-
-                    if (!loaded) {
-                        if (!textSprite._visible) updateVisible = false;
-                        if (textSprite.x != 0 || textSprite.y != 0) updatePosition = false;
-                        if (textSprite.scaleX != 1 || textSprite.scaleY != 1) updateScale = false;
-                        if (textSprite.rotation != 0) updateRotation = false;
-                        if (textSprite.alpha != 1) updateAlpha = false;
-                    }
-
-                    text.copy(textSprite);
-                    _names.set(child.name, text);
-
-                    skipChilds.push(textSprite);
-                    textSprite.dispose();
-                }
                 
                 text.og = true;
                 text.loaded = true;
 
-                if (updatePosition && updateScale && updateRotation) text.display().transform(child.a, child.b, child.c, child.d, child.tx + child.text.x, child.ty + child.text.y);
                 if (updateAlpha) text.alpha = child.alpha;
                 if (updateVisible) text._visible = child.visible;
 

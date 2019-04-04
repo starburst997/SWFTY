@@ -804,7 +804,7 @@ class Exporter {
 
                             if (texts.exists(characterId)) {
                                 var text = texts.get(characterId);
-                                
+
                                 var cache = getFontCache(text, filterHash);
                                 cache.filters = filters;
                             }
