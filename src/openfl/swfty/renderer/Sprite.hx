@@ -109,12 +109,19 @@ abstract DisplayBitmap(EngineBitmap) from EngineBitmap to EngineBitmap {
     }
 
     public inline function transform(a:Float, b:Float, c:Float, d:Float, tx:Float, ty:Float) {
-        this.matrix.a = a;
-        this.matrix.b = b;
-        this.matrix.c = c;
-        this.matrix.d = d;
-        this.matrix.tx = tx;
-        this.matrix.ty = ty;
+        // TODO: Don't trust openfl matrix, it seems like scaleY doesn't work
+        //this.matrix.a = a;
+        //this.matrix.b = b;
+        //this.matrix.c = c;
+        //this.matrix.d = d;
+        //this.matrix.tx = tx;
+        //this.matrix.ty = ty;
+
+        this.x = MathUtils.x(tx);
+        this.y = MathUtils.y(ty);
+        this.scaleX = MathUtils.scaleX(a, b, c, d);
+        this.scaleY = MathUtils.scaleY(a, b, c, d);
+        this.rotation = MathUtils.rotation(a, b, c, d) / Math.PI * 180;
     }
 
     public inline function color(r:Int, g:Int, b:Int) {
@@ -132,12 +139,19 @@ abstract DisplaySprite(BaseSprite) from BaseSprite to BaseSprite {
     }
 
     public inline function transform(a:Float, b:Float, c:Float, d:Float, tx:Float, ty:Float) {
-        this.matrix.a = a;
-        this.matrix.b = b;
-        this.matrix.c = c;
-        this.matrix.d = d;
-        this.matrix.tx = tx;
-        this.matrix.ty = ty;
+        // TODO: Don't trust openfl matrix, it seems like scaleY doesn't work
+        //this.matrix.a = a;
+        //this.matrix.b = b;
+        //this.matrix.c = c;
+        //this.matrix.d = d;
+        //this.matrix.tx = tx;
+        //this.matrix.ty = ty;
+
+        this.x = MathUtils.x(tx);
+        this.y = MathUtils.y(ty);
+        this.scaleX = MathUtils.scaleX(a, b, c, d);
+        this.scaleY = MathUtils.scaleY(a, b, c, d);
+        this.rotation = MathUtils.rotation(a, b, c, d) / Math.PI * 180;
     }
 
     public inline function color(r:Float, g:Float, b:Float, rAdd:Float, gAdd:Float, bAdd:Float) {

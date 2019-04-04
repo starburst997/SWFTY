@@ -130,7 +130,7 @@ abstract DisplayBitmap(EngineBitmap) from EngineBitmap to EngineBitmap {
         this.y = MathUtils.y(ty);
         this.scaleX = MathUtils.scaleX(a, b, c, d);
         this.scaleY = MathUtils.scaleY(a, b, c, d);
-        this.rotation = MathUtils.rotation(b, c, d);
+        this.rotation = MathUtils.rotation(a, b, c, d);
     }
 
     public inline function color(r:Int, g:Int, b:Int) {
@@ -152,7 +152,7 @@ abstract DisplaySprite(BaseSprite) from BaseSprite to BaseSprite {
         this.y = MathUtils.y(ty);
         this.scaleX = MathUtils.scaleX(a, b, c, d);
         this.scaleY = MathUtils.scaleY(a, b, c, d);
-        this.rotation = MathUtils.rotation(b, c, d);
+        this.rotation = MathUtils.rotation(a, b, c, d);
     }
 
     public inline function color(r:Float, g:Float, b:Float, rAdd:Float, gAdd:Float, bAdd:Float) {

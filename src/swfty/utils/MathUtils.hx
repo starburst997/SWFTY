@@ -26,7 +26,7 @@ class MathUtils {
             Math.sqrt(c * c + d * d);// * (b < 0 ? -1 : 1) * (c < 0 ? -1 : 1);
     }
 
-    public static inline function rotation(b:Float, c:Float, d:Float) {
+    public static inline function rotation(a:Float, b:Float, c:Float, d:Float) {
         return if (b == 0 && c == 0)
             0.0;
         else {
