@@ -40,6 +40,8 @@ class Interactions {
 
             // Look interactions in all layers and resolve it, if there was only one we can skip all this
             if (nInteractions == 1) {
+                trace('WARNING ONLY ONE INTERACTION');
+
                 if (lastInteraction != null) {
                     if (interactions.exists(lastInteraction.sprite.layer)) {
                         interactions.set(lastInteraction.sprite.layer, []);
@@ -53,6 +55,8 @@ class Interactions {
                 lastInteraction = null;
 
             } else if (nInteractions > 1) {
+                trace('WARNING MULTIPLE INTERACTIONS, $nInteractions');
+
                 // TODO: The order *SHOULD* be from Top to Bottom, so first interaction wins
                 var found = false;
                 for (i in 0...manager.layers.length) {
@@ -220,7 +224,14 @@ class Interactions {
                 switch(mouse.left) {
                     case Down : 
                         if (getBounds().inside(x, y)) {
-                            if (!wasInside) f();
+                            if (!wasInside) {
+                                if (useManager) {
+                                    addInteraction(child, f);
+                                } else {
+                                    f();
+                                }
+                            }
+
                             wasInside = true;
                         }
                     case Up : 
@@ -266,7 +277,11 @@ class Interactions {
                     case Down : 
                     case Up : 
                         if (getBounds().inside(x, y)) {
-                            f();
+                            if (useManager) {
+                                addInteraction(child, f);
+                            } else {
+                                f();
+                            }
                         }
                     case _ : 
                 }

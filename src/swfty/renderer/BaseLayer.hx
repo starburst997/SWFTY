@@ -365,7 +365,7 @@ class BaseLayer extends EngineLayer {
     public function get(linkage:String) {
         return if (!mcs.exists(linkage)) {
             switch(swfty) {
-                case Some(_) : Log.warn('Linkage: $linkage does not exists!');
+                case Some(_) : Log.warn('Linkage: $linkage does not exists! ${path}');
                 case None : 
             }
             Sprite.create(this, linkage);
@@ -384,7 +384,7 @@ class BaseLayer extends EngineLayer {
 
     public function getById(id:Int) {
         return if (!hasDefinition(id)) {
-            Log.warn('ID: $id does not exists!');
+            Log.warn('ID: $id does not exists! ${path}');
             Sprite.create(this);
         } else {
             Sprite.create(this, getDefinition(id));

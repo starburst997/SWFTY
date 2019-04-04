@@ -543,7 +543,7 @@ class BaseSprite extends EngineSprite {
                 load(definition);
             } else {
                 #if dev
-                Log.warn('Definition does not exists: ${_linkage}');
+                Log.warn('Definition does not exists: ${_linkage} ${layer.path}');
                 #end
             }
         } else {
@@ -568,8 +568,7 @@ class BaseSprite extends EngineSprite {
         _sprites.insert(index, sprite);
         
         // TODO: Was that necessary?
-        if (loaded && !sprite.loaded) {
-            //trace('WARNING !!! loaded && !sprite.loaded');
+        if (!sprite.loaded && sprite.layer.loaded) {
             sprite.reload();
         }
     }
@@ -579,8 +578,7 @@ class BaseSprite extends EngineSprite {
         _sprites.push(sprite);
         
         // TODO: Was that necessary?
-        if (loaded && !sprite.loaded) {
-            //trace('WARNING !!! loaded && !sprite.loaded');
+        if (!sprite.loaded && sprite.layer.loaded) {
             sprite.reload();
         }
     }
@@ -629,7 +627,7 @@ class BaseSprite extends EngineSprite {
         } else if (_texts.exists(name)) {
             _texts.get(name);
         } else {
-            if (_definition != null) Log.warn('Child: $name does not exists!');
+            if (_definition != null) Log.warn('Child: $name does not exists! ${_name} ${layer.path}');
             var sprite = FinalSprite.create(layer);
             sprite._name = name;
             _names.set(name, sprite);
@@ -642,7 +640,7 @@ class BaseSprite extends EngineSprite {
         return if (_texts.exists(name)) {
             _texts.get(name);
         } else {
-            if (_definition != null) Log.warn('Text: $name does not exists!');
+            if (_definition != null) Log.warn('Text: $name does not exists! ${_name} ${layer.path}');
             var text = FinalText.create(layer);
             text._name = name;
             _texts.set(name, text);
