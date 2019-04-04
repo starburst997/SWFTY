@@ -119,4 +119,8 @@ abstract Layer(BaseLayer) from BaseLayer to BaseLayer {
     public inline function create(linkage:String):Sprite {
         return this.get(linkage);
     }
+
+    public inline function hasDefinition(linkage:String):Bool {
+        return this.hasMC(linkage);
+    }
 }

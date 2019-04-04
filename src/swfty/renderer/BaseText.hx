@@ -144,6 +144,17 @@ class BaseText extends FinalSprite {
         return color;
     }
 
+    inline function getLineHeight() {
+        if (textDefinition == null || textDefinition.font == null) return 0.0;
+
+        var size = textDefinition.size;
+        return (textDefinition.font.ascent + textDefinition.font.descent + textDefinition.font.leading) / 20 / 1024 * size;
+    }
+
+    public inline function checkMultiline() {
+        return  multiline && (_height > getLineHeight() * 1.70);
+    }
+
     function set_text(text:String) {
         if (this.text == text) return text;
 
@@ -175,6 +186,9 @@ class BaseText extends FinalSprite {
         y += (1 - (textDefinition.font.ascent / (textDefinition.font.ascent + textDefinition.font.descent))) * size; 
         
         var lineHeight = (textDefinition.font.ascent + textDefinition.font.descent + textDefinition.font.leading) / 20 / 1024 * size;
+        
+        // Check if it's really multiline
+        var multiline = checkMultiline();
 
         var hasSpace = false;
         var lastSpaceX = 0.0;

@@ -180,6 +180,10 @@ class BaseSprite extends EngineSprite {
         forceBounds = _bounds;
     }
 
+    public inline function hasForceBounds() {
+        return forceBounds != null;
+    }
+
     function get__width():Float {
         return bounds.width * scaleX;
     }
