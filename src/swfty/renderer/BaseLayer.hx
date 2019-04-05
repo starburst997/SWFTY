@@ -11,6 +11,8 @@ import zip.ZipReader;
 @:access(swfty.renderer.BaseSprite)
 class BaseLayer extends EngineLayer {
 
+    public static var baseID = 0;
+
     public var disposed = false;
 
     var _width:Int = 1;
@@ -42,6 +44,13 @@ class BaseLayer extends EngineLayer {
 
     public var shared:Shared = {};
     var cancelInteract = false;
+
+    public var renderID = 0;
+    public var spriteRenderID = 0;
+
+    public var parentLayer:Layer = null;
+    var layers:Array<Layer> = [];
+    var pruneLayers:Array<Layer> = [];
 
     // Mouse need to be updated from the engine
     public var mouse = new Mouse();
@@ -152,6 +161,15 @@ class BaseLayer extends EngineLayer {
         return (mouse.y - baseLayout.y) / baseLayout.scaleY;
     }
 
+    public function calculateRenderID() {
+        renderID = BaseLayer.baseID++;
+
+        for (i in 0...layers.length) {
+            var layer = layers[layers.length - i - 1];
+            layer.calculateRenderID();
+        }
+    }
+
     public function update(dt:Float) {
         if (pause || sleeping) return;
 
@@ -172,6 +190,7 @@ class BaseLayer extends EngineLayer {
             }
         }
 
+        spriteRenderID = 0;
         base.update(dt);
 
         for (f in postRenders) f(dt);
@@ -204,6 +223,11 @@ class BaseLayer extends EngineLayer {
         if (pruneMouseUps.length > 0) {
             for (f in pruneMouseUps) mouseUps.remove(f);
             pruneMouseUps = [];
+        }
+
+        if (pruneLayers.length > 0) {
+            for (f in pruneLayers) layers.remove(f);
+            pruneLayers = [];
         }
 
         // Reset mouse properties
@@ -292,6 +316,21 @@ class BaseLayer extends EngineLayer {
 
     public inline function createBitmap(id:Int, og:Bool = false) {
         return DisplayBitmap.create(this, id, og);
+    }
+
+    public function addLayer(layer:Layer) {
+        layers.push(layer);
+        layer.parentLayer = this;
+    }
+
+    public function addLayerAt(layer:Layer, index:Int) {
+        layers.insert(index, layer);
+        layer.parentLayer = this;
+    }
+
+    public function removeLayer(layer:Layer) {
+        pruneLayers.push(layer);
+        layer.parentLayer = null;
     }
 
     public function emptyTile(?id:Int):DisplayTile {
@@ -503,12 +542,14 @@ class BaseLayer extends EngineLayer {
         if (!disposed) {
             disposed = true;
 
+            layers = [];
             renders = [];
             mouseDowns = [];
             mouseUps = [];
             wakes = [];
             sleeps = [];
             
+            pruneLayers = [];
             pruneWakes = [];
             pruneSleeps = [];
             pruneRenders = [];
@@ -518,6 +559,11 @@ class BaseLayer extends EngineLayer {
             swfty = None;
             tiles = new IntMap();
             mcs = new StringMap();
+
+            if (parentLayer != null) {
+                parentLayer.removeLayer(this);
+                parentLayer = null;
+            }
 
             baseLayout.dispose();
             baseLayout = null;

@@ -31,7 +31,7 @@ typedef FinalLayer = heaps.swfty.renderer.Layer.FinalLayer;
 #error 'Unsupported framework (please use OpenFL or Heaps)'
 #end
 
-@:forward(id, getIndex, container, empty, sleeping, loaded, textureMemory, screenWidth, screenHeight, scale, x, y, scaleX, scaleY, rotation, alpha, visible, dispose, pause, canInteract, path, removeAll, addPostRenderNow, addPostRender, removePostRender, addRender, addRenderNow, removeRender, removeWake, removeSleep, addWake, addSleep, addMouseDown, removeMouseDown, addMouseUp, removeMouseUp, mouse, base, baseLayout, loadBytes, loadImage, reload, update, getAllNames, time, hasParent, disposed, shared, tileset)
+@:forward(id, getIndex, calculateRenderID, renderID, spriteRenderID, parentLayer, addLayer, addLayerAt, removeLayer, container, empty, sleeping, loaded, textureMemory, screenWidth, screenHeight, scale, x, y, scaleX, scaleY, rotation, alpha, visible, dispose, pause, canInteract, path, removeAll, addPostRenderNow, addPostRender, removePostRender, addRender, addRenderNow, removeRender, removeWake, removeSleep, addWake, addSleep, addMouseDown, removeMouseDown, addMouseUp, removeMouseUp, mouse, base, baseLayout, loadBytes, loadImage, reload, update, getAllNames, time, hasParent, disposed, shared, tileset)
 abstract Layer(BaseLayer) from BaseLayer to BaseLayer {
     public static inline function load(?width:Int, ?height:Int, ?path:String, ?bytes:Bytes, ?onComplete:Layer->Void, ?onError:Dynamic->Void):Layer {
         var layer = FinalLayer.create(width, height);

@@ -29,6 +29,21 @@ class FinalLayer extends BaseLayer {
         _height = height;
     }
 
+    override function addLayer(layer:Layer) {
+        super.addLayer(layer);
+        container.addChild(layer.container);
+    }
+
+    override function addLayerAt(layer:Layer, index:Int) {
+        super.addLayerAt(layer, index);
+        container.addChildAt(layer.container, index);
+    }
+
+    override function removeLayer(layer:Layer) {
+        super.removeLayer(layer);
+        if (layer.container.parent != null) layer.container.parent.removeChild(layer.container);
+    }
+
     override function get_container() {
         if (container == null) {
             container = new EngineContainer();

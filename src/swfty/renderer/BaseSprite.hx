@@ -25,6 +25,8 @@ class BaseSprite extends EngineSprite {
     public var loaded = false;
     public var debug = false;
 
+    public var renderID:Int = 0;
+
     // TODO: Only used on heaps, kind of a hack, I think saving the ColorType instead might solve this
     public var r:Float = 1.0;
     public var g:Float = 1.0;
@@ -275,7 +277,10 @@ class BaseSprite extends EngineSprite {
 
         if (countVisible) _layer.hasVisible = true;
 
-        for (sprite in _sprites) {
+        renderID = layer.spriteRenderID++;
+
+        for (i in 0..._sprites.length) {
+            var sprite = _sprites[_sprites.length - 1 - i];
             sprite.update(dt);
         }
 

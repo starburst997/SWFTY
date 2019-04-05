@@ -39,7 +39,7 @@ class Interactions {
             }
 
             // Look interactions in all layers and resolve it, if there was only one we can skip all this
-            if (nInteractions == 1) {
+            if (nInteractions == 1) { // Ez peazy
                 trace('WARNING ONLY ONE INTERACTION');
 
                 if (lastInteraction != null) {
@@ -47,68 +47,77 @@ class Interactions {
                         interactions.set(lastInteraction.sprite.layer, []);
                     }
                     
-                    lastInteraction.handler();
-                    @:privateAccess manager.click(lastInteraction.sprite);
+                    if (lastInteraction.handler != null) lastInteraction.handler();
+                    if (lastInteraction.isClick) @:privateAccess manager.click(lastInteraction.sprite);
                 }
-
-                nInteractions = 0;
-                lastInteraction = null;
 
             } else if (nInteractions > 1) {
                 trace('WARNING MULTIPLE INTERACTIONS, $nInteractions');
 
-                // TODO: The order *SHOULD* be from Top to Bottom, so first interaction wins
+                var sortedLayers = manager.layers.copy();
+                sortedLayers.sort(function(a, b):Int {
+                    if (a.renderID < b.renderID) return -1;
+                    else if (a.renderID > b.renderID) return 1;
+                    return 0;
+                });
+
                 var found = false;
-                for (i in 0...manager.layers.length) {
-                    var layer = manager.layers[manager.layers.length - i - 1];
-                    if (layer.disposed) {
+                for (layer in sortedLayers) {
+                    if (layer.disposed || layer.renderID <= 0) {
                         interactions.remove(layer);
                     } else if (interactions.exists(layer)) {
                         var sprites = interactions.get(layer);
                         if (found) {
-                            if (sprites.length > 0) interactions.set(layer, []);
+                            if (sprites.length > 0) {
+                                trace('INTERACTION DISCARDED');
+                                interactions.set(layer, []);
+                            }
                         } else if (sprites.length > 0) {
-                            // Count the number of parents, the lowest should be on top
-                            // TODO: This doesn't work!
+                            
+                            trace('INTERACTIONS FOUND', layer.renderID);
+
+                            var currentInteraction = sprites[0];
+                            for (interaction in sprites) {
+                                if (interaction.sprite.renderID < currentInteraction.sprite.renderID) currentInteraction = interaction;
+                            }
+
                             found = true;
-                            var n = 9999999;
-                            var interaction = null;
-                            for (sprite in sprites) {
-                                var parents = 0;
-                                var parent = sprite.sprite;
+                            var oneClick = currentInteraction.isClick;
+
+                            // Also any interactions that are children
+                            for (interaction in sprites) if (interaction != currentInteraction) {
+                                var parent = interaction.sprite;
                                 while (parent != null) {
-                                    parent = parent.parent;
-                                    parents++;
-                                }
-
-                                if (parents < n) {
-                                    interaction = sprite;
-                                } else if (parents == n) {
-                                    // Check child index
-                                    if (interaction == null || sprite.sprite.getIndex() > interaction.sprite.getIndex()) {
-                                        interaction = sprite;
+                                    if (parent == currentInteraction.sprite) {
+                                        if (interaction.handler != null) interaction.handler();
+                                        if (!oneClick && interaction.isClick) {
+                                            oneClick = true;
+                                            @:privateAccess manager.click(interaction.sprite);
+                                        }
+                                        break;
                                     }
+                                    parent = parent.parent;
                                 }
                             }
 
-                            if (interaction != null) {
-                                interaction.handler();
-                                @:privateAccess manager.click(interaction.sprite);
-                            }
+                            if (currentInteraction.handler != null) currentInteraction.handler();
+                            if (currentInteraction.isClick) @:privateAccess manager.click(currentInteraction.sprite);
 
                             interactions.set(layer, []);
                         }
                     }
                 }
+            }
 
+            if (nInteractions > 0) {
                 nInteractions = 0;
                 lastInteraction = null;
             }
         });
     }
 
-    static inline function addInteraction(sprite:Sprite, f:Void->Void) {
-        lastInteraction = {sprite: sprite, handler: f};
+    static inline function addInteraction(sprite:Sprite, ?f:Void->Void, ?isClick = false) {
+        lastInteraction = {sprite: sprite, handler: f, isClick: isClick};
         nInteractions++;
 
         if (!interactions.exists(sprite.layer)) {
@@ -174,11 +183,12 @@ class Interactions {
                     case Down : 
                         if (getBounds().inside(x, y)) {
                             wasInside = true;
+                            if (useManager) addInteraction(child);
                         }
                     case Up : 
                         if (wasInside && getBounds().inside(x, y)) {
                             if (useManager) {
-                                addInteraction(child, f);
+                                addInteraction(child, f, true);
                             } else {
                                 f();
                             }
@@ -375,9 +385,11 @@ class Interactions {
 class Interaction {
     public var sprite:Sprite;
     public var handler:Void->Void;
+    public var isClick:Bool;
 
-    public function new(sprite:Sprite, handler:Void->Void) {
+    public function new(sprite:Sprite, ?handler:Void->Void, ?isClick = false) {
         this.sprite = sprite;
         this.handler = handler;
+        this.isClick = isClick;
     }
 }

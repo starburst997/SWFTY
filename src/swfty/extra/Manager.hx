@@ -32,6 +32,8 @@ class Manager {
 
     public var mouse(default, null) = new Mouse(true);
 
+    public var master:Layer = null;
+
     var renders:Array<Void->Void> = [];
     var preRenders:Array<Void->Void> = [];
     var timer = 0.0;
@@ -140,12 +142,20 @@ class Manager {
 
         for (f in preRenders) f();
 
+        // TODO: Has a slight optimization we could call update() in order of rendering like calculateRenderID()
+        //       However it might be interesting to have layers still having update() even when not rendered....
         for (layer in layers) {
             if (layer.disposed) {
                 remove(layer);
             } else {
                 layer.update(dt);
             }
+        }
+
+        // Calculate renderID
+        if (master != null) {
+            BaseLayer.baseID = 0;
+            master.calculateRenderID();
         }
 
         for (f in renders) f();
