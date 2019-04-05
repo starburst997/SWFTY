@@ -309,9 +309,17 @@ class BaseText extends FinalSprite {
                 // Special cases
                 switch(code) {
                     case NEW_LINE | RETURN : 
+                        currentLine.textWidth = x;
+                        
                         y += lineHeight;
                         x = 0.0;
                         if (singleLine) break;
+
+                        currentLine = {
+                            textWidth: 0.0,
+                            tiles: []
+                        };
+                        lines.push(currentLine);
                     case _ : 
                 }
             }
@@ -376,10 +384,9 @@ class BaseText extends FinalSprite {
                         if (tile.tile != null) tile.tile.x += _width - line.textWidth;
                 }
             case Center  : 
-                for (line in lines) {
+                for (line in lines)
                     for (tile in line.tiles)
                         if (tile.tile != null) tile.tile.x += _width / 2 - line.textWidth / 2;
-                }
             case Justify : trace('Justify not supported!!!');
         }
 
