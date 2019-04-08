@@ -75,6 +75,15 @@ abstract Sprite(FinalSprite) from FinalSprite to FinalSprite {
         @:privateAccess return this._name = name;
     }
 
+    public var mask(get, set):Rectangle;
+    inline function get_mask():Rectangle {
+        @:privateAccess return this._mask;
+    }
+
+    inline function set_mask(mask:Rectangle):Rectangle {
+        @:privateAccess return this._mask = mask;
+    }
+
     public var width(get, set):Float;
     inline function get_width():Float {
         @:privateAccess return this._width;

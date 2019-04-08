@@ -22,6 +22,11 @@ class FinalSprite extends BaseSprite {
         
     }
 
+    override function set__mask(value:Rectangle) {
+        this.scrollRect = new openfl.geom.Rectangle(value.x, value.y, value.width, value.height);
+        return super.set__mask(value);
+    }
+
     override function set__name(name:String) {
         if (_parent != null) {
             @:privateAccess _parent._names.set(name, this);

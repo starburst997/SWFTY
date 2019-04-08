@@ -50,6 +50,12 @@ class BaseSprite extends EngineSprite {
     var _definition:Null<MovieClipType>;
     var _bounds:Rectangle;
 
+    var _mask(default, set):Rectangle = null;
+    function set__mask(value:Rectangle) {
+        _mask = value;
+        return value;
+    }
+
     var _parent(default, set):FinalSprite;
     inline function set__parent(value:FinalSprite) {
         if (_parent == null && _visible) {
@@ -122,7 +128,7 @@ class BaseSprite extends EngineSprite {
     }
 
     function set__name(name:String) {
-        if (_parent != null) {
+        if (_parent != null && _name != name) {
             _parent._names.remove(_name);
         }
         

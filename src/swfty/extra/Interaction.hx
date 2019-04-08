@@ -21,9 +21,10 @@ class Interactions {
     public static var exclusive:Sprite = null;
 
     public static var debugCount = 0;
+    public static var clickID = 0;
 
     // Inject the layer resolver interaction
-    static inline function manage(manager:Manager) {
+    static function manage(manager:Manager) {
         // We switch to manager mode
         useManager = true;
 
@@ -34,15 +35,19 @@ class Interactions {
         manager.addRender(function() {
 
             if (debugCount > 0) {
-                trace('N INTERACTIONS $debugCount');
+                trace('WARNING N INTERACTIONS $debugCount');
                 debugCount = 0;
+            }
+
+            if (nInteractions > 0) {
+                trace('WARNING CLICK ID', clickID);
             }
 
             // Look interactions in all layers and resolve it, if there was only one we can skip all this
             if (nInteractions == 1) { // Ez peazy
-                trace('WARNING ONLY ONE INTERACTION');
-
                 if (lastInteraction != null) {
+                    trace('WARNING ONLY ONE INTERACTION', chainName(lastInteraction.sprite));
+                    
                     if (interactions.exists(lastInteraction.sprite.layer)) {
                         interactions.set(lastInteraction.sprite.layer, []);
                     }
@@ -69,26 +74,32 @@ class Interactions {
                         var sprites = interactions.get(layer);
                         if (found) {
                             if (sprites.length > 0) {
-                                trace('INTERACTION DISCARDED');
+                                trace('WARNING INTERACTION DISCARDED');
+
                                 interactions.set(layer, []);
                             }
                         } else if (sprites.length > 0) {
                             
-                            trace('INTERACTIONS FOUND', layer.renderID);
-
-                            var currentInteraction = sprites[0];
-                            for (interaction in sprites) {
-                                if (interaction.sprite.renderID < currentInteraction.sprite.renderID) currentInteraction = interaction;
-                            }
+                            trace('WARNING INTERACTIONS FOUND', layer.path, layer.renderID);
 
                             found = true;
-                            var oneClick = currentInteraction.isClick;
+                            var oneClick = false;
 
-                            // Also any interactions that are children
-                            for (interaction in sprites) if (interaction != currentInteraction) {
+                            // Sort by lowest renderID
+                            sprites.sort(function(a, b):Int {
+                                if (a.sprite.renderID < b.sprite.renderID) return -1;
+                                else if (a.sprite.renderID > b.sprite.renderID) return 1;
+                                return 0;
+                            });
+
+                            var currentInteraction = sprites[0];
+
+                            for (interaction in sprites) {
                                 var parent = interaction.sprite;
                                 while (parent != null) {
                                     if (parent == currentInteraction.sprite) {
+                                        trace('WARNING INTERACTION', chainName(interaction.sprite), interaction.sprite.renderID);
+
                                         if (interaction.handler != null) interaction.handler();
                                         if (!oneClick && interaction.isClick) {
                                             oneClick = true;
@@ -98,10 +109,12 @@ class Interactions {
                                     }
                                     parent = parent.parent;
                                 }
-                            }
 
-                            if (currentInteraction.handler != null) currentInteraction.handler();
-                            if (currentInteraction.isClick) @:privateAccess manager.click(currentInteraction.sprite);
+                                if (manager.stopPropagation) {
+                                    trace('STOP PROPAGATION');
+                                    break;
+                                } 
+                            }
 
                             interactions.set(layer, []);
                         }
@@ -110,10 +123,26 @@ class Interactions {
             }
 
             if (nInteractions > 0) {
+                trace('WARNING ---------------------------');
+
+                clickID++;
                 nInteractions = 0;
                 lastInteraction = null;
+                manager.stopPropagation = false;
             }
         });
+    }
+
+    static inline function chainName(sprite:Sprite) {
+        var str = '';
+        var parent = sprite;
+
+        while(parent != null) {
+            str += (str == '' ? '' : '.') + parent.name;
+            parent = parent.parent;
+        }
+
+        return str;
     }
 
     static inline function addInteraction(sprite:Sprite, ?f:Void->Void, ?isClick = false) {
@@ -211,19 +240,17 @@ class Interactions {
         // TODO: 99% of case the bounds doesn't change, but maybe we shouldn't cache it? We still take into account local x / y
         var bounds:Rectangle = null;
         inline function getBounds() {
-            if (!cache || bounds == null) bounds = child.calcBounds(true);
+            /*if (!cache || bounds == null)*/ bounds = child.calcBounds(true);
             return bounds;
         }
 
         // Detect left click inside and wait for mouse up inside to trigger handler
-        var wasInside = false;
         child.addRender(RENDER_ID, function render(dt) {
             
             if (child.layer == null) return;
             
             var mouse = child.layer.mouse;
             if (mouse.leftChanged) {
-                
                 debugCount++;
                 
                 if (child.layer == null || !child.visible || !child.loaded || !child.layer.shared.canInteract || child.layer._base.cancelInteract || checkExclusive(sprite)) return;
@@ -232,20 +259,18 @@ class Interactions {
                 var x = mouse.x;
 
                 switch(mouse.left) {
-                    case Down : 
+                    case Down :         
                         if (getBounds().inside(x, y)) {
-                            if (!wasInside) {
-                                if (useManager) {
-                                    addInteraction(child, f);
-                                } else {
-                                    f();
-                                }
+                            if (useManager) {
+                                addInteraction(child, f);
+                            } else {
+                                f();
                             }
-
-                            wasInside = true;
                         }
-                    case Up : 
-                        wasInside = false;
+                    case Up :
+                        /*if (useManager) { // Block mouse up on sprite below
+                            if (getBounds().inside(x, y)) addInteraction(child);
+                        }*/                       
                     case _ : 
                 }
             }
@@ -263,19 +288,17 @@ class Interactions {
         // TODO: 99% of case the bounds doesn't change, but maybe we shouldn't cache it? We still take into account local x / y
         var bounds:Rectangle = null;
         inline function getBounds() {
-            if (!cache || bounds == null) bounds = child.calcBounds(true);
+            /*if (!cache || bounds == null)*/ bounds = child.calcBounds(true);
             return bounds;
         }
 
         // Detect left click inside and wait for mouse up inside to trigger handler
-        var wasInside = false;
         child.addRender(RENDER_ID, function render(dt) {
             
             if (child.layer == null) return;
             
             var mouse = child.layer.mouse;
             if (mouse.leftChanged) {
-                
                 debugCount++;
 
                 if (!child.loaded || !child.visible || !child.layer.shared.canInteract || child.layer._base.cancelInteract || checkExclusive(sprite)) return;
@@ -285,6 +308,9 @@ class Interactions {
 
                 switch(mouse.left) {
                     case Down : 
+                        /*if (useManager) { // Block mouse down on sprite below
+                            if (getBounds().inside(x, y)) addInteraction(child);
+                        }*/
                     case Up : 
                         if (getBounds().inside(x, y)) {
                             if (useManager) {

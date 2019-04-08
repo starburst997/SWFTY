@@ -28,6 +28,12 @@ class BaseLayer extends EngineLayer {
         return container;
     }
 
+    var _mask(default, set):Rectangle = null;
+    function set__mask(value:Rectangle) {
+        _mask = value;
+        return value;
+    }
+
     public var time:Float = 0;
 
     public var sleeping = false;

@@ -4,7 +4,6 @@ import haxe.io.Bytes;
 import haxe.ds.IntMap;
 
 import openfl.geom.Point;
-import openfl.geom.Rectangle;
 import openfl.display.BitmapData;
 
 typedef EngineContainer = openfl.display.Sprite;
@@ -15,7 +14,7 @@ typedef DisplayTile = openfl.display.BitmapData;
 class FinalLayer extends BaseLayer {
 
     var texture:BitmapData;
-    var rects:IntMap<Rectangle> = new IntMap();
+    var rects:IntMap<openfl.geom.Rectangle> = new IntMap();
 
     public static inline function create(?width:Int, ?height:Int) {
         return new FinalLayer(width, height);
@@ -27,6 +26,12 @@ class FinalLayer extends BaseLayer {
 
         _width = width;
         _height = height;
+    }
+
+    // TODO: Maybe we want to also "scrollRect" the whole layer, not just container?
+    override function set__mask(value:Rectangle) {
+        container.scrollRect = new openfl.geom.Rectangle(value.x, value.y, value.width, value.height);
+        return super.set__mask(value);
     }
 
     override function addLayer(layer:Layer) {
@@ -97,7 +102,7 @@ class FinalLayer extends BaseLayer {
 
             tiles = new IntMap();
             for (tile in swfty.tiles) {
-                rects.set(tile.id, new Rectangle(tile.x, tile.y, tile.width, tile.height));
+                rects.set(tile.id, new openfl.geom.Rectangle(tile.x, tile.y, tile.width, tile.height));
             }
 
             texture = bmpd;

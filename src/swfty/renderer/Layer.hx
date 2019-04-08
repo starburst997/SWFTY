@@ -82,6 +82,15 @@ abstract Layer(BaseLayer) from BaseLayer to BaseLayer {
         @:privateAccess return this._height;
     }
 
+    public var mask(get, set):Rectangle;
+    inline function get_mask():Rectangle {
+        @:privateAccess return this._mask;
+    }
+
+    inline function set_mask(mask:Rectangle):Rectangle {
+        @:privateAccess return this._mask = mask;
+    }
+
     public function layout(targetWidth:Float, targetHeight:Float) {
         // First layout by height, if offset is negative, then we layout by width
         // Ideally you make your UI to fit vertically, if the device is larger in width it will simply offset

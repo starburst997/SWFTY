@@ -34,6 +34,8 @@ class Manager {
 
     public var master:Layer = null;
 
+    public var stopPropagation = false;
+
     var renders:Array<Void->Void> = [];
     var preRenders:Array<Void->Void> = [];
     var timer = 0.0;
