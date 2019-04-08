@@ -168,12 +168,12 @@ class BaseLayer extends EngineLayer {
     }
 
     public function calculateRenderID() {
-        renderID = BaseLayer.baseID++;
-
         for (i in 0...layers.length) {
             var layer = layers[layers.length - i - 1];
             layer.calculateRenderID();
         }
+
+        renderID = BaseLayer.baseID++;
     }
 
     public function update(dt:Float) {

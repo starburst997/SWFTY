@@ -74,7 +74,7 @@ class Interactions {
                         var sprites = interactions.get(layer);
                         if (found) {
                             if (sprites.length > 0) {
-                                trace('WARNING INTERACTION DISCARDED');
+                                trace('WARNING INTERACTION DISCARDED', layer.path, layer.renderID);
 
                                 interactions.set(layer, []);
                             }
