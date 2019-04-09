@@ -152,6 +152,15 @@ class Rectangle {
         return x;
     }
 
+    public inline function set(x, y, width, height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        
+        return this;
+    }
+
     public inline function inflate(width:Float, height:Float) {
         this.x -= width;
         this.width += width * 2;

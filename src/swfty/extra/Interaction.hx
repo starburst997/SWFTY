@@ -41,6 +41,8 @@ class Interactions {
             // Look interactions in all layers and resolve it, if there was only one we can skip all this
             if (nInteractions == 1) { // Ez peazy
                 if (lastInteraction != null) {
+                    trace('********* ONE INTERACTION', chainName(lastInteraction.sprite));
+
                     if (interactions.exists(lastInteraction.sprite.layer)) {
                         interactions.set(lastInteraction.sprite.layer, []);
                     }
@@ -57,6 +59,8 @@ class Interactions {
                     return 0;
                 });
 
+                trace('********* MULTIPLE INTERACTION');
+
                 var found = false;
                 for (layer in sortedLayers) {
                     if (layer.disposed || layer.renderID <= 0) {
@@ -65,11 +69,15 @@ class Interactions {
                         var sprites = interactions.get(layer);
                         if (found) {
                             if (sprites.length > 0) {
+                                trace('********* SKIPPED', layer.path);
+
                                 interactions.set(layer, []);
                             }
                         } else if (sprites.length > 0) {
                             found = true;
                             var oneClick = false;
+
+                            trace('********* LAYER', layer.path);
 
                             // Sort by lowest renderID
                             sprites.sort(function(a, b):Int {
@@ -86,6 +94,8 @@ class Interactions {
                                     if (parent == currentInteraction.sprite) {
                                         currentInteraction = interaction;
 
+                                        trace('********* SPRITE', chainName(currentInteraction.sprite));
+
                                         if (interaction.handler != null) interaction.handler();
                                         
                                         if (!oneClick) {
@@ -97,7 +107,14 @@ class Interactions {
                                     parent = parent.parent;
                                 }
 
+                                if (currentInteraction != interaction) {
+                                    trace('********* SKIPPED SPRITE', chainName(currentInteraction.sprite));
+                                } else {
+                                    trace('********* GOOD !');
+                                }
+
                                 if (manager.stopPropagation) {
+                                    trace('********* STOP PROPAGATION');
                                     break;
                                 } 
                             }
@@ -162,6 +179,27 @@ class Interactions {
         return exclusive != null;
     }
 
+    public static function checkMask(sprite:Sprite, x:Float, y:Float) {
+        // Loop all parent until we find a mask and return false if not inside
+        var parent = sprite;
+        var rect:Rectangle = {};
+        while (parent != null) {
+            if (parent.mask != null) {
+                var topLeft = sprite.localToLayer(parent.mask.x, parent.mask.y);
+                var bottomRight = sprite.localToLayer(parent.mask.x + parent.mask.width, parent.mask.y + parent.mask.height);
+
+                if (!rect.set(topLeft.x, topLeft.y, bottomRight.x - topLeft.x, bottomRight.y - topLeft.y).inside(x, y)) {
+                    trace('!!!!!!!!!!!!!NOT INSIDE MASK!!!!!!!!!!!!');
+                    return false;
+                }
+            }
+
+            parent = parent.parent;
+        }
+
+        return true;
+    }
+
     public static function click(sprite:Sprite, ?name:String, ?cache = true, f:Void->Void) {
         var child = name == null ? sprite : sprite.get(name);
 
@@ -194,12 +232,12 @@ class Interactions {
 
                 switch(mouse.left) {
                     case Down : 
-                        if (getBounds().inside(x, y)) {
+                        if (checkMask(child, x, y) && getBounds().inside(x, y)) {
                             wasInside = true;
                             if (useManager) addInteraction(child);
                         }
                     case Up : 
-                        if (wasInside && getBounds().inside(x, y)) {
+                        if (wasInside && checkMask(child, x, y) && getBounds().inside(x, y)) {
                             if (useManager) {
                                 addInteraction(child, f, true);
                             } else {
@@ -222,6 +260,7 @@ class Interactions {
 
         // Cache bounds with transform to stage coordinate
         // TODO: 99% of case the bounds doesn't change, but maybe we shouldn't cache it? We still take into account local x / y
+        // TODO: The x / y does changes a lot tho!
         var bounds:Rectangle = null;
         inline function getBounds() {
             /*if (!cache || bounds == null)*/ bounds = child.calcBounds(true);
@@ -244,7 +283,7 @@ class Interactions {
 
                 switch(mouse.left) {
                     case Down :         
-                        if (getBounds().inside(x, y)) {
+                        if (checkMask(child, x, y) && getBounds().inside(x, y)) {
                             if (useManager) {
                                 addInteraction(child, f);
                             } else {
@@ -296,7 +335,7 @@ class Interactions {
                             if (getBounds().inside(x, y)) addInteraction(child);
                         }*/
                     case Up : 
-                        if (getBounds().inside(x, y)) {
+                        if (checkMask(child, x, y) && getBounds().inside(x, y)) {
                             if (useManager) {
                                 addInteraction(child, f);
                             } else {

@@ -19,6 +19,10 @@ class Mouse {
     public var middle(default, set):ButtonState = Normal;
     public var right(default, set):ButtonState = Normal;
 
+    var queueLeft:Array<ButtonState> = [];
+    var queueMiddle:Array<ButtonState> = [];
+    var queueRight:Array<ButtonState> = [];
+
     var disableReset = false;
 
     public function new(disableReset = false) {
@@ -26,20 +30,33 @@ class Mouse {
     }
 
     inline function set_left(state:ButtonState) {
-        left = state;
-        leftChanged = true;
+        if (leftChanged) {
+            trace('!!!!!!!!!!!!!!! QUEUE LEFT');
+            queueLeft.push(state);
+        } else {
+            left = state;
+            leftChanged = true;
+        }
         return state;
     }
 
     inline function set_middle(state:ButtonState) {
-        middle = state;
-        middleChanged = true;
+        if (middleChanged) {
+            queueMiddle.push(state);
+        } else {
+            middle = state;
+            middleChanged = true;
+        }
         return state;
     }
 
     inline function set_right(state:ButtonState) {
-        right = state;
-        rightChanged = true;
+        if (rightChanged) {
+            queueRight.push(state);
+        } else {
+            right = state;
+            rightChanged = true;
+        }
         return state;
     }
 
@@ -60,6 +77,11 @@ class Mouse {
     public inline function reset(force = false) {
         if (!force && disableReset) return;
 
+        // TODO: Find a way to set the getter without calling the setter?
+        leftChanged = false;
+        rightChanged = false;
+        middleChanged = false;
+
         switch(left) {
             case Up : left = Normal;
             case _  :
@@ -76,5 +98,9 @@ class Mouse {
         leftChanged = false;
         rightChanged = false;
         middleChanged = false;
+
+        if (queueLeft.length > 0) left = queueLeft.shift();
+        if (queueMiddle.length > 0) middle = queueMiddle.shift();
+        if (queueRight.length > 0) right = queueRight.shift();
     }
 }

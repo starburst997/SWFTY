@@ -36,6 +36,10 @@ class Manager {
 
     public var stopPropagation = false;
 
+    public var fps = 60;
+    var fpsCounter = 0;
+    var fpsTimer = 0.0;
+
     var renders:Array<Void->Void> = [];
     var preRenders:Array<Void->Void> = [];
     var timer = 0.0;
@@ -137,6 +141,13 @@ class Manager {
     }
 
     public function update() {
+        fpsCounter++;
+        if (haxe.Timer.stamp() - fpsTimer > 1.0) {
+            fps = fpsCounter;
+            fpsCounter = 0;
+            fpsTimer = haxe.Timer.stamp();
+        }
+
         dt = (haxe.Timer.stamp() - timer); 
         timer = haxe.Timer.stamp();
 
