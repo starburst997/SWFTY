@@ -35,19 +35,12 @@ class Interactions {
         manager.addRender(function() {
 
             if (debugCount > 0) {
-                trace('WARNING N INTERACTIONS $debugCount');
                 debugCount = 0;
-            }
-
-            if (nInteractions > 0) {
-                trace('WARNING CLICK ID', clickID);
             }
 
             // Look interactions in all layers and resolve it, if there was only one we can skip all this
             if (nInteractions == 1) { // Ez peazy
                 if (lastInteraction != null) {
-                    trace('WARNING ONLY ONE INTERACTION', chainName(lastInteraction.sprite));
-                    
                     if (interactions.exists(lastInteraction.sprite.layer)) {
                         interactions.set(lastInteraction.sprite.layer, []);
                     }
@@ -57,8 +50,6 @@ class Interactions {
                 }
 
             } else if (nInteractions > 1) {
-                trace('WARNING MULTIPLE INTERACTIONS, $nInteractions');
-
                 var sortedLayers = manager.layers.copy();
                 sortedLayers.sort(function(a, b):Int {
                     if (a.renderID < b.renderID) return -1;
@@ -74,14 +65,9 @@ class Interactions {
                         var sprites = interactions.get(layer);
                         if (found) {
                             if (sprites.length > 0) {
-                                trace('WARNING INTERACTION DISCARDED', layer.path, layer.renderID);
-
                                 interactions.set(layer, []);
                             }
                         } else if (sprites.length > 0) {
-                            
-                            trace('WARNING INTERACTIONS FOUND', layer.path, layer.renderID);
-
                             found = true;
                             var oneClick = false;
 
@@ -98,10 +84,11 @@ class Interactions {
                                 var parent = interaction.sprite;
                                 while (parent != null) {
                                     if (parent == currentInteraction.sprite) {
-                                        trace('WARNING INTERACTION', chainName(interaction.sprite), interaction.sprite.renderID);
+                                        currentInteraction = interaction;
 
                                         if (interaction.handler != null) interaction.handler();
-                                        if (!oneClick && interaction.isClick) {
+                                        
+                                        if (!oneClick) {
                                             oneClick = true;
                                             @:privateAccess manager.click(interaction.sprite);
                                         }
@@ -111,7 +98,6 @@ class Interactions {
                                 }
 
                                 if (manager.stopPropagation) {
-                                    trace('STOP PROPAGATION');
                                     break;
                                 } 
                             }
@@ -123,8 +109,6 @@ class Interactions {
             }
 
             if (nInteractions > 0) {
-                trace('WARNING ---------------------------');
-
                 clickID++;
                 nInteractions = 0;
                 lastInteraction = null;
