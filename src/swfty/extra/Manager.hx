@@ -42,11 +42,13 @@ class Manager {
 
     var renders:Array<Void->Void> = [];
     var preRenders:Array<Void->Void> = [];
+    var postRenders:Array<Void->Void> = [];
     var timer = 0.0;
 
     var pruneLayers:Array<Layer> = [];
     var pruneRenders:Array<Void->Void> = [];
     var prunePreRenders:Array<Void->Void> = [];
+    var prunePostRenders:Array<Void->Void> = [];
 
     var onRemoves:Array<Layer->Void> = [];
     var pruneOnRemoves:Array<Layer->Void> = [];
@@ -111,6 +113,11 @@ class Manager {
         return this;
     }
 
+    public inline function addPostRender(f:Void->Void) {
+        postRenders.push(f);
+        return this;
+    }
+
     public inline function addPreRender(f:Void->Void) {
         preRenders.push(f);
         return this;
@@ -123,6 +130,11 @@ class Manager {
 
     public inline function removePreRender(f:Void->Void) {
         prunePreRenders.push(f);
+        return this;
+    }
+    
+    public inline function removePostRender(f:Void->Void) {
+        prunePostRenders.push(f);
         return this;
     }
 
@@ -138,6 +150,16 @@ class Manager {
     public function removeClick(f:Sprite->Void) {
         clicks.remove(f);
         return this;
+    }
+
+    public function postUpdate() {
+        
+        for (f in postRenders) f();
+        
+        if (prunePostRenders.length > 0) {
+            for (f in prunePostRenders) postRenders.remove(f);
+            prunePostRenders = [];
+        }
     }
 
     public function update() {

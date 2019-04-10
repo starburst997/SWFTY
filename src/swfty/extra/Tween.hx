@@ -329,7 +329,7 @@ class Tween {
             if (time >= 0.0) setVal(ease(time / duration));
             
             if (done) {
-                if (time > 0 && time - dt < 0) setVal(ease(0));
+                if (time > 0 && time - dt < 0 && repeat > 0) setVal(ease(0));
                 time -= dt;
             } else {
                 time += dt;

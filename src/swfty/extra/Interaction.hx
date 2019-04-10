@@ -41,8 +41,6 @@ class Interactions {
             // Look interactions in all layers and resolve it, if there was only one we can skip all this
             if (nInteractions == 1) { // Ez peazy
                 if (lastInteraction != null) {
-                    trace('********* ONE INTERACTION', chainName(lastInteraction.sprite));
-
                     if (interactions.exists(lastInteraction.sprite.layer)) {
                         interactions.set(lastInteraction.sprite.layer, []);
                     }
@@ -59,8 +57,6 @@ class Interactions {
                     return 0;
                 });
 
-                trace('********* MULTIPLE INTERACTION');
-
                 var found = false;
                 for (layer in sortedLayers) {
                     if (layer.disposed || layer.renderID <= 0) {
@@ -69,15 +65,11 @@ class Interactions {
                         var sprites = interactions.get(layer);
                         if (found) {
                             if (sprites.length > 0) {
-                                trace('********* SKIPPED', layer.path);
-
                                 interactions.set(layer, []);
                             }
                         } else if (sprites.length > 0) {
                             found = true;
                             var oneClick = false;
-
-                            trace('********* LAYER', layer.path);
 
                             // Sort by lowest renderID
                             sprites.sort(function(a, b):Int {
@@ -94,8 +86,6 @@ class Interactions {
                                     if (parent == currentInteraction.sprite) {
                                         currentInteraction = interaction;
 
-                                        trace('********* SPRITE', chainName(currentInteraction.sprite));
-
                                         if (interaction.handler != null) interaction.handler();
                                         
                                         if (!oneClick) {
@@ -107,16 +97,9 @@ class Interactions {
                                     parent = parent.parent;
                                 }
 
-                                if (currentInteraction != interaction) {
-                                    trace('********* SKIPPED SPRITE', chainName(currentInteraction.sprite));
-                                } else {
-                                    trace('********* GOOD !');
-                                }
-
                                 if (manager.stopPropagation) {
-                                    trace('********* STOP PROPAGATION');
                                     break;
-                                } 
+                                }
                             }
 
                             interactions.set(layer, []);
@@ -183,13 +166,13 @@ class Interactions {
         // Loop all parent until we find a mask and return false if not inside
         var parent = sprite;
         var rect:Rectangle = {};
+
         while (parent != null) {
             if (parent.mask != null) {
-                var topLeft = sprite.localToLayer(parent.mask.x, parent.mask.y);
-                var bottomRight = sprite.localToLayer(parent.mask.x + parent.mask.width, parent.mask.y + parent.mask.height);
+                var topLeft = parent.localToLayer(parent.mask.x, parent.mask.y);
+                var bottomRight = parent.localToLayer(parent.mask.x + parent.mask.width, parent.mask.y + parent.mask.height);
 
                 if (!rect.set(topLeft.x, topLeft.y, bottomRight.x - topLeft.x, bottomRight.y - topLeft.y).inside(x, y)) {
-                    trace('!!!!!!!!!!!!!NOT INSIDE MASK!!!!!!!!!!!!');
                     return false;
                 }
             }
@@ -282,7 +265,7 @@ class Interactions {
                 var x = mouse.x;
 
                 switch(mouse.left) {
-                    case Down :         
+                    case Down : 
                         if (checkMask(child, x, y) && getBounds().inside(x, y)) {
                             if (useManager) {
                                 addInteraction(child, f);

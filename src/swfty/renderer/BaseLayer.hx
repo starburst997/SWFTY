@@ -189,8 +189,6 @@ class BaseLayer extends EngineLayer {
             var y = mouse.y;
             var x = mouse.x;
 
-            trace('+++++++++ LAYER CHANGED', path, x, y, mouse.left);
-
             switch(mouse.left) {
                 case Down : for (f in mouseDowns) f(x, y);
                 case Up   : for (f in mouseUps) f(x, y);
