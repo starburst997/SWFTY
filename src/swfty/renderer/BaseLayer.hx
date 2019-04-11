@@ -39,6 +39,8 @@ class BaseLayer extends EngineLayer {
     public var sleeping = false;
     public var hasVisible = false;
     public var loaded = false;
+    public var updating = false;
+    public var canDispose = false;
 
     public var id = '';
 
@@ -176,9 +178,15 @@ class BaseLayer extends EngineLayer {
         renderID = BaseLayer.baseID++;
     }
 
+    public inline function offset(x:Float, y:Float) {
+        base.x = x; // / base.scaleX;
+        base.y = y; // / base.scaleY;
+    }
+
     public function update(dt:Float) {
         if (pause || sleeping) return;
 
+        updating = true;
         hasVisible = false;
 
         time = haxe.Timer.stamp() * 1000;
@@ -240,6 +248,12 @@ class BaseLayer extends EngineLayer {
         mouse.reset();
 
         if (!hasVisible) sleep();
+
+        updating = false;
+
+        if (canDispose) {
+            dispose();
+        }
     }
 
     public inline function removeAll() {
@@ -546,36 +560,40 @@ class BaseLayer extends EngineLayer {
 
     public function dispose() {
         if (!disposed) {
-            disposed = true;
+            if (!updating) {
+                disposed = true;
 
-            layers = [];
-            renders = [];
-            mouseDowns = [];
-            mouseUps = [];
-            wakes = [];
-            sleeps = [];
-            
-            pruneLayers = [];
-            pruneWakes = [];
-            pruneSleeps = [];
-            pruneRenders = [];
-            pruneMouseDowns = [];
-            pruneMouseUps = [];
+                layers = [];
+                renders = [];
+                mouseDowns = [];
+                mouseUps = [];
+                wakes = [];
+                sleeps = [];
+                
+                pruneLayers = [];
+                pruneWakes = [];
+                pruneSleeps = [];
+                pruneRenders = [];
+                pruneMouseDowns = [];
+                pruneMouseUps = [];
 
-            swfty = None;
-            tiles = new IntMap();
-            mcs = new StringMap();
+                swfty = None;
+                tiles = new IntMap();
+                mcs = new StringMap();
 
-            if (parentLayer != null) {
-                parentLayer.removeLayer(this);
-                parentLayer = null;
+                if (parentLayer != null) {
+                    parentLayer.removeLayer(this);
+                    parentLayer = null;
+                }
+
+                baseLayout.dispose();
+                baseLayout = null;
+
+                base.dispose();
+                base = null;
+            } else {
+                canDispose = true;
             }
-
-            baseLayout.dispose();
-            baseLayout = null;
-
-            base.dispose();
-            base = null;
         }
     }
 }

@@ -24,6 +24,8 @@ class BaseSprite extends EngineSprite {
     public var countVisible = true;
     public var loaded = false;
     public var debug = false;
+    public var updating = false;
+    public var canDispose = false;
 
     public var renderID:Int = 0;
 
@@ -281,6 +283,8 @@ class BaseSprite extends EngineSprite {
         //       Maybe sleep() / awake() sprite?
         //if (!_visible) return;
 
+        updating = true;
+
         if (countVisible) _layer.hasVisible = true;
 
         renderID = layer.spriteRenderID++;
@@ -313,6 +317,12 @@ class BaseSprite extends EngineSprite {
         if (_pruneSprites.length > 0) {
             for (s in _pruneSprites) _sprites.remove(s);
             _pruneSprites = [];
+        }
+
+        updating = false;
+
+        if (canDispose) {
+            dispose();
         }
     }
 
@@ -558,7 +568,6 @@ class BaseSprite extends EngineSprite {
     }
 
     public function reload() {
-
         // We cannot use definition.id because it can change... would've been nice if it was using the "itemID" instead...
         /*if (_definition != null) {
             if (layer.hasDefinition(_definition.id)) {
@@ -682,33 +691,37 @@ class BaseSprite extends EngineSprite {
     public function dispose() {
         // TODO: Not really necessary... I guess it can help a bit the GC...
         if (!disposed) {
-            disposed = true;
+            if (!updating) {
+                disposed = true;
 
-            removeFromParent();
-            _parent = null;
+                removeFromParent();
+                _parent = null;
 
-            for (sprite in _sprites) {
-                sprite._parent = null;
-                sprite.dispose();
+                for (sprite in _sprites) {
+                    sprite._parent = null;
+                    sprite.dispose();
+                }
+                
+                // TODO: Should I null everything?
+                _renders = [];
+                _rendersMap = new StringMap();
+
+                _sprites = [];
+                _names = new StringMap();
+                _texts = new StringMap();
+
+                _added = [];
+                _removed = [];
+
+                _pruneAdded = [];
+                _pruneRemoved = [];
+                _pruneRenders = [];
+                _pruneSprites = [];
+
+                _bounds = null;
+            } else {
+                canDispose = true;
             }
-            
-            // TODO: Should I null everything?
-            _renders = [];
-            _rendersMap = new StringMap();
-
-            _sprites = [];
-            _names = new StringMap();
-            _texts = new StringMap();
-
-            _added = [];
-            _removed = [];
-
-            _pruneAdded = [];
-            _pruneRemoved = [];
-            _pruneRenders = [];
-            _pruneSprites = [];
-
-            _bounds = null;
         }
     }
 }
