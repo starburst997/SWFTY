@@ -252,6 +252,7 @@ class BaseLayer extends EngineLayer {
         updating = false;
 
         if (canDispose) {
+            canDispose = false;
             dispose();
         }
     }

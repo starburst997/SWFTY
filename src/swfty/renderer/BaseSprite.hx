@@ -322,6 +322,7 @@ class BaseSprite extends EngineSprite {
         updating = false;
 
         if (canDispose) {
+            canDispose = false;
             dispose();
         }
     }
