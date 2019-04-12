@@ -16,6 +16,8 @@ class FinalSprite extends BaseSprite {
 
     public function new(layer:BaseLayer, ?definition:MovieClipType, ?linkage:String) {
         super(layer, definition, linkage);
+
+        type = Display(this);
     }
 
     override function refresh() {

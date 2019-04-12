@@ -2,12 +2,20 @@ package swfty.renderer;
 
 import haxe.ds.StringMap;
 
+enum SpriteType {
+    Unknown;
+    Display(sprite:Sprite);
+    Text(text:Text);
+}
+
 @:allow(swfty.renderer.BaseSprite)
 class BaseSprite extends EngineSprite {
 
     static var COUNTER = 0;
 
     var disposed = false;
+
+    public var type:SpriteType = Unknown;
 
     public var og:Bool = false;
 

@@ -12,6 +12,8 @@ class FinalText extends BaseText {
 
     public function new(layer:BaseLayer, ?definition:TextType) {
         super(layer, definition);
+
+        type = Text(this);
     }
 
     override function set__name(name:String) {

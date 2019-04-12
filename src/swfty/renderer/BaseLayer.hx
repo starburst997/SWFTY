@@ -412,7 +412,7 @@ class BaseLayer extends EngineLayer {
     }
 
     public function resize(width:Int, height:Int) {
-
+        
     }
 
     public inline function empty(add:Bool = false) {
