@@ -173,7 +173,8 @@ class BaseText extends FinalSprite {
 
         if (textDefinition == null || textDefinition.font == null) return text;
         
-        addEmptyRect(0, 0, textDefinition.width, textDefinition.height);
+        // TODO: If we want to use the TextField bounds instead of characters
+        //addEmptyRect(0, 0, textDefinition.width * scaleX, textDefinition.height * scaleY);
 
         // Show characters
         var x = 0.0;

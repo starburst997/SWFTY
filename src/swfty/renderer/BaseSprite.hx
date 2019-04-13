@@ -410,10 +410,10 @@ class BaseSprite extends EngineSprite {
 
                         text.display().transform(child.a, child.b, child.c, child.d, child.tx + child.text.x * scaleX, child.ty + child.text.y * scaleY);
 
-                        text.scaleFont = text.scaleY;
-
-                        text.scaleX = text.scaleX / text.scaleY;
-                        text.scaleY = 1.0;
+                        // TODO: Maybe switch this back, it seemed more accurate to certain aspect
+                        //text.scaleFont = text.scaleY;
+                        //text.scaleX = text.scaleX / text.scaleY;
+                        //text.scaleY = 1.0;
                     }
                 }
                 
