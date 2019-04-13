@@ -185,6 +185,16 @@ class BaseSprite extends EngineSprite {
         return _bounds;
     }
 
+    public function addEmptyRect(x:Float, y:Float, width:Float, height:Float) {
+        var empty = layer.create('Empty');
+        empty.x = x;
+        empty.y = y;
+        empty.scaleX = width;
+        empty.scaleY = height;
+        addSprite(empty);
+        return empty;
+    }
+
     public inline function setBounds(x:Float, y:Float, width:Float, height:Float) {
         if (_bounds == null) 
             _bounds = {x: x, y: y, width: width, height: height};

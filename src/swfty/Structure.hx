@@ -582,5 +582,53 @@ class SWFTYType #if !macro implements hxbit.Serializable #end {
         });
 
         tiles.set(bmp.id, bmp);
+
+        addEmpty();
+    }
+
+    // Add a special "Empty" Sprite that is the whole Tilemap
+    public function addEmpty() {
+        var bmp:BitmapType = {
+            id: getRandomId(tiles),
+            x: 0,
+            y: 0,
+            width: 1,
+            height: 1  
+        };
+
+        var id = getRandomId(definitions);
+        definitions.set(id, { 
+            id: id,
+            name: 'Empty',
+            children: [{
+                mc: null,
+                id: 0,
+                a: 1,
+                b: 0,
+                c: 0,
+                d: 1,
+                tx: 0,
+                ty: 0,
+                shapes: [ {
+                    id: bmp.id,
+                    a: 1,
+                    b: 0,
+                    c: 0,
+                    d: 1,
+                    tx: 0,
+                    ty: 0,
+                    bitmap: bmp
+                } ],
+                mask: 0,
+                text: null,
+                blendMode: null,
+                color: null,
+                alpha: 0.0,
+                name: null,
+                visible: true
+            }]
+        });
+
+        tiles.set(bmp.id, bmp);
     }
 }

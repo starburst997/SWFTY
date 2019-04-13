@@ -172,6 +172,8 @@ class BaseText extends FinalSprite {
         }
 
         if (textDefinition == null || textDefinition.font == null) return text;
+        
+        addEmptyRect(0, 0, textDefinition.width, textDefinition.height);
 
         // Show characters
         var x = 0.0;
