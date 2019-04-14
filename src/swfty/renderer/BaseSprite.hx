@@ -401,6 +401,7 @@ class BaseSprite extends EngineSprite {
                         _names.set(child.name, text);
 
                         skipChilds.push(textSprite);
+                        childs.remove(textSprite);
                         textSprite.dispose();
                     }
 
@@ -622,7 +623,10 @@ class BaseSprite extends EngineSprite {
     }
 
     public function addSpriteAt(sprite:FinalSprite, index:Int = 0) {
-        if (sprite._name != null) _names.set(sprite._name, sprite);
+        if (sprite._name != null) {
+            _names.set(sprite._name, sprite);
+        }
+
         _sprites.insert(index, sprite);
         
         // TODO: Was that necessary?
@@ -632,7 +636,10 @@ class BaseSprite extends EngineSprite {
     }
 
     public function addSprite(sprite:FinalSprite) {
-        if (sprite._name != null) _names.set(sprite._name, sprite);
+        if (sprite._name != null) {
+            _names.set(sprite._name, sprite);
+        }
+
         _sprites.push(sprite);
         
         // TODO: Was that necessary?
@@ -687,6 +694,7 @@ class BaseSprite extends EngineSprite {
         } else {
             if (_definition != null) Log.warn('Child: $name does not exists! ${_name} ${layer.path}');
             var sprite = FinalSprite.create(layer);
+            
             sprite._name = name;
             _names.set(name, sprite);
             addSprite(sprite);
