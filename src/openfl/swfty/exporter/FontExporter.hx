@@ -75,6 +75,11 @@ class FontExporter {
         // TODO: Use embedded font from SWF instead? Draw each glyph...
 
         var textField = new TextField();
+
+        // TODO: Those dimension should be enough? Maybe try to calculate it based on font size
+        textField.width = 1000;
+        textField.height = 1000;
+
         var textFormat = new TextFormat(font, Std.int(size), cache != null ? cache.color : 0xFFFFFF, bold, italic);
 
         textField.defaultTextFormat = textFormat;
