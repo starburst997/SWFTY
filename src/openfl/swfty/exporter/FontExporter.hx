@@ -76,9 +76,9 @@ class FontExporter {
 
         var textField = new TextField();
 
-        // TODO: Those dimension should be enough? Maybe try to calculate it based on font size
-        textField.width = 1000;
-        textField.height = 1000;
+        // TODO: Times 2 should be enough to cover one char fully?
+        textField.width = size * 2;
+        textField.height = size * 2;
 
         var textFormat = new TextFormat(font, Std.int(size), cache != null ? cache.color : 0xFFFFFF, bold, italic);
 

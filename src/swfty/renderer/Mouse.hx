@@ -31,7 +31,6 @@ class Mouse {
 
     inline function set_left(state:ButtonState) {
         if (leftChanged) {
-            trace('!!!!!!!!!!!!!!! QUEUE LEFT');
             queueLeft.push(state);
         } else {
             left = state;
