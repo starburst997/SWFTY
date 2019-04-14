@@ -153,13 +153,12 @@ class Manager {
     }
 
     public function postUpdate() {
-        
-        for (f in postRenders) f();
-        
         if (prunePostRenders.length > 0) {
             for (f in prunePostRenders) postRenders.remove(f);
             prunePostRenders = [];
         }
+        
+        for (f in postRenders) f();
     }
 
     public function update() {
@@ -174,6 +173,11 @@ class Manager {
         timer = haxe.Timer.stamp();
 
         if (dt > 1/10.0) dt = 1/10.0;
+
+        if (prunePreRenders.length > 0) {
+            for (f in prunePreRenders) preRenders.remove(f);
+            prunePreRenders = [];
+        }
 
         for (f in preRenders) f();
 
@@ -193,21 +197,16 @@ class Manager {
             master.calculateRenderID();
         }
 
-        for (f in renders) f();
-
-        if (pruneLayers.length > 0) {
-            for (layer in pruneLayers) layers.remove(layer);
-            pruneLayers = [];
-        }
-
         if (pruneRenders.length > 0) {
             for (f in pruneRenders) renders.remove(f);
             pruneRenders = [];
         }
 
-        if (prunePreRenders.length > 0) {
-            for (f in prunePreRenders) preRenders.remove(f);
-            prunePreRenders = [];
+        for (f in renders) f();
+
+        if (pruneLayers.length > 0) {
+            for (layer in pruneLayers) layers.remove(layer);
+            pruneLayers = [];
         }
 
         if (pruneOnRemoves.length > 0) {

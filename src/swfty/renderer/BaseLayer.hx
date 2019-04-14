@@ -191,23 +191,43 @@ class BaseLayer extends EngineLayer {
 
         time = haxe.Timer.stamp() * 1000;
 
-        for (f in renders) f(dt);
+        if (pruneRenders.length > 0) {
+            for (f in pruneRenders) renders.remove(f);
+            pruneRenders = [];
+        }
+
+        for (f in renders) if (!canDispose) f(dt);
         
+        if (pruneMouseDowns.length > 0) {
+            for (f in pruneMouseDowns) mouseDowns.remove(f);
+            pruneMouseDowns = [];
+        }
+        
+        if (pruneMouseUps.length > 0) {
+            for (f in pruneMouseUps) mouseUps.remove(f);
+            pruneMouseUps = [];
+        }
+
         if (mouse.leftChanged) {
             var y = mouse.y;
             var x = mouse.x;
 
             switch(mouse.left) {
-                case Down : for (f in mouseDowns) f(x, y);
-                case Up   : for (f in mouseUps) f(x, y);
+                case Down : for (f in mouseDowns) if (!canDispose) f(x, y);
+                case Up   : for (f in mouseUps) if (!canDispose) f(x, y);
                 case _    : 
             }
         }
 
         spriteRenderID = 0;
-        base.update(dt);
+        if (!canDispose) base.update(dt);
 
-        for (f in postRenders) f(dt);
+        if (prunePostRenders.length > 0) {
+            for (f in prunePostRenders) postRenders.remove(f);
+            prunePostRenders = [];
+        }
+
+        for (f in postRenders) if (!canDispose) f(dt);
 
         if (pruneWakes.length > 0) {
             for (f in pruneWakes) wakes.remove(f);
@@ -217,26 +237,6 @@ class BaseLayer extends EngineLayer {
         if (pruneSleeps.length > 0) {
             for (f in pruneSleeps) sleeps.remove(f);
             pruneSleeps = [];
-        }
-
-        if (pruneRenders.length > 0) {
-            for (f in pruneRenders) renders.remove(f);
-            pruneRenders = [];
-        }
-
-        if (prunePostRenders.length > 0) {
-            for (f in prunePostRenders) postRenders.remove(f);
-            prunePostRenders = [];
-        }
-
-        if (pruneMouseDowns.length > 0) {
-            for (f in pruneMouseDowns) mouseDowns.remove(f);
-            pruneMouseDowns = [];
-        }
-        
-        if (pruneMouseUps.length > 0) {
-            for (f in pruneMouseUps) mouseUps.remove(f);
-            pruneMouseUps = [];
         }
 
         if (pruneLayers.length > 0) {
