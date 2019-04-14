@@ -176,8 +176,8 @@ class Rectangle {
     public inline function around(x:Float, y:Float, margin = 100) {
         var centerX = this.x + this.width / 2;
         var centerY = this.y + this.height / 2;
-        var dx = x - centerX;
-        var dy = x - centerY;
+        var dx = centerX - x;
+        var dy = centerY - y;
         return dx * dx + dy * dy < margin * margin;
     }
 
