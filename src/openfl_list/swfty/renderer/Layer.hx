@@ -30,17 +30,21 @@ class FinalLayer extends BaseLayer {
 
     // TODO: Maybe we want to also "scrollRect" the whole layer, not just container?
     override function set__mask(value:Rectangle) {
+        if (value == null) return null;
+
         container.scrollRect = new openfl.geom.Rectangle(value.x, value.y, value.width, value.height);
         return super.set__mask(value);
     }
 
     override function addLayer(layer:Layer) {
         super.addLayer(layer);
+        
         container.addChild(layer.container);
     }
 
     override function addLayerAt(layer:Layer, index:Int) {
         super.addLayerAt(layer, index);
+        
         container.addChildAt(layer.container, index);
     }
 
@@ -52,7 +56,7 @@ class FinalLayer extends BaseLayer {
     override function get_container() {
         if (container == null) {
             container = new EngineContainer();
-            container.name = 'EngineContainer';
+            container.name = 'Container';
             container.addChild(this);
         }
         return container;

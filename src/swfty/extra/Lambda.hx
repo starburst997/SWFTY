@@ -140,11 +140,11 @@ class LambdaSprite {
     }
 
     // Fit as tight as possible, we see everything
-    public static inline function fit(sprite:Sprite, ?width:Float, ?height:Float) {
+    public static inline function fit(sprite:Sprite, ?width:Float, ?height:Float, ?useScreen = true) {
         var bounds = sprite.calcBounds(sprite.parent);
 
-        if (width == null) width = sprite.layer.width;
-        if (height == null) height = sprite.layer.height;
+        if (width == null) width = useScreen ? sprite.layer.screenWidth : sprite.layer.width;
+        if (height == null) height = useScreen ? sprite.layer.screenHeight : sprite.layer.height;
 
         // Try to fit
         var scale = if (bounds.width < bounds.height) {
@@ -170,11 +170,11 @@ class LambdaSprite {
     }
 
     // Mainly for background, makes sure the whole area is covered
-    public static inline function cover(sprite:Sprite, padding = 0, ?width:Float, ?height:Float) {
+    public static inline function cover(sprite:Sprite, ?padding = 0, ?width:Float, ?height:Float, ?useScreen = true) {
         var bounds = sprite.calcBounds(sprite.parent);
 
-        if (width == null) width = sprite.layer.screenWidth;
-        if (height == null) height = sprite.layer.screenHeight;
+        if (width == null) width = useScreen ? sprite.layer.screenWidth : sprite.layer.width;
+        if (height == null) height = useScreen ? sprite.layer.screenHeight : sprite.layer.height;
 
         // Try to fit
         var scale = if (bounds.width < bounds.height) {

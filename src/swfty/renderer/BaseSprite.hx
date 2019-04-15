@@ -55,6 +55,7 @@ class BaseSprite extends EngineSprite {
     // TODO: All private var should have an underscore?
     var _name(default, set):String;
     var _sprites:Array<FinalSprite>;
+    var _bitmaps:Array<EngineBitmap>;
     var _names:StringMap<FinalSprite>;
     var _texts:StringMap<FinalText>;
     var _definition:Null<MovieClipType>;
@@ -126,6 +127,7 @@ class BaseSprite extends EngineSprite {
         _rendersMap = new StringMap();
 
         _sprites = [];
+        _bitmaps = [];
         _names = new StringMap();
         _texts = new StringMap();
 
@@ -353,6 +355,7 @@ class BaseSprite extends EngineSprite {
     function removeAll() {
         display().removeAll();
         _sprites = [];
+        _bitmaps = [];
     }
 
     public function load(definition:MovieClipType) {
@@ -682,6 +685,12 @@ class BaseSprite extends EngineSprite {
         throw 'Not implemented';
     }
 
+    public inline function rectToLayer(rect:Rectangle) {
+        var top = localToLayer(rect.x, rect.y);
+        var bottom = localToLayer(rect.x + rect.width, rect.y + rect.height);
+        return new Rectangle(top.x, top.y, bottom.x - top.x, bottom.y - top.y);
+    }
+
     public inline function exists(name:String, og = false):Bool {
         return _names.exists(name) && (!og || _names.get(name).og);
     }
@@ -734,6 +743,7 @@ class BaseSprite extends EngineSprite {
                 _rendersMap = new StringMap();
 
                 _sprites = [];
+                _bitmaps = [];
                 _names = new StringMap();
                 _texts = new StringMap();
 

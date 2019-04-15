@@ -20,11 +20,17 @@ class FinalSprite extends BaseSprite {
         type = Display(this);
     }
 
+    override function getBitmaps():Array<DisplayBitmap> {
+        return _bitmaps;
+    }
+
     override function refresh() {
         
     }
 
     override function set__mask(value:Rectangle) {
+        if (value == null) return null;
+        
         this.scrollRect = new openfl.geom.Rectangle(value.x, value.y, value.width, value.height);
         return super.set__mask(value);
     }
@@ -160,10 +166,12 @@ class FinalSprite extends BaseSprite {
     }
 
     public override function addBitmap(bitmap:EngineBitmap) {
+        _bitmaps.push(bitmap);
         addChild(bitmap);
     }
 
     public override function removeBitmap(bitmap:EngineBitmap) {
+        _bitmaps.remove(bitmap);
         if (bitmap.parent != null) bitmap.parent.removeChild(bitmap);
     }
 
