@@ -400,8 +400,6 @@ class Exporter {
                 // Create Tilemap based on all bitmapDatas
                 var keys = [for (key in bitmapDatas.keys()) key];
                 var bmpds = keys.map(function(key) return bitmapKeeps.exists(key) ? bitmapDatas.get(key) : null);
-                
-                //var tilemap = TilemapExporter.pack(bmpds, false);
 
                 // Trim, then back to power of 2
                 var tilemap = TilemapExporter.pack(bmpds, true);

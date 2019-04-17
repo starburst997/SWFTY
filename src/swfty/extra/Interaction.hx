@@ -183,6 +183,14 @@ class Interactions {
         return true;
     }
 
+    public static function isVisible(sprite:Sprite):Bool {
+        while (sprite != null) {
+            if (!sprite.visible) return false;
+            sprite = sprite.parent;
+        }
+        return true;
+    }
+
     public static function click(sprite:Sprite, ?name:String, ?cache = true, f:Void->Void) {
         var child = name == null ? sprite : sprite.get(name);
 
@@ -215,12 +223,12 @@ class Interactions {
 
                 switch(mouse.left) {
                     case Down : 
-                        if (checkMask(child, x, y) && getBounds().inside(x, y)) {
+                        if (checkMask(child, x, y) && isVisible(child) && getBounds().inside(x, y)) {
                             wasInside = true;
                             if (useManager) addInteraction(child);
                         }
                     case Up : 
-                        if (wasInside && checkMask(child, x, y) && getBounds().inside(x, y)) {
+                        if (wasInside && checkMask(child, x, y) && isVisible(child) && getBounds().inside(x, y)) {
                             if (useManager) {
                                 addInteraction(child, f, true);
                             } else {
@@ -266,7 +274,7 @@ class Interactions {
 
                 switch(mouse.left) {
                     case Down : 
-                        if (checkMask(child, x, y) && getBounds().inside(x, y)) {
+                        if (checkMask(child, x, y) && isVisible(child) && getBounds().inside(x, y)) {
                             if (useManager) {
                                 addInteraction(child, f);
                             } else {
@@ -318,7 +326,7 @@ class Interactions {
                             if (getBounds().inside(x, y)) addInteraction(child);
                         }*/
                     case Up : 
-                        if (checkMask(child, x, y) && getBounds().inside(x, y)) {
+                        if (checkMask(child, x, y) && isVisible(child) && getBounds().inside(x, y)) {
                             if (useManager) {
                                 addInteraction(child, f);
                             } else {
@@ -410,6 +418,24 @@ class Interactions {
     
     public static inline function getMouseY(sprite:Sprite) {
         return getMouse(sprite).y;
+    }
+}
+
+class InteractionText {
+
+    public static inline function click(text:Text, ?name:String, ?cache = true, f:Void->Void) {
+        var sprite:FinalSprite = text;
+        Interactions.click(sprite, name, cache, f);
+    }
+
+    public static inline function mouseDown(text:Text, ?name:String, ?cache = true, f:Void->Void) {
+        var sprite:FinalSprite = text;
+        Interactions.mouseDown(sprite, name, cache, f);
+    }
+
+    public static inline function mouseDownAnywhere(text:Text, ?name:String, ?cache = true, f:Void->Void) {
+        var sprite:FinalSprite = text;
+        Interactions.mouseDownAnywhere(sprite, name, cache, f);
     }
 }
 

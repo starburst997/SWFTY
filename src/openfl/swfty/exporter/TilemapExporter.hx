@@ -1,5 +1,6 @@
 package openfl.swfty.exporter;
 
+import haxe.ds.IntMap;
 import openfl.display.BitmapData;
 import openfl.geom.Point;
 import openfl.geom.Rectangle;
@@ -42,6 +43,19 @@ class TilemapExporter {
     }
 
     public static function pack(bmpds:Array<BitmapData>, w:Int = 128, h:Int = 128, ?trimBitmap = true) {
+
+        // Keep a copy of the unsorted array
+        var copy = bmpds.copy();
+
+        // Sort by area
+        bmpds.sortdf(function(bmpd) return bmpd.width * bmpd.height);
+
+        // Sort by area so we try to fit the biggest first then smaller one can fill in the gaps
+        var map = new Map<BitmapData, Int>();
+        for (i in 0...bmpds.length) {
+            var bmpd = bmpds[i];
+            map.set(bmpd, i);
+        }
 
         function createPack(w:Int, h:Int) {
             var tiles:Array<Tile> = [];
@@ -91,11 +105,17 @@ class TilemapExporter {
 
         return if (tiles != null) {
             var bitmapData = new BitmapData(w, h, true, 0x00000000);
-            for (i in 0...tiles.length) {
+            var sortedTiles = [];
+            
+            for (bmpdCopy in copy) {
+                var i = map.get(bmpdCopy); // TODO: Is bmpds.indexOf(bmpdCopy) faster? My guess is no....
                 var tile = tiles[i];
                 var bmpd = bmpds[i];
                 if (bmpd != null) bitmapData.copyPixels(bmpd, bmpd.rect, new Point(tile.x, tile.y));
                 //bmpd.dispose();
+
+                // We want to keep the original order
+                sortedTiles.push(tile);
             };
 
             // Trim final texture
@@ -107,7 +127,7 @@ class TilemapExporter {
                 bitmapData.setPixel32(0, 0, 0x00000000);
             }
             
-            {tiles: tiles, bitmapData: bitmapData};
+            {tiles: sortedTiles, bitmapData: bitmapData};
         } else {
             null;
         }

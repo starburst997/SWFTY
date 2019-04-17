@@ -188,7 +188,9 @@ class BaseText extends FinalSprite {
         var size = textDefinition.size * scaleFont;
         var scale = size / textDefinition.font.size;
 
-        y += (1 - (textDefinition.font.ascent / (textDefinition.font.ascent + textDefinition.font.descent))) * size; 
+        if (textDefinition.font.ascent + textDefinition.font.descent != 0.0) {
+            y += (1 - (textDefinition.font.ascent / (textDefinition.font.ascent + textDefinition.font.descent))) * size; 
+        }
         
         var lineHeight = (textDefinition.font.ascent + textDefinition.font.descent + textDefinition.font.leading) / 20 / 1024 * size;
         

@@ -11,17 +11,21 @@ class TimerExtra {
     public static inline function wait(sprite:Sprite, duration:Float, ?stop = false, ?repeat:Int = 0, ?onComplete:Void->Void) {
         if (stop) sprite.waitStop();
         
-        var time = 0.0;
-        sprite.addRender(RENDER_ID, function render(dt) {
-            if (time >= duration) {
-                time = 0.0;
-                if (repeat-- == 0) sprite.removeRender(RENDER_ID, render);
+        if (duration == 0.0) {
+            if (onComplete != null) onComplete();
+        } else {
+            var time = 0.0;
+            sprite.addRender(RENDER_ID, function render(dt) {
+                if (time >= duration) {
+                    time = 0.0;
+                    if (repeat-- == 0) sprite.removeRender(RENDER_ID, render);
 
-                if (onComplete != null) onComplete();
-            }
+                    if (onComplete != null) onComplete();
+                }
 
-            time += dt;
-        });
+                time += dt;
+            });
+        }
 
         return sprite;
     }

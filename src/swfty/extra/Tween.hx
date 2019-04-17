@@ -313,30 +313,39 @@ class Tween {
     // Repeat = -1 is infinite repeat
     // TODO: Create abstract Enums over Int for "repeat" params
     static inline function setup(sprite:Sprite, from:Float, to:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?repeat:Int = 0, ?onComplete:Void->Void, setVal:Float->Void) {
-        var ease = getEasing(from, to, easing);
-        var time = delay == null ? 0.0 : -delay;
-        var done = false;
-        sprite.addRender(RENDER_ID, function render(dt) {
-            if (time >= duration) {
-                time = duration;
-                done = true;
-                if (repeat-- == 0) sprite.removeRender(RENDER_ID, render);
-            } else if ((repeat != 0) && done && time <= -delay) {
-                time = -delay;
-                done = false;
-            }
+        // If duration is 0 we assume it's immediate
+        if (duration == 0.0) {
+            sprite.wait(delay, function() {
+                setVal(to);
+                if (onComplete != null) onComplete();
+            });
+        } else {
+            var ease = getEasing(from, to, easing);
+            var time = delay == null ? 0.0 : -delay;
+            var done = false;
+            
+            sprite.addRender(RENDER_ID, function render(dt) {
+                if (time >= duration) {
+                    time = duration;
+                    done = true;
+                    if (repeat-- == 0) sprite.removeRender(RENDER_ID, render);
+                } else if ((repeat != 0) && done && time <= -delay) {
+                    time = -delay;
+                    done = false;
+                }
 
-            if (time >= 0.0) setVal(ease(time / duration));
-            
-            if (done) {
-                if (time > 0 && time - dt < 0 && repeat > 0) setVal(ease(0));
-                time -= dt;
-            } else {
-                time += dt;
-            }
-            
-            if (done && (repeat == -1) && onComplete != null) onComplete();
-        });
+                if (time >= 0.0) setVal(ease(time / duration));
+                
+                if (done) {
+                    if (time > 0 && time - dt < 0 && repeat > 0) setVal(ease(0));
+                    time -= dt;
+                } else {
+                    time += dt;
+                }
+                
+                if (done && (repeat == -1) && onComplete != null) onComplete();
+            });
+        }
     }
 
     static inline function getEasing(from:Float, to:Float, ?easing:Easing) {
