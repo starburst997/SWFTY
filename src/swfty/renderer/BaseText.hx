@@ -193,6 +193,9 @@ class BaseText extends FinalSprite {
         }
         
         var lineHeight = (textDefinition.font.ascent + textDefinition.font.descent + textDefinition.font.leading) / 20 / 1024 * size;
+
+        // TODO: Something's wrong here, there must be a value i'm missing somewhere...
+        if (lineHeight == 0.0) lineHeight = size;
         
         // Check if it's really multiline
         var multiline = checkMultiline();

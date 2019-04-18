@@ -112,7 +112,7 @@ class FinalLayer extends BaseLayer {
             texture = bmpd;
             textureMemory = bmpd.width * bmpd.height * 4;
 
-            trace('Tilemap: ${bmpd.width}, ${bmpd.height}');
+            //trace('Tilemap: ${bmpd.width}, ${bmpd.height}');
 
             if (onComplete != null) onComplete();
         }

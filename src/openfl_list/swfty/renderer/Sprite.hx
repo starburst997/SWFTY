@@ -93,8 +93,8 @@ class FinalSprite extends BaseSprite {
             if (relative == null) relative = this;
             
             if (forceBounds != null) {
-                var pt = localToLayer(forceBounds.x, forceBounds.y);
-                var pt2 = localToLayer(forceBounds.x + forceBounds.width, forceBounds.y + forceBounds.height);
+                var pt = localToLayer(forceBounds.x + forceBounds.width * (scaleX < 0 ? 1 : 0), forceBounds.y + forceBounds.height * (scaleY < 0 ? 1 : 0));
+                var pt2 = localToLayer(forceBounds.x + forceBounds.width * (scaleX < 0 ? 0 : 1), forceBounds.y + forceBounds.height * (scaleY < 0 ? 0 : 1));
                 
                 pt = relative.layerToLocal(pt.x, pt.y);
                 pt2 = relative.layerToLocal(pt2.x, pt2.y);
@@ -146,8 +146,8 @@ class FinalSprite extends BaseSprite {
         sprite._parent = this;
     }
 
-    public override function addSprite(sprite:FinalSprite) {
-        super.addSprite(sprite);
+    public override function addSprite(sprite:FinalSprite, addName = true) {
+        super.addSprite(sprite, addName);
         addChild(sprite);
         sprite._parent = this;
     }

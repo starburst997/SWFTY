@@ -638,8 +638,8 @@ class BaseSprite extends EngineSprite {
         }
     }
 
-    public function addSprite(sprite:FinalSprite) {
-        if (sprite._name != null) {
+    public function addSprite(sprite:FinalSprite, addName = true) {
+        if (addName && sprite._name != null) {
             _names.set(sprite._name, sprite);
         }
 
@@ -703,10 +703,12 @@ class BaseSprite extends EngineSprite {
         } else {
             if (_definition != null) Log.warn('Child: $name does not exists! ${_name} ${layer.path}');
             var sprite = FinalSprite.create(layer);
-            
+
             sprite._name = name;
             _names.set(name, sprite);
+            
             addSprite(sprite);
+            
             sprite;
         }
     }
@@ -717,9 +719,12 @@ class BaseSprite extends EngineSprite {
         } else {
             if (_definition != null) Log.warn('Text: $name does not exists! ${_name} ${layer.path}');
             var text = FinalText.create(layer);
+
             text._name = name;
             _texts.set(name, text);
-            addSprite(text);
+
+            addSprite(text, false);
+            
             text;
         }
     }
