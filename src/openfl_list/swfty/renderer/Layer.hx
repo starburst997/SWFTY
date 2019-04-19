@@ -13,6 +13,8 @@ typedef DisplayTile = openfl.display.BitmapData;
 @:access(swfty.renderer.BaseSprite)
 class FinalLayer extends BaseLayer {
 
+    static var pt = new openfl.geom.Point();
+
     var texture:BitmapData;
     var rects:IntMap<openfl.geom.Rectangle> = new IntMap();
 
@@ -26,6 +28,22 @@ class FinalLayer extends BaseLayer {
 
         _width = width;
         _height = height;
+    }
+
+    override function localToLayer(x:Float = 0.0, y:Float = 0.0):Point {
+        pt.x = x;
+        pt.y = y;
+        pt = this.localToGlobal(pt);
+
+        return { x: pt.x, y: pt.y };
+    }
+
+    override function layerToLocal(x:Float, y:Float):Point {
+        pt.x = x;
+        pt.y = y;
+        pt = this.globalToLocal(pt);
+
+        return { x: pt.x, y: pt.y };
     }
 
     // TODO: Maybe we want to also "scrollRect" the whole layer, not just container?

@@ -169,6 +169,14 @@ class BaseLayer extends EngineLayer {
         return (mouse.y - baseLayout.y) / baseLayout.scaleY;
     }
 
+    public function localToLayer(x:Float = 0.0, y:Float = 0.0):Point {
+        throw 'Not implemented';
+    }
+
+    public function layerToLocal(x:Float, y:Float):Point {
+        throw 'Not implemented';
+    }
+
     public function calculateRenderID() {
         for (i in 0...layers.length) {
             var layer = layers[layers.length - i - 1];

@@ -13,9 +13,11 @@ typedef DisplayTile = Int;
 @:access(swfty.renderer.BaseSprite)
 class FinalLayer extends BaseLayer {
 
+    static var pt = new openfl.geom.Point();
+
     public static inline function create(?width:Int, ?height:Int) {
         return new FinalLayer(width, height);
-    }    
+    }
 
     public function new(?width:Int, ?height:Int) {
         // TODO: If null, it should maybe be the stage's dimensions??? Or at least on the "getter"
@@ -80,6 +82,22 @@ class FinalLayer extends BaseLayer {
         } else {
             container.numChildren;
         }
+    }
+
+    override function localToLayer(x:Float = 0.0, y:Float = 0.0):Point {
+        pt.x = x;
+        pt.y = y;
+        pt = this.localToGlobal(pt);
+
+        return { x: pt.x, y: pt.y };
+    }
+
+    override function layerToLocal(x:Float, y:Float):Point {
+        pt.x = x;
+        pt.y = y;
+        pt = this.globalToLocal(pt);
+
+        return { x: pt.x, y: pt.y };
     }
 
     override function loadTexture(bytes:Bytes, swfty:SWFTYType, ?onComplete:Void->Void, ?onError:Dynamic->Void) {

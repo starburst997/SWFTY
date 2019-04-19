@@ -45,7 +45,7 @@ class FinalSprite extends BaseSprite {
         return super.set__name(name);
     }
 
-    public override function localToLayer(x:Float = 0.0, y:Float = 0.0):Point {
+    override function localToLayer(x:Float = 0.0, y:Float = 0.0):Point {
         pt.x = x;
         pt.y = y;
         pt = this.localToGlobal(pt);
@@ -53,7 +53,7 @@ class FinalSprite extends BaseSprite {
         return { x: pt.x, y: pt.y };
     }
 
-    public override function layerToLocal(x:Float, y:Float):Point {
+    override function layerToLocal(x:Float, y:Float):Point {
         pt.x = x;
         pt.y = y;
         pt = this.globalToLocal(pt);
@@ -62,7 +62,7 @@ class FinalSprite extends BaseSprite {
     }
 
     // TODO: Should probably abstract that into BaseSprite and keep a one-line getBounds
-    public override function calcBounds(?relative:BaseSprite, ?global = false):Rectangle {
+    override function calcBounds(?relative:BaseSprite, ?global = false):Rectangle {
         return if (global) {
             if (forceBounds != null) {
                 var pt = localToLayer(forceBounds.x, forceBounds.y);
@@ -122,19 +122,19 @@ class FinalSprite extends BaseSprite {
         }
     }
 
-    public override function top() {
+    override function top() {
         if (this._parent != null) _parent.setIndex(this, parent.numChildren - 1);
     }
 
-    public override function bottom() {
+    override function bottom() {
         if (this._parent != null) _parent.setIndex(this, 0);
     }
 
-    public override function removeFromParent() {
+    override function removeFromParent() {
         if (this._parent != null) _parent.removeSprite(this);
     }
 
-    public override function addSpriteAt(sprite:FinalSprite, index:Int = 0) {
+    override function addSpriteAt(sprite:FinalSprite, index:Int = 0) {
         super.addSpriteAt(sprite, index);
 
         // TODO: This shouldn't be necessary!
@@ -146,18 +146,18 @@ class FinalSprite extends BaseSprite {
         sprite._parent = this;
     }
 
-    public override function addSprite(sprite:FinalSprite, addName = true) {
+    override function addSprite(sprite:FinalSprite, addName = true) {
         super.addSprite(sprite, addName);
         addChild(sprite);
         sprite._parent = this;
     }
 
-    public override function removeSprite(sprite:FinalSprite) {
+    override function removeSprite(sprite:FinalSprite) {
         super.removeSprite(sprite);
         if (sprite.parent != null) sprite.parent.removeChild(sprite);
     }
 
-    public override function getIndex(?sprite:FinalSprite) {
+    override function getIndex(?sprite:FinalSprite) {
         return if (sprite.parent == null) {
             -1;
         } else {
@@ -165,17 +165,17 @@ class FinalSprite extends BaseSprite {
         }
     }
 
-    public override function addBitmap(bitmap:EngineBitmap) {
+    override function addBitmap(bitmap:EngineBitmap) {
         _bitmaps.push(bitmap);
         addChild(bitmap);
     }
 
-    public override function removeBitmap(bitmap:EngineBitmap) {
+    override function removeBitmap(bitmap:EngineBitmap) {
         _bitmaps.remove(bitmap);
         if (bitmap.parent != null) bitmap.parent.removeChild(bitmap);
     }
 
-    public override function setIndex(sprite:FinalSprite, index:Int) {
+    override function setIndex(sprite:FinalSprite, index:Int) {
         super.setIndex(sprite, index);
         if (sprite.parent != null) sprite.parent.setChildIndex(sprite, index);
     }
