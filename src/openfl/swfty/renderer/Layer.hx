@@ -3,7 +3,6 @@ package openfl.swfty.renderer;
 import haxe.io.Bytes;
 import haxe.ds.IntMap;
 
-import openfl.geom.Rectangle;
 import openfl.display.BitmapData;
 import openfl.display.Tileset;
 
@@ -26,10 +25,33 @@ class FinalLayer extends BaseLayer {
         _height = height;
     }
 
+    override function set__mask(value:Rectangle) {
+        if (value == null) return null;
+
+        container.scrollRect = new openfl.geom.Rectangle(value.x, value.y, value.width, value.height);
+        return super.set__mask(value);
+    }
+
+    override function addLayer(layer:Layer) {
+        super.addLayer(layer);
+        
+        container.addChild(layer.container);
+    }
+
+    override function addLayerAt(layer:Layer, index:Int) {
+        super.addLayerAt(layer, index);
+        
+        container.addChildAt(layer.container, index);
+    }
+
+    override function removeLayer(layer:Layer) {
+        super.removeLayer(layer);
+        if (layer.container.parent != null) layer.container.parent.removeChild(layer.container);
+    }
+
     override function get_container() {
         if (container == null) {
             container = new EngineContainer();
-            container.addChild(this);
         }
         return container;
     }
@@ -69,7 +91,7 @@ class FinalLayer extends BaseLayer {
             tiles = new IntMap();
             for (tile in swfty.tiles) {
                 tiles.set(tile.id, rects.length);
-                rects.push(new Rectangle(tile.x, tile.y, tile.width, tile.height));
+                rects.push(new openfl.geom.Rectangle(tile.x, tile.y, tile.width, tile.height));
             }
 
             /*if (this.tileset != null) {
@@ -85,6 +107,9 @@ class FinalLayer extends BaseLayer {
 
             var tileset = new Tileset(bmpd, rects);
             this.tileset = tileset;
+
+            // Only add on the display when we load a texture
+            container.addChild(this);
 
             trace('Tilemap: ${bmpd.width}, ${bmpd.height}');
 

@@ -63,7 +63,10 @@ class FinalSprite extends BaseSprite {
     override function localToLayer(x:Float = 0.0, y:Float = 0.0):Point {
         pt.x = x;
         pt.y = y;
+
+        #if openfl_jd2
         pt = this.localToGlobal(pt);
+        #end
 
         return { x: pt.x, y: pt.y };
     }
@@ -71,7 +74,10 @@ class FinalSprite extends BaseSprite {
     override function layerToLocal(x:Float, y:Float):Point {
         pt.x = x;
         pt.y = y;
+
+        #if openfl_jd2
         pt = this.globalToLocal(pt);
+        #end
 
         return { x: pt.x, y: pt.y };
     }

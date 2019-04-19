@@ -264,6 +264,7 @@ class BaseLayer extends EngineLayer {
     public inline function addWake(f:Void->Void) {
         wakes.push(f);
     }
+    
 
     public inline function addSleep(f:Void->Void) {
         sleeps.push(f);

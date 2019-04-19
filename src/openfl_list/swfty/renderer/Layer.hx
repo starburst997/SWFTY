@@ -57,7 +57,6 @@ class FinalLayer extends BaseLayer {
         if (container == null) {
             container = new EngineContainer();
             container.name = 'Container';
-            container.addChild(this);
         }
         return container;
     }
@@ -113,6 +112,8 @@ class FinalLayer extends BaseLayer {
             textureMemory = bmpd.width * bmpd.height * 4;
 
             //trace('Tilemap: ${bmpd.width}, ${bmpd.height}');
+
+            container.addChild(this);
 
             if (onComplete != null) onComplete();
         }
