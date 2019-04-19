@@ -26,9 +26,18 @@ class FinalText extends BaseText {
     }
 }
 
-@:forward(x, y, scaleX, scaleY, rotation, text, short, singleLine, fit, multiline, checkMultiline, color, fitVertically, addRender, removeRender, width, height, textWidth, textHeight, align)
+@:forward(x, y, scaleX, scaleY, rotation, text, short, singleLine, fit, multiline, checkMultiline, fitVertically, addRender, removeRender, width, height, textWidth, textHeight, align)
 abstract Text(FinalText) from FinalText to FinalText {
     public inline function sprite():Sprite {
         return this;
-    }   
+    }
+
+    public var color(get, set):Null<UInt>;
+    inline function get_color():Null<UInt> {
+        return this._color;
+    }
+
+    inline function set_color(scale:Null<UInt>):Null<UInt> {
+        return this._color = color;
+    }
 }

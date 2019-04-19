@@ -40,7 +40,7 @@ class BaseText extends FinalSprite {
     public var fitVertically = true;
     public var singleLine = false;
 
-    public var color(default, set):Null<UInt> = null;
+    public var _color(default, set):Null<UInt> = null;
     public var align(get, set):Align;
 
     public var scaleFont = 1.0;
@@ -134,9 +134,9 @@ class BaseText extends FinalSprite {
         }
     }
 
-    function set_color(color:Null<UInt>) {
-        if (color != this.color) {
-            this.color = color;
+    function set__color(color:Null<UInt>) {
+        if (color != this._color) {
+            this._color = color;
             
             // Force refresh
             set_text('');
@@ -180,7 +180,7 @@ class BaseText extends FinalSprite {
         var x = 0.0;
         var y = 0.0;
 
-        var c = color == null ? textDefinition.color : color;
+        var c = _color == null ? textDefinition.color : _color;
         var r = (c & 0xFF0000) >> 16;
         var g = (c & 0xFF00) >> 8;
         var b = c & 0xFF;

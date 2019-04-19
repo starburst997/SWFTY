@@ -96,11 +96,11 @@ class BaseLayer extends EngineLayer {
         return shared.canInteract;
     }
 
-    public var scale(get, set):Float;
-    inline function get_scale() {
+    public var _scale(get, set):Float;
+    inline function get__scale() {
         return this.base.scaleX;
     }
-    inline function set_scale(value:Float) {
+    inline function set__scale(value:Float) {
         this.base.scaleX = this.base.scaleY = value;
         return value;
     }

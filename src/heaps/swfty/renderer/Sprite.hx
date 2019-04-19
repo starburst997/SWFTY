@@ -37,13 +37,23 @@ class FinalSprite extends BaseSprite {
 		if( tile != null ) addBounds(relativeTo, out, tile.dx, tile.dy, tile.width, tile.height);
 	}
 
-    override function calcBounds(?relative:BaseSprite):Rectangle {
-        var bounds = getBounds(relative);
-        return {
-            x: bounds.x,
-            y: bounds.y,
-            width: bounds.width,
-            height: bounds.height
+    override function calcBounds(?relative:BaseSprite, ?global = false):Rectangle {
+        return if (global) {
+            var bounds = getBounds(layer.base);
+            {
+                x: bounds.x,
+                y: bounds.y,
+                width: bounds.width,
+                height: bounds.height
+            }
+        } else {
+            var bounds = getBounds(relative);
+            {
+                x: bounds.x,
+                y: bounds.y,
+                width: bounds.width,
+                height: bounds.height
+            }
         }
     }
 
@@ -77,13 +87,14 @@ class FinalSprite extends BaseSprite {
     }
 
     override function draw(ctx) {
-        if (tile != null) {    
+        if (tile != null) {
+            var layer:BaseLayer = this.layer;
             @:privateAccess layer.content.addTransform(
                 Std.int(MathUtils.x(absX)), 
                 Std.int(MathUtils.y(absY)), 
                 MathUtils.scaleX(matA, matB, matC, matD), 
                 MathUtils.scaleY(matA, matB, matC, matD), 
-                MathUtils.rotation(matB, matC, matD), color, tile);
+                MathUtils.rotation(matA, matB, matC, matD), color, tile);
         }
     }
 
@@ -93,8 +104,8 @@ class FinalSprite extends BaseSprite {
         sprite._parent = this;
     }
 
-    public override function addSprite(sprite:FinalSprite) {
-        super.addSprite(sprite);
+    public override function addSprite(sprite:FinalSprite, addName = true) {
+        super.addSprite(sprite, addName);
         addChild(sprite);
         sprite._parent = this;
     }
