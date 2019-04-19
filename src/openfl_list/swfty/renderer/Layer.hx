@@ -84,7 +84,7 @@ class FinalLayer extends BaseLayer {
         return container.parent != null;
     }
 
-    public override function emptyTile(?id:Int):DisplayTile {
+    override function emptyTile(?id:Int):DisplayTile {
         return if (id != null && texture != null && rects.exists(id)) {
             var rect = rects.get(id);
 
@@ -100,7 +100,7 @@ class FinalLayer extends BaseLayer {
         }
     }
 
-    public override function loadTexture(bytes:Bytes, swfty:SWFTYType, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
+    override function loadTexture(bytes:Bytes, swfty:SWFTYType, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
         function complete(bmpd:BitmapData) {
             swfty.addAll(bmpd.width, bmpd.height);
 
@@ -124,7 +124,7 @@ class FinalLayer extends BaseLayer {
         #end
     }
 
-    public override function dispose() {
+    override function dispose() {
         if (!disposed) {
             // Never too prudent, immediately dispose of all bitmap data associated with this layer
             if (texture != null) texture.dispose();

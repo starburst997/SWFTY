@@ -181,7 +181,7 @@ class FinalSprite extends BaseSprite {
     }
 }
 
-@:forward(x, y, scaleX, scaleY, rotation, alpha)
+@:forward(x, y, scaleX, scaleY, rotation, alpha, visible)
 abstract DisplayBitmap(EngineBitmap) from EngineBitmap to EngineBitmap {
 
     public static inline function create(layer:BaseLayer, id:Int, og:Bool = false):DisplayBitmap {

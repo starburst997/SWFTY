@@ -2,6 +2,8 @@ package swfty.utils;
 
 class MathUtils {
     
+    // TODO: If skew is applied on sprite, it might not work correctly (like scaleY -1 which is skew -180 in Animate CC)
+
     public static inline function x(tx:Float) {
         return tx;
     }

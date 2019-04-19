@@ -44,11 +44,23 @@ class FinalLayer extends BaseLayer {
         return base;
     }
 
-    public override function emptyTile(?id:Int):DisplayTile {
+    override function hasParent():Bool {
+        return container.parent != null;
+    }
+
+    override function emptyTile(?id:Int):DisplayTile {
         return -1;
     }
 
-    public override function loadTexture(bytes:Bytes, swfty:SWFTYType, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
+    override function getIndex():Int {
+        return if (this.parent == container) {
+            container.getChildIndex(this);
+        } else {
+            container.numChildren;
+        }
+    }
+
+    override function loadTexture(bytes:Bytes, swfty:SWFTYType, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
         function complete(bmpd:BitmapData) {
             swfty.addAll(bmpd.width, bmpd.height);
 

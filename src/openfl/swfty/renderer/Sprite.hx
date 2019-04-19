@@ -6,6 +6,8 @@ typedef EngineBitmap = openfl.display.Tile;
 @:keepSub // Fix DCE=full
 class FinalSprite extends BaseSprite {
 
+    static var pt = new openfl.geom.Point();
+
     public static inline function create(layer:BaseLayer, ?definition:MovieClipType, ?linkage:String) {
         return new FinalSprite(layer, definition, linkage);
     }    
@@ -38,7 +40,7 @@ class FinalSprite extends BaseSprite {
         tileset = layer.tileset;
     }
 
-    public override function calcBounds(?relative:BaseSprite, ?global = false):Rectangle {
+    override function calcBounds(?relative:BaseSprite, ?global = false):Rectangle {
         return if (global) {
             var rect = this.getBounds(layer.base);
             {
@@ -58,50 +60,71 @@ class FinalSprite extends BaseSprite {
         }
     }
 
+    override function localToLayer(x:Float = 0.0, y:Float = 0.0):Point {
+        pt.x = x;
+        pt.y = y;
+        pt = this.localToGlobal(pt);
+
+        return { x: pt.x, y: pt.y };
+    }
+
+    override function layerToLocal(x:Float, y:Float):Point {
+        pt.x = x;
+        pt.y = y;
+        pt = this.globalToLocal(pt);
+
+        return { x: pt.x, y: pt.y };
+    }
+
     override function hasParent():Bool {
         return this.parent != null;
     }
 
-    public override function top() {
+    override function top() {
         if (this.parent != null) parent.setTileIndex(this, parent.numTiles - 1);
     }
 
-    public override function bottom() {
+    override function bottom() {
         if (this.parent != null) parent.setTileIndex(this, 0);
     }
 
-    public override function addSpriteAt(sprite:FinalSprite, index:Int = 0) {
+    override function addSpriteAt(sprite:FinalSprite, index:Int = 0) {
         super.addSpriteAt(sprite, index);
         addTileAt(sprite, index);
         sprite._parent = this;
     }
 
-    public override function addSprite(sprite:FinalSprite) {
-        super.addSprite(sprite);
+    override function addSprite(sprite:FinalSprite, addName = true) {
+        super.addSprite(sprite, addName);
+
         addTile(sprite);
         sprite._parent = this;
     }
 
-    public override function removeSprite(sprite:FinalSprite) {
+    override function removeSprite(sprite:FinalSprite) {
         super.removeSprite(sprite);
         removeTile(sprite);
     }
 
-    public override function addBitmap(bitmap:EngineBitmap) {
+    override function removeFromParent() {
+        if (this._parent != null) _parent.removeSprite(this);
+    }
+
+    override function addBitmap(bitmap:EngineBitmap) {
         addTile(bitmap);
     }
 
-    public override function removeBitmap(bitmap:EngineBitmap) {
+    override function removeBitmap(bitmap:EngineBitmap) {
         removeTile(bitmap);
     }
 
-    public override function setIndex(sprite:FinalSprite, index:Int) {
+    override function setIndex(sprite:FinalSprite, index:Int) {
         super.setIndex(sprite, index);
         setTileIndex(sprite, index);
     }
 }
 
-@:forward(x, y, scaleX, scaleY, rotation, alpha)
+@:forward(x, y, scaleX, scaleY, rotation, alpha, visible)
 abstract DisplayBitmap(EngineBitmap) from EngineBitmap to EngineBitmap {
 
     public static inline function create(layer:BaseLayer, id:Int, og:Bool = false):DisplayBitmap {

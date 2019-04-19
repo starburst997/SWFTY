@@ -555,6 +555,7 @@ class BaseSprite extends EngineSprite {
         for (child in childs) {
             if (!child.og) {
                 #if dev
+                // TODO: This can be triggered by "legit" new sprite with a name added to the display list, need to figure a better way
                 if (!child._name.empty() && skipChilds.indexOf(child) == -1) Log.warn('Missing Child: ${child._name} (${layer.path})');
                 #end
 
