@@ -111,7 +111,7 @@
             "taskName": "build js",
             "isBuildCommand": true,
             "args": [
-                "html5.hxml", "-D", "test"
+                "hxml/html5.hxml", "-D", "test"
             ],
             "options": {
                 "cwd": "${workspaceFolder}/samples/heaps"

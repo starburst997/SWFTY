@@ -3,7 +3,6 @@ package openfl_list.swfty.renderer;
 import haxe.io.Bytes;
 import haxe.ds.IntMap;
 
-import openfl.geom.Point;
 import openfl.display.BitmapData;
 
 typedef EngineContainer = openfl.display.Sprite;
@@ -107,7 +106,7 @@ class FinalLayer extends BaseLayer {
 
             if (Std.int(rect.width) > 0 && Std.int(rect.height) > 0) {
                 var bmpd = new BitmapData(Std.int(rect.width), Std.int(rect.height), true, 0x00000000);
-                bmpd.copyPixels(texture, rect, new Point(0, 0));
+                bmpd.copyPixels(texture, rect, new openfl.geom.Point(0, 0));
                 bmpd;
             } else {
                 new BitmapData(1, 1, true, 0x00000000);
