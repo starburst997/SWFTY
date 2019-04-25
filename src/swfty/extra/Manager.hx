@@ -1,5 +1,8 @@
 package swfty.extra;
 
+import haxe.io.Bytes;
+import haxe.ds.StringMap;
+
 import swfty.renderer.Mouse;
 import swfty.extra.Interaction;
 
@@ -18,6 +21,8 @@ class Manager {
     public static inline function create() {
         return new Manager();
     }
+
+    public var cache:StringMap<Bytes> = new StringMap();
 
     // Global scaled factor applied to all layers, usefull when dealing with multiple screen size
     public var scale(default, set):Float = 1.0;
@@ -61,6 +66,24 @@ class Manager {
 
     public function interactAll() {
         for (layer in layers) layer.shared.canInteract = true;
+        return this;
+    }
+
+    public inline function getCache(name:String):Bytes {
+        return cache.get(name);
+    }
+
+    public inline function hasCache(name:String):Bool {
+        return cache.exists(name);
+    }
+ 
+    public inline function setCache(name:String, bytes:Bytes) {
+        cache.set(name, bytes);
+        return this;
+    }
+
+    public inline function clearCache() {
+        cache = new StringMap();
         return this;
     }
 
