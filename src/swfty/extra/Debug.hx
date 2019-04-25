@@ -17,7 +17,7 @@ class Debug {
         var stage = openfl.Lib.current;
 
         var n = 0, movieClips = 0, childInLayer = 0, layers = 0, sprites = 0, bitmaps = 0, texts = 0, glyphs = 0, nonEmptyLayers = 0, textureMemory = 0;
-        var bitmapsMemory = 0, bitmapDatas = 0;
+        var bitmapsMemory = 0, bitmapDatas = 0, tilemaps = 0, drawCalls = 0;
         var layersName = '';
 
         var bmpds = new Map<openfl.display.BitmapData, Int>();
@@ -37,6 +37,7 @@ class Debug {
                     if (Std.is(display.getChildAt(i), openfl.display.Bitmap)) {
                         glyphs++;
                         bitmaps++;
+                        drawCalls++;
 
                         var bitmap:openfl.display.Bitmap = cast display.getChildAt(i);
                         if (!bmpds.exists(bitmap.bitmapData)) {
@@ -102,6 +103,13 @@ class Debug {
                     if (Std.is(displayObject, openfl.display.MovieClip)) {
                         n++;
                         movieClips++;
+                        drawCalls++;
+
+                    } else if (Std.is(displayObject, openfl.display.Tilemap)) {
+
+                        n++;
+                        tilemaps++;
+                        drawCalls++;
 
                     } else if (Std.is(displayObject, openfl.display.DisplayObjectContainer)) {
                         traverseOpenFL(cast displayObject, depth);
@@ -111,6 +119,7 @@ class Debug {
 
                         if (Std.is(displayObject, openfl.display.Bitmap)) {
                             bitmaps++;
+                            drawCalls++;
 
                             var bitmap:openfl.display.Bitmap = cast display.getChildAt(i);
                             if (!bmpds.exists(bitmap.bitmapData)) {
@@ -125,6 +134,8 @@ class Debug {
                                     
                                 }
                             }
+                        } else {
+                            trace('Something else????', displayObject);
                         }
                     }
                 }
@@ -139,7 +150,8 @@ class Debug {
 
         var mem = openfl.system.System.totalMemory / 1024 / 1024;
         rstr += 'RAM: ${round(mem)} MB, Texture: ${round(textureMemory / 1024 / 1024)} MB, Layers: ${layers}, Non-empty layers: ${nonEmptyLayers}\n';
-        rstr += 'Total: ${n}, MovieClips: ${movieClips}, Sprites: ${sprites}, Bitmaps: ${bitmaps}, Texts: ${texts}, Glyphs: ${glyphs}\n';
+        rstr += 'Total: ${n}, MovieClips: ${movieClips}, Sprites: ${sprites}, Tilemaps: ${tilemaps}, Bitmaps: ${bitmaps}, Texts: ${texts}, Glyphs: ${glyphs}\n';
+        rstr += 'Draw Calls: ${drawCalls}\n';
         rstr += 'Display List: ${bitmapDatas}, memory: ${round(bitmapsMemory / 1024 / 1024)} MB\n';
         
         if (swfty.extra.Manager.ref != null) {
