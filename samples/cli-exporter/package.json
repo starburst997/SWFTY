@@ -3,13 +3,16 @@
   "version": "0.0.1",
   "license": "MIT",
   "scripts": {
-    "preinstall": "mkdir -p ~/haxe",
-    "postinstall": "mkdir -p haxe_libraries; lix download;",
+    "postinstall": "lix download",
     "update": "lix download",
     "download": "lix install",
     "test": "openfl build mac -Dsync -final -v && ./bin/macos/bin/SWFTY.app/Contents/MacOS/SWFTY -r $PWD/../../",
     "mac": "openfl build mac -Dsync -final -v",
-    "pkg": "mkdir -p bin/mac-installer && pkgbuild --root bin/macos/bin/SWFTY.app --identifier jd.boivin.swfty --scripts scripts/mac --install-location /Applications/SWFTY.app bin/mac-installer/SWFTY.pkg --sign \"Developer ID Installer: Jean-Denis Boivin (P7K4SUSDX6)\""
+    "windows": "openfl build windows -Dsync -final -v",
+    "pkg": "mkdir -p bin/mac-installer && pkgbuild --root bin/macos/bin/SWFTY.app --identifier jd.boivin.swfty --scripts scripts/mac --install-location /Applications/SWFTY.app bin/mac-installer/SWFTY.pkg --sign \"Developer ID Installer: Jean-Denis Boivin (P7K4SUSDX6)\"",
+    "lime-mac": "cd `haxelib path lime | sed -n 2p`; yarn install; cd tools; haxe run.hxml; haxe tools.hxml; cd ..; neko run rebuild ios; neko run rebuild android; neko run rebuild mac;",
+    "lime-windows": "cd `haxelib path lime | sed -n 2p`; cd ..; yarn install; cd tools; haxe run.hxml; haxe tools.hxml; cd ..; neko run rebuild windows;",
+    "lime-linux": "cd `haxelib path lime | sed -n 2p`; yarn install; cd tools; haxe run.hxml; haxe tools.hxml; cd ..; neko run rebuild linux;"
   },
   "dependencies": {
     "lix": "starburst997/lix.client#develop"
