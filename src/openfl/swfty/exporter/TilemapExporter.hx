@@ -87,7 +87,6 @@ class TilemapExporter {
                 #end
             }
             
-            trace('TESTING: $w, $h, $scale, $forceDimension');
             if (forceDimension) {
                 tilemap = pack(bmpds, w, h, w, h, scale, trimBitmap);
             } else {

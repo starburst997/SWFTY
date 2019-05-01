@@ -76,6 +76,8 @@ class Exporter {
 
     public static var tempFolder = 'temp';
 
+    public static var logs = '';
+
     var maxId:Int = -1;
 
     public var name:String;
@@ -114,6 +116,10 @@ class Exporter {
     var bakedId:StringMap<Int>;
 
     var config:Config = {};
+
+    public static function addLog(log:String) {
+        logs += '\n$log';
+    }
 
     public static function getConfig(?config:Config):Config {
         if (config == null) config = {};
@@ -653,6 +659,8 @@ class Exporter {
         if (height == null) height = config.maxDimension.height;
         
         var tilemap = getTilemap(width, height, scale, false, forceDimension);
+
+        Exporter.addLog('Tilemap: ${tilemap.bitmapData.width}x${tilemap.bitmapData.height} (${tilemap.scale})');
 
         var zip = new ZipWriter();
 
