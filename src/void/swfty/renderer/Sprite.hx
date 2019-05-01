@@ -45,7 +45,7 @@ abstract DisplayBitmap(EngineBitmap) from EngineBitmap to EngineBitmap {
         return new EngineBitmap(layer.getTile(id));
     }
 
-    public inline function transform(a:Float, b:Float, c:Float, d:Float, tx:Float, ty:Float) {
+    public inline function transform(a:Float, b:Float, c:Float, d:Float, tx:Float, ty:Float, scale:Float = 1.0) {
         
     }
 

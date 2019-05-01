@@ -187,6 +187,7 @@ class BaseText extends FinalSprite {
 
         var size = textDefinition.size * scaleFont;
         var scale = size / textDefinition.font.size;
+        var _scale = layer.getInternalScale();
 
         if (textDefinition.font.ascent + textDefinition.font.descent != 0.0) {
             y += (1 - (textDefinition.font.ascent / (textDefinition.font.ascent + textDefinition.font.descent))) * size; 
@@ -228,7 +229,7 @@ class BaseText extends FinalSprite {
                 tile.x = x + char.tx * scale;
                 tile.y = y + char.ty * scale;
 
-                tile.scaleX = tile.scaleY = scale;
+                tile.scaleX = tile.scaleY = scale / _scale;
 
                 addBitmap(tile);
 
@@ -251,7 +252,7 @@ class BaseText extends FinalSprite {
                             tile.x = x + char.tx * scale;
                             tile.y = y + char.ty * scale;
 
-                            tile.scaleX = tile.scaleY = scale;
+                            tile.scaleX = tile.scaleY = scale / _scale;
 
                             addBitmap(tile);
 

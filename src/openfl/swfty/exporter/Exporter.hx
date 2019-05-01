@@ -10,6 +10,11 @@ import openfl.swfty.exporter.ClassExporter;
 
 import zip.ZipWriter;
 
+#if sys
+import sys.FileSystem;
+import sys.io.File;
+#end
+
 import haxe.crypto.Base64;
 import haxe.ds.IntMap;
 import haxe.ds.StringMap;
@@ -19,7 +24,9 @@ import haxe.io.BytesOutput;
 
 import openfl.filters.*;
 import openfl.display.PNGEncoderOptions;
+import openfl.display.JPEGEncoderOptions;
 import openfl.display.BitmapData;
+import openfl.display.BitmapDataChannel;
 import openfl.events.Event;
 import openfl.geom.Matrix;
 import openfl.geom.Point;
@@ -67,6 +74,8 @@ class Exporter {
 
     static inline var MAX_STACK = 100;
 
+    public static var tempFolder = 'temp';
+
     var maxId:Int = -1;
 
     public var name:String;
@@ -104,11 +113,37 @@ class Exporter {
 
     var bakedId:StringMap<Int>;
 
-    public static function create(bytes:ByteArray, ?name:String, ?onComplete:Exporter->Void, ?onError:Dynamic->Void) {
-        return new Exporter(bytes, name, onComplete, onError);
+    var config:Config = {};
+
+    public static function getConfig(?config:Config):Config {
+        if (config == null) config = {};
+
+        if (config.watch == null) config.watch = false;
+        if (config.watchFolder == null) config.watchFolder = 'res';
+        if (config.outputFolder == null) config.outputFolder = config.watchFolder;
+        if (config.fontFolder == null) config.fontFolder = FontExporter.path;
+        if (config.abstractFolder == null) config.abstractFolder = 'src/swfty';
+        if (config.templateFolder == null) config.templateFolder = '';
+        if (config.tempFolder == null) config.tempFolder = 'temp';
+        if (config.quality == null) config.quality = [];
+        if (config.bakeColor == null) config.bakeColor = true;
+        if (config.pngquant == null) config.pngquant = true;
+        if (config.jpegtran == null) config.jpegtran = true;
+        if (config.fontEnabled == null) config.fontEnabled = true;
+        if (config.sharedFonts == null) config.sharedFonts = false;
+        if (config.maxDimension == null) config.maxDimension = null;
+        if (config.files == null) config.files = [];
+        if (config.useJPEG == null) config.useJPEG = false;
+        if (config.jpegQuality == null) config.jpegQuality = 90;
+
+        return config;
     }
 
-    public function new(bytes:ByteArray, ?name:String, ?onComplete:Exporter->Void, ?onError:Dynamic->Void) {
+    public static function create(bytes:ByteArray, ?config:Config, ?name:String, ?onComplete:Exporter->Void, ?onError:Dynamic->Void) {
+        return new Exporter(bytes, config, name, onComplete, onError);
+    }
+
+    public function new(bytes:ByteArray, ?config:Config, ?name:String, ?onComplete:Exporter->Void, ?onError:Dynamic->Void) {
         // Check if file is valid (43 57 53)
         bytes.position = 0;
         var p = bytes.length > 0 ? bytes.readByte() : 0;
@@ -116,6 +151,8 @@ class Exporter {
             if (onError != null) onError('Invalid format');
             return;
         }
+
+        this.config = getConfig(config);
 
         bytes.position = 0;
 
@@ -393,16 +430,31 @@ class Exporter {
         return true && (n > 0);
     }
 
-    public function getTilemap() {
+    public function getTilemap(?width:Int, ?height:Int, scale = 1.0, cache = true, forceDimension = false) {
         return switch(tilemap) {
-            case Some(tilemap) : tilemap;
-            case None : 
+            case Some(tilemap) if (cache) : tilemap;
+            case _ : 
+
+                if (width == null) width = config.maxDimension.width;
+                if (height == null) height = config.maxDimension.height;
+
                 // Create Tilemap based on all bitmapDatas
                 var keys = [for (key in bitmapDatas.keys()) key];
                 var bmpds = keys.map(function(key) return bitmapKeeps.exists(key) ? bitmapDatas.get(key) : null);
 
+                // Remove all duplicates
+                // TODO: !!!
+
+                // Process all bitmaps and figure out the max scale
+                // TODO: For "real" shapes, we might want to do that before doing the screenshot
+                for (key in keys) if (bitmapKeeps.exists(key)) {
+                    var bitmap = bitmaps.get(key);
+
+                    //trace(bitmap.id);
+                }
+
                 // Trim, then back to power of 2
-                var tilemap = TilemapExporter.pack(bmpds, true);
+                var tilemap = TilemapExporter.fit(bmpds, width, height, scale, true, forceDimension);
                 var w = 1, h = 1;
                 while((w *= 2) < tilemap.bitmapData.width) {}
                 while((h *= 2) < tilemap.bitmapData.height) {}
@@ -415,18 +467,6 @@ class Exporter {
                     bmpd;
                 }
                 tilemap.bitmapData = bitmapData;
-
-                // Remove all duplicates
-                // TODO: !!!
-
-                // Process all bitmaps and figure out the max scale
-                // TODO: For "real" shapes, we might want to do that before doing the screenshot
-                for (key in keys) if (bitmapKeeps.exists(key)) {
-                    var bitmap = bitmaps.get(key);
-                    
-
-                    //trace(bitmap.id);
-                }
 
                 // We're done, so go back to default
                 #if openfl_jd
@@ -444,6 +484,8 @@ class Exporter {
                     if (tile != null) {
                         bitmap.x = tile.x;
                         bitmap.y = tile.y;
+                        bitmap.width = tile.width;
+                        bitmap.height = tile.height;
                     }
                 }
 
@@ -478,11 +520,13 @@ class Exporter {
             tilemap: switch(tilemap) {
                 case Some(tilemap) : {
                     width: tilemap.bitmapData.width,
-                    height: tilemap.bitmapData.height
+                    height: tilemap.bitmapData.height,
+                    scale: tilemap.scale
                 }
                 case None : {
                     width: 0,
-                    height: 0
+                    height: 0,
+                    scale: 1.0
                 }
             },
             name: name,
@@ -499,19 +543,127 @@ class Exporter {
     }
 
     public function getPNG(bmpd:BitmapData) {
+        var png = bmpd.encode(bmpd.rect, new PNGEncoderOptions());
+        
         #if sys
-        // TODO: Run pngquant!!!
+        // Save file to disk, run pngquant, save to zip 
+        if (config.pngquant) {
+            var temp1 = '${config.tempFolder}/temp1.png';
+            var temp2 = '${config.tempFolder}/temp2.png';
+            
+            if (!FileSystem.exists(config.tempFolder)) FileSystem.createDirectory(config.tempFolder);
+            File.saveBytes(temp1, png);
+
+            Sys.command('imagemin --plugin=pngquant $temp1 > $temp2');
+
+            if (FileSystem.exists(temp2)) {
+                png = File.getBytes(temp2);
+                FileSystem.deleteFile(temp2);
+            } else {
+                trace('Error: pngquant did not run successfully!');
+            }
+
+            try {
+                FileSystem.deleteFile(temp1);
+                FileSystem.deleteDirectory(config.tempFolder);
+            } catch(e:Dynamic) {
+                // Might be some leftovers or the directory already existed...
+            }
+        }
         #end
-        return bmpd.encode(bmpd.rect, new PNGEncoderOptions());
+
+        return png;
+    }
+
+    public function getJPG(bmpd:BitmapData):{
+        jpg: Bytes,
+        alpha: Bytes
+    } {
+        // Extract alpha channel
+        var alpha = new BitmapData(bmpd.width, bmpd.height, false, 0x000000);
+
+        // TODO: Could it be more efficient to only use one channel?
+        alpha.copyChannel(bmpd, bmpd.rect, new Point(0, 0), BitmapDataChannel.ALPHA, BitmapDataChannel.RED);
+        alpha.copyChannel(bmpd, bmpd.rect, new Point(0, 0), BitmapDataChannel.ALPHA, BitmapDataChannel.GREEN);
+        alpha.copyChannel(bmpd, bmpd.rect, new Point(0, 0), BitmapDataChannel.ALPHA, BitmapDataChannel.BLUE);
+
+        var jpg = bmpd.encode(bmpd.rect, new JPEGEncoderOptions(config.jpegQuality));
+
+        #if sys
+        if (config.jpegtran) {
+            var temp1 = '${config.tempFolder}/temp1.jpg';
+            var temp2 = '${config.tempFolder}/temp2.jpg';
+            
+            if (!FileSystem.exists(config.tempFolder)) FileSystem.createDirectory(config.tempFolder);
+            File.saveBytes(temp1, jpg);
+
+            Sys.command('imagemin --plugin=jpegtran $temp1 > $temp2');
+
+            if (FileSystem.exists(temp2)) {
+                jpg = File.getBytes(temp2);
+                FileSystem.deleteFile(temp2);
+            } else {
+                trace('Error: mozjpeg did not run successfully!');
+            }
+
+            try {
+                FileSystem.deleteFile(temp1);
+                FileSystem.deleteDirectory(config.tempFolder);
+            } catch(e:Dynamic) {
+                // Might be some leftovers or the directory already existed...
+            }
+        }
+        #end
+
+        return {
+            jpg: jpg,
+            alpha: getPNG(alpha)
+        }
+    }
+
+    public function getQualities():Array<InnerQuality> {
+        var results = [{
+            name: 'original',
+            appendName: false,
+            outputFolder: config.outputFolder,
+            scale: 1.0,
+            maxDimension: config.maxDimension
+        }];
+
+        for (q in config.quality) {
+            results.push(q);
+        }
+        
+        return results;
+    }
+
+    public function getMaxDimension(originalMaxWidth:Int, originalMaxHeight:Int, normalWidth:Int, normalHeight:Int, qualityMaxWidth:Int, qualityMaxHeight:Int) {
+        var scaleW = originalMaxWidth / qualityMaxWidth;
+        var scaleH = originalMaxHeight / qualityMaxHeight;
+
+        return {
+            width: Std.int(normalWidth / scaleW),
+            height: Std.int(normalHeight / scaleH)
+        }
     }
 
     // The whole point of this library was so I could get to name this function
-    public function getSwfty(useJson = false, compressed = true) {
-        var tilemap = getTilemap();
-        var png = getPNG(tilemap.bitmapData);
+    public function getSwfty(useJson = false, compressed = true, ?width:Int, ?height:Int, scale = 1.0, forceDimension = false) {
+        if (width == null) width = config.maxDimension.width;
+        if (height == null) height = config.maxDimension.height;
+        
+        var tilemap = getTilemap(width, height, scale, false, forceDimension);
 
         var zip = new ZipWriter();
-        zip.addBytes(png, 'tilemap.png', false);
+
+        if (config.useJPEG) {
+            var jpg = getJPG(tilemap.bitmapData);
+            zip.addBytes(jpg.jpg, 'tilemap.jpg', false);
+            zip.addBytes(jpg.alpha, 'alpha.png', false);
+        } else {
+            var png = getPNG(tilemap.bitmapData);
+            zip.addBytes(png, 'tilemap.png', false);
+        }
         
         if (useJson) {
             zip.addString(getJSON(), 'definitions.json', compressed);

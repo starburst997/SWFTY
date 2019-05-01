@@ -135,12 +135,12 @@ abstract DisplayBitmap(EngineBitmap) from EngineBitmap to EngineBitmap {
         return sprite;
     }
 
-    public inline function transform(a:Float, b:Float, c:Float, d:Float, tx:Float, ty:Float) {
+    public inline function transform(a:Float, b:Float, c:Float, d:Float, tx:Float, ty:Float, scale:Float = 1.0) {
         // TODO: This is a bit of extra steps, maybe I should submit a PR to expose the matrix more easily?
         this.x = MathUtils.x(tx);
         this.y = MathUtils.y(ty);
-        this.scaleX = MathUtils.scaleX(a, b, c, d);
-        this.scaleY = MathUtils.scaleY(a, b, c, d);
+        this.scaleX = MathUtils.scaleX(a, b, c, d) / scale;
+        this.scaleY = MathUtils.scaleY(a, b, c, d) / scale;
         this.rotation = MathUtils.rotation(a, b, c, d);
     }
 

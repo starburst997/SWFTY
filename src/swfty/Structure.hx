@@ -130,7 +130,8 @@ typedef MovieClipDefinition = {
 typedef SWFTYJson = {
     tilemap: {
         width: Int,
-        height: Int
+        height: Int,
+        scale: Float
     },
     name: String,
 	definitions: Array<MovieClipDefinition>,
@@ -157,9 +158,13 @@ typedef Config = {
     ?outputFolder: String,
     ?abstractFolder: String,
     ?templateFolder: String,
+    ?tempFolder: String,
     ?fontFolder: String,
     ?quality: Array<InnerQuality>,
     ?pngquant: Bool,
+    ?jpegtran: Bool,
+    ?useJPEG: Bool,
+    ?jpegQuality: Int,
     ?fontEnabled: Bool,
     ?bakeColor: Bool,
     ?sharedFonts:Bool,
@@ -498,6 +503,7 @@ class SWFTYType #if !macro implements hxbit.Serializable #end {
     @:s public var name:String;
     @:s public var tilemap_width:Int;
     @:s public var tilemap_height:Int;
+    @:s public var tilemap_scale:Float;
 	@:s public var definitions:IntMap<MovieClipType>;
     @:s public var tiles:IntMap<BitmapType>;
     @:s public var fonts:IntMap<FontType>;
@@ -512,6 +518,7 @@ class SWFTYType #if !macro implements hxbit.Serializable #end {
         return {
             tilemap_width: json.tilemap.width,
             tilemap_height: json.tilemap.height,
+            tilemap_scale: json.tilemap.scale,
             name: json.name,
             definitions: movieClips,
             tiles: bitmaps,
@@ -519,9 +526,10 @@ class SWFTYType #if !macro implements hxbit.Serializable #end {
         };
     }
 
-    public function new(?tilemap_width:Int, ?tilemap_height:Int, ?name:String, ?definitions:IntMap<MovieClipType>, ?tiles:IntMap<BitmapType>, ?fonts:IntMap<FontType>) {
+    public function new(?tilemap_width:Int, ?tilemap_height:Int, ?tilemap_scale:Float, ?name:String, ?definitions:IntMap<MovieClipType>, ?tiles:IntMap<BitmapType>, ?fonts:IntMap<FontType>) {
         this.tilemap_width = tilemap_width;
         this.tilemap_height = tilemap_height;
+        this.tilemap_scale = tilemap_scale;
         this.name = name;
         this.definitions = definitions;
         this.tiles = tiles;

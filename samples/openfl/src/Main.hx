@@ -240,7 +240,8 @@ class Main extends Sprite {
         #if export
         processSWF('res/Popup.swf', function(layer) {
         #else
-        swfty.Yokat.load(stage.stageWidth, stage.stageHeight, function(layer:swfty.Yokat) {
+        //swfty.Yokat.load(stage.stageWidth, stage.stageHeight, function(layer:swfty.Yokat) {
+        loadSWFTY('res/swfty/mid/Yokat.swfty', function(layer:Layer) {
         #end
             layers.push(layer);
 
@@ -365,4 +366,14 @@ class Main extends Sprite {
         return layer;
 	}
     #end
+
+    public function loadSWFTY(path:String, ?onComplete:Layer->Void, ?onError:Dynamic->Void) {
+        var layer = Layer.empty(stage.stageWidth, stage.stageHeight);
+
+        File.loadBytes(path, function(bytes) {
+            layer.loadBytes(bytes, () -> onComplete(layer), onError);
+        }, onError);
+
+        return layer;
+    }
 }

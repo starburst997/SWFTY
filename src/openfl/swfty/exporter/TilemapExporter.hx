@@ -1,7 +1,9 @@
 package openfl.swfty.exporter;
 
 import haxe.ds.IntMap;
+
 import openfl.display.BitmapData;
+import openfl.display.PNGEncoderOptions;
 import openfl.geom.Point;
 import openfl.geom.Rectangle;
 
@@ -17,6 +19,7 @@ typedef Tile = {
 
 typedef TilePack = {
     tiles: Array<Tile>,
+    scale: Float,
     bitmapData: BitmapData
 }
 
@@ -42,7 +45,66 @@ class TilemapExporter {
         return {bmpd: trimed, rect: notAlphaBounds, originalWidth: originalWidth, originalHeight: originalHeight};
     }
 
-    public static function pack(bmpds:Array<BitmapData>, w:Int = 128, h:Int = 128, ?trimBitmap = true) {
+    public static function fit(bmpds:Array<BitmapData>, w:Int, h:Int, scale = 1.0, ?trimBitmap = true, ?forceDimension = false) {
+        var original = bmpds;
+
+        #if sys
+        // Save all bitmaps to temp folder and use ImageMagick to resize
+        var temp = Exporter.tempFolder;
+        FileUtils.createDirectory(temp, true);
+        FileUtils.createDirectory('$temp/original', true);
+
+        for (i in 0...bmpds.length) {
+            var bmpd = bmpds[i];
+            if (bmpd.rect.width > 0 && bmpd.rect.height > 0) {
+                var png = bmpd.encode(bmpd.rect, new PNGEncoderOptions());
+                if (png.length > 0) {
+                    FileUtils.createFile('$temp/original/$i.png', png);
+                }
+            }
+        }
+        #end
+
+        var tilemap = null;
+        while (tilemap == null) {
+            if (scale != 1.0) {
+                #if sys
+                bmpds = [];
+                FileUtils.createDirectory('$temp/scaled', true);
+                for (i in 0...original.length) {
+                    if (FileUtils.exists('$temp/original/$i.png')) {
+                        Sys.command('convert $temp/original/$i.png -resize ${Std.int(scale * 100)}% $temp/scaled/$i.png');
+                        
+                        var bmpdBytes = sys.io.File.getBytes('$temp/scaled/$i.png');
+                        var bmpd = BitmapData.fromBytes(bmpdBytes);
+                        bmpds.push(bmpd);
+                    } else {
+                        bmpds.push(new BitmapData(1, 1, true, 0x00000000));
+                    }
+                }
+                #else
+                // TODO: image.resize(Std.int(image.width * scale), Std.int(image.height * scale));
+                #end
+            }
+            
+            trace('TESTING: $w, $h, $scale, $forceDimension');
+            if (forceDimension) {
+                tilemap = pack(bmpds, w, h, w, h, scale, trimBitmap);
+            } else {
+                tilemap = pack(bmpds, 128, 128, w, h, scale, trimBitmap);
+            }
+            
+            scale -= 0.05;
+        }
+
+        #if sys
+        //sFileUtils.deleteDirectory(temp);
+        #end
+
+        return tilemap;
+    }
+
+    public static function pack(bmpds:Array<BitmapData>, w:Int = 128, h:Int = 128, ?maxW:Int, ?maxH:Int, ?scale = 1.0, ?trimBitmap = true) {
 
         // Keep a copy of the unsorted array
         var copy = bmpds.copy();
@@ -51,10 +113,13 @@ class TilemapExporter {
         bmpds.sortdf(function(bmpd) return bmpd.width * bmpd.height);
 
         // Sort by area so we try to fit the biggest first then smaller one can fill in the gaps
+        var area = 0;
         var map = new Map<BitmapData, Int>();
         for (i in 0...bmpds.length) {
             var bmpd = bmpds[i];
             map.set(bmpd, i);
+
+            area += bmpd.width * bmpd.height;
         }
 
         function createPack(w:Int, h:Int) {
@@ -93,9 +158,15 @@ class TilemapExporter {
             tiles = createPack(w, h);
             if (tiles == null) {
                 if (w == h) {
-                    w *= 2;
-                } else {
+                    if (maxW == null || w < maxW) {
+                        w *= 2;
+                    } else {
+                        break;
+                    }
+                } else if (maxH == null || h < maxH) {
                     h *= 2;
+                } else {
+                    break;
                 }
                 //trace('Trying $w, $h...');
             } else {
@@ -127,7 +198,7 @@ class TilemapExporter {
                 bitmapData.setPixel32(0, 0, 0x00000000);
             }
             
-            {tiles: sortedTiles, bitmapData: bitmapData};
+            {tiles: sortedTiles, scale: scale, bitmapData: bitmapData};
         } else {
             null;
         }

@@ -370,6 +370,8 @@ class BaseSprite extends EngineSprite {
 
         if (definition == null) return;
 
+        var scale = layer.getInternalScale();
+
         // Create children
         var updateVisible = true, updatePosition = true, updateScale = true, updateRotation = true, updateAlpha = true;
         for (child in definition.children) {
@@ -526,7 +528,7 @@ class BaseSprite extends EngineSprite {
 
                 for (shape in child.shapes) {
                     var tile = _layer.createBitmap(shape.bitmap.id, true);
-                    tile.transform(shape.a, shape.b, shape.c, shape.d, shape.tx, shape.ty);
+                    tile.transform(shape.a, shape.b, shape.c, shape.d, shape.tx, shape.ty, scale);
                     sprite.addBitmap(tile);
                 }
 

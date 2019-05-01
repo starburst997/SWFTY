@@ -155,23 +155,10 @@ class CLI extends mcli.CommandLine {
 	}
 
     function getConfig(?config:Config) {
-        if (config == null) config = {};
-
-        if (config.watch == null) config.watch = this.watch;
-        if (config.watchFolder == null) config.watchFolder = 'res';
-        if (config.outputFolder == null) config.outputFolder = config.watchFolder;
-        if (config.fontFolder == null) config.fontFolder = FontExporter.path;
-        if (config.abstractFolder == null) config.abstractFolder = 'src/swfty';
-        if (config.templateFolder == null) config.templateFolder = '';
-        if (config.quality == null) config.quality = [];
-        if (config.bakeColor == null) config.bakeColor = true;
-        if (config.pngquant == null) config.pngquant = true;
-        if (config.fontEnabled == null) config.fontEnabled = true;
-        if (config.sharedFonts == null) config.sharedFonts = false;
-        if (config.maxDimension == null) config.maxDimension = null;
-        if (config.files == null) config.files = [];
+        config = Exporter.getConfig(config);
 
         // CLI arguments overwrite the config
+        if (config.watch == null) config.watch = this.watch;
         if (this.output != null) config.outputFolder = this.output;
         if (this.fontPath != null) config.fontFolder = this.fontPath;
 
@@ -226,21 +213,50 @@ class CLI extends mcli.CommandLine {
             }
 
             log('Converting', path.toString());
-            processSWF(path.toString(), config.watchFolder, exporter -> {
+            processSWF(config, path.toString(), config.watchFolder, exporter -> {
                 log('Exporting', path.toString(), 2);
 
-                var zip = exporter.getSwfty();
-                var output = Path.of(getDir(config.outputFolder)).join(exporter.name + '.swfty').toString();
+                var original = null;
+                var first = null;
 
-                var tilemap = exporter.getTilemap();
-                log('Size', '${Math.ceil(zip.length / 1024 / 1024 * 100) / 100} MB', 2);
-                log('Tilemap', '${tilemap.bitmapData.width}x${tilemap.bitmapData.height}', 2);
+                // Save all quality
+                for (quality in exporter.getQualities()) {
 
-                // Makes sure dir exists
-                Dir.of(Path.of(output).parent).create();
+                    var w = quality.maxDimension.width;
+                    var h = quality.maxDimension.height;
 
-                log('Saving', '$output', 2);
-                FileSave.writeBytes(zip, output);
+                    if (first != null) {
+                        var dimension = exporter.getMaxDimension(first.maxWidth, first.maxHeight, first.width, first.height, w, h);
+                        w = dimension.width;
+                        h = dimension.height;
+
+                        trace('MAX DIMENSION: $w, $h');
+                    }
+
+                    var zip = exporter.getSwfty(false, true, w, h, quality.scale, first != null);
+                    var output = Path.of(getDir(quality.outputFolder)).join(exporter.name + '.swfty').toString();
+
+                    var tilemap = exporter.getTilemap();
+                    log('Size', '${Math.ceil(zip.length / 1024 / 1024 * 100) / 100} MB', 2);
+                    log('Tilemap', '${tilemap.bitmapData.width}x${tilemap.bitmapData.height}', 2);
+
+                    if (first == null) {
+                        first = {
+                            maxWidth: w,
+                            maxHeight: h,
+                            width: tilemap.bitmapData.width,
+                            height: tilemap.bitmapData.height
+                        };
+                    }
+
+                    // Makes sure dir exists
+                    Dir.of(Path.of(output).parent).create();
+
+                    log('Saving', '$output', 2);
+                    FileSave.writeBytes(zip, output);
+
+                    if (quality.scale == 1.0) original = zip;
+                }
 
                 // Save abstract
                 var abstractPath = Path.of(getDir(config.abstractFolder)).join(exporter.name + '.hx').toString();
@@ -277,12 +293,14 @@ class CLI extends mcli.CommandLine {
                 FileSave.writeBytes(Bytes.ofString(exporter.getRootAbstract(quality, files, getTemplate('SWFTY.hx'))), rootPath);
 
                 // Craft message to be sent to server
-                var idBytes = Bytes.ofString(exporter.name);
-                var messageBytes = Bytes.alloc(idBytes.length + 4 + zip.length);
-                messageBytes.setInt32(0, idBytes.length);
-                messageBytes.blit(4, idBytes, 0, idBytes.length);
-                messageBytes.blit(idBytes.length + 4, zip, 0, zip.length);
-                Main.swfs.add(messageBytes);
+                if (original != null) {
+                    var idBytes = Bytes.ofString(exporter.name);
+                    var messageBytes = Bytes.alloc(idBytes.length + 4 + original.length);
+                    messageBytes.setInt32(0, idBytes.length);
+                    messageBytes.blit(4, idBytes, 0, idBytes.length);
+                    messageBytes.blit(idBytes.length + 4, original, 0, original.length);
+                    Main.swfs.add(messageBytes);
+                }
 
                 log('Done!');
                 
@@ -342,7 +360,7 @@ class CLI extends mcli.CommandLine {
         }
     }
 
-    function processSWF(path:String, folder:String, onComplete:Exporter->Void, onError:Dynamic->Void) {
+    function processSWF(?config:Config, path:String, folder:String, onComplete:Exporter->Void, onError:Dynamic->Void) {
 		try {
             log('Loading', path, 2);
 
@@ -353,8 +371,10 @@ class CLI extends mcli.CommandLine {
 
 			var timer = haxe.Timer.stamp();
 
+            Exporter.tempFolder = getDir('./temp');
+
             var id = path.substr(getDir(folder).length).replace('.swf', '');
-			Exporter.create(bytes, id, function(exporter) {
+			Exporter.create(bytes, config, id, function(exporter) {
                 log('Parsed SWF', '${Math.ceil((haxe.Timer.stamp() - timer) * 100) / 100} sec', 2);
                 onComplete(exporter);
             }, onError);
@@ -523,7 +543,7 @@ class Main extends Sprite {
 
         #if !debug
         haxe.Log.trace = function(v:Dynamic, ?infos:haxe.PosInfos) {
-            // Do nothing!
+            Console.log('<b><#ffa500>WARNING:</></> $v');
         };
         #end
 

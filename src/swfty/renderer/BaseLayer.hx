@@ -388,6 +388,13 @@ class BaseLayer extends EngineLayer {
         } 
     }
 
+    public inline function getInternalScale():Float {
+        return switch(swfty) {
+            case Some(swfty) : swfty.tilemap_scale;
+            case None : 1.0;
+        }
+    }
+
     public inline function getFont(id:Int):FontType {
         return switch(swfty) {
             case Some(swfty) : swfty.fonts.get(id);
