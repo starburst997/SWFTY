@@ -8,14 +8,14 @@ class FinalSprite extends BaseSprite {
 
     static var pt = new openfl.geom.Point();
 
-    public static inline function create(layer:BaseLayer, ?definition:MovieClipType, ?linkage:String) {
-        return new FinalSprite(layer, definition, linkage);
+    public static inline function create(layer:BaseLayer, ?definition:MovieClipType, ?linkage:String, ?debug = false) {
+        return new FinalSprite(layer, definition, linkage, debug);
     }    
 
-    public function new(layer:BaseLayer, ?definition:MovieClipType, ?linkage:String) {
+    public function new(layer:BaseLayer, ?definition:MovieClipType, ?linkage:String, ?debug = false) {
+        super(layer, definition, linkage, debug);
+        
         this.tileset = layer.tileset;
-
-        super(layer, definition, linkage);
     }
 
     override function getBitmaps():Array<DisplayBitmap> {

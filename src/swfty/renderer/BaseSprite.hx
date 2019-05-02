@@ -113,9 +113,10 @@ class BaseSprite extends EngineSprite {
     var _pruneRenders:Array<Float->Void>;
     var _pruneSprites:Array<FinalSprite>;
 
-    public function new(layer:BaseLayer, ?definition:MovieClipType, ?linkage:String) {
+    public function new(layer:BaseLayer, ?definition:MovieClipType, ?linkage:String, ?debug = false) {
         super();
 
+        this.debug = debug;
         this.layer = layer;
         this._layer = layer;
         _linkage = linkage;
@@ -629,6 +630,8 @@ class BaseSprite extends EngineSprite {
     }
 
     public function addSpriteAt(sprite:FinalSprite, index:Int = 0) {
+        sprite.removeFromParent();
+        
         if (sprite._name != null) {
             _names.set(sprite._name, sprite);
         }
@@ -642,6 +645,8 @@ class BaseSprite extends EngineSprite {
     }
 
     public function addSprite(sprite:FinalSprite, addName = true) {
+        sprite.removeFromParent();
+
         if (addName && sprite._name != null) {
             _names.set(sprite._name, sprite);
         }

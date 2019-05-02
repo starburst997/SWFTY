@@ -440,15 +440,15 @@ class BaseLayer extends EngineLayer {
         return sprite;
     }
 
-    public function get(linkage:String) {
+    public function get(linkage:String, debug = false) {
         return if (!mcs.exists(linkage)) {
             switch(swfty) {
                 case Some(_) : Log.warn('Linkage: $linkage does not exists! ${path}');
                 case None : 
             }
-            Sprite.create(this, linkage);
+            Sprite.create(this, linkage, debug);
         } else {
-            Sprite.create(this, mcs.get(linkage), linkage);
+            Sprite.create(this, mcs.get(linkage), linkage, debug);
         }
     }
 

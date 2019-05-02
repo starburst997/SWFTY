@@ -42,8 +42,8 @@ typedef FinalSprite = heaps.swfty.renderer.Sprite.FinalSprite;
 @:forward(dispose, type, rectToLayer, renderID, hasForceBounds, addAdded, addRemoved, removeAdded, removeRemoved, originalX, originalY, originalScaleX, originalScaleY, originalRotation, originalAlpha, originalVisible, x, y, scaleX, scaleY, rotation, alpha, interactive, loaded, width, height, exists, calcBounds, bounds, addRender, addRenderNow, removeRender, setBounds, setIndex, debug, addBitmap, localToLayer, layerToLocal, colorize, uuid)
 abstract Sprite(FinalSprite) from FinalSprite to FinalSprite {
 
-    public static inline function create(layer:BaseLayer, ?definition:MovieClipType, ?linkage:String):Sprite {
-        var sprite = new FinalSprite(layer, definition, linkage);
+    public static inline function create(layer:BaseLayer, ?definition:MovieClipType, ?linkage:String, ?debug = false):Sprite {
+        var sprite = new FinalSprite(layer, definition, linkage, debug);
         if (definition == null && linkage == null) sprite.loaded = true;
         return sprite;
     }
