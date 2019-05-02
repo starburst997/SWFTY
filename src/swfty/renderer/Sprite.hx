@@ -66,6 +66,11 @@ abstract Sprite(FinalSprite) from FinalSprite to FinalSprite {
         @:privateAccess return this._sprites;
     }
 
+    public var numChildren(get, never):Int;
+    inline function get_numChildren():Int {
+        @:privateAccess return this._sprites.length;
+    }
+
     public var name(get, set):String;
     inline function get_name():String {
         @:privateAccess return this._name;

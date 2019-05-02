@@ -67,7 +67,7 @@ class FinalLayer extends BaseLayer {
                 tiles.set(tile.id, this.tile.sub(tile.x, tile.y, tile.width, tile.height));
             }
 
-            trace('Tilemap: ${tile.width}, ${tile.height}');
+            trace('Tilemap: ${swfty.name}, ${tile.width}, ${tile.height}');
 
             if (onComplete != null) onComplete();
         }

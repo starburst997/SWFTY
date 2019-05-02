@@ -54,6 +54,7 @@ class FinalLayer extends BaseLayer {
     override function get_container() {
         if (container == null) {
             container = new EngineContainer();
+            container.name = 'Container';
         }
         return container;
     }
@@ -129,7 +130,7 @@ class FinalLayer extends BaseLayer {
             // Only add on the display when we load a texture
             container.addChild(this);
 
-            trace('Tilemap: ${bmpd.width}, ${bmpd.height}');
+            trace('Tilemap: ${swfty.name}, ${bmpd.width}, ${bmpd.height}');
 
             if (onComplete != null) onComplete();
         }
@@ -139,5 +140,20 @@ class FinalLayer extends BaseLayer {
         #else
         BitmapData.loadFromBytes(bytes).onComplete(complete).onError(onError);
         #end
+    }
+
+    override function dispose() {
+        if (!disposed) {
+            // TODO: !!!
+
+            // Never too prudent, immediately dispose of all bitmap data associated with this layer
+            /*if (texture != null) texture.dispose();
+            for (tile in tiles) {
+                tile.dispose();
+            }
+            tiles = new IntMap();*/
+        }
+
+        super.dispose();
     }
 }

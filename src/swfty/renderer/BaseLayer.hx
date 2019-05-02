@@ -60,6 +60,8 @@ class BaseLayer extends EngineLayer {
     var layers:Array<Layer> = [];
     var pruneLayers:Array<Layer> = [];
 
+    public var debug = false;
+
     // Mouse need to be updated from the engine
     public var mouse = new Mouse();
 
@@ -490,6 +492,7 @@ class BaseLayer extends EngineLayer {
             name: 'no-name-${bytes == null ? 0 : bytes.length}',
             tilemap_width: 0,
             tilemap_height: 0,
+            tilemap_scale: 1,
             definitions: new IntMap(),
             tiles: new IntMap(),
             fonts: new IntMap()
@@ -498,8 +501,10 @@ class BaseLayer extends EngineLayer {
         if (bytes == null) {
             // Empty layer... (something wrong happens, but better to show nothing than crash...)
             if (disposed) return;
+
             loadSWFTY(swfty);
             reload();
+            
             if (onComplete != null) onComplete();
         } else {
             loadTexture(bytes, swfty, function() {
@@ -507,6 +512,7 @@ class BaseLayer extends EngineLayer {
 
                 loadSWFTY(swfty);
                 reload();
+
                 if (onComplete != null) onComplete();
             }, function(e) {
                 if (disposed) return;

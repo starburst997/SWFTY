@@ -41,21 +41,61 @@ class FinalSprite extends BaseSprite {
     }
 
     override function calcBounds(?relative:BaseSprite, ?global = false):Rectangle {
-        return if (global) {
-            var rect = this.getBounds(layer.base);
-            {
-                x: rect.x * layer.scale,
-                y: rect.y * layer.scale,
-                width: rect.width * layer.scale,
-                height: rect.height * layer.scale
+       return if (global) {
+            if (forceBounds != null) {
+                var pt = localToLayer(forceBounds.x, forceBounds.y);
+                var pt2 = localToLayer(forceBounds.x + forceBounds.width, forceBounds.y + forceBounds.height);
+
+                {
+                    x: pt.x,
+                    y: pt.y,
+                    width: pt2.x - pt.x,
+                    height: pt2.y - pt.y
+                }
+            } else {
+                var rect = this.getBounds(layer.base);
+
+                #if dev
+                //if (rect.width <= 0 || rect.height <= 0) trace('Calc bounds bad values!!!!! $_name');
+                #end
+
+                {
+                    x: rect.x,
+                    y: rect.y,
+                    width: rect.width,
+                    height: rect.height
+                }
             }
+
         } else {
-            var rect = this.getBounds(relative == null ? this : relative);
-            {
-                x: rect.x,
-                y: rect.y,
-                width: rect.width,
-                height: rect.height
+            if (relative == null) relative = this;
+            
+            if (forceBounds != null) {
+                var pt = localToLayer(forceBounds.x + forceBounds.width * (scaleX < 0 ? 1 : 0), forceBounds.y + forceBounds.height * (scaleY < 0 ? 1 : 0));
+                var pt2 = localToLayer(forceBounds.x + forceBounds.width * (scaleX < 0 ? 0 : 1), forceBounds.y + forceBounds.height * (scaleY < 0 ? 0 : 1));
+                
+                pt = relative.layerToLocal(pt.x, pt.y);
+                pt2 = relative.layerToLocal(pt2.x, pt2.y);
+                
+                {
+                    x: pt.x,
+                    y: pt.y,
+                    width: pt2.x - pt.x,
+                    height: pt2.y - pt.y
+                }
+            } else {
+                var rect = this.getBounds(relative);
+
+                #if dev
+                //if (rect.width <= 0 || rect.height <= 0) trace('Calc bounds bad values!!!!! $_name');
+                #end
+
+                {
+                    x: rect.x,
+                    y: rect.y,
+                    width: rect.width,
+                    height: rect.height
+                }
             }
         }
     }
