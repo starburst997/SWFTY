@@ -15,6 +15,8 @@ class BaseLayer extends EngineLayer {
 
     public var disposed = false;
 
+    var customId = 0;
+
     var _width:Int = 1;
     var _height:Int = 1;
     
@@ -388,6 +390,12 @@ class BaseLayer extends EngineLayer {
             tiles.set(id, tile);
             tile;
         } 
+    }
+
+    public inline function addCustomTile(tile:DisplayTile) {
+        var id = --customId;
+        tiles.set(id, tile);
+        return id;
     }
 
     public inline function getInternalScale():Float {
