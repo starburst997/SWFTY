@@ -537,6 +537,11 @@ class BaseLayer extends EngineLayer {
             return;
         }
 
+        if (bytes == null) {
+            if (onError != null) onError('Bytes are null');
+            return;
+        }
+
         var TILEMAP_PNG     = 'tilemap.png';
         var DEFINITION_JSON = 'definitions.json';
         var DEFINITION_BIN  = 'definitions.bin';
