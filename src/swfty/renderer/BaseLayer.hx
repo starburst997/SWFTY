@@ -15,7 +15,8 @@ class BaseLayer extends EngineLayer {
 
     public var disposed = false;
 
-    var customId = 0;
+    // TODO: Should be enough? Maybe save the max id in SWFTY
+    var customId = 1000000;
 
     var _width:Int = 1;
     var _height:Int = 1;
@@ -393,7 +394,7 @@ class BaseLayer extends EngineLayer {
     }
 
     public inline function addCustomTile(tile:DisplayTile) {
-        var id = --customId;
+        var id = ++customId;
         tiles.set(id, tile);
         return id;
     }
