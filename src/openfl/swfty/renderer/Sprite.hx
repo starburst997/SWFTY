@@ -55,15 +55,17 @@ class FinalSprite extends BaseSprite {
             } else {
                 var rect = this.getBounds(layer.base);
 
+                // TODO: There isn't any rotation done on "base", so this works as long as we don't do any complex transform
+
                 #if dev
                 //if (rect.width <= 0 || rect.height <= 0) trace('Calc bounds bad values!!!!! $_name');
                 #end
 
                 {
-                    x: rect.x,
-                    y: rect.y,
-                    width: rect.width,
-                    height: rect.height
+                    x: rect.x * layer.base.scaleX,
+                    y: rect.y * layer.base.scaleY,
+                    width: rect.width * layer.base.scaleX,
+                    height: rect.height * layer.base.scaleY
                 }
             }
 
@@ -143,6 +145,7 @@ class FinalSprite extends BaseSprite {
 
     override function addSpriteAt(sprite:FinalSprite, index:Int = 0) {
         super.addSpriteAt(sprite, index);
+        
         addTileAt(sprite, index);
         sprite._parent = this;
     }
