@@ -481,6 +481,7 @@ class BaseSprite extends EngineSprite {
                 addSprite(text);
             } else {
                 var sprite:FinalSprite = if (!child.name.empty() && _names.exists(child.name)) {
+
                     var sprite:FinalSprite = _names.get(child.name);
 
                     if (!loaded) {
@@ -492,8 +493,8 @@ class BaseSprite extends EngineSprite {
                     }
 
                     sprite.refresh();
-
                     sprite.load(child.mc);
+
                     sprite;
                 } else {
                     var sprite:FinalSprite = FinalSprite.create(layer, child.mc);
@@ -637,6 +638,7 @@ class BaseSprite extends EngineSprite {
         }
 
         _sprites.insert(index, sprite);
+        _pruneSprites.remove(sprite);
         
         // TODO: Was that necessary?
         if (!sprite.loaded && sprite.layer.loaded) {
@@ -652,6 +654,7 @@ class BaseSprite extends EngineSprite {
         }
 
         _sprites.push(sprite);
+        _pruneSprites.remove(sprite);
         
         // TODO: Was that necessary?
         if (!sprite.loaded && sprite.layer.loaded) {
