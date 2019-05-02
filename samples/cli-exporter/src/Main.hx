@@ -219,6 +219,8 @@ class CLI extends mcli.CommandLine {
                 var original = null;
                 var first = null;
 
+                Exporter.addLog('Export: ${path.toString()}');
+
                 // Save all quality
                 for (quality in exporter.getQualities()) {
 
@@ -309,15 +311,27 @@ class CLI extends mcli.CommandLine {
         }
 
         if (config.watch) {
+            Exporter.logs = 'SWFTY Reports:';
+            
             // Look for all SWF in folder, convert any that don't have a "swfty" counter part
             var swfs = listFiles(Dir.of(getDir(config.watchFolder)));
             var swftys = [for (file in listFiles(Dir.of(getDir(config.outputFolder)), 'swfty')) file.path.filenameStem => !recreate];
 
+            var total = 0;
+            var todo = 0;
             for (swf in swfs) {
                 // TODO: Check quality SWFTY missing
                 if (!swftys.exists(swf.path.filenameStem) || !swftys.get(swf.path.filenameStem)) {
                     // Convert SWF
-                    convertSWF(swf.path);
+                    todo++;
+                    convertSWF(swf.path, () -> {
+                        if (++total == todo) {
+                            // Save report
+                            var reportPath = Path.of(getDir('.')).join('swfty-report.log').toString();
+                            log('Saving log', '$reportPath', 2);
+                            FileSave.writeBytes(Bytes.ofString(Exporter.logs), reportPath);                            
+                        }
+                    });
                     swftys.set(swf.path.filenameStem, true);
                 }
             }
@@ -543,7 +557,7 @@ class Main extends Sprite {
 
         #if !debug
         haxe.Log.trace = function(v:Dynamic, ?infos:haxe.PosInfos) {
-            Console.log('<b><#ffa500>WARNING:</></> $v');
+            //Console.log('<b><#ffa500>WARNING:</></> $v');
         };
         #end
 
