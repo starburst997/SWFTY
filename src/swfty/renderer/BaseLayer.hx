@@ -648,14 +648,14 @@ class BaseLayer extends EngineLayer {
 
     // Draw an image specified by path onto the texture
     public function drawPath(path:String, width:Int = 1, height:Int = 1) {
-        trace('drawPath(${path}, ${reserved} ${reserved.empty()}');
-        
         if (customTiles.exists(path)) {
             var tile = customTiles.get(path);
             tile.counter++;
             
             return tile;
         } else if (reserved.empty()) {
+            trace('Warning no reserved space for ${this.path}');
+
             // Create empty tile
             var tile:CustomTile = {
                 path: path,
