@@ -8,6 +8,9 @@ import haxe.io.Bytes;
 import zip.Zip;
 import zip.ZipReader;
 
+import binpacking.Rect;
+import binpacking.SimplifiedMaxRectsPacker;
+
 @:access(swfty.renderer.BaseSprite)
 class BaseLayer extends EngineLayer {
 
@@ -15,8 +18,9 @@ class BaseLayer extends EngineLayer {
 
     public var disposed = false;
 
-    // TODO: Should be enough? Maybe save the max id in SWFTY
+    // TODO: Should be enough? Maybe save the max id in SWFTY?
     var customId = 1000000;
+    var maskId = 2000000;
 
     var _width:Int = 1;
     var _height:Int = 1;
@@ -35,6 +39,14 @@ class BaseLayer extends EngineLayer {
     function set__mask(value:Rectangle) {
         _mask = value;
         return value;
+    }
+
+    @:isVar public var reserved(get, null):Rectangle;
+    inline function get_reserved() {
+        if (reserved == null) {
+            reserved = getReservedSpace();
+        }
+        return reserved;
     }
 
     public var time:Float = 0;
@@ -70,6 +82,10 @@ class BaseLayer extends EngineLayer {
 
     var tiles:IntMap<DisplayTile> = new IntMap();
     var mcs:StringMap<MovieClipType> = new StringMap();
+
+    var customTiles:StringMap<CustomTile> = new StringMap();
+    var packer:SimplifiedMaxRectsPacker = null;
+    var removedFromReservedSpace = false;
 
     var wakes:Array<Void->Void> = [];
     var sleeps:Array<Void->Void> = [];
@@ -162,6 +178,25 @@ class BaseLayer extends EngineLayer {
             // TODO: Remove from display list?
 
             for (f in sleeps) f();
+        }
+    }
+
+    public function getReservedSpace():Rectangle {
+        return switch(swfty) {
+            case Some(swfty) if (swfty.tiles.exists(swfty.reserved_space)) : 
+                var tile = swfty.tiles.get(swfty.reserved_space);
+                {
+                    x: tile.x,
+                    y: tile.y,
+                    width: tile.width,
+                    height: tile.height
+                }
+            case _ : {
+                x: 0, 
+                y: 0,
+                width: 1,
+                height: 1
+            }
         }
     }
 
@@ -399,6 +434,22 @@ class BaseLayer extends EngineLayer {
         return id;
     }
 
+    public function createCustomTile(x:Int, y:Int, width:Int, height:Int):DisplayTile {
+        throw 'Not implemented';
+    }
+
+    public function updateDisplayTile(id:DisplayTile, x:Int, y:Int, width:Int, height:Int) {
+        throw 'Not implemented';
+    }
+
+    public function redrawReservedSpace(map:Map<CustomTile, Rect>) {
+        throw 'Not implemented';
+    }
+
+    public function drawCustomTile(tile:CustomTile, rect:binpacking.Rect) {
+        throw 'Not implemented';
+    }
+
     public inline function getInternalScale():Float {
         return switch(swfty) {
             case Some(swfty) : swfty.tilemap_scale;
@@ -591,6 +642,155 @@ class BaseLayer extends EngineLayer {
         });
     }
 
+    public inline function hasPath(path:String) {
+        return customTiles.exists(path);
+    }
+
+    // Draw an image specified by path onto the texture
+    public function drawPath(path:String, width:Int = 1, height:Int = 1) {
+        if (customTiles.exists(path)) {
+            var tile = customTiles.get(path);
+            tile.counter++;
+            
+            return tile;
+        } else if (reserved.empty()) {
+
+            trace('Warning: no reserved space set $path!');
+
+            // Create empty tile
+            var tile:CustomTile = {
+                path: path,
+                x: 0,
+                y: 0,
+                width: width,
+                height: height,
+                originalWidth: width,
+                originalHeight: height
+            };
+
+            customTiles.set(path, tile);
+
+            tile.tile = emptyTile();
+            tile.id = addCustomTile(tile.tile);
+            return tile;
+
+        } else {
+            trace('Adding $path to reserved space');
+
+            // Try to fit
+            if (packer == null) {
+                packer = new SimplifiedMaxRectsPacker(reserved.width, reserved.height);
+            }
+
+            var padding = 1;
+            var rect = packer.insert(width + padding * 2, height + padding * 2);
+
+            if (rect == null) {
+                // Create the custom tile and add it using dummy data
+                var tile:CustomTile = {
+                    path: path,
+                    x: 0,
+                    y: 0,
+                    width: width,
+                    height: height,
+                    originalWidth: width,
+                    originalHeight: height
+                };
+
+                customTiles.set(path, tile);
+
+                // We've hit the limit! Need to re-organize reserved space
+                var packer = new SimplifiedMaxRectsPacker(reserved.width, reserved.height);
+
+                function tryFitAll(scale = 1.0) {
+                    var map:Map<CustomTile, Rect> = new Map();
+                    for (tile in customTiles) {
+                        var rect = packer.insert(Std.int(tile.width * scale), Std.int(tile.height * scale));
+                        if (rect == null) {
+                            return null;
+                        } else {
+                            map.set(tile, rect);
+                        }
+                    }
+
+                    packer.insert(Std.int(tile.width * scale), Std.int(tile.height * scale));
+
+                    if (rect == null) {
+                        return null;
+                    } else {
+                        // We did it!
+                        map.set(tile, rect);
+
+                        // Redraw all and save info
+                        redrawReservedSpace(map);
+                    }
+
+                    return map;
+                }
+
+                // We had stuff removed, we might be able to fit everything again!
+                if (removedFromReservedSpace) {
+                    removedFromReservedSpace = false;
+
+                    var rects = tryFitAll();
+                    if (rects != null) {
+                        // Good we were able to re-fit everything!
+                        // Save this packer for re-use and return tile
+                        this.packer = packer;
+                        return tile;
+                    }
+                }
+
+                // Alright, seems like we have too much stuff, try to fit everything by scaling down
+                var scale = 1.0;
+                while ((scale -= 0.05) > 0.1) {
+                    packer = new SimplifiedMaxRectsPacker(reserved.width, reserved.height);
+                    var rects = tryFitAll(scale);
+                    if (rects != null) {
+                        // Good we were able to re-fit everything by scaling down!
+                        // Save this packer for re-use and return tile
+                        this.packer = packer;
+                        return tile;
+                    }
+                }
+
+                // We can't fit, the tile will look empty...
+                trace('Cannot fit tile!');
+                
+                tile.tile = emptyTile();
+                tile.id = addCustomTile(tile.tile);
+
+                return tile;
+            } else {
+                // Nice it fits!
+                var tile:CustomTile = {
+                    path: path,
+                    x: Std.int(rect.x),
+                    y: Std.int(rect.y),
+                    width: Std.int(rect.width),
+                    height: Std.int(rect.height),
+                    originalWidth: width,
+                    originalHeight: height
+                };
+                customTiles.set(path, tile);
+                
+                drawCustomTile(tile, rect);
+
+                return tile;
+            }
+        }
+    }
+
+    // Mark an image speificed by path as unused
+    public function removePath(path:String) {
+        if (customTiles.exists(path)) {
+            if (--customTiles.get(path).counter <= 0) {
+                customTiles.remove(path);
+                removedFromReservedSpace = true;
+            }
+        }
+    }
+
     public function loadTexture(bytes:Bytes, swfty:SWFTYType, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
         throw 'Not implemented';
     }
@@ -643,5 +843,33 @@ class Shared {
     public function new(?canInteract:Bool = true, ?pause:Bool = false) {
         this.canInteract = canInteract;
         this.pause = pause;
+    }
+}
+
+@:structInit
+class CustomTile {
+    public var id = -1;
+    public var path = '';
+    public var counter = 1;
+    public var x = 0;
+    public var y = 0;
+    public var width = 1;
+    public var height = 1;
+    public var originalWidth = 1;
+    public var originalHeight = 1;
+    public var tile:DisplayTile;
+    public var isDrawn = false;
+
+    public function new(?path:String = '', ?id:Int = -1, ?counter:Int = 1, ?x:Int = 0, ?y:Int = 0, ?width:Int = 1, ?height:Int = 1, ?originalWidth:Int = 1, ?originalHeight:Int = 1, ?tile:DisplayTile) {
+        this.path = path;
+        this.id = id;
+        this.counter = counter;
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.originalWidth = originalWidth;
+        this.originalHeight = originalHeight;
+        this.tile = tile;
     }
 }

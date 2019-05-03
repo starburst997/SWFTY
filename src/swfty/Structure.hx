@@ -131,7 +131,8 @@ typedef SWFTYJson = {
     tilemap: {
         width: Int,
         height: Int,
-        scale: Float
+        scale: Float,
+        reserved: Int
     },
     name: String,
 	definitions: Array<MovieClipDefinition>,
@@ -152,6 +153,19 @@ typedef InnerQuality = {
     ?outputFolder: String,
 }
 
+typedef CustomConfig = {
+    name: String,
+    ?pngquant: Bool,
+    ?jpegtran: Bool,
+    ?useJPEG: Bool,
+    ?jpegQuality: Int,
+    ?quality: Array<InnerQuality>,
+    ?maxDimension: Rectangle,
+    ?reservedSpace: Rectangle,
+    ?fontEnabled: Bool,
+    ?maxFontDimension: Rectangle
+}
+
 typedef Config = {
     ?watch: Bool,
     ?watchFolder: String,
@@ -169,14 +183,8 @@ typedef Config = {
     ?bakeColor: Bool,
     ?sharedFonts:Bool,
     ?maxDimension: Rectangle,
-    ?files: Array<{
-        name: String,
-        ?pngquant: Bool,
-        ?quality: Array<InnerQuality>,
-        ?maxDimension: Rectangle,
-        ?fontEnabled: Bool,
-        ?maxFontDimension: Rectangle
-    }>,
+    ?reservedSpace: Rectangle,
+    ?files: Array<CustomConfig>,
 }
 
 /* Class */
@@ -501,6 +509,7 @@ class BitmapType #if !macro implements hxbit.Serializable #end {
 @:structInit
 class SWFTYType #if !macro implements hxbit.Serializable #end {
     @:s public var name:String;
+    @:s public var reserved_space:Int;
     @:s public var tilemap_width:Int;
     @:s public var tilemap_height:Int;
     @:s public var tilemap_scale:Float;
@@ -519,6 +528,7 @@ class SWFTYType #if !macro implements hxbit.Serializable #end {
             tilemap_width: json.tilemap.width,
             tilemap_height: json.tilemap.height,
             tilemap_scale: json.tilemap.scale,
+            reserved_space: json.tilemap.reserved,
             name: json.name,
             definitions: movieClips,
             tiles: bitmaps,
@@ -526,10 +536,11 @@ class SWFTYType #if !macro implements hxbit.Serializable #end {
         };
     }
 
-    public function new(?tilemap_width:Int, ?tilemap_height:Int, ?tilemap_scale:Float, ?name:String, ?definitions:IntMap<MovieClipType>, ?tiles:IntMap<BitmapType>, ?fonts:IntMap<FontType>) {
+    public function new(?tilemap_width:Int, ?tilemap_height:Int, ?tilemap_scale:Float, ?reserved_space:Int, ?name:String, ?definitions:IntMap<MovieClipType>, ?tiles:IntMap<BitmapType>, ?fonts:IntMap<FontType>) {
         this.tilemap_width = tilemap_width;
         this.tilemap_height = tilemap_height;
         this.tilemap_scale = tilemap_scale;
+        this.reserved_space = reserved_space;
         this.name = name;
         this.definitions = definitions;
         this.tiles = tiles;

@@ -2,6 +2,7 @@ package openfl.swfty.renderer;
 
 import haxe.io.Bytes;
 import haxe.ds.IntMap;
+import haxe.ds.StringMap;
 
 import openfl.display.BitmapData;
 import openfl.display.Tileset;
@@ -14,6 +15,8 @@ typedef DisplayTile = Int;
 class FinalLayer extends BaseLayer {
 
     static var pt = new openfl.geom.Point();
+
+    var pending:StringMap<BitmapData> = new StringMap();
 
     public static inline function create(?width:Int, ?height:Int) {
         return new FinalLayer(width, height);
@@ -101,6 +104,88 @@ class FinalLayer extends BaseLayer {
         return { x: pt.x, y: pt.y };
     }
 
+    override function createCustomTile(x:Int, y:Int, width:Int, height:Int):DisplayTile {
+        return tileset.addRect(new openfl.geom.Rectangle(x, y, width, height));
+    }
+
+    public function pendingBitmapData(path:String, bitmapData:openfl.display.BitmapData) {
+        if (pending.exists(path)) {
+            var bmpd = pending.get(path);
+            if (bmpd != bitmapData) {
+                bmpd.dispose();
+            }
+        }
+        
+        pending.set(path, bitmapData);
+    }
+
+    override function drawCustomTile(tile:CustomTile, rect:binpacking.Rect) {
+        if (pending.exists(tile.path)) {
+            var bmpd = pending.get(tile.path);
+            
+            drawBitmapData(tile, rect, bmpd);
+        }
+    }
+
+    function drawBitmapData(tile:CustomTile, rect:binpacking.Rect, bmpd:BitmapData) {
+        if (rect.width == bmpd.width && rect.height == bmpd.height) {
+            tileset.bitmapData.copyPixels(bmpd, bmpd.rect, new openfl.geom.Point(rect.x, rect.y));
+        } else {
+            // Draw by scaling
+            #if flash
+            var matrix = new openfl.geom.Matrix();
+            matrix.scale(rect.width / bmpd.width, rect.height / bmpd.height);
+            matrix.translate(rect.x, rect.y);
+            tileset.bitmapData.draw(bmpd, matrix);
+            #else
+            var image = lime.graphics.Image.fromBitmapData(bmpd);
+            image.resize(Std.int(rect.width), Std.int(rect.height));
+            var resizedBmpd = openfl.display.BitmapData.fromImage(image);
+            tileset.bitmapData.copyPixels(resizedBmpd, resizedBmpd.rect, new openfl.geom.Point(rect.x, rect.y));
+            resizedBmpd.dispose();
+            #end
+        }
+
+        tile.x = Std.int(rect.x);
+        tile.y = Std.int(rect.y);
+        tile.width = Std.int(rect.width);
+        tile.height = Std.int(rect.height);
+
+        if (!tile.isDrawn) {
+            tile.isDrawn = true;
+            pending.remove(tile.path);
+
+            tile.tile = createCustomTile(tile.x, tile.y, tile.width, tile.height);
+            tile.id = addCustomTile(tile.tile);
+        } else {
+            tileset.updateRect(tile.tile, tile.x, tile.y, tile.width, tile.height);
+        }
+
+        bmpd.dispose();
+    }
+
+    override function redrawReservedSpace(map:Map<CustomTile, binpacking.Rect>) {
+        // Take all bitmapDatas from texture
+        var bitmapDatas:Map<CustomTile, BitmapData> = new Map();
+        for (tile in map.keys()) {
+            if (tile.isDrawn) {
+                var bmpd = new BitmapData(tile.width, tile.height, true, 0x00000000);
+                bmpd.copyPixels(tileset.bitmapData, new openfl.geom.Rectangle(tile.x, tile.y, tile.width, tile.height), new openfl.geom.Point(0, 0));
+                bitmapDatas.set(tile, bmpd);
+            } else if (pending.exists(tile.path)) {
+                bitmapDatas.set(tile, pending.get(tile.path));
+            }
+        }
+
+        // Draw into new position
+        for (tile in map.keys()) if (bitmapDatas.exists(tile)) {
+            var rect = map.get(tile);
+            var bmpd = bitmapDatas.get(tile);
+            
+            drawBitmapData(tile, rect, bmpd);
+        }
+    }
+
     override function loadTexture(bytes:Bytes, swfty:SWFTYType, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
         function complete(bmpd:BitmapData) {
             swfty.addAll(bmpd.width, bmpd.height);
@@ -145,6 +230,11 @@ class FinalLayer extends BaseLayer {
     override function dispose() {
         if (!disposed) {
             // TODO: !!!
+
+            for (bmpd in pending) {
+                bmpd.dispose();
+            }
+            pending = new StringMap();
 
             // Never too prudent, immediately dispose of all bitmap data associated with this layer
             /*if (texture != null) texture.dispose();

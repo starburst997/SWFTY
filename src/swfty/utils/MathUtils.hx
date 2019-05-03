@@ -203,6 +203,10 @@ class Rectangle {
         }
     }
 
+    public inline function empty() {
+        return width <= 1 || height <= 1;
+    }
+
     public inline function toString() {
         return '{x: $x, y: $y, width: $width, height: $height}';
     }

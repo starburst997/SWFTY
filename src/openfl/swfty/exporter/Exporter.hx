@@ -80,6 +80,8 @@ class Exporter {
 
     var maxId:Int = -1;
 
+    var reservedTile:Int = -1;
+
     public var name:String;
     var definitions:IntMap<Bool>;
     
@@ -527,11 +529,13 @@ class Exporter {
                 case Some(tilemap) : {
                     width: tilemap.bitmapData.width,
                     height: tilemap.bitmapData.height,
+                    reserved: reservedTile,
                     scale: tilemap.scale
                 }
                 case None : {
                     width: 0,
                     height: 0,
+                    reserved: -1,
                     scale: 1.0
                 }
             },
@@ -654,10 +658,35 @@ class Exporter {
     }
 
     // The whole point of this library was so I could get to name this function
-    public function getSwfty(useJson = false, compressed = true, ?width:Int, ?height:Int, scale = 1.0, forceDimension = false) {
+    public function getSwfty(useJson = false, compressed = true, ?width:Int, ?height:Int, ?scale = 1.0, ?forceDimension = false) {
         if (width == null) width = config.maxDimension.width;
         if (height == null) height = config.maxDimension.height;
         
+        var custom:CustomConfig = { name: '${name}.swf' };
+        for (file in config.files) {
+            if (file.name == custom.name) {
+                custom = file;
+                break;
+            }
+        }
+
+        if (custom.reservedSpace != null && (reservedTile == -1)) {
+            var id = ++maxId;
+            var definition:BitmapDefinition = {
+                id: id,
+                x: 0,
+                y: 0,
+                width: custom.reservedSpace.width,
+                height: custom.reservedSpace.height
+            };
+
+            bitmaps.set(id, definition);
+            bitmapDatas.set(id, new BitmapData(definition.width, definition.height, true, 0x00000000));
+            bitmapKeeps.set(id, true);
+
+            reservedTile = id;
+        }
+
         var tilemap = getTilemap(width, height, scale, false, forceDimension);
 
         Exporter.addLog('Tilemap: ${tilemap.bitmapData.width}x${tilemap.bitmapData.height} (${tilemap.scale})');
