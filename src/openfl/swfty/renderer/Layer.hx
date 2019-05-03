@@ -177,6 +177,9 @@ class FinalLayer extends BaseLayer {
             }
         }
 
+        // Clear area
+        tileset.bitmapData.fillRect(new openfl.geom.Rectangle(reserved.x, reserved.y, reserved.width, reserved.height), 0x00000000);
+
         // Draw into new position
         for (tile in map.keys()) if (bitmapDatas.exists(tile)) {
             var rect = map.get(tile);

@@ -648,15 +648,14 @@ class BaseLayer extends EngineLayer {
 
     // Draw an image specified by path onto the texture
     public function drawPath(path:String, width:Int = 1, height:Int = 1) {
+        trace('drawPath(${path}, ${reserved} ${reserved.empty()}');
+        
         if (customTiles.exists(path)) {
             var tile = customTiles.get(path);
             tile.counter++;
             
             return tile;
         } else if (reserved.empty()) {
-
-            trace('Warning: no reserved space set $path!');
-
             // Create empty tile
             var tile:CustomTile = {
                 path: path,
@@ -675,8 +674,6 @@ class BaseLayer extends EngineLayer {
             return tile;
 
         } else {
-            trace('Adding $path to reserved space');
-
             // Try to fit
             if (packer == null) {
                 packer = new SimplifiedMaxRectsPacker(reserved.width, reserved.height);
@@ -691,21 +688,27 @@ class BaseLayer extends EngineLayer {
                     path: path,
                     x: 0,
                     y: 0,
-                    width: width,
-                    height: height,
-                    originalWidth: width,
-                    originalHeight: height
+                    width: width + padding * 2,
+                    height: height + padding * 2,
+                    originalWidth: width + padding * 2,
+                    originalHeight: height + padding * 2
                 };
 
                 customTiles.set(path, tile);
+
+                var sortedTiles = customTiles.array();
+                sortedTiles.sortdf(function(tile) return tile.width * tile.height);
 
                 // We've hit the limit! Need to re-organize reserved space
                 var packer = new SimplifiedMaxRectsPacker(reserved.width, reserved.height);
 
                 function tryFitAll(scale = 1.0) {
                     var map:Map<CustomTile, Rect> = new Map();
-                    for (tile in customTiles) {
-                        var rect = packer.insert(Std.int(tile.width * scale), Std.int(tile.height * scale));
+
+                    for (tile in sortedTiles) {
+                        var s = tile.scale < scale ? tile.scale : scale;
+
+                        var rect = packer.insert(Std.int(tile.originalWidth * s), Std.int(tile.originalHeight * s));
                         if (rect == null) {
                             return null;
                         } else {
@@ -713,17 +716,14 @@ class BaseLayer extends EngineLayer {
                         }
                     }
 
-                    packer.insert(Std.int(tile.width * scale), Std.int(tile.height * scale));
-
-                    if (rect == null) {
-                        return null;
-                    } else {
-                        // We did it!
-                        map.set(tile, rect);
-
-                        // Redraw all and save info
-                        redrawReservedSpace(map);
+                    for (tile in sortedTiles) {
+                        if (tile.scale > scale) {
+                            tile.scale = scale;
+                        }
                     }
+
+                    // Redraw all and save info
+                    redrawReservedSpace(map);
 
                     return map;
                 }
@@ -755,8 +755,6 @@ class BaseLayer extends EngineLayer {
                 }
 
                 // We can't fit, the tile will look empty...
-                trace('Cannot fit tile!');
-                
                 tile.tile = emptyTile();
                 tile.id = addCustomTile(tile.tile);
 
@@ -769,8 +767,8 @@ class BaseLayer extends EngineLayer {
                     y: Std.int(rect.y),
                     width: Std.int(rect.width),
                     height: Std.int(rect.height),
-                    originalWidth: width,
-                    originalHeight: height
+                    originalWidth: Std.int(rect.width),
+                    originalHeight: Std.int(rect.height)
                 };
                 customTiles.set(path, tile);
                 
@@ -851,6 +849,7 @@ class CustomTile {
     public var id = -1;
     public var path = '';
     public var counter = 1;
+    public var scale = 1.0;
     public var x = 0;
     public var y = 0;
     public var width = 1;
@@ -860,10 +859,11 @@ class CustomTile {
     public var tile:DisplayTile;
     public var isDrawn = false;
 
-    public function new(?path:String = '', ?id:Int = -1, ?counter:Int = 1, ?x:Int = 0, ?y:Int = 0, ?width:Int = 1, ?height:Int = 1, ?originalWidth:Int = 1, ?originalHeight:Int = 1, ?tile:DisplayTile) {
+    public function new(?path:String = '', ?id:Int = -1, ?counter:Int = 1, ?scale:Float = 1.0, ?x:Int = 0, ?y:Int = 0, ?width:Int = 1, ?height:Int = 1, ?originalWidth:Int = 1, ?originalHeight:Int = 1, ?tile:DisplayTile) {
         this.path = path;
         this.id = id;
         this.counter = counter;
+        this.scale = scale;
         this.x = x;
         this.y = y;
         this.width = width;
