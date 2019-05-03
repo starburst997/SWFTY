@@ -598,9 +598,13 @@ class BaseLayer extends EngineLayer {
         var DEFINITION_JSON = 'definitions.json';
         var DEFINITION_BIN  = 'definitions.bin';
         
-        var entries = ZipReader.getEntries(bytes);
+        var entries = try {
+            ZipReader.getEntries(bytes);
+        } catch(e:Dynamic) {
+            null;
+        };
         
-        if (!entries.exists(TILEMAP_PNG) || (!entries.exists(DEFINITION_JSON) && !entries.exists(DEFINITION_BIN))) {
+        if (entries == null || !entries.exists(TILEMAP_PNG) || (!entries.exists(DEFINITION_JSON) && !entries.exists(DEFINITION_BIN))) {
             if (onError != null) onError('Missing file');
             return;
         }
