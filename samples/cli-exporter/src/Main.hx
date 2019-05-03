@@ -227,12 +227,23 @@ class CLI extends mcli.CommandLine {
                     var w = quality.maxDimension.width;
                     var h = quality.maxDimension.height;
 
+                    if (first == null) {
+                        var name = '${exporter.name}.swf';
+                        for (file in config.files) {
+                            if (file.name == name) {
+                                if (file.maxDimension != null) {
+                                    w = file.maxDimension.width;
+                                    h = file.maxDimension.height;
+                                }
+                                break;
+                            }
+                        }
+                    }
+
                     if (first != null) {
                         var dimension = exporter.getMaxDimension(first.maxWidth, first.maxHeight, first.width, first.height, w, h);
                         w = dimension.width;
                         h = dimension.height;
-
-                        trace('MAX DIMENSION: $w, $h');
                     }
 
                     var zip = exporter.getSwfty(false, true, w, h, quality.scale, first != null);
@@ -244,8 +255,8 @@ class CLI extends mcli.CommandLine {
 
                     if (first == null) {
                         first = {
-                            maxWidth: w,
-                            maxHeight: h,
+                            maxWidth: quality.maxDimension.width,
+                            maxHeight: quality.maxDimension.height,
                             width: tilemap.bitmapData.width,
                             height: tilemap.bitmapData.height
                         };
