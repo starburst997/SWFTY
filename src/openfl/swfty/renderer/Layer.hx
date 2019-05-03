@@ -112,7 +112,7 @@ class FinalLayer extends BaseLayer {
         if (pending.exists(path)) {
             var bmpd = pending.get(path);
             if (bmpd != bitmapData) {
-                bmpd.dispose();
+                //bmpd.dispose();
             }
         }
         
@@ -122,34 +122,49 @@ class FinalLayer extends BaseLayer {
     override function drawCustomTile(tile:CustomTile, rect:binpacking.Rect) {
         if (pending.exists(tile.path)) {
             var bmpd = pending.get(tile.path);
-            
-            drawBitmapData(tile, rect, bmpd);
+            drawBitmapData(tile, rect, bmpd, false);
         }
     }
 
-    function drawBitmapData(tile:CustomTile, rect:binpacking.Rect, bmpd:BitmapData) {
-        if (rect.width == bmpd.width && rect.height == bmpd.height) {
-            tileset.bitmapData.copyPixels(bmpd, bmpd.rect, new openfl.geom.Point(rect.x, rect.y));
+    function drawBitmapData(tile:CustomTile, rect:binpacking.Rect, bmpd:BitmapData, canDispose:Bool) {
+        var padding = 1;
+        if ((rect.width - padding*2) == bmpd.width && (rect.height - padding*2) == bmpd.height) {
+            tileset.bitmapData.copyPixels(bmpd, bmpd.rect, new openfl.geom.Point(rect.x + padding, rect.y + padding));
         } else {
             // Draw by scaling
             #if flash
             var matrix = new openfl.geom.Matrix();
-            matrix.scale(rect.width / bmpd.width, rect.height / bmpd.height);
-            matrix.translate(rect.x, rect.y);
+            matrix.scale((rect.width - padding*2) / bmpd.width, (rect.height - padding*2) / bmpd.height);
+            matrix.translate(rect.x + padding, rect.y + padding);
             tileset.bitmapData.draw(bmpd, matrix);
             #else
-            var image = lime.graphics.Image.fromBitmapData(bmpd);
-            image.resize(Std.int(rect.width), Std.int(rect.height));
+
+            // TODO: CopyPixels is buggy in this version of Lime, use plain old draw... Shouldn't be too costly
+            //       Seriously fuck granick and openfl so much
+            var matrix = new openfl.geom.Matrix();
+            matrix.scale((rect.width - padding*2) / bmpd.width, (rect.height - padding*2) / bmpd.height);
+            matrix.translate(rect.x + padding, rect.y + padding);
+            tileset.bitmapData.draw(bmpd, matrix);
+
+            /*var width = Std.int(rect.width) - padding*2;
+            var height = Std.int(rect.height) - padding*2;
+            if (width < 1) width = 1;
+            if (height < 1) height = 1;
+
+            trace('Need resizing! $width, $height');
+
+            var image = lime.graphics.Image.fromBitmapData(bmpd);//.clone(); // TODO: .clone() is needed otherwise we crash?
+            image.resize(width, height);
             var resizedBmpd = openfl.display.BitmapData.fromImage(image);
-            tileset.bitmapData.copyPixels(resizedBmpd, resizedBmpd.rect, new openfl.geom.Point(rect.x, rect.y));
-            resizedBmpd.dispose();
+            tileset.bitmapData.copyPixels(resizedBmpd, resizedBmpd.rect, new openfl.geom.Point(rect.x + padding, rect.y + padding));
+            resizedBmpd.dispose();*/
             #end
         }
 
-        tile.x = Std.int(rect.x);
-        tile.y = Std.int(rect.y);
-        tile.width = Std.int(rect.width);
-        tile.height = Std.int(rect.height);
+        tile.x = Std.int(rect.x) + padding;
+        tile.y = Std.int(rect.y) + padding;
+        tile.width = Std.int(rect.width) - padding*2;
+        tile.height = Std.int(rect.height) - padding*2;
 
         if (!tile.isDrawn) {
             tile.isDrawn = true;
@@ -161,17 +176,20 @@ class FinalLayer extends BaseLayer {
             tileset.updateRect(tile.tile, tile.x, tile.y, tile.width, tile.height);
         }
 
-        bmpd.dispose();
+        if (canDispose) bmpd.dispose();
     }
 
     override function redrawReservedSpace(map:Map<CustomTile, binpacking.Rect>) {
         // Take all bitmapDatas from texture
         var bitmapDatas:Map<CustomTile, BitmapData> = new Map();
+        var canDispose:Map<CustomTile, Bool> = new Map();
         for (tile in map.keys()) {
+            canDispose.set(tile, false);
             if (tile.isDrawn) {
                 var bmpd = new BitmapData(tile.width, tile.height, true, 0x00000000);
                 bmpd.copyPixels(tileset.bitmapData, new openfl.geom.Rectangle(tile.x, tile.y, tile.width, tile.height), new openfl.geom.Point(0, 0));
                 bitmapDatas.set(tile, bmpd);
+                canDispose.set(tile, true);
             } else if (pending.exists(tile.path)) {
                 bitmapDatas.set(tile, pending.get(tile.path));
             }
@@ -185,7 +203,7 @@ class FinalLayer extends BaseLayer {
             var rect = map.get(tile);
             var bmpd = bitmapDatas.get(tile);
             
-            drawBitmapData(tile, rect, bmpd);
+            drawBitmapData(tile, rect, bmpd, canDispose.get(tile));
         }
     }
 
@@ -234,9 +252,9 @@ class FinalLayer extends BaseLayer {
         if (!disposed) {
             // TODO: !!!
 
-            for (bmpd in pending) {
+            /*for (bmpd in pending) {
                 bmpd.dispose();
-            }
+            }*/
             pending = new StringMap();
 
             // Never too prudent, immediately dispose of all bitmap data associated with this layer

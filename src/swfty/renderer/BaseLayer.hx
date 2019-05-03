@@ -688,10 +688,10 @@ class BaseLayer extends EngineLayer {
                     path: path,
                     x: 0,
                     y: 0,
-                    width: width + padding * 2,
-                    height: height + padding * 2,
-                    originalWidth: width + padding * 2,
-                    originalHeight: height + padding * 2
+                    width: width,
+                    height: height,
+                    originalWidth: width,
+                    originalHeight: height
                 };
 
                 customTiles.set(path, tile);
@@ -708,7 +708,7 @@ class BaseLayer extends EngineLayer {
                     for (tile in sortedTiles) {
                         var s = tile.scale < scale ? tile.scale : scale;
 
-                        var rect = packer.insert(Std.int(tile.originalWidth * s), Std.int(tile.originalHeight * s));
+                        var rect = packer.insert(Std.int(tile.originalWidth * s) + padding * 2, Std.int(tile.originalHeight * s) + padding * 2);
                         if (rect == null) {
                             return null;
                         } else {
@@ -763,12 +763,12 @@ class BaseLayer extends EngineLayer {
                 // Nice it fits!
                 var tile:CustomTile = {
                     path: path,
-                    x: Std.int(rect.x),
-                    y: Std.int(rect.y),
-                    width: Std.int(rect.width),
-                    height: Std.int(rect.height),
-                    originalWidth: Std.int(rect.width),
-                    originalHeight: Std.int(rect.height)
+                    x: Std.int(rect.x) + padding,
+                    y: Std.int(rect.y) + padding,
+                    width: Std.int(rect.width) - padding*2,
+                    height: Std.int(rect.height) - padding*2,
+                    originalWidth: Std.int(rect.width) - padding*2,
+                    originalHeight: Std.int(rect.height) - padding*2
                 };
                 customTiles.set(path, tile);
                 
