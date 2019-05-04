@@ -20,7 +20,6 @@ class BaseLayer extends EngineLayer {
 
     // TODO: Should be enough? Maybe save the max id in SWFTY?
     var customId = 1000000;
-    var maskId = 2000000;
 
     var _width:Int = 1;
     var _height:Int = 1;
@@ -79,6 +78,8 @@ class BaseLayer extends EngineLayer {
 
     // Mouse need to be updated from the engine
     public var mouse = new Mouse();
+
+    var tempBitmaps:Array<TempBitmap> = [];
 
     var tiles:IntMap<DisplayTile> = new IntMap();
     var mcs:StringMap<MovieClipType> = new StringMap();
@@ -803,6 +804,25 @@ class BaseLayer extends EngineLayer {
         throw 'Not implemented';
     }
 
+    public function getTempBitmap(x:Int, y:Int, width:Int, height:Int) {
+        if (tempBitmaps.length > 0) {
+            var bitmap = tempBitmaps.pop();
+            updateDisplayTile(bitmap.tile, x, y, width, height);
+            return bitmap;
+        }
+        
+        var tile = createCustomTile(x, y, width, height);
+        var id = addCustomTile(tile);
+        var display = createBitmap(id);
+        var bitmap = new TempBitmap(id, tile, display);
+
+        return bitmap;
+    }
+
+    public function disposeTempBitmap(temp:TempBitmap) {
+        tempBitmaps.push(temp);
+    }
+
     public function dispose() {
         if (!disposed) {
             if (!updating) {
@@ -814,6 +834,7 @@ class BaseLayer extends EngineLayer {
                 mouseUps = [];
                 wakes = [];
                 sleeps = [];
+                tempBitmaps = [];
                 
                 pruneLayers = [];
                 pruneWakes = [];
@@ -881,5 +902,18 @@ class CustomTile {
         this.originalWidth = originalWidth;
         this.originalHeight = originalHeight;
         this.tile = tile;
+    }
+}
+
+@:structInit
+class TempBitmap {
+    public var id = -1;
+    public var tile:DisplayTile;
+    public var display:DisplayBitmap;
+
+    public function new(?id:Int = -1, ?tile:DisplayTile, ?display:DisplayBitmap) {
+        this.id = id;
+        this.tile = tile;
+        this.display = display;
     }
 }

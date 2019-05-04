@@ -2,6 +2,8 @@ package swfty.renderer;
 
 import haxe.ds.StringMap;
 
+import swfty.renderer.BaseLayer;
+
 enum SpriteType {
     Unknown;
     Display(sprite:Sprite);
@@ -56,6 +58,7 @@ class BaseSprite extends EngineSprite {
     var _name(default, set):String;
     var _sprites:Array<FinalSprite>;
     var _bitmaps:Array<EngineBitmap>;
+    var _temps:Array<TempBitmap>;
     var _names:StringMap<FinalSprite>;
     var _texts:StringMap<FinalText>;
     var _definition:Null<MovieClipType>;
@@ -89,6 +92,10 @@ class BaseSprite extends EngineSprite {
         visible = value;
         return value;
     }
+
+    // Mask stuff
+    var isMasked = false;
+    var maskedShapes:Array<EngineBitmap> = [];
 
     // Keep some original values that can be usefull
     public var originalX:Float = 0.0;
@@ -129,6 +136,7 @@ class BaseSprite extends EngineSprite {
 
         _sprites = [];
         _bitmaps = [];
+        _temps = [];
         _names = new StringMap();
         _texts = new StringMap();
 
@@ -299,10 +307,23 @@ class BaseSprite extends EngineSprite {
         }
     }
 
-    public function update(dt:Float) {
+    public function update(dt:Float, ?mask:Rectangle) {
         // TODO: Wonder if that's the best solution... If it's invisible I wouldn't want anything called...
         //       Maybe sleep() / awake() sprite?
         //if (!_visible) return;
+
+        if (_mask != null) {
+            // Convert to layer bounds
+            var pt = localToLayer(_mask.x, _mask.y);
+            var pt2 = localToLayer(_mask.x + _mask.width, _mask.y + _mask.height);
+            
+            var rect = new Rectangle(pt.x, pt.y, pt2.x - pt.x, pt2.y - pt.y);
+            if (mask != null && !mask.contains(rect)) {
+                mask = mask.getIntersect(rect);
+            } else {
+                mask = rect;
+            }
+        }
 
         updating = true;
 
@@ -312,10 +333,95 @@ class BaseSprite extends EngineSprite {
 
         for (i in 0..._sprites.length) {
             var sprite = _sprites[_sprites.length - 1 - i];
-            sprite.update(dt);
+            sprite.update(dt, mask);
         }
 
         if (loaded) for (f in _renders) f(dt);
+
+        // Basic mask implementation, does not work with rotation or negative scaling
+        // TODO: Rotation, negative scaling
+        if (mask != null) {
+            if (!isMasked) {
+                isMasked = true;
+            }
+
+            var temps = [];
+
+            // Loop on all current bitmaps and add counter parts
+            for (bitmap in _bitmaps) {
+                var display:DisplayBitmap = bitmap;
+
+                // Get bounds and figure out if we need to cut 
+                var pt = localToLayer(display.x, display.y);
+                var pt2 = localToLayer(display.x + display.width, display.y + display.height);
+                var bounds = new Rectangle(pt.x, pt.y, pt2.x - pt.x, pt2.y - pt.y);
+
+                if (mask.contains(bounds)) {
+                    // We're completely inside, so pretty straightforward
+                    bitmap.visible = true;
+                } else if (mask.intersects(bounds)) {
+                    
+                    bitmap.visible = false;
+                    
+                    // Figure out part that is visible
+                    var intersect = mask.getIntersect(bounds);
+                    
+                    // Get a temp bitmap that will only represents a part of it
+                    var tile = display.tile;
+                    var x = (intersect.x - bounds.x) / bounds.width * tile.width;
+                    var y = (intersect.y - bounds.y) / bounds.height * tile.height;
+                    var width = intersect.width / bounds.width * tile.width;
+                    var height = intersect.height / bounds.height * tile.height;
+
+                    var temp = layer.getTempBitmap(Std.int(tile.x + x), Std.int(tile.y + y), Std.int(width), Std.int(height));
+                    
+                    // Set coordinate / scaling          
+                    var local = layerToLocal(intersect.x, intersect.y);
+
+                    temp.display.x = local.x;
+                    temp.display.y = local.y;
+                    temp.display.scaleX = bitmap.scaleX;
+                    temp.display.scaleY = bitmap.scaleY;
+                    temp.display.alpha = bitmap.alpha;
+
+                    temps.push(temp);
+
+                    // Add to display list
+                    addBitmap(temp.display);
+
+                    // Don't keep temp bitmaps
+                    _bitmaps.pop();
+                    
+                } else {
+                    // We're completely out, so invisible
+                    bitmap.visible = false;
+                }
+            }
+
+            // Dispose of unused
+            for (temp in _temps) {
+                removeBitmap(temp.display);
+                layer.disposeTempBitmap(temp);
+            }
+
+            // Keep track of current temp bitmaps
+            _temps = temps;
+
+        } else if (isMasked) {
+            isMasked = false;
+
+            // Dispose of unused
+            for (temp in _temps) {
+                removeBitmap(temp.display);
+                layer.disposeTempBitmap(temp);
+            }
+
+            _temps = [];
+
+            for (bitmap in _bitmaps) {
+                bitmap.visible = true;
+            }
+        }
 
         // TODO: Migh be interesting to move to an entity architecture, most of the time these wouldn't be used
         //       But it's kinda cheap operation, if it really impact performance we can have a "Particle" class
@@ -348,6 +454,16 @@ class BaseSprite extends EngineSprite {
         }
     }
 
+    public function getTempBitmap(x:Int, y:Int, width:Int, height:Int) {
+        if (_temps.length > 0) {
+            var bitmap = _temps.pop();
+            layer.updateDisplayTile(bitmap.tile, x, y, width, height);
+            return bitmap;
+        }
+        
+        return layer.getTempBitmap(x, y, width, height);
+    }
+
     public inline function display():DisplaySprite {
         return this;
     }
@@ -355,8 +471,12 @@ class BaseSprite extends EngineSprite {
     // This is a "soft" clear, it won't call any event
     function removeAll() {
         display().removeAll();
+
+        for (temp in _temps) layer.disposeTempBitmap(temp);
+
         _sprites = [];
         _bitmaps = [];
+        _temps = [];
     }
 
     public function load(definition:MovieClipType) {
@@ -681,11 +801,11 @@ class BaseSprite extends EngineSprite {
     }
 
     public function addBitmap(shape:EngineBitmap) {
-        throw 'Not implemented';
+        _bitmaps.push(shape);
     }
 
     public function removeBitmap(shape:EngineBitmap) {
-        throw 'Not implemented';
+        _bitmaps.remove(shape);
     }
 
     public function localToLayer(x:Float = 0.0, y:Float = 0.0):Point {
@@ -753,6 +873,10 @@ class BaseSprite extends EngineSprite {
                     sprite._parent = null;
                     sprite.dispose();
                 }
+
+                for (temp in _temps) {
+                    layer.disposeTempBitmap(temp);
+                }
                 
                 // TODO: Should I null everything?
                 _renders = [];
@@ -760,6 +884,7 @@ class BaseSprite extends EngineSprite {
 
                 _sprites = [];
                 _bitmaps = [];
+                _temps = [];
                 _names = new StringMap();
                 _texts = new StringMap();
 

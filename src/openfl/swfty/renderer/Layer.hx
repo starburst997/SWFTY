@@ -108,6 +108,10 @@ class FinalLayer extends BaseLayer {
         return tileset.addRect(new openfl.geom.Rectangle(x, y, width, height));
     }
 
+    override function updateDisplayTile(id:DisplayTile, x:Int, y:Int, width:Int, height:Int) {
+        tileset.updateRect(id, x, y, width, height);
+    }
+
     public function pendingBitmapData(path:String, bitmapData:openfl.display.BitmapData) {
         if (pending.exists(path)) {
             var bmpd = pending.get(path);

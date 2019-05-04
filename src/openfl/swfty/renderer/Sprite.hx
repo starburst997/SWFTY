@@ -167,10 +167,12 @@ class FinalSprite extends BaseSprite {
     }
 
     override function addBitmap(bitmap:EngineBitmap) {
+        super.addBitmap(bitmap);
         addTile(bitmap);
     }
 
     override function removeBitmap(bitmap:EngineBitmap) {
+        super.removeBitmap(bitmap);
         removeTile(bitmap);
     }
 
@@ -185,6 +187,42 @@ abstract DisplayBitmap(EngineBitmap) from EngineBitmap to EngineBitmap {
 
     public static inline function create(layer:BaseLayer, id:Int, og:Bool = false):DisplayBitmap {
         return new EngineBitmap(layer.getTile(id));
+    }
+
+    public var width(get, never):Float;
+    function get_width() {
+        var data = this.tileset == null ? null : this.tileset.getData(this.id);
+        return if (data != null) {
+            data.width * this.scaleX;
+        } else {
+            1;
+        }
+    }
+
+    public var height(get, never):Float;
+    function get_height() {
+        var data = this.tileset == null ? null : this.tileset.getData(this.id);
+        return if (data != null) {
+            data.height * this.scaleY;
+        } else {
+            1;
+        }
+    }
+
+    public var tile(get, never):Rectangle;
+    function get_tile():Rectangle {
+        var data = this.tileset == null ? null : this.tileset.getData(this.id);
+        return if (data == null) {
+            x: 0,
+            y: 0,
+            width: 1,
+            height: 1
+        } else {
+            x: data.x,
+            y: data.y,
+            width: data.width,
+            height: data.height
+        };
     }
 
     public inline function transform(a:Float, b:Float, c:Float, d:Float, tx:Float, ty:Float, scale:Float = 1.0) {
