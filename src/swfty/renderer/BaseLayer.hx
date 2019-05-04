@@ -806,7 +806,8 @@ class BaseLayer extends EngineLayer {
 
     public function getTempBitmap(x:Int, y:Int, width:Int, height:Int) {
         if (tempBitmaps.length > 0) {
-            return tempBitmaps.pop();
+            var tile = tempBitmaps.pop();
+            return tile;
         }
 
         var tile = createCustomTile(x, y, width, height);

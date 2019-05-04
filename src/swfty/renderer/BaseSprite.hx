@@ -4,6 +4,9 @@ import haxe.ds.StringMap;
 
 import swfty.renderer.BaseLayer;
 
+using swfty.extra.Timer;
+using swfty.extra.Tween;
+
 enum SpriteType {
     Unknown;
     Display(sprite:Sprite);
@@ -786,9 +789,13 @@ class BaseSprite extends EngineSprite {
 
         // TODO: hack for mask, figure something better
         if (__mask != null) {
-            sprite.visible = false;
-            sprite.tempVisible = sprite.visible;
-            sprite.firstUpdate = true;
+            var s:Sprite = sprite;
+            var alpha = s.alpha;
+            s.alpha = 0.0;
+
+            s.wait(0.1, function() {
+                s.tweenAlpha(alpha, 0.2);
+            });
         }
     }
 
@@ -811,10 +818,6 @@ class BaseSprite extends EngineSprite {
     }
 
     public function addBitmap(shape:EngineBitmap) {
-        if (__mask != null) {
-            shape.visible = false;
-        }
-        
         _bitmaps.push(shape);
     }
 
@@ -894,8 +897,12 @@ class BaseSprite extends EngineSprite {
                     sprite.dispose();
                 }
 
+                if (isMasked) {
+                    isMasked = false;
+                    layer.removePostRender(calculateMask);
+                }
+
                 for (shape in maskMap.keys()) {
-                    trace('disposeTempBitmap()');
                     layer.disposeTempBitmap(maskMap.get(shape));
                 }
 
