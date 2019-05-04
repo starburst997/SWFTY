@@ -663,8 +663,8 @@ class BaseLayer extends EngineLayer {
             // Create empty tile
             var tile:CustomTile = {
                 path: path,
-                x: 0,
-                y: 0,
+                x: reserved.x,
+                y: reserved.y,
                 width: width,
                 height: height,
                 originalWidth: width,
@@ -690,8 +690,8 @@ class BaseLayer extends EngineLayer {
                 // Create the custom tile and add it using dummy data
                 var tile:CustomTile = {
                     path: path,
-                    x: 0,
-                    y: 0,
+                    x: reserved.x,
+                    y: reserved.y,
                     width: width,
                     height: height,
                     originalWidth: width,
@@ -716,6 +716,9 @@ class BaseLayer extends EngineLayer {
                         if (rect == null) {
                             return null;
                         } else {
+                            rect.x += reserved.x;
+                            rect.y += reserved.y;
+
                             map.set(tile, rect);
                         }
                     }
@@ -764,6 +767,9 @@ class BaseLayer extends EngineLayer {
 
                 return tile;
             } else {
+                rect.x += reserved.x;
+                rect.y += reserved.y;
+
                 // Nice it fits!
                 var tile:CustomTile = {
                     path: path,
