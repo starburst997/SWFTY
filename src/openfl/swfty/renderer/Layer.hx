@@ -136,7 +136,7 @@ class FinalLayer extends BaseLayer {
             var matrix = new openfl.geom.Matrix();
             matrix.scale((rect.width - padding*2) / bmpd.width, (rect.height - padding*2) / bmpd.height);
             matrix.translate(rect.x + padding, rect.y + padding);
-            tileset.bitmapData.draw(bmpd, matrix);
+            tileset.bitmapData.draw(bmpd, matrix, null, null, null, true);
             #else
 
             // TODO: CopyPixels is buggy in this version of Lime, use plain old draw... Shouldn't be too costly
@@ -144,7 +144,7 @@ class FinalLayer extends BaseLayer {
             var matrix = new openfl.geom.Matrix();
             matrix.scale((rect.width - padding*2) / bmpd.width, (rect.height - padding*2) / bmpd.height);
             matrix.translate(rect.x + padding, rect.y + padding);
-            tileset.bitmapData.draw(bmpd, matrix);
+            tileset.bitmapData.draw(bmpd, matrix, null, null, null, true);
 
             /*var width = Std.int(rect.width) - padding*2;
             var height = Std.int(rect.height) - padding*2;
@@ -196,7 +196,16 @@ class FinalLayer extends BaseLayer {
         }
 
         // Clear area
+        #if mobile
+        // Fucking openfl, absolutely everything is a gamble if it will work or not
+        for (x in Std.int(reserved.x)...Std.int(reserved.x + reserved.width)) {
+            for (y in Std.int(reserved.y)...Std.int(reserved.y + reserved.height)) {
+                tileset.bitmapData.setPixel32(x, y, 0x00000000);
+            }
+        }
+        #else
         tileset.bitmapData.fillRect(new openfl.geom.Rectangle(reserved.x, reserved.y, reserved.width, reserved.height), 0x00000000);
+        #end
 
         // Draw into new position
         for (tile in map.keys()) if (bitmapDatas.exists(tile)) {
