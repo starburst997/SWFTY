@@ -189,6 +189,31 @@ abstract DisplayBitmap(EngineBitmap) from EngineBitmap to EngineBitmap {
         return new EngineBitmap(layer.getTile(id));
     }
 
+    public var id(get, set):DisplayTile;
+    inline function set_id(id:DisplayTile) {
+        return this.id = id;
+    }
+    inline function get_id() {
+        return this.id;
+    }
+
+    public inline function getTile(id:DisplayTile):Rectangle {
+        return if (this.tileset == null) {
+            x: 0,
+            y: 0,
+            width: 1,
+            height: 1
+        } else {
+            var data = this.tileset.getData(id);
+            {
+                x: data.x,
+                y: data.y,
+                width: data.width,
+                height: data.height
+            };
+        }
+    } 
+
     public var width(get, never):Float;
     function get_width() {
         var data = this.tileset == null ? null : this.tileset.getData(this.id);

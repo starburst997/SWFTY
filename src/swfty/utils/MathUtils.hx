@@ -112,6 +112,9 @@ class Vector {
 
 @:structInit
 class Rectangle {
+
+    public static var temp:Rectangle = new Rectangle();
+
     public var x:Float = 0.0;
     public var y:Float = 0.0;
     public var width:Float = 0.0;
@@ -236,10 +239,24 @@ class Rectangle {
         var y = Math.max(this.y, rect.y);
         var num2 = Math.min(this.y + this.height, rect.y + rect.height);
 
-        if (num1 >= x && num2 >= y)
+        /*if (num1 >= x && num2 >= y)
             return new Rectangle(x, y, num1 - x, num2 - y);
         else
-            return new Rectangle(0, 0, 1, 1);
+            return new Rectangle(0, 0, 1, 1);*/
+
+        if (num1 >= x && num2 >= y) {
+            temp.x = x;
+            temp.y = y;
+            temp.width = num1 - x;
+            temp.height = num2 - y;
+        } else {
+            temp.x = 0;
+            temp.y = 0;
+            temp.width = 1;
+            temp.height = 1;
+        }
+
+        return temp;
 
         /*var xx = Math.max(this.x, rect.x);
         var y = Math.max(this.y, rect.y);

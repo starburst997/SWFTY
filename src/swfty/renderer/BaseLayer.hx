@@ -79,7 +79,7 @@ class BaseLayer extends EngineLayer {
     // Mouse need to be updated from the engine
     public var mouse = new Mouse();
 
-    var tempBitmaps:Array<TempBitmap> = [];
+    var tempBitmaps:Array<EngineBitmap> = [];
 
     var tiles:IntMap<DisplayTile> = new IntMap();
     var mcs:StringMap<MovieClipType> = new StringMap();
@@ -806,20 +806,16 @@ class BaseLayer extends EngineLayer {
 
     public function getTempBitmap(x:Int, y:Int, width:Int, height:Int) {
         if (tempBitmaps.length > 0) {
-            var bitmap = tempBitmaps.pop();
-            updateDisplayTile(bitmap.tile, x, y, width, height);
-            return bitmap;
+            return tempBitmaps.pop();
         }
-        
-        var tile = createCustomTile(x, y, width, height);
-        var id = addCustomTile(tile);
-        var display = createBitmap(id);
-        var bitmap = new TempBitmap(id, tile, display);
 
-        return bitmap;
+        var tile = createCustomTile(x, y, width, height);
+        var display:DisplayBitmap = new openfl.display.Tile(tile);
+
+        return display;
     }
 
-    public function disposeTempBitmap(temp:TempBitmap) {
+    public function disposeTempBitmap(temp:EngineBitmap) {
         tempBitmaps.push(temp);
     }
 
@@ -902,18 +898,5 @@ class CustomTile {
         this.originalWidth = originalWidth;
         this.originalHeight = originalHeight;
         this.tile = tile;
-    }
-}
-
-@:structInit
-class TempBitmap {
-    public var id = -1;
-    public var tile:DisplayTile;
-    public var display:DisplayBitmap;
-
-    public function new(?id:Int = -1, ?tile:DisplayTile, ?display:DisplayBitmap) {
-        this.id = id;
-        this.tile = tile;
-        this.display = display;
     }
 }
