@@ -39,6 +39,8 @@ class BaseSprite extends EngineSprite {
     public var debug = false;
     public var updating = false;
     public var canDispose = false;
+    public var rendered = false;
+    var _rendered = 0;
 
     public var renderID:Int = 0;
 
@@ -458,6 +460,10 @@ class BaseSprite extends EngineSprite {
         }
 
         updating = false;
+
+        if (!rendered && loaded && ++_rendered >= 2) {
+            rendered = true;
+        }
 
         if (canDispose) {
             canDispose = false;
