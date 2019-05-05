@@ -216,7 +216,7 @@ class Interactions {
 
                 debugCount++;
 
-                if (!child.loaded || !child.visible || !child.layer.shared.canInteract || child.layer._base.cancelInteract || checkExclusive(sprite)) return;
+                if ((!child.loaded && !child.hasForceBounds()) || !child.visible || !child.layer.shared.canInteract || child.layer._base.cancelInteract || checkExclusive(sprite)) return;
 
                 var x = mouse.x;
                 var y = mouse.y;
@@ -267,7 +267,7 @@ class Interactions {
             if (mouse.leftChanged) {
                 debugCount++;
                 
-                if (child.layer == null || !child.visible || !child.loaded || !child.layer.shared.canInteract || child.layer._base.cancelInteract || checkExclusive(sprite)) return;
+                if (child.layer == null || !child.visible || (!child.loaded && !child.hasForceBounds()) || !child.layer.shared.canInteract || child.layer._base.cancelInteract || checkExclusive(sprite)) return;
                 
                 var y = mouse.y;
                 var x = mouse.x;
@@ -315,7 +315,7 @@ class Interactions {
             if (mouse.leftChanged) {
                 debugCount++;
 
-                if (!child.loaded || !child.visible || !child.layer.shared.canInteract || child.layer._base.cancelInteract || checkExclusive(sprite)) return;
+                if ((!child.loaded && !child.hasForceBounds()) || !child.visible || !child.layer.shared.canInteract || child.layer._base.cancelInteract || checkExclusive(sprite)) return;
                 
                 var y = mouse.y;
                 var x = mouse.x;

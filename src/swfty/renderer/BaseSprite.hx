@@ -222,6 +222,11 @@ class BaseSprite extends EngineSprite {
         forceBounds = _bounds;
     }
 
+    public inline function removeBounds() {
+        forceBounds = null;
+        _bounds = null;
+    }
+
     public inline function hasForceBounds() {
         return forceBounds != null;
     }
