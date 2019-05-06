@@ -229,7 +229,8 @@ class BaseText extends FinalSprite {
                 tile.x = x + char.tx * scale;
                 tile.y = y + char.ty * scale;
 
-                tile.scaleX = tile.scaleY = scale / _scale;
+                tile.scaleX = scale / (char.bitmap.originalWidth > 0 && char.bitmap.width > 0 ? char.bitmap.width / char.bitmap.originalWidth : _scale);
+                tile.scaleY = scale / (char.bitmap.originalHeight > 0 && char.bitmap.height > 0 ? char.bitmap.height / char.bitmap.originalHeight : _scale);
 
                 addBitmap(tile);
 
@@ -252,7 +253,8 @@ class BaseText extends FinalSprite {
                             tile.x = x + char.tx * scale;
                             tile.y = y + char.ty * scale;
 
-                            tile.scaleX = tile.scaleY = scale / _scale;
+                            tile.scaleX = scale / (char.bitmap.originalWidth > 0 && char.bitmap.width > 0 ? char.bitmap.width / char.bitmap.originalWidth : _scale);
+                            tile.scaleY = scale / (char.bitmap.originalHeight > 0 && char.bitmap.height > 0 ? char.bitmap.height / char.bitmap.originalHeight : _scale);
 
                             addBitmap(tile);
 
