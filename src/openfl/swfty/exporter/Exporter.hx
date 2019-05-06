@@ -564,8 +564,8 @@ class Exporter {
         #if sys
         // Save file to disk, run pngquant, save to zip 
         if (config.pngquant) {
-            var temp1 = '${config.tempFolder}/temp1.png';
-            var temp2 = '${config.tempFolder}/temp2.png';
+            var temp1 = '${config.tempFolder}/temp${Std.int(Math.random() * 0xFFFFFF)}.png';
+            var temp2 = '${config.tempFolder}/temp${Std.int(Math.random() * 0xFFFFFF)}.png';
             
             if (!FileSystem.exists(config.tempFolder)) FileSystem.createDirectory(config.tempFolder);
             File.saveBytes(temp1, png);
@@ -581,7 +581,7 @@ class Exporter {
 
             try {
                 FileSystem.deleteFile(temp1);
-                FileSystem.deleteDirectory(config.tempFolder);
+                //FileSystem.deleteDirectory(config.tempFolder);
             } catch(e:Dynamic) {
                 // Might be some leftovers or the directory already existed...
             }
@@ -607,8 +607,8 @@ class Exporter {
 
         #if sys
         if (config.jpegtran) {
-            var temp1 = '${config.tempFolder}/temp1.jpg';
-            var temp2 = '${config.tempFolder}/temp2.jpg';
+            var temp1 = '${config.tempFolder}/temp${Std.int(Math.random() * 0xFFFFFF)}.jpg';
+            var temp2 = '${config.tempFolder}/temp${Std.int(Math.random() * 0xFFFFFF)}.jpg';
             
             if (!FileSystem.exists(config.tempFolder)) FileSystem.createDirectory(config.tempFolder);
             File.saveBytes(temp1, jpg);
@@ -624,7 +624,7 @@ class Exporter {
 
             try {
                 FileSystem.deleteFile(temp1);
-                FileSystem.deleteDirectory(config.tempFolder);
+                //FileSystem.deleteDirectory(config.tempFolder);
             } catch(e:Dynamic) {
                 // Might be some leftovers or the directory already existed...
             }

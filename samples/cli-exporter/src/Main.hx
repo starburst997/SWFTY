@@ -326,6 +326,22 @@ class CLI extends mcli.CommandLine {
             
             // Look for all SWF in folder, convert any that don't have a "swfty" counter part
             var swfs = listFiles(Dir.of(getDir(config.watchFolder)));
+            var random = [];
+            var i = 0;
+            for (swf in swfs) {
+                random.push(i++);
+            }
+
+            var newSWFs = [];
+            for (swf in swfs) {
+                var i = Std.int(Math.random() * random.length);
+                var r = random[Std.int(Math.random() * random.length)];
+                random.splice(i, 1);
+
+                newSWFs.push(swfs[r]);
+            }
+            swfs = newSWFs;
+
             var swftys = [for (file in listFiles(Dir.of(getDir(config.outputFolder)), 'swfty')) file.path.filenameStem => !recreate];
 
             var total = 0;

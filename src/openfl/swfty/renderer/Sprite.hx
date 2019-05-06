@@ -272,7 +272,7 @@ abstract DisplayBitmap(EngineBitmap) from EngineBitmap to EngineBitmap {
         };
     }
 
-    public inline function transform(a:Float, b:Float, c:Float, d:Float, tx:Float, ty:Float, scale:Float = 1.0) {
+    public inline function transform(a:Float, b:Float, c:Float, d:Float, tx:Float, ty:Float, scaleX:Float = 1.0, scaleY:Float = 1.0) {
         // TODO: Don't trust openfl matrix, it seems like scaleY doesn't work
         //this.matrix.a = a;
         //this.matrix.b = b;
@@ -283,8 +283,8 @@ abstract DisplayBitmap(EngineBitmap) from EngineBitmap to EngineBitmap {
 
         this.x = MathUtils.x(tx);
         this.y = MathUtils.y(ty);
-        this.scaleX = MathUtils.scaleX(a, b, c, d) / scale;
-        this.scaleY = MathUtils.scaleY(a, b, c, d) / scale;
+        this.scaleX = MathUtils.scaleX(a, b, c, d) / scaleX;
+        this.scaleY = MathUtils.scaleY(a, b, c, d) / scaleY;
         this.rotation = MathUtils.rotation(a, b, c, d) / Math.PI * 180;
     }
 

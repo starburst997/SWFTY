@@ -50,7 +50,7 @@ class TilemapExporter {
 
         #if sys
         // Save all bitmaps to temp folder and use ImageMagick to resize
-        var temp = Exporter.tempFolder;
+        var temp = Exporter.tempFolder + '/' + Std.int(Math.random() * 0xFFFFFF);
         FileUtils.createDirectory(temp, true);
         FileUtils.createDirectory('$temp/original', true);
 
@@ -97,7 +97,7 @@ class TilemapExporter {
         }
 
         #if sys
-        //sFileUtils.deleteDirectory(temp);
+        FileUtils.deleteDirectory(temp);
         #end
 
         return tilemap;

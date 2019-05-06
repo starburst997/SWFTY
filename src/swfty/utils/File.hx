@@ -24,15 +24,20 @@ class FileUtils {
 
     public static function deleteDirectory(path:String) {
         #if sys
-        if (sys.FileSystem.exists(path)) {
-            for (file in sys.FileSystem.readDirectory(path)) {
-                if (sys.FileSystem.isDirectory('$path/$file')) {
-                    deleteDirectory('$path/$file');
-                    sys.FileSystem.deleteDirectory('$path/$file');
-                } else {
-                    sys.FileSystem.deleteFile('$path/$file');
+        try {
+            if (sys.FileSystem.exists(path)) {
+                for (file in sys.FileSystem.readDirectory(path)) {
+                    if (sys.FileSystem.isDirectory('$path/$file')) {
+                        deleteDirectory('$path/$file');
+                        sys.FileSystem.deleteDirectory('$path/$file');
+                    } else {
+                        sys.FileSystem.deleteFile('$path/$file');
+                    }
                 }
+                sys.FileSystem.deleteDirectory('$path');
             }
+        } catch(e:Dynamic) {
+            
         }
         #else
         throw 'Not implemented!';
