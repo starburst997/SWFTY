@@ -344,11 +344,24 @@ class CLI extends mcli.CommandLine {
 
             var swftys = [for (file in listFiles(Dir.of(getDir(config.outputFolder)), 'swfty')) file.path.filenameStem => !recreate];
 
+            var quality = new StringMap<StringMap<Bool>>();
+            for (q in config.quality) {
+                quality.set(q.name, [for (file in listFiles(Dir.of(getDir(q.outputFolder)), 'swfty')) file.path.filenameStem => !recreate]);
+            }
+
             var total = 0;
             var todo = 0;
             for (swf in swfs) {
-                // TODO: Check quality SWFTY missing
-                if (!swftys.exists(swf.path.filenameStem) || !swftys.get(swf.path.filenameStem)) {
+                // Check quality SWFTY missing
+                var qualityExists = true;
+                for (q in config.quality) {
+                    if (!swftys.exists(swf.path.filenameStem) || !swftys.get(swf.path.filenameStem)) {
+                        qualityExists = false;
+                        break;
+                    }
+                }
+
+                if (!qualityExists || !swftys.exists(swf.path.filenameStem) || !swftys.get(swf.path.filenameStem)) {
                     // Convert SWF
                     todo++;
                     convertSWF(swf.path, () -> {
