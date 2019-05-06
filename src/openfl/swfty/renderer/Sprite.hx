@@ -197,26 +197,48 @@ abstract DisplayBitmap(EngineBitmap) from EngineBitmap to EngineBitmap {
         return this.id;
     }
 
+    inline function getTileset() {
+        return if (this.tileset != null) {
+            this.tileset;
+        } else if (this.parent != null) {
+            @:privateAccess var tileset = this.parent.__findTileset();
+            this.tileset = tileset;
+            tileset;
+        } else {
+            null;
+        }
+    }
+
+    inline function getData(id:DisplayTile) {
+        var tileset = getTileset();
+        if (tileset == null) return null;
+        
+        @:privateAccess var tiles = tileset.__data;
+        return if (this.id < tiles.length && this.id >= 0) {
+            tiles[this.id];
+        } else {
+            null;
+        }
+    }
+
     public inline function getTile(id:DisplayTile):Rectangle {
-        return if (this.tileset == null) {
+        var data = getData(id);
+        return if (data == null) {
             x: 0,
             y: 0,
             width: 1,
             height: 1
         } else {
-            var data = this.tileset.getData(id);
-            {
-                x: data.x,
-                y: data.y,
-                width: data.width,
-                height: data.height
-            };
+            x: data.x,
+            y: data.y,
+            width: data.width,
+            height: data.height
         }
-    } 
+    }
 
     public var width(get, never):Float;
     function get_width() {
-        var data = this.tileset == null ? null : this.tileset.getData(this.id);
+        var data = getData(this.id);
         return if (data != null) {
             data.width * this.scaleX;
         } else {
@@ -226,7 +248,7 @@ abstract DisplayBitmap(EngineBitmap) from EngineBitmap to EngineBitmap {
 
     public var height(get, never):Float;
     function get_height() {
-        var data = this.tileset == null ? null : this.tileset.getData(this.id);
+        var data = getData(this.id);
         return if (data != null) {
             data.height * this.scaleY;
         } else {
@@ -236,7 +258,7 @@ abstract DisplayBitmap(EngineBitmap) from EngineBitmap to EngineBitmap {
 
     public var tile(get, never):Rectangle;
     function get_tile():Rectangle {
-        var data = this.tileset == null ? null : this.tileset.getData(this.id);
+        var data = getData(this.id);
         return if (data == null) {
             x: 0,
             y: 0,

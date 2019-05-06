@@ -108,8 +108,25 @@ class FinalLayer extends BaseLayer {
         return tileset.addRect(new openfl.geom.Rectangle(x, y, width, height));
     }
 
+    public function getData(id:DisplayTile) {
+        @:privateAccess var tiles = tileset.__data;
+        return if (id < tiles.length && id >= 0) {
+            tiles[id];
+        } else {
+            null;
+        }
+    }
+
     override function updateDisplayTile(id:DisplayTile, x:Int, y:Int, width:Int, height:Int) {
-        tileset.updateRect(id, x, y, width, height);
+        var data = getData(id);
+        if (data != null) {
+            data.x = x;
+            data.y = y;
+            data.width = width;
+            data.height = height;
+
+            @:privateAccess data.__update(tileset.bitmapData);
+        }
     }
 
     public function pendingBitmapData(path:String, bitmapData:openfl.display.BitmapData) {
@@ -177,7 +194,7 @@ class FinalLayer extends BaseLayer {
             tile.tile = createCustomTile(tile.x, tile.y, tile.width, tile.height);
             tile.id = addCustomTile(tile.tile);
         } else {
-            tileset.updateRect(tile.tile, tile.x, tile.y, tile.width, tile.height);
+            updateDisplayTile(tile.tile, tile.x, tile.y, tile.width, tile.height);
         }
 
         if (canDispose) bmpd.dispose();

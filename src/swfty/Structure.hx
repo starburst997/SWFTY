@@ -48,6 +48,8 @@ typedef Rect = {
 
 typedef BitmapDefinition = {
 	> Rect,
+    originalWidth: Float,
+    originalHeight: Float,
     id: Int
 }
 
@@ -485,7 +487,9 @@ class BitmapType #if !macro implements hxbit.Serializable #end {
     @:s public var x:Int;
 	@:s public var y:Int;
 	@:s public var width:Int;
-	@:s public var height:Int;    
+	@:s public var height:Int;
+	@:s public var originalWidth:Float;
+	@:s public var originalHeight:Float;
     
     public static inline function fromJson(json:BitmapDefinition):BitmapType {
         return {
@@ -493,16 +497,20 @@ class BitmapType #if !macro implements hxbit.Serializable #end {
             x: json.x,
             y: json.y,
             width: json.width,
-            height: json.height
+            height: json.height,
+            originalWidth: json.originalWidth,
+            originalHeight: json.originalHeight
         };
     }
 
-    public function new(?id:Int, ?x:Int, ?y:Int, ?width:Int, ?height:Int) {
+    public function new(?id:Int, ?x:Int, ?y:Int, ?width:Int, ?height:Int, ?originalWidth:Float, ?originalHeight:Float) {
         this.id = id;
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
+        this.originalWidth = originalWidth;
+        this.originalHeight = originalHeight;
     }
 }
 

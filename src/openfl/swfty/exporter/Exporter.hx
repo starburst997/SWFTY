@@ -240,7 +240,9 @@ class Exporter {
                             x: 0,
                             y: 0,
                             width: bitmapData.width,
-                            height: bitmapData.height
+                            height: bitmapData.height,
+                            originalWidth: bounds.width,
+                            originalHeight: bounds.height
                         };
 
                         bitmaps.set(id, definition);
@@ -304,7 +306,9 @@ class Exporter {
                                 x: 0,
                                 y: 0,
                                 width: bitmapData.width,
-                                height: bitmapData.height
+                                height: bitmapData.height,
+                                originalWidth: bitmapData.width,
+                                originalHeight: bitmapData.height
                             };
 
                             this.bitmaps.set(id, definition);
@@ -501,12 +505,14 @@ class Exporter {
                     var font = fontTilemaps.get(key);
                     var fontTile = bitmaps.get(key);
                     font.characters.iter(function(char) {
-                        var tile = {
+                        var tile:BitmapDefinition = {
                             id: char.bitmap,
                             x: fontTile.x + char.x,
                             y: fontTile.y + char.y,
                             width: char.width,
-                            height: char.height
+                            height: char.height,
+                            originalWidth: char.width,
+                            originalHeight: char.height
                         };
 
                         bitmaps.set(char.bitmap, tile);
@@ -677,7 +683,9 @@ class Exporter {
                 x: 0,
                 y: 0,
                 width: custom.reservedSpace.width,
-                height: custom.reservedSpace.height
+                height: custom.reservedSpace.height,
+                originalWidth: custom.reservedSpace.width,
+                originalHeight: custom.reservedSpace.height
             };
 
             bitmaps.set(id, definition);
@@ -976,7 +984,9 @@ class Exporter {
                                     x: 0,
                                     y: 0,
                                     width: trimmed.bmpd.width,
-                                    height: trimmed.bmpd.height
+                                    height: trimmed.bmpd.height,
+                                    originalWidth: bounds.width,
+                                    originalHeight: bounds.height
                                 };
 
                                 bitmaps.set(id, definition);
@@ -1242,7 +1252,9 @@ class Exporter {
                     x: 0,
                     y: 0,
                     width: bitmapData.width,
-                    height: bitmapData.height
+                    height: bitmapData.height,
+                    originalWidth: bitmapData.width,
+                    originalHeight: bitmapData.height
                 };
 
                 bitmaps.set(tag.characterId, definition);
