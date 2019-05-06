@@ -43,8 +43,8 @@ class FinalSprite extends BaseSprite {
     override function calcBounds(?relative:BaseSprite, ?global = false):Rectangle {
        return if (global) {
             if (forceBounds != null) {
-                var pt = localToLayer(forceBounds.x, forceBounds.y);
-                var pt2 = localToLayer(forceBounds.x + forceBounds.width, forceBounds.y + forceBounds.height);
+                var pt = localToLayer(forceBounds.x, forceBounds.y, 1);
+                var pt2 = localToLayer(forceBounds.x + forceBounds.width, forceBounds.y + forceBounds.height, 2);
 
                 {
                     x: pt.x,
@@ -73,11 +73,11 @@ class FinalSprite extends BaseSprite {
             if (relative == null) relative = this;
             
             if (forceBounds != null) {
-                var pt = localToLayer(forceBounds.x + forceBounds.width * (scaleX < 0 ? 1 : 0), forceBounds.y + forceBounds.height * (scaleY < 0 ? 1 : 0));
-                var pt2 = localToLayer(forceBounds.x + forceBounds.width * (scaleX < 0 ? 0 : 1), forceBounds.y + forceBounds.height * (scaleY < 0 ? 0 : 1));
+                var pt = localToLayer(forceBounds.x + forceBounds.width * (scaleX < 0 ? 1 : 0), forceBounds.y + forceBounds.height * (scaleY < 0 ? 1 : 0), 1);
+                var pt2 = localToLayer(forceBounds.x + forceBounds.width * (scaleX < 0 ? 0 : 1), forceBounds.y + forceBounds.height * (scaleY < 0 ? 0 : 1), 2);
                 
-                pt = relative.layerToLocal(pt.x, pt.y);
-                pt2 = relative.layerToLocal(pt2.x, pt2.y);
+                pt = relative.layerToLocal(pt.x, pt.y, 1);
+                pt2 = relative.layerToLocal(pt2.x, pt2.y, 2);
                 
                 {
                     x: pt.x,
@@ -102,33 +102,31 @@ class FinalSprite extends BaseSprite {
         }
     }
 
-    override function localToLayer(x:Float = 0.0, y:Float = 0.0):Point {
-        pt.x = x;
-        pt.y = y;
-
-        #if openfl_jd2
-        pt = this.localToGlobal(pt);
-        return { x: pt.x, y: pt.y };
+    override function localToLayer(x:Float = 0.0, y:Float = 0.0, temp = 0):Point {
+        var pt:Point = temp == 2 ? tempPt2 : temp == 1 ? tempPt1 : { x: 0, y: 0 };
         
-        // TODO: This step seems unnecessary
-        //var pt2 = layer.localToLayer(pt.x, pt.y);
-        //return pt2;
-        
-        #else
+        @:privateAccess var matrix = __getWorldTransform();
+        pt.x = x * matrix.a + y * matrix.c + matrix.tx;
+        pt.y = x * matrix.b + y * matrix.d + matrix.ty;
 
-        return { x: pt.x, y: pt.y };
-        #end
+        return pt;
     }
 
-    override function layerToLocal(x:Float, y:Float):Point {
-        pt.x = x;
-        pt.y = y;
-
-        #if openfl_jd2
-        pt = this.globalToLocal(pt);
-        #end
-
-        return { x: pt.x, y: pt.y };
+    override function layerToLocal(x:Float, y:Float, temp = 0):Point {
+        var pt:Point = temp == 2 ? tempPt2 : temp == 1 ? tempPt1 : { x: 0, y: 0 };
+        
+        @:privateAccess var matrix = __getWorldTransform();
+        var norm = matrix.a * matrix.d - matrix.b * matrix.c;
+        
+        if (norm == 0) {
+            pt.x = -matrix.tx;
+            pt.y = -matrix.ty;
+        } else {
+            pt.x = (1.0 / norm) * (matrix.c * (matrix.ty - y) + matrix.d * (x - matrix.tx));
+            pt.y = (1.0 / norm) * (matrix.a * (y - matrix.ty) + matrix.b * (matrix.tx - x));
+        }
+        
+        return pt;
     }
 
     override function hasParent():Bool {

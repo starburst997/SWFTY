@@ -169,8 +169,8 @@ class Interactions {
 
         while (parent != null) {
             if (parent.mask != null) {
-                var topLeft = parent.localToLayer(parent.mask.x, parent.mask.y);
-                var bottomRight = parent.localToLayer(parent.mask.x + parent.mask.width, parent.mask.y + parent.mask.height);
+                var topLeft = parent.localToLayer(parent.mask.x, parent.mask.y, 1);
+                var bottomRight = parent.localToLayer(parent.mask.x + parent.mask.width, parent.mask.y + parent.mask.height, 2);
 
                 if (!rect.set(topLeft.x, topLeft.y, bottomRight.x - topLeft.x, bottomRight.y - topLeft.y).inside(x, y)) {
                     return false;

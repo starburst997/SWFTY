@@ -2,7 +2,7 @@ package swfty;
 
 import haxe.ds.IntMap;
 
-// TODO: These should be absract over Int or simple Enum maybe?
+// TODO: These should be absract over Int or simple Enum maybe? Using string seems like a waste
 
 @:enum abstract BlendMode(String) from String to String {
     var Normal      = 'normal';
@@ -189,7 +189,7 @@ typedef Config = {
     ?files: Array<CustomConfig>,
 }
 
-/* Class */
+/* Binary Type */
 
 @:structInit
 class MovieClipType #if !macro implements hxbit.Serializable #end {
@@ -569,7 +569,9 @@ class SWFTYType #if !macro implements hxbit.Serializable #end {
             x: 0,
             y: 0,
             width: width,
-            height: height  
+            height: height,
+            originalWidth: width,
+            originalHeight: height
         };
 
         tilemap_width = width;

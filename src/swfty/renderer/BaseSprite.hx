@@ -100,6 +100,10 @@ class BaseSprite extends EngineSprite {
     // Mask stuff
     var isMasked = false;
     var maskMap:Map<EngineBitmap, EngineBitmap> = new Map();
+    
+    var __mask:Rectangle = null;
+    
+    var firstMask = 0;
 
     // Keep some original values that can be usefull
     public var originalX:Float = 0.0;
@@ -123,6 +127,31 @@ class BaseSprite extends EngineSprite {
     var _pruneRemoved:Array<Void->Void>;
     var _pruneRenders:Array<Float->Void>;
     var _pruneSprites:Array<FinalSprite>;
+
+    // Prevent creating too many objects per frame
+    @:isVar var tempPt1(get, null):Point;
+    inline function get_tempPt1() {
+        if (tempPt1 == null) tempPt1 = { x: 0, y: 0 };
+        return tempPt1;
+    }
+
+    @:isVar var tempPt2(get, null):Point;
+    inline function get_tempPt2() {
+        if (tempPt2 == null) tempPt2 = { x: 0, y: 0 };
+        return tempPt2;
+    }
+
+    @:isVar var tempRect1(get, null):Rectangle;
+    inline function get_tempRect1() {
+        if (tempRect1 == null) tempRect1 = { x: 0, y: 0, width: 1, height: 1 };
+        return tempRect1;
+    }
+
+    @:isVar var tempRect2(get, null):Rectangle;
+    inline function get_tempRect2() {
+        if (tempRect2 == null) tempRect2 = { x: 0, y: 0, width: 1, height: 1 };
+        return tempRect2;
+    }
 
     public function new(layer:BaseLayer, ?definition:MovieClipType, ?linkage:String, ?debug = false) {
         super();
@@ -315,15 +344,8 @@ class BaseSprite extends EngineSprite {
         }
     }
 
-    var tempPt1 = new Point();
-    var tempPt2 = new Point();
-    var tempRect = new Rectangle();
-
-    var __mask:Rectangle = null;
-
     // Basic mask implementation, does not work with rotation or negative scaling
     // TODO: Rotation, negative scaling
-    var firstMask = 0;
     function calculateMask(dt:Float) {
         if (__mask == null) return;
 
@@ -348,8 +370,8 @@ class BaseSprite extends EngineSprite {
                 maskMap.get(bitmap);
             }
 
-            var pt = localToLayer(display.x, display.y);
-            var pt2 = localToLayer(display.x + display.width, display.y + display.height);
+            var pt = localToLayer(display.x, display.y, 1);
+            var pt2 = localToLayer(display.x + display.width, display.y + display.height, 2);
             var bounds = new Rectangle(pt.x, pt.y, pt2.x - pt.x, pt2.y - pt.y);
 
             if (__mask.contains(bounds)) {
@@ -403,8 +425,8 @@ class BaseSprite extends EngineSprite {
 
         if (_mask != null) {
             // Convert to layer bounds
-            var pt = localToLayer(_mask.x, _mask.y);
-            var pt2 = localToLayer(_mask.x + _mask.width, _mask.y + _mask.height);
+            var pt = localToLayer(_mask.x, _mask.y, 1);
+            var pt2 = localToLayer(_mask.x + _mask.width, _mask.y + _mask.height, 2);
             
             var rect = new Rectangle(pt.x, pt.y, pt2.x - pt.x, pt2.y - pt.y);
             if (mask != null && !mask.contains(rect)) {
@@ -666,6 +688,7 @@ class BaseSprite extends EngineSprite {
                 for (shape in child.shapes) {
                     var tile = _layer.createBitmap(shape.bitmap.id, true);
                     tile.transform(shape.a, shape.b, shape.c, shape.d, shape.tx, shape.ty, shape.bitmap.originalWidth > 0 && shape.bitmap.width > 0 ? shape.bitmap.width / shape.bitmap.originalWidth : scale, shape.bitmap.originalHeight > 0 && shape.bitmap.height > 0 ? shape.bitmap.height / shape.bitmap.originalHeight : scale);
+                    
                     sprite.addBitmap(tile);
                 }
 
@@ -842,17 +865,17 @@ class BaseSprite extends EngineSprite {
         }
     }
 
-    public function localToLayer(x:Float = 0.0, y:Float = 0.0):Point {
+    public function localToLayer(x:Float = 0.0, y:Float = 0.0, temp = 0):Point {
         throw 'Not implemented';
     }
 
-    public function layerToLocal(x:Float, y:Float):Point {
+    public function layerToLocal(x:Float, y:Float, temp = 0):Point {
         throw 'Not implemented';
     }
 
     public inline function rectToLayer(rect:Rectangle) {
-        var top = localToLayer(rect.x, rect.y);
-        var bottom = localToLayer(rect.x + rect.width, rect.y + rect.height);
+        var top = localToLayer(rect.x, rect.y, 1);
+        var bottom = localToLayer(rect.x + rect.width, rect.y + rect.height, 2);
         return new Rectangle(top.x, top.y, bottom.x - top.x, bottom.y - top.y);
     }
 
