@@ -219,6 +219,7 @@ abstract DisplayBitmap(EngineBitmap) from EngineBitmap to EngineBitmap {
         }
     }
 
+    // TODO: Use temp Rectangle
     public inline function getTile(id:DisplayTile):Rectangle {
         var data = getData(id);
         return if (data == null) {
@@ -235,7 +236,7 @@ abstract DisplayBitmap(EngineBitmap) from EngineBitmap to EngineBitmap {
     }
 
     public var width(get, never):Float;
-    function get_width() {
+    inline function get_width() {
         var data = getData(this.id);
         return if (data != null) {
             data.width * this.scaleX;
@@ -245,7 +246,7 @@ abstract DisplayBitmap(EngineBitmap) from EngineBitmap to EngineBitmap {
     }
 
     public var height(get, never):Float;
-    function get_height() {
+    inline function get_height() {
         var data = getData(this.id);
         return if (data != null) {
             data.height * this.scaleY;
@@ -254,6 +255,7 @@ abstract DisplayBitmap(EngineBitmap) from EngineBitmap to EngineBitmap {
         }
     }
 
+    // TODO: Use temp Rectangle
     public var tile(get, never):Rectangle;
     function get_tile():Rectangle {
         var data = getData(this.id);
