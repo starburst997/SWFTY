@@ -66,6 +66,10 @@ class Point {
         this.y = y;
     }
 
+    public inline function clone():Point {
+        return { x: x, y: y };
+    }
+
     public inline function toString() {
         return '{x: $x, y: $y}';
     }

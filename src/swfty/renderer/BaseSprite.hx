@@ -180,6 +180,12 @@ class BaseSprite extends EngineSprite {
         load(definition);
     }
 
+    public inline function getTempPt(x:Float = 0, y:Float = 0) {
+        tempPt1.x = x;
+        tempPt1.y = y;
+        return tempPt1;
+    }
+
     function set__name(name:String) {
         if (_parent != null && _name != name) {
             _parent._names.remove(_name);
@@ -688,7 +694,6 @@ class BaseSprite extends EngineSprite {
                 for (shape in child.shapes) {
                     var tile = _layer.createBitmap(shape.bitmap.id, true);
                     tile.transform(shape.a, shape.b, shape.c, shape.d, shape.tx, shape.ty, shape.bitmap.originalWidth > 0 && shape.bitmap.width > 0 ? shape.bitmap.width / shape.bitmap.originalWidth : scale, shape.bitmap.originalHeight > 0 && shape.bitmap.height > 0 ? shape.bitmap.height / shape.bitmap.originalHeight : scale);
-                    
                     sprite.addBitmap(tile);
                 }
 
