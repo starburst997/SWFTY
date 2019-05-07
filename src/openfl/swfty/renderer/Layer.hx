@@ -116,8 +116,14 @@ class FinalLayer extends BaseLayer {
     }
 
     override function createCustomTile(x:Float, y:Float, width:Float, height:Float):DisplayTile {
-        rect.setTo(x, y, width, height);
-        return tileset.addRect(rect);
+        return if (tempTiles.length > 0) {
+            var tile = tempTiles.pop();
+            updateDisplayTile(tile, x, y, width, height);
+            tile;
+        } else {
+            rect.setTo(x, y, width, height);
+            tileset.addRect(rect);
+        }
     }
 
     public function getData(id:DisplayTile) {

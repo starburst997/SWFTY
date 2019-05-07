@@ -86,7 +86,7 @@ class BaseLayer extends EngineLayer {
 
     var customTiles:StringMap<CustomTile> = new StringMap();
     var packer:SimplifiedMaxRectsPacker = null;
-    var removedFromReservedSpace = false;
+    var lastSpace = 1.0;
 
     var wakes:Array<Void->Void> = [];
     var sleeps:Array<Void->Void> = [];
@@ -753,30 +753,21 @@ class BaseLayer extends EngineLayer {
                     return map;
                 }
 
-                // We had stuff removed, we might be able to fit everything again!
-                if (removedFromReservedSpace) {
-                    removedFromReservedSpace = false;
-
-                    var rects = tryFitAll();
-                    if (rects != null) {
-                        // Good we were able to re-fit everything!
-                        // Save this packer for re-use and return tile
-                        this.packer = packer;
-                        return tile;
-                    }
-                }
-
                 // Alright, seems like we have too much stuff, try to fit everything by scaling down
-                var scale = 1.0;
-                while ((scale -= 0.05) > 0.1) {
+                var scale = lastSpace;
+                while (scale > 0.1) {
                     packer = new SimplifiedMaxRectsPacker(reserved.width, reserved.height);
                     var rects = tryFitAll(scale);
                     if (rects != null) {
+                        lastSpace = scale;
+
                         // Good we were able to re-fit everything by scaling down!
                         // Save this packer for re-use and return tile
                         this.packer = packer;
                         return tile;
                     }
+
+                    scale -= 0.05;
                 }
 
                 // We can't fit, the tile will look empty...
@@ -808,13 +799,21 @@ class BaseLayer extends EngineLayer {
     }
 
     // Mark an image speificed by path as unused
+    var tempTiles:Array<DisplayTile> = [];
     public function removePath(path:String) {
         if (customTiles.exists(path)) {
             if (--customTiles.get(path).counter <= 0) {
+                var customTile = customTiles.get(path);
                 customTiles.remove(path);
-                removedFromReservedSpace = true;
+                lastSpace = 1.0;
+
+                tempTiles.push(customTile.tile);
+
+                return true;
             }
         }
+
+        return false;
     }
 
     public function loadTexture(bytes:Bytes, swfty:SWFTYType, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
