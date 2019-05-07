@@ -829,8 +829,6 @@ class BaseLayer extends EngineLayer {
 
         var tile = createCustomTile(x, y, width, height);
         var display:DisplayBitmap = new openfl.display.Tile(tile);
-        
-        //trace('~~~~~~~ TEMP BITMAP: $tile');
 
         return display;
     }

@@ -198,11 +198,11 @@ class BaseSprite extends EngineSprite {
 
     // TODO: Not super optimized, usually getting the X we would also get the Y so we could cache it for one frame
     public inline function getMouseX():Float {
-        return layerToLocal(layer.mouse.x, layer.mouse.y).x;
+        return layerToLocal(layer.mouse.x, layer.mouse.y, 1).x;
     }
 
     public inline function getMouseY():Float {
-        return layerToLocal(layer.mouse.x, layer.mouse.y).y;
+        return layerToLocal(layer.mouse.x, layer.mouse.y, 1).y;
     }
 
     public function calcBounds(?relative:BaseSprite, ?global = false):Rectangle {
@@ -406,6 +406,7 @@ class BaseSprite extends EngineSprite {
 
                     var index = this.getTileIndex(bitmap);
                     this.addTileAt(dupe, index + 1);
+                    this.removeTile(bitmap);
 
                     maskMap.set(bitmap, dupe);
                     dupe;
@@ -414,7 +415,18 @@ class BaseSprite extends EngineSprite {
                 }
             }
 
-            var dupe = getDupe();
+            inline function removeDupe() {
+                if (maskMap.exists(bitmap)) {
+                    var dupe = maskMap.get(bitmap);
+
+                    var index = this.getTileIndex(dupe);
+                    this.addTileAt(bitmap, index + 1);
+                    this.removeTile(dupe);
+
+                    layer.disposeTempBitmap(dupe);
+                    maskMap.remove(bitmap);
+                }
+            }
 
             var pt = localToLayer(display.x, display.y, 1);
             var pt2 = localToLayer(display.x + display.width, display.y + display.height, 2);
@@ -423,11 +435,10 @@ class BaseSprite extends EngineSprite {
             if (mask.contains(bounds)) {
                 // We're completely inside
                 display.visible = true;
-                dupe.visible = false;
+                removeDupe();
             } else if (mask.intersects(bounds)) {
 
-                display.visible = false;
-                dupe.visible = true;
+                var dupe = getDupe();
                 
                 // Figure out part that is visible
                 var intersect = mask.getIntersect(bounds);
@@ -439,10 +450,10 @@ class BaseSprite extends EngineSprite {
                 var width = intersect.width / bounds.width * tile.width;
                 var height = intersect.height / bounds.height * tile.height;
 
-                layer.updateDisplayTile(dupe.id, Std.int(tile.x + x), Std.int(tile.y + y), Std.int(width), Std.int(height));
+                layer.updateDisplayTile(dupe.id, tile.x + x, tile.y + y, width, height);
 
                 // Set coordinate / scaling          
-                var local = layerToLocal(intersect.x, intersect.y);
+                var local = layerToLocal(intersect.x, intersect.y, 1);
 
                 dupe.x = local.x;
                 dupe.y = local.y;
@@ -452,8 +463,9 @@ class BaseSprite extends EngineSprite {
 
             } else {
                 // We're completely out, so invisible
+                // TODO: If we remove the tile, we loose the "index"
                 display.visible = false;
-                dupe.visible = false;
+                removeDupe();
             }
         }
     }
@@ -475,21 +487,6 @@ class BaseSprite extends EngineSprite {
         }
 
         __mask = null;
-
-        /*if (_mask != null) {
-            // Convert to layer bounds
-            var pt = localToLayer(_mask.x, _mask.y, 1);
-            var pt2 = localToLayer(_mask.x + _mask.width, _mask.y + _mask.height, 2);
-            
-            var rect = new Rectangle(pt.x, pt.y, pt2.x - pt.x, pt2.y - pt.y);
-            if (mask != null && !mask.contains(rect)) {
-                mask = mask.getIntersect(rect).clone();
-            } else {
-                mask = rect;
-            }
-        }*/
-
-        //this.__mask = mask;
 
         updating = true;
 
