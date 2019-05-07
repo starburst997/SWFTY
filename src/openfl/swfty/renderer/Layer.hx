@@ -104,6 +104,15 @@ class FinalLayer extends BaseLayer {
         return { x: pt.x, y: pt.y };
     }
 
+    override function disposeTempBitmap(temp:EngineBitmap) {
+        super.disposeTempBitmap(temp);
+        
+        // Makes sure we remove it from parent
+        if (temp.parent != null) {
+            temp.parent.removeTile(temp);   
+        }
+    }
+
     override function createCustomTile(x:Int, y:Int, width:Int, height:Int):DisplayTile {
         return tileset.addRect(new openfl.geom.Rectangle(x, y, width, height));
     }

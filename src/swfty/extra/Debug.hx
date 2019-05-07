@@ -194,6 +194,23 @@ class Debug {
 
         var bmpds = new Map<openfl.display.BitmapData, Int>();
 
+        function countTiles(layer:FinalLayer) {
+            function count(container:openfl.display.TileContainer, n = 0) {
+                for (i in 0...container.numTiles) {
+                    var tile = container.getTileAt(i);
+                    if (Std.is(tile, openfl.display.TileContainer)) {
+                        n += count(cast tile);
+                    } else {
+                        n++;
+                    }
+                }
+
+                return n;
+            }
+
+            return count(layer.base);
+        }
+
         function traverseOpenFL(sprite:openfl.display.DisplayObjectContainer, depth = 0) {
             n++;
             
@@ -218,10 +235,10 @@ class Debug {
                         r.match(layer.path);
 
                         try {
-                            layersName += (layersName == '' ? '' : ', ') + r.matched(1);
+                            layersName += (layersName == '' ? '' : ', ') + r.matched(1) + ' (${countTiles(cast layer)})';
                         } catch(e:Dynamic) {
                             if (layer.path != null && layer.path != '') {
-                                layersName += (layersName == '' ? '' : ', ') + layer.path;
+                                layersName += (layersName == '' ? '' : ', ') + layer.path + ' (${countTiles(cast layer)})';
                             } else {
                                 var display:openfl.display.DisplayObject = cast layer;
                                 layersName += (layersName == '' ? '' : ', ') + 'no path (${display.name})';
@@ -296,10 +313,10 @@ class Debug {
                 texMem += layer.textureMemory;
 
                 try {
-                    str += (str == '' ? '' : ', ') + r.matched(1);
+                    str += (str == '' ? '' : ', ') + r.matched(1) + ' (${countTiles(cast layer)})';
                 } catch(e:Dynamic) {
                     if (layer.path != null && layer.path != '') {
-                        str += (str == '' ? '' : ', ') + layer.path;
+                        str += (str == '' ? '' : ', ') + layer.path + ' (${countTiles(cast layer)})';
                     } else {
                         var display:openfl.display.DisplayObject = cast layer;
                         str += (str == '' ? '' : ', ') + 'no path (${display.name})';

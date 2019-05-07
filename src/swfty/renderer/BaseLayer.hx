@@ -92,6 +92,7 @@ class BaseLayer extends EngineLayer {
     var sleeps:Array<Void->Void> = [];
     var renders:Array<Float->Void> = [];
     var postRenders:Array<Float->Void> = [];
+    var postPostRenders:Array<Float->Void> = [];
     var mouseDowns:Array<Float->Float->Void> = [];
     var mouseUps:Array<Float->Float->Void> = [];
 
@@ -99,6 +100,7 @@ class BaseLayer extends EngineLayer {
     var pruneSleeps:Array<Void->Void> = [];
     var pruneRenders:Array<Float->Void> = [];
     var prunePostRenders:Array<Float->Void> = [];
+    var prunePostPostRenders:Array<Float->Void> = [];
     var pruneMouseDowns:Array<Float->Float->Void> = [];
     var pruneMouseUps:Array<Float->Float->Void> = [];
 
@@ -276,7 +278,13 @@ class BaseLayer extends EngineLayer {
             prunePostRenders = [];
         }
 
+        if (prunePostPostRenders.length > 0) {
+            for (f in prunePostPostRenders) postPostRenders.remove(f);
+            prunePostPostRenders = [];
+        }
+
         for (f in postRenders) if (!canDispose) f(dt);
+        for (f in postPostRenders) if (!canDispose) f(dt);
 
         if (pruneWakes.length > 0) {
             for (f in pruneWakes) wakes.remove(f);
@@ -329,6 +337,11 @@ class BaseLayer extends EngineLayer {
         else postRenders.push(f);
     }
 
+    public inline function addPostPostRender(f:Float->Void, ?priority = false) {
+        if (priority) postPostRenders.unshift(f);
+        else postPostRenders.push(f);
+    }
+
     public inline function addPostRenderNow(f:Float->Void, ?priority = false) {
         addPostRender(f, priority);
         f(0.0);
@@ -353,6 +366,10 @@ class BaseLayer extends EngineLayer {
 
     public inline function removePostRender(f:Float->Void) {
         prunePostRenders.push(f);
+    }
+
+    public inline function removePostPostRender(f:Float->Void) {
+        prunePostPostRenders.push(f);
     }
 
     public inline function addMouseDown(f:Float->Float->Void, ?priority = false) {
@@ -812,6 +829,8 @@ class BaseLayer extends EngineLayer {
 
         var tile = createCustomTile(x, y, width, height);
         var display:DisplayBitmap = new openfl.display.Tile(tile);
+        
+        //trace('~~~~~~~ TEMP BITMAP: $tile');
 
         return display;
     }

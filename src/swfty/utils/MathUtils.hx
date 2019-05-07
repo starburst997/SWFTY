@@ -166,7 +166,6 @@ class Rectangle {
         this.y = y;
         this.width = width;
         this.height = height;
-        
         return this;
     }
 
@@ -179,7 +178,10 @@ class Rectangle {
     }
 
     public inline function inside(x:Float, y:Float, margin = 0) {
-        return (x >= this.x - margin) && (x < this.x + this.width + margin) && (y >= this.y - margin) && (y < this.y + this.height + margin);
+        return (x >= this.x - margin) && 
+               (x < this.x + this.width + margin) && 
+               (y >= this.y - margin) && 
+               (y < this.y + this.height + margin);
     }
 
     public inline function around(x:Float, y:Float, margin = 100) {
@@ -211,42 +213,28 @@ class Rectangle {
     }
 
     public inline function contains(rect:Rectangle):Bool {
-		if (rect.width <= 0 || rect.height <= 0) {
-			return rect.x > x && rect.y > y && rect.right < right && rect.bottom < bottom;
+		return if (rect.width <= 0 || rect.height <= 0) {
+			rect.x > x && rect.y > y && rect.right < right && rect.bottom < bottom;
 		} else {
-			return rect.x >= x && rect.y >= y && rect.right <= right && rect.bottom <= bottom;
+			rect.x >= x && rect.y >= y && rect.right <= right && rect.bottom <= bottom;
 		}
 	}
 
     public inline function intersects(rect:Rectangle):Bool {
-		/*var x0 = x < toIntersect.x ? toIntersect.x : x;
-		var x1 = right > toIntersect.right ? toIntersect.right : right;
-		
-		if (x1 <= x0) {
-			return false;
-		}
-		
-		var y0 = y < toIntersect.y ? toIntersect.y : y;
-		var y1 = bottom > toIntersect.bottom ? toIntersect.bottom : bottom;
-		
-		return y1 > y0;*/
-
-        if (rect.x < this.x + this.width && this.x < rect.x + rect.width && rect.y < this.y + this.height)
-            return this.y < rect.y + rect.height;
-        else
-            return false;
+		return if (rect.x < this.x + this.width && this.x < rect.x + rect.width && rect.y < this.y + this.height) {
+            this.y < rect.y + rect.height;
+        } else {
+            false;
+        }
 	}
 
-    public inline function getIntersect(rect:Rectangle):Rectangle {
+    public inline function getIntersect(rect:Rectangle, ?temp:Rectangle):Rectangle {
         var x = Math.max(this.x, rect.x);
         var num1 = Math.min(this.x + this.width, rect.x + rect.width);
         var y = Math.max(this.y, rect.y);
         var num2 = Math.min(this.y + this.height, rect.y + rect.height);
 
-        /*if (num1 >= x && num2 >= y)
-            return new Rectangle(x, y, num1 - x, num2 - y);
-        else
-            return new Rectangle(0, 0, 1, 1);*/
+        if (temp == null) temp = Rectangle.temp;
 
         if (num1 >= x && num2 >= y) {
             temp.x = x;
@@ -261,17 +249,6 @@ class Rectangle {
         }
 
         return temp;
-
-        /*var xx = Math.max(this.x, rect.x);
-        var y = Math.max(this.y, rect.y);
-        var xx = Math.min(this.x + this.width, rect.x + rect.width);
-        var yy = Math.min(this.y + this.height, rect.y + rect.height);
-        return {
-            x: x,
-            y: y,
-            width: xx - x,
-            height: yy - y
-        };*/
     }
 
     public inline function empty() {
