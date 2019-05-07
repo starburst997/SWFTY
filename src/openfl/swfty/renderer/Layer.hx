@@ -132,12 +132,20 @@ class FinalLayer extends BaseLayer {
     override function updateDisplayTile(id:DisplayTile, x:Float, y:Float, width:Float, height:Float) {
         var data = getData(id);
         if (data != null) {
-            data.x = x;
-            data.y = y;
-            data.width = width;
-            data.height = height;
+            data.x = Std.int(x);
+            data.y = Std.int(y);
+            data.width = Std.int(width);
+            data.height = Std.int(height);
 
+            #if flash
             @:privateAccess data.__update(tileset.bitmapData);
+            #end
+
+            // Fix UV using floats
+            @:privateAccess data.__uvX = x / tileset.bitmapData.width;
+			@:privateAccess data.__uvY = y / tileset.bitmapData.height;
+			@:privateAccess data.__uvWidth = (x + width) / tileset.bitmapData.width;
+			@:privateAccess data.__uvHeight = (y + height) / tileset.bitmapData.height;
         }
     }
 
@@ -260,8 +268,9 @@ class FinalLayer extends BaseLayer {
             var tileset = new Tileset(bmpd);
             tiles = new IntMap();
             
+            var i = 0;
             for (tile in swfty.tiles) {
-                tiles.set(tile.id, rects.length);
+                tiles.set(tile.id, i++);
                 
                 rect.setTo(tile.x, tile.y, tile.width, tile.height);
                 tileset.addRect(rect);
