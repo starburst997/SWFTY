@@ -405,7 +405,7 @@ class BaseSprite extends EngineSprite {
                     var dupe:DisplayBitmap = layer.getTempBitmap(Std.int(tile.x), Std.int(tile.y), Std.int(tile.width), Std.int(tile.height));
 
                     var index = this.getTileIndex(bitmap);
-                    this.addTileAt(dupe, index + 1);
+                    this.addTileAt(dupe, index);
                     this.removeTile(bitmap);
 
                     maskMap.set(bitmap, dupe);
@@ -420,7 +420,7 @@ class BaseSprite extends EngineSprite {
                     var dupe = maskMap.get(bitmap);
 
                     var index = this.getTileIndex(dupe);
-                    this.addTileAt(bitmap, index + 1);
+                    this.addTileAt(bitmap, index);
                     this.removeTile(dupe);
 
                     layer.disposeTempBitmap(dupe);
@@ -439,7 +439,7 @@ class BaseSprite extends EngineSprite {
             } else if (mask.intersects(bounds)) {
 
                 var dupe = getDupe();
-                
+
                 // Figure out part that is visible
                 var intersect = mask.getIntersect(bounds);
                 
