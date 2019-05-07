@@ -452,11 +452,11 @@ class BaseLayer extends EngineLayer {
         return id;
     }
 
-    public function createCustomTile(x:Int, y:Int, width:Int, height:Int):DisplayTile {
+    public function createCustomTile(x:Float, y:Float, width:Float, height:Float):DisplayTile {
         throw 'Not implemented';
     }
 
-    public function updateDisplayTile(id:DisplayTile, x:Int, y:Int, width:Int, height:Int) {
+    public function updateDisplayTile(id:DisplayTile, x:Float, y:Float, width:Float, height:Float) {
         throw 'Not implemented';
     }
 

@@ -15,6 +15,8 @@ typedef DisplayTile = Int;
 class FinalLayer extends BaseLayer {
 
     static var pt = new openfl.geom.Point();
+    static var rect = new openfl.geom.Rectangle();
+    static var matrix = new openfl.geom.Matrix();
 
     var pending:StringMap<BitmapData> = new StringMap();
 
@@ -113,8 +115,9 @@ class FinalLayer extends BaseLayer {
         }
     }
 
-    override function createCustomTile(x:Int, y:Int, width:Int, height:Int):DisplayTile {
-        return tileset.addRect(new openfl.geom.Rectangle(x, y, width, height));
+    override function createCustomTile(x:Float, y:Float, width:Float, height:Float):DisplayTile {
+        rect.setTo(x, y, width, height);
+        return tileset.addRect(rect);
     }
 
     public function getData(id:DisplayTile) {
@@ -126,7 +129,7 @@ class FinalLayer extends BaseLayer {
         }
     }
 
-    override function updateDisplayTile(id:DisplayTile, x:Int, y:Int, width:Int, height:Int) {
+    override function updateDisplayTile(id:DisplayTile, x:Float, y:Float, width:Float, height:Float) {
         var data = getData(id);
         if (data != null) {
             data.x = x;
@@ -159,19 +162,19 @@ class FinalLayer extends BaseLayer {
     function drawBitmapData(tile:CustomTile, rect:binpacking.Rect, bmpd:BitmapData, canDispose:Bool) {
         var padding = 1;
         if ((rect.width - padding*2) == bmpd.width && (rect.height - padding*2) == bmpd.height) {
-            tileset.bitmapData.copyPixels(bmpd, bmpd.rect, new openfl.geom.Point(rect.x + padding, rect.y + padding));
+            pt.setTo(rect.x + padding, rect.y + padding);
+            tileset.bitmapData.copyPixels(bmpd, bmpd.rect, pt);
         } else {
             // Draw by scaling
             #if flash
-            var matrix = new openfl.geom.Matrix();
+            matrix.identity();
             matrix.scale((rect.width - padding*2) / bmpd.width, (rect.height - padding*2) / bmpd.height);
             matrix.translate(rect.x + padding, rect.y + padding);
             tileset.bitmapData.draw(bmpd, matrix, null, null, null, true);
             #else
 
             // TODO: CopyPixels is buggy in this version of Lime, use plain old draw... Shouldn't be too costly
-            //       Seriously fuck granick and openfl so much
-            var matrix = new openfl.geom.Matrix();
+            matrix.identity();
             matrix.scale((rect.width - padding*2) / bmpd.width, (rect.height - padding*2) / bmpd.height);
             matrix.translate(rect.x + padding, rect.y + padding);
             tileset.bitmapData.draw(bmpd, matrix, null, null, null, true);
@@ -217,7 +220,9 @@ class FinalLayer extends BaseLayer {
             canDispose.set(tile, false);
             if (tile.isDrawn) {
                 var bmpd = new BitmapData(tile.width, tile.height, true, 0x00000000);
-                bmpd.copyPixels(tileset.bitmapData, new openfl.geom.Rectangle(tile.x, tile.y, tile.width, tile.height), new openfl.geom.Point(0, 0));
+                rect.setTo(tile.x, tile.y, tile.width, tile.height);
+                pt.setTo(0, 0);
+                bmpd.copyPixels(tileset.bitmapData, rect, pt);
                 bitmapDatas.set(tile, bmpd);
                 canDispose.set(tile, true);
             } else if (pending.exists(tile.path)) {
@@ -234,7 +239,8 @@ class FinalLayer extends BaseLayer {
             }
         }
         #else
-        tileset.bitmapData.fillRect(new openfl.geom.Rectangle(reserved.x, reserved.y, reserved.width, reserved.height), 0x00000000);
+        rect.setTo(reserved.x, reserved.y, reserved.width, reserved.height);
+        tileset.bitmapData.fillRect(rect, 0x00000000);
         #end
 
         // Draw into new position
@@ -251,11 +257,14 @@ class FinalLayer extends BaseLayer {
             swfty.addAll(bmpd.width, bmpd.height);
 
             // Create tileset
-            var rects = [];
+            var tileset = new Tileset(bmpd);
             tiles = new IntMap();
+            
             for (tile in swfty.tiles) {
                 tiles.set(tile.id, rects.length);
-                rects.push(new openfl.geom.Rectangle(tile.x, tile.y, tile.width, tile.height));
+                
+                rect.setTo(tile.x, tile.y, tile.width, tile.height);
+                tileset.addRect(rect);
             }
 
             /*if (this.tileset != null) {
@@ -269,7 +278,6 @@ class FinalLayer extends BaseLayer {
 
             textureMemory = bmpd.width * bmpd.height * 4;
 
-            var tileset = new Tileset(bmpd, rects);
             this.tileset = tileset;
 
             // Only add on the display when we load a texture

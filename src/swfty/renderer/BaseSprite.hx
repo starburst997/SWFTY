@@ -506,11 +506,11 @@ class BaseSprite extends EngineSprite {
                 isMasked = true;
                 for (bitmap in _bitmaps) bitmap.visible = false;
 
-                layer.addPostPostRender(calculateMask);
+                layer.addPostRender(calculateMask);
             }
         } else if (isMasked) {
             isMasked = false;
-            layer.removePostPostRender(calculateMask);
+            layer.removePostRender(calculateMask);
         }
 
         // TODO: Migh be interesting to move to an entity architecture, most of the time these wouldn't be used
@@ -983,7 +983,7 @@ class BaseSprite extends EngineSprite {
 
                 if (isMasked) {
                     isMasked = false;
-                    layer.removePostPostRender(calculateMask);
+                    layer.removePostRender(calculateMask);
                 }
 
                 /*for (shape in maskMap) {
