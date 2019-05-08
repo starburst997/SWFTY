@@ -50,6 +50,8 @@ class Interactions {
                 }
 
             } else if (nInteractions > 1) {
+                trace('N INTERACTIONS $nInteractions');
+
                 var sortedLayers = manager.layers.copy();
                 sortedLayers.sort(function(a, b):Int {
                     if (a.renderID < b.renderID) return -1;
@@ -71,12 +73,18 @@ class Interactions {
                             found = true;
                             var oneClick = false;
 
+                            trace('LAYER INTERACT ${layer.path}');
+
                             // Sort by lowest renderID
                             sprites.sort(function(a, b):Int {
                                 if (a.sprite.renderID < b.sprite.renderID) return -1;
                                 else if (a.sprite.renderID > b.sprite.renderID) return 1;
                                 return 0;
                             });
+
+                            for (sprite in sprites) {
+                                trace('  - ${sprite.sprite.name} ${sprite.sprite.calcBounds(true)}');
+                            }
 
                             var currentInteraction = sprites[0];
 
@@ -162,10 +170,10 @@ class Interactions {
         return exclusive != null;
     }
 
+    static var rect:Rectangle = {};
     public static function checkMask(sprite:Sprite, x:Float, y:Float) {
         // Loop all parent until we find a mask and return false if not inside
         var parent = sprite;
-        var rect:Rectangle = {};
 
         while (parent != null) {
             if (parent.mask != null) {

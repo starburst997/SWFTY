@@ -124,6 +124,7 @@ class BaseSprite extends EngineSprite {
     var _added:Array<Void->Void>;
     var _removed:Array<Void->Void>;
 
+    var _addSprites:Array<FinalSprite>;
     var _pruneAdded:Array<Void->Void>;
     var _pruneRemoved:Array<Void->Void>;
     var _pruneRenders:Array<Float->Void>;
@@ -173,6 +174,7 @@ class BaseSprite extends EngineSprite {
         _names = new StringMap();
         _texts = new StringMap();
 
+        _addSprites = [];
         _pruneAdded = [];
         _pruneRemoved = [];
         _pruneRenders = [];
@@ -227,7 +229,8 @@ class BaseSprite extends EngineSprite {
 
             // Prevent caching invalid bounds
             if (rect.width > 0 || rect.height > 0) {
-                return _bounds = rect;
+                _bounds = new Rectangle(rect.x, rect.y, rect.width, rect.height);
+                return _bounds;
             } else {
                 return rect;
             }
@@ -241,7 +244,7 @@ class BaseSprite extends EngineSprite {
         empty.y = y;
         empty.scaleX = width;
         empty.scaleY = height;
-        addSprite(empty);
+        addSpriteNow(empty);
         return empty;
     }
 
@@ -360,13 +363,7 @@ class BaseSprite extends EngineSprite {
         return if (__mask != null) {
             __mask;
         } else if (_mask == null) {
-            __mask = {
-                x: 0.0,
-                y: 0.0,
-                width: 128.0,
-                height: 128.0
-            };
-
+            __mask = tempRectMask;
             __mask;
         } else {
             // Convert to layer bounds
@@ -387,13 +384,21 @@ class BaseSprite extends EngineSprite {
     // Basic mask implementation, does not work with rotation or negative scaling
     // TODO: Rotation, negative scaling
     function calculateMask(dt:Float) {
-        if (parentMask == null && _mask == null) return;
+        if (_bitmaps.length == 0 || (parentMask == null && _mask == null)) return;
         
         var mask = if (_mask != null) {
             getMaskRectangle();
         } else {
             parentMask.getMaskRectangle();
         }
+
+        var pt = localToLayer(0, 0, 1);
+        var pt2 = localToLayer(100, 100, 2);
+
+        var layerX = pt.x;
+        var layerY = pt.y;
+        var layerScaleX = (pt2.x - pt.x) / 100;
+        var layerScaleY = (pt2.y - pt.y) / 100;
 
         for (bitmap in _bitmaps) {
             var display:DisplayBitmap = bitmap;
@@ -428,9 +433,7 @@ class BaseSprite extends EngineSprite {
                 }
             }
 
-            var pt = localToLayer(display.x, display.y, 1);
-            var pt2 = localToLayer(display.x + display.width, display.y + display.height, 2);
-            var bounds = tempRect1.set(pt.x, pt.y, pt2.x - pt.x, pt2.y - pt.y);
+            var bounds = tempRect1.set(layerX + display.x * layerScaleX, layerY + display.y * layerScaleY, display.width * layerScaleX, display.height * layerScaleY);
 
             if (mask.contains(bounds)) {
                 // We're completely inside
@@ -494,6 +497,13 @@ class BaseSprite extends EngineSprite {
 
         renderID = layer.spriteRenderID++;
 
+        if (_addSprites.length > 0) {
+            for (sprite in _addSprites) {
+                _addSpriteAt(sprite, _sprites.indexOf(sprite));
+            }
+            _addSprites = [];
+        }
+
         for (i in 0..._sprites.length) {
             var sprite = _sprites[_sprites.length - 1 - i];
             sprite.update(dt, mask);
@@ -501,16 +511,18 @@ class BaseSprite extends EngineSprite {
 
         if (loaded) for (f in _renders) f(dt);
 
-        if (mask != null) {
-            if (!isMasked) {
-                isMasked = true;
-                for (bitmap in _bitmaps) bitmap.visible = false;
+        if (_bitmaps.length > 0) {
+            if (mask != null) {
+                if (!isMasked) {
+                    isMasked = true;
+                    for (bitmap in _bitmaps) bitmap.visible = false;
 
-                layer.addPostRender(calculateMask);
+                    layer.addPostRender(calculateMask);
+                }
+            } else if (isMasked) {
+                isMasked = false;
+                layer.removePostRender(calculateMask);
             }
-        } else if (isMasked) {
-            isMasked = false;
-            layer.removePostRender(calculateMask);
         }
 
         // TODO: Migh be interesting to move to an entity architecture, most of the time these wouldn't be used
@@ -562,6 +574,7 @@ class BaseSprite extends EngineSprite {
 
         maskMap = new Map();
 
+        _addSprites = [];
         _sprites = [];
         _bitmaps = [];
     }
@@ -685,7 +698,7 @@ class BaseSprite extends EngineSprite {
                 if (updateAlpha) text.originalAlpha = text.alpha;
                 if (updateVisible) text.originalVisible = text._visible;
 
-                addSprite(text);
+                addSpriteNow(text);
             } else {
                 var sprite:FinalSprite = if (!child.name.empty() && _names.exists(child.name)) {
 
@@ -756,7 +769,7 @@ class BaseSprite extends EngineSprite {
                 if (updateAlpha) sprite.originalAlpha = sprite.alpha;
                 if (updateVisible) sprite.originalVisible = sprite._visible;
 
-                addSprite(sprite);
+                addSpriteNow(sprite);
             }
         }
 
@@ -773,7 +786,7 @@ class BaseSprite extends EngineSprite {
                 child.reload();
 
                 // TODO: Usually non-og sprites are added on top, figure out a better way to preserve order!!
-                addSprite(child);
+                addSpriteNow(child);
             }
         }
     }
@@ -837,9 +850,10 @@ class BaseSprite extends EngineSprite {
         return _sprites.indexOf(sprite);
     }
 
-    public function addSpriteAt(sprite:FinalSprite, index:Int = 0) {
+    public function addSpriteAt(sprite:FinalSprite, index:Int = 0, immediate = false) {
+        if (disposed || _sprites.indexOf(sprite) != -1) return;
         sprite.removeFromParent();
-        
+
         if (sprite._name != null) {
             _names.set(sprite._name, sprite);
         }
@@ -851,11 +865,26 @@ class BaseSprite extends EngineSprite {
         if (!sprite.loaded && sprite.layer.loaded) {
             sprite.reload();
         }
+
+        if (immediate || true) {
+            _addSpriteAt(sprite, index);
+        } else {
+            _addSprites.push(sprite);
+        }
+    }
+
+    function _addSpriteAt(sprite:FinalSprite, index:Int = 0) {
+        
+    }
+
+    public inline function addSpriteNow(sprite:FinalSprite, addName = true) {
+        addSprite(sprite, addName, true);
     }
 
     var tempVisible = false;
     var firstUpdate = false;
-    public function addSprite(sprite:FinalSprite, addName = true) {
+    public function addSprite(sprite:FinalSprite, addName = true, immediate = false) {
+        if (disposed || _sprites.indexOf(sprite) != -1) return;
         sprite.removeFromParent();
 
         if (addName && sprite._name != null) {
@@ -870,20 +899,21 @@ class BaseSprite extends EngineSprite {
             sprite.reload();
         }
 
-        // TODO: hack for mask, figure something better
-        if (__mask != null) {
-            var s:Sprite = sprite;
-            var alpha = s.alpha;
-            s.alpha = 0.0;
-
-            s.wait(0.1, function() {
-                s.tweenAlpha(alpha, 0.2);
-            });
+        if (immediate || true) {
+            _addSprite(sprite);
+        } else {
+            _addSprites.push(sprite);
         }
+    }
+
+    function _addSprite(sprite:FinalSprite) {
+        
     }
 
     public function removeSprite(sprite:FinalSprite) {
         if (disposed) return;
+
+        _addSprites.remove(sprite);
 
         if (sprite._name != null) _names.remove(sprite._name);
         _pruneSprites.push(sprite); // TODO: This might screw the "getIndex"
@@ -945,7 +975,7 @@ class BaseSprite extends EngineSprite {
             sprite._name = name;
             _names.set(name, sprite);
             
-            addSprite(sprite);
+            addSpriteNow(sprite);
             
             sprite;
         }
@@ -961,7 +991,7 @@ class BaseSprite extends EngineSprite {
             text._name = name;
             _texts.set(name, text);
 
-            addSprite(text, false);
+            addSpriteNow(text, false);
             
             text;
         }
@@ -1006,6 +1036,7 @@ class BaseSprite extends EngineSprite {
                 _added = [];
                 _removed = [];
 
+                _addSprites = [];
                 _pruneAdded = [];
                 _pruneRemoved = [];
                 _pruneRenders = [];

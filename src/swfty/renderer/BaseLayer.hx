@@ -159,7 +159,7 @@ class BaseLayer extends EngineLayer {
             baseLayout = FinalSprite.create(this);
             baseLayout._name = 'baseLayout';
             baseLayout.countVisible = false;
-            base.addSprite(baseLayout);
+            base.addSpriteNow(baseLayout);
         }
         return baseLayout;
     }
@@ -514,7 +514,7 @@ class BaseLayer extends EngineLayer {
     public inline function empty(add:Bool = false) {
         var sprite = Sprite.create(this);
         sprite.loaded = true;
-        if (add) baseLayout.addSprite(sprite);
+        if (add) baseLayout.addSpriteNow(sprite);
         return sprite;
     }
 

@@ -18,6 +18,7 @@ class FinalLayer extends BaseLayer {
     static var rect = new openfl.geom.Rectangle();
     static var matrix = new openfl.geom.Matrix();
 
+    var renderId:Int = 0;
     var pending:StringMap<BitmapData> = new StringMap();
 
     public static inline function create(?width:Int, ?height:Int) {
@@ -30,6 +31,12 @@ class FinalLayer extends BaseLayer {
 
         _width = width;
         _height = height;
+    }
+
+    override function update(dt:Float) {
+        super.update(dt);
+
+        if (this.tileset != null) this.tileset.renderId = renderId++;
     }
 
     override function set__mask(value:Rectangle) {
