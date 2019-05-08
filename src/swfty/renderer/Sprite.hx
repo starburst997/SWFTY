@@ -161,14 +161,14 @@ abstract Sprite(FinalSprite) from FinalSprite to FinalSprite {
         return this;
     }
     
-    public inline function add(sprite:Sprite) {
-        this.addSprite(sprite);
+    public inline function add(sprite:Sprite, immediate = true) {
+        this.addSprite(sprite, true, immediate);
     }
 
-    public inline function addAt(sprite:Sprite, index:Int = 0) {
+    public inline function addAt(sprite:Sprite, index:Int = 0, immediate = true) {
         // TODO: Is this check necessary?
         var total = sprites.length;
-        this.addSpriteAt(sprite, index < 0 ? 0 : index > total ? total : index);
+        this.addSpriteAt(sprite, index < 0 ? 0 : index > total ? total : index, immediate);
     }
 
     public inline function remove(sprite:Sprite) {

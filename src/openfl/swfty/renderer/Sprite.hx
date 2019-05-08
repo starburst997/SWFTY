@@ -184,12 +184,12 @@ class FinalSprite extends BaseSprite {
         if (this.parent != null) parent.setTileIndex(this, 0);
     }
 
-    override function addSpriteAt(sprite:FinalSprite, index:Int = 0, immediate = false) {
+    override function addSpriteAt(sprite:FinalSprite, index:Int = 0, immediate = true) {
         super.addSpriteAt(sprite, index, immediate);
         sprite._parent = this;
     }
 
-    override function addSprite(sprite:FinalSprite, addName = true, immediate = false) {
+    override function addSprite(sprite:FinalSprite, addName = true, immediate = true) {
         super.addSprite(sprite, addName, immediate);
         sprite._parent = this;
     }

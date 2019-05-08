@@ -865,7 +865,7 @@ class BaseSprite extends EngineSprite {
         return _sprites.indexOf(sprite);
     }
 
-    public function addSpriteAt(sprite:FinalSprite, index:Int = 0, immediate = false) {
+    public function addSpriteAt(sprite:FinalSprite, index:Int = 0, immediate = true) {
         if (disposed || _sprites.indexOf(sprite) != -1) return;
         sprite.removeFromParent();
 
@@ -898,7 +898,7 @@ class BaseSprite extends EngineSprite {
 
     var tempVisible = false;
     var firstUpdate = false;
-    public function addSprite(sprite:FinalSprite, addName = true, immediate = false) {
+    public function addSprite(sprite:FinalSprite, addName = true, immediate = true) {
         if (disposed || _sprites.indexOf(sprite) != -1) return;
         sprite.removeFromParent();
 
