@@ -41,7 +41,7 @@ class FinalSprite extends BaseSprite {
     }
 
     override function calcBounds(?relative:BaseSprite, ?global = false):Rectangle {
-       return if (global) {
+        var bounds:Rectangle = if (global) {
             if (forceBounds != null) {
                 var pt = localToLayer(forceBounds.x, forceBounds.y, 1);
                 var pt2 = localToLayer(forceBounds.x + forceBounds.width, forceBounds.y + forceBounds.height, 2);
@@ -100,6 +100,49 @@ class FinalSprite extends BaseSprite {
                 }
             }
         }
+
+        return bounds;
+
+        /*return if (_mask != null || parentMask != null) {
+
+            var mask:Rectangle = if (_mask != null) {
+                getMaskRectangle();
+            } else {
+                parentMask.getMaskRectangle();
+            }
+
+            if (global) {
+
+                if (mask.contains(bounds)) {
+                    bounds;
+                } else if (mask.intersects(bounds)) {
+                    mask.getIntersect(bounds, bounds);
+                } else {
+                    bounds.width = 0;
+                    bounds.height = 0;
+                    bounds;
+                }
+
+            } else {
+
+                var pt1 = relative.layerToLocal(mask.x, mask.y, 1);
+                var pt2 = relative.layerToLocal(mask.x + mask.width, mask.y + mask.height, 2);
+
+                mask = Rectangle.temp.set(pt1.x, pt1.y, pt2.x - pt1.x, pt2.y - pt1.y);
+
+                if (mask.contains(bounds)) {
+                    bounds;
+                } else if (mask.intersects(bounds)) {
+                    mask.getIntersect(bounds, bounds);
+                } else {
+                    bounds.width = 0;
+                    bounds.height = 0;
+                    bounds;
+                }
+            }
+        } else {
+            bounds;
+        }*/
     }
 
     override function localToLayer(x:Float = 0.0, y:Float = 0.0, temp = 0):Point {
