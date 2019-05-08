@@ -130,6 +130,8 @@ class BaseSprite extends EngineSprite {
     var _pruneRenders:Array<Float->Void>;
     var _pruneSprites:Array<FinalSprite>;
 
+    var _index:Int = -1;
+
     // Prevent creating too many objects per frame
     @:isVar var tempPt1(get, null):Point;
     inline function get_tempPt1() {
@@ -505,6 +507,16 @@ class BaseSprite extends EngineSprite {
 
         var _updateVisibles = null;
         if (_addSprites.length > 0) {
+            for (sprite in _addSprites) {
+                sprite._index = _sprites.indexOf(sprite);
+            }
+
+            _addSprites.sort(function(a, b):Int {
+                if (a._index < b._index) return -1;
+                else if (a._index > b._index) return 1;
+                return 0;
+            });
+
             for (sprite in _addSprites) {
                 sprite.visible = false;
                 _addSpriteAt(sprite, _sprites.indexOf(sprite));
