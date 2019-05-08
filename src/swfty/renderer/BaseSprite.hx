@@ -473,6 +473,7 @@ class BaseSprite extends EngineSprite {
         }
     }
 
+    public var updateVisible = false;
     public function update(dt:Float, ?mask:BaseSprite) {
         // TODO: Wonder if that's the best solution... If it's invisible I wouldn't want anything called...
         //       Maybe sleep() / awake() sprite?
@@ -481,6 +482,11 @@ class BaseSprite extends EngineSprite {
         if (firstUpdate) {
             //firstUpdate = false;
             //visible = tempVisible;
+        }
+
+        if (updateVisible) {
+            updateVisible = false;
+            visible = _visible;
         }
 
         parentMask = mask;
@@ -497,16 +503,25 @@ class BaseSprite extends EngineSprite {
 
         renderID = layer.spriteRenderID++;
 
+        var _updateVisibles = null;
         if (_addSprites.length > 0) {
             for (sprite in _addSprites) {
+                sprite.visible = false;
                 _addSpriteAt(sprite, _sprites.indexOf(sprite));
             }
+            _updateVisibles = _addSprites;
             _addSprites = [];
         }
 
         for (i in 0..._sprites.length) {
             var sprite = _sprites[_sprites.length - 1 - i];
             sprite.update(dt, mask);
+        }
+
+        if (_updateVisibles != null) {
+            for (sprite in _updateVisibles) {
+                sprite.updateVisible = true;
+            }
         }
 
         if (loaded) for (f in _renders) f(dt);
