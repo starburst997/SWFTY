@@ -866,7 +866,7 @@ class BaseSprite extends EngineSprite {
             sprite.reload();
         }
 
-        if (immediate || true) {
+        if (immediate) {
             _addSpriteAt(sprite, index);
         } else {
             _addSprites.push(sprite);
@@ -899,7 +899,7 @@ class BaseSprite extends EngineSprite {
             sprite.reload();
         }
 
-        if (immediate || true) {
+        if (immediate) {
             _addSprite(sprite);
         } else {
             _addSprites.push(sprite);
