@@ -349,6 +349,6 @@ class FinalLayer extends BaseLayer {
             }
         }
 
-        super.dispose();
+        super.dispose(force);
     }
 }
