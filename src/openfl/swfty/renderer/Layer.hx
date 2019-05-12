@@ -166,7 +166,9 @@ class FinalLayer extends BaseLayer {
         if (pending.exists(path)) {
             var bmpd = pending.get(path);
             if (bmpd != bitmapData) {
+                #if !no_dispose_bmpd
                 bmpd.dispose();
+                #end
             }
         }
         
@@ -182,7 +184,9 @@ class FinalLayer extends BaseLayer {
 
     function drawBitmapData(tile:CustomTile, rect:binpacking.Rect, bmpd:BitmapData, canDispose:Bool) {
         if (disposed) {
+            #if !no_dispose_bmpd
             if (canDispose) bmpd.dispose();
+            #end
             return;
         }
         
@@ -240,7 +244,9 @@ class FinalLayer extends BaseLayer {
             updateDisplayTile(tile.tile, tile.x, tile.y, tile.width, tile.height);
         }
 
+        #if !no_dispose_bmpd
         if (canDispose) bmpd.dispose();
+        #end
     }
 
     override function redrawReservedSpace(map:Map<CustomTile, binpacking.Rect>) {
@@ -327,13 +333,17 @@ class FinalLayer extends BaseLayer {
     override function dispose(force = false) {
         if (!disposed) {
             if (!updating || force) {
+                #if !no_dispose_bmpd
                 for (bmpd in pending) {
                     bmpd.dispose();
                 }
+                #end
                 pending = new StringMap();
 
                 if (tileset != null && tileset.bitmapData != null) {
+                    #if !no_dispose_bmpd
                     tileset.bitmapData.dispose();
+                    #end
                     tileset.bitmapData = null;
                 }
             }
