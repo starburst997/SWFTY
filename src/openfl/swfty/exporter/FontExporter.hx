@@ -115,7 +115,7 @@ class FontExporter {
                 m.tx = -bounds.x + padding;
                 m.ty = -bounds.y + padding;
                 
-                bmpd.draw(textField, m);
+                bmpd.draw(textField, m, null, null, null, true);
 
                 var trimmed = TilemapExporter.trim(bmpd);
                 bitmaps.set(code, trimmed.bmpd);

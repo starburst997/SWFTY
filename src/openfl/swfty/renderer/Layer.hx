@@ -166,7 +166,7 @@ class FinalLayer extends BaseLayer {
         if (pending.exists(path)) {
             var bmpd = pending.get(path);
             if (bmpd != bitmapData) {
-                //bmpd.dispose();
+                bmpd.dispose();
             }
         }
         
@@ -176,7 +176,7 @@ class FinalLayer extends BaseLayer {
     override function drawCustomTile(tile:CustomTile, rect:binpacking.Rect) {
         if (pending.exists(tile.path)) {
             var bmpd = pending.get(tile.path);
-            drawBitmapData(tile, rect, bmpd, false);
+            drawBitmapData(tile, rect, bmpd, true);
         }
     }
 
@@ -236,16 +236,13 @@ class FinalLayer extends BaseLayer {
     override function redrawReservedSpace(map:Map<CustomTile, binpacking.Rect>) {
         // Take all bitmapDatas from texture
         var bitmapDatas:Map<CustomTile, BitmapData> = new Map();
-        var canDispose:Map<CustomTile, Bool> = new Map();
         for (tile in map.keys()) {
-            canDispose.set(tile, false);
             if (tile.isDrawn) {
                 var bmpd = new BitmapData(tile.width, tile.height, true, 0x00000000);
                 rect.setTo(tile.x, tile.y, tile.width, tile.height);
                 pt.setTo(0, 0);
                 bmpd.copyPixels(tileset.bitmapData, rect, pt);
                 bitmapDatas.set(tile, bmpd);
-                canDispose.set(tile, true);
             } else if (pending.exists(tile.path)) {
                 bitmapDatas.set(tile, pending.get(tile.path));
             }
@@ -269,7 +266,7 @@ class FinalLayer extends BaseLayer {
             var rect = map.get(tile);
             var bmpd = bitmapDatas.get(tile);
             
-            drawBitmapData(tile, rect, bmpd, canDispose.get(tile));
+            drawBitmapData(tile, rect, bmpd, true);
         }
     }
 
@@ -317,21 +314,19 @@ class FinalLayer extends BaseLayer {
         #end
     }
 
-    override function dispose() {
+    override function dispose(force = false) {
         if (!disposed) {
-            // TODO: !!!
+            if (!updating || force) {
+                for (bmpd in pending) {
+                    bmpd.dispose();
+                }
+                pending = new StringMap();
 
-            /*for (bmpd in pending) {
-                bmpd.dispose();
-            }*/
-            pending = new StringMap();
-
-            // Never too prudent, immediately dispose of all bitmap data associated with this layer
-            /*if (texture != null) texture.dispose();
-            for (tile in tiles) {
-                tile.dispose();
+                if (tileset != null && tileset.bitmapData != null) {
+                    tileset.bitmapData.dispose();
+                    tileset.bitmapData = null;
+                }
             }
-            tiles = new IntMap();*/
         }
 
         super.dispose();

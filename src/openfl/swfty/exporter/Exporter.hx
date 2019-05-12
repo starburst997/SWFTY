@@ -233,7 +233,7 @@ class Exporter {
                         m.tx = -bounds.x;
                         m.ty = -bounds.y;
                         
-                        bitmapData.draw(shape, m);
+                        bitmapData.draw(shape, m, null, null, null, true);
 
                         var definition:BitmapDefinition = {
                             id: id,
@@ -972,7 +972,7 @@ class Exporter {
                                 m.tx = -bounds.x + padding;
                                 m.ty = -bounds.y + padding;
                                 
-                                bitmapData.draw(movieClip, m, movieClip.transform.colorTransform);
+                                bitmapData.draw(movieClip, m, movieClip.transform.colorTransform, null, null, true);
 
                                 var trimmed = TilemapExporter.trim(bitmapData);
 

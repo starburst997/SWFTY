@@ -836,10 +836,12 @@ class BaseLayer extends EngineLayer {
         tempBitmaps.push(temp);
     }
 
-    public function dispose() {
+    public function dispose(force = false) {
         if (!disposed) {
-            if (!updating) {
+            if (!updating || force) {
                 disposed = true;
+
+                trace('Dispose layer $path');
 
                 layers = [];
                 renders = [];
