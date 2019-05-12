@@ -181,10 +181,19 @@ class FinalLayer extends BaseLayer {
     }
 
     function drawBitmapData(tile:CustomTile, rect:binpacking.Rect, bmpd:BitmapData, canDispose:Bool) {
+        if (disposed) {
+            if (canDispose) bmpd.dispose();
+            return;
+        }
+        
         var padding = 1;
         if ((rect.width - padding*2) == bmpd.width && (rect.height - padding*2) == bmpd.height) {
-            pt.setTo(rect.x + padding, rect.y + padding);
-            tileset.bitmapData.copyPixels(bmpd, bmpd.rect, pt);
+            /*pt.setTo(rect.x + padding, rect.y + padding);
+            tileset.bitmapData.copyPixels(bmpd, bmpd.rect, pt);*/
+
+            matrix.identity();
+            matrix.translate(rect.x + padding, rect.y + padding);
+            tileset.bitmapData.draw(bmpd, matrix, null, null, null, false);
         } else {
             // Draw by scaling
             #if flash
@@ -220,9 +229,10 @@ class FinalLayer extends BaseLayer {
         tile.width = Std.int(rect.width) - padding*2;
         tile.height = Std.int(rect.height) - padding*2;
 
+        pending.remove(tile.path);
+        
         if (!tile.isDrawn) {
             tile.isDrawn = true;
-            pending.remove(tile.path);
 
             tile.tile = createCustomTile(tile.x, tile.y, tile.width, tile.height);
             tile.id = addCustomTile(tile.tile);
