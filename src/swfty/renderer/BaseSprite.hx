@@ -104,7 +104,7 @@ class BaseSprite extends EngineSprite {
     var maskMap:Map<EngineBitmap, EngineBitmap> = new Map();
     
     var parentMask:BaseSprite = null;
-    var __mask:Rectangle = null;
+    var ___mask:Rectangle = null;
     
     var firstMask = 0;
 
@@ -365,11 +365,11 @@ class BaseSprite extends EngineSprite {
         return tempRectMask;
     }
     public function getMaskRectangle():Rectangle {
-        return if (__mask != null) {
-            __mask;
+        return if (___mask != null) {
+            ___mask;
         } else if (_mask == null) {
-            __mask = tempRectMask;
-            __mask;
+            ___mask = tempRectMask;
+            ___mask;
         } else {
             // Convert to layer bounds
             var pt = localToLayer(_mask.x, _mask.y, 1);
@@ -377,12 +377,12 @@ class BaseSprite extends EngineSprite {
             
             var rect = tempRectMask.set(pt.x, pt.y, pt2.x - pt.x, pt2.y - pt.y);
             if (parentMask != null && !parentMask.getMaskRectangle().contains(rect)) {
-                __mask = parentMask.getMaskRectangle().getIntersect(rect, rect);
+                ___mask = parentMask.getMaskRectangle().getIntersect(rect, rect);
             } else {
-                __mask = rect;
+                ___mask = rect;
             }
 
-            __mask;
+            ___mask;
         }
     }
 
@@ -500,7 +500,7 @@ class BaseSprite extends EngineSprite {
             mask = this;
         }
 
-        __mask = null;
+        ___mask = null;
 
         updating = true;
 
