@@ -35,8 +35,6 @@ class FinalLayer extends BaseLayer {
 
     override function update(dt:Float) {
         super.update(dt);
-
-        if (this.tileset != null) this.tileset.renderId = renderId++;
     }
 
     override function set__mask(value:Rectangle) {
@@ -150,15 +148,17 @@ class FinalLayer extends BaseLayer {
             data.width = Std.int(width);
             data.height = Std.int(height);
 
-            #if flash
-            @:privateAccess data.__update(tileset.bitmapData);
-            #end
+            if (tileset.bitmapData != null && data.width > 0 && data.height > 0 && tileset.bitmapData.width > 0 && tileset.bitmapData.height > 0) {
+                #if flash
+                @:privateAccess data.__update(tileset.bitmapData);
+                #end
 
-            // Fix UV using floats
-            @:privateAccess data.__uvX = x / tileset.bitmapData.width;
-			@:privateAccess data.__uvY = y / tileset.bitmapData.height;
-			@:privateAccess data.__uvWidth = (x + width) / tileset.bitmapData.width;
-			@:privateAccess data.__uvHeight = (y + height) / tileset.bitmapData.height;
+                // Fix UV using floats
+                @:privateAccess data.__uvX = x / tileset.bitmapData.width;
+                @:privateAccess data.__uvY = y / tileset.bitmapData.height;
+                @:privateAccess data.__uvWidth = (x + width) / tileset.bitmapData.width;
+                @:privateAccess data.__uvHeight = (y + height) / tileset.bitmapData.height;
+            }
         }
     }
 

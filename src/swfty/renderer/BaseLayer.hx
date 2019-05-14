@@ -68,6 +68,7 @@ class BaseLayer extends EngineLayer {
     var cancelInteract = false;
 
     public var renderID = 0;
+    public var updateID = 0;
     public var spriteRenderID = 0;
 
     public var parentLayer:Layer = null;
@@ -312,6 +313,8 @@ class BaseLayer extends EngineLayer {
             canDispose = false;
             dispose();
         }
+
+        updateID++;
     }
 
     public inline function removeAll() {
@@ -402,8 +405,8 @@ class BaseLayer extends EngineLayer {
         baseLayout.removeSprite(sprite);
     }
 
-    public inline function createBitmap(id:Int, og:Bool = false) {
-        return DisplayBitmap.create(this, id, og);
+    public function createBitmap(id:Int, parent:FinalSprite, og:Bool = false) {
+        return DisplayBitmap.create(this, parent, id, og);
     }
 
     public function addLayer(layer:Layer) {
@@ -827,7 +830,7 @@ class BaseLayer extends EngineLayer {
         }
 
         var tile = createCustomTile(x, y, width, height);
-        var display:DisplayBitmap = new openfl.display.Tile(tile);
+        var display:EngineBitmap = new openfl.display.Tile(tile);
 
         return display;
     }

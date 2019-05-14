@@ -62,7 +62,7 @@ class BaseSprite extends EngineSprite {
     // TODO: All private var should have an underscore?
     var _name(default, set):String;
     var _sprites:Array<FinalSprite>;
-    var _bitmaps:Array<EngineBitmap>;
+    var _bitmaps:Array<DisplayBitmap>;
     var _names:StringMap<FinalSprite>;
     var _texts:StringMap<FinalText>;
     var _definition:Null<MovieClipType>;
@@ -73,6 +73,8 @@ class BaseSprite extends EngineSprite {
         _mask = value;
         return value;
     }
+
+    var finalSprite:FinalSprite;
 
     var _parent(default, set):FinalSprite;
     inline function set__parent(value:FinalSprite) {
@@ -182,7 +184,8 @@ class BaseSprite extends EngineSprite {
         _pruneRenders = [];
         _pruneSprites = [];
 
-        load(definition);
+        // TODO: Add this to FinalSprite constructor
+        //load(definition);
     }
 
     public inline function getTempPt(x:Float = 0, y:Float = 0) {
@@ -209,7 +212,7 @@ class BaseSprite extends EngineSprite {
         return layerToLocal(layer.mouse.x, layer.mouse.y, 1).y;
     }
 
-    public function calcBounds(?relative:BaseSprite, ?global = false):Rectangle {
+    public function calcBounds(?relative:FinalSprite, ?global = false):Rectangle {
         throw 'Not implemented';
     }
 
@@ -299,7 +302,7 @@ class BaseSprite extends EngineSprite {
     }
 
     function getBitmaps():Array<DisplayBitmap> {
-        throw 'Not implemented';
+        return _bitmaps;
     }
 
     public function colorize(color:UInt) {
@@ -409,7 +412,7 @@ class BaseSprite extends EngineSprite {
             inline function getDupe() {
                 return if (!maskMap.exists(bitmap)) {
                     var tile = display.tile;
-                    var dupe:DisplayBitmap = layer.getTempBitmap(Std.int(tile.x), Std.int(tile.y), Std.int(tile.width), Std.int(tile.height));
+                    var dupe:EngineBitmap = layer.getTempBitmap(Std.int(tile.x), Std.int(tile.y), Std.int(tile.width), Std.int(tile.height));
 
                     var index = this.getTileIndex(bitmap);
                     this.addTileAt(dupe, index);
@@ -776,7 +779,7 @@ class BaseSprite extends EngineSprite {
                 if (updateAlpha) sprite.alpha = child.alpha;
 
                 for (shape in child.shapes) {
-                    var tile = _layer.createBitmap(shape.bitmap.id, true);
+                    var tile = _layer.createBitmap(shape.bitmap.id, finalSprite, true);
                     tile.transform(shape.a, shape.b, shape.c, shape.d, shape.tx, shape.ty, shape.bitmap.originalWidth > 0 && shape.bitmap.width > 0 ? shape.bitmap.width / shape.bitmap.originalWidth : scale, shape.bitmap.originalHeight > 0 && shape.bitmap.height > 0 ? shape.bitmap.height / shape.bitmap.originalHeight : scale);
                     sprite.addBitmap(tile);
                 }
@@ -957,11 +960,11 @@ class BaseSprite extends EngineSprite {
         throw 'Not implemented';
     }
 
-    public function addBitmap(shape:EngineBitmap) {
+    public function addBitmap(shape:DisplayBitmap) {
         _bitmaps.push(shape);
     }
 
-    public function removeBitmap(shape:EngineBitmap) {
+    public function removeBitmap(shape:DisplayBitmap) {
         _bitmaps.remove(shape);
 
         if (maskMap.exists(shape)) {

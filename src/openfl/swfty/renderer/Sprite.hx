@@ -1,5 +1,8 @@
 package openfl.swfty.renderer;
 
+import openfl.geom.Matrix;
+import openfl.display.Tile;
+
 typedef EngineSprite = openfl.display.TileContainer;
 typedef EngineBitmap = openfl.display.Tile;
 
@@ -14,18 +17,12 @@ class FinalSprite extends BaseSprite {
 
     public function new(layer:BaseLayer, ?definition:MovieClipType, ?linkage:String, ?debug = false) {
         super(layer, definition, linkage, debug);
+
+        finalSprite = this;
         
         this.tileset = layer.tileset;
-    }
 
-    override function getBitmaps():Array<DisplayBitmap> {
-        var all = [];
-        for (i in 0...numTiles) {
-            var tile = getTileAt(i);
-            
-            all.push(tile);
-        }
-        return all;
+        load(definition);
     }
 
     override function set__name(name:String) {
@@ -40,7 +37,7 @@ class FinalSprite extends BaseSprite {
         tileset = layer.tileset;
     }
 
-    override function calcBounds(?relative:BaseSprite, ?global = false):Rectangle {
+    override function calcBounds(?relative:FinalSprite, ?global = false):Rectangle {
         var bounds:Rectangle = if (global) {
             if (forceBounds != null) {
                 var pt = localToLayer(forceBounds.x, forceBounds.y, 1);
@@ -53,7 +50,7 @@ class FinalSprite extends BaseSprite {
                     height: pt2.y - pt.y
                 }
             } else {
-                var rect = this.getBounds(layer.base);
+                var rect = _getBounds(layer.base);
 
                 // TODO: There isn't any rotation done on "base", so this works as long as we don't do any complex transform
 
@@ -86,7 +83,7 @@ class FinalSprite extends BaseSprite {
                     height: pt2.y - pt.y
                 }
             } else {
-                var rect = this.getBounds(relative);
+                var rect = _getBounds(relative);
 
                 #if dev
                 //if (rect.width <= 0 || rect.height <= 0) trace('Calc bounds bad values!!!!! $_name');
@@ -145,10 +142,91 @@ class FinalSprite extends BaseSprite {
         }*/
     }
 
+    /* These functions needs cleanup, they were taken from openfl class and modified */
+
+    function _findTileset() {
+        return if (tileset != null) {
+			tileset;
+		} else if (_parent != null) {
+			var tileset = _parent._findTileset();
+			this.tileset = tileset;
+			tileset;
+		} else {
+			null;
+		}
+	}
+
+    var transformId = -1;
+    var tempMatrix:Matrix = null;
+	var tempTransform:Matrix = null;
+	public function _getWorldTransform():Matrix {
+		return if (layer.updateID == transformId && tempTransform != null) {
+			tempTransform;
+		} else {
+			transformId = layer.updateID;
+
+			if (tempMatrix == null) tempMatrix = new Matrix();
+			tempMatrix.copyFrom(matrix);
+			var retval = tempMatrix;
+			
+			if (_parent != null) {
+				retval.concat(_parent._getWorldTransform());
+			}
+
+			if (tempTransform == null) tempTransform = new Matrix();
+			tempTransform.copyFrom(retval);
+
+			retval;
+		}
+	}
+
+    var tempRectangle:openfl.geom.Rectangle = null;
+	var tempMatrix1:Matrix = null;
+	var tempMatrix2:Matrix = null;
+
+    var tempRectContainer:openfl.geom.Rectangle = null;
+	function _getBounds (targetCoordinateSpace:FinalSprite):openfl.geom.Rectangle {
+		if (tempRectContainer == null) tempRectContainer = new openfl.geom.Rectangle();
+		tempRectContainer.setTo(0, 0, 0, 0);
+		var result = tempRectContainer;
+
+		var rect = null;
+		
+        inline function union (rect:openfl.geom.Rectangle, toUnion:openfl.geom.Rectangle):openfl.geom.Rectangle {
+            return if (rect.width == 0 || rect.height == 0) {
+                rect.setTo(toUnion.x, toUnion.y, toUnion.width, toUnion.height);
+                rect;
+            } else if (toUnion.width == 0 || toUnion.height == 0) {
+                rect;
+            } else {
+                var x0 = rect.x > toUnion.x ? toUnion.x : rect.x;
+                var x1 = rect.right < toUnion.right ? toUnion.right : rect.right;
+                var y0 = rect.y > toUnion.y ? toUnion.y : rect.y;
+                var y1 = rect.bottom < toUnion.bottom ? toUnion.bottom : rect.bottom;
+                
+                rect.setTo(x0, y0, x1 - x0, y1 - y0);
+                rect;
+            }
+        }
+
+        // Bounds on shapes then do children
+        for (shape in _bitmaps) {
+            rect = shape._getBounds(targetCoordinateSpace);
+            result = union(result, rect);
+        }
+
+		for (sprite in _sprites) /*if (tile.visible)*/ {
+			rect = sprite._getBounds(targetCoordinateSpace);
+			result = union(result, rect);
+		}
+
+		return result;
+	}
+
     override function localToLayer(x:Float = 0.0, y:Float = 0.0, temp = 0):Point {
         var pt:Point = temp == 2 ? tempPt2 : temp == 1 ? tempPt1 : { x: 0, y: 0 };
         
-        @:privateAccess var matrix = __getWorldTransform();
+        var matrix = _getWorldTransform();
         pt.x = x * matrix.a + y * matrix.c + matrix.tx;
         pt.y = x * matrix.b + y * matrix.d + matrix.ty;
 
@@ -158,7 +236,7 @@ class FinalSprite extends BaseSprite {
     override function layerToLocal(x:Float, y:Float, temp = 0):Point {
         var pt:Point = temp == 2 ? tempPt2 : temp == 1 ? tempPt1 : { x: 0, y: 0 };
         
-        @:privateAccess var matrix = __getWorldTransform();
+        var matrix = _getWorldTransform();
         var norm = matrix.a * matrix.d - matrix.b * matrix.c;
         
         if (norm == 0) {
@@ -213,12 +291,12 @@ class FinalSprite extends BaseSprite {
         if (this._parent != null) _parent.removeSprite(this);
     }
 
-    override function addBitmap(bitmap:EngineBitmap) {
+    override function addBitmap(bitmap:DisplayBitmap) {
         super.addBitmap(bitmap);
         addTile(bitmap);
     }
 
-    override function removeBitmap(bitmap:EngineBitmap) {
+    override function removeBitmap(bitmap:DisplayBitmap) {
         super.removeBitmap(bitmap);
         removeTile(bitmap);
     }
@@ -229,26 +307,174 @@ class FinalSprite extends BaseSprite {
     }
 }
 
-@:forward(x, y, scaleX, scaleY, rotation, alpha, visible)
-abstract DisplayBitmap(EngineBitmap) from EngineBitmap to EngineBitmap {
+class DisplayBitmap extends EngineBitmap {
 
-    public static inline function create(layer:BaseLayer, id:Int, og:Bool = false):DisplayBitmap {
-        return new EngineBitmap(layer.getTile(id));
+    var _layer:BaseLayer;
+    var _parent:FinalSprite;
+
+    public static inline function create(layer:BaseLayer, parent:FinalSprite, id:Int, og:Bool = false):DisplayBitmap {
+        return new DisplayBitmap(layer.getTile(id), layer, parent);
     }
 
-    public var id(get, set):DisplayTile;
-    inline function set_id(id:DisplayTile) {
-        return this.id = id;
+    public function new(id:DisplayTile, layer:BaseLayer, parent:FinalSprite) {
+        super(id);
+
+        _layer = layer;
+        _parent = parent;
     }
-    inline function get_id() {
-        return this.id;
-    }
+
+    var tempRectangle:openfl.geom.Rectangle = null;
+	var tempMatrix1:Matrix = null;
+	var tempMatrix2:Matrix = null;
+
+    var tempRectContainer:openfl.geom.Rectangle = null;
+
+    var tempRect:openfl.geom.Rectangle;
+	inline function _getRect (id:Int, ?temp:openfl.geom.Rectangle):openfl.geom.Rectangle {
+        var tileset = _findTileset();
+
+		if (temp == null) {
+			if (tempRect == null) tempRect = new openfl.geom.Rectangle();
+			temp = tempRect;
+		}
+
+		@:privateAccess return if (id < tileset.__data.length && id >= 0) {
+			temp.setTo(tileset.__data[id].x, tileset.__data[id].y, tileset.__data[id].width, tileset.__data[id].height);
+			temp;
+		} else {
+			null;
+		}
+	}
+
+    var transformId = -1;
+    var tempMatrix:Matrix = null;
+	var tempTransform:Matrix = null;
+	function _getWorldTransform():Matrix {
+		return if (_layer.updateID == transformId && tempTransform != null) {
+			tempTransform;
+		} else {
+			transformId = _layer.updateID;
+
+			if (tempMatrix == null) tempMatrix = new Matrix();
+			tempMatrix.copyFrom(matrix);
+			var retval = tempMatrix;
+			
+			if (_parent != null) {
+				retval.concat(_parent._getWorldTransform());
+			}
+
+			if (tempTransform == null) tempTransform = new Matrix();
+			tempTransform.copyFrom(retval);
+
+			retval;
+		}
+	}
+
+    public function _getBounds(targetCoordinateSpace:FinalSprite):openfl.geom.Rectangle {
+		if (tempRectangle == null) tempRectangle = new openfl.geom.Rectangle();
+		tempRectangle.setTo(0, 0, 1, 1);
+		
+		var result:openfl.geom.Rectangle;
+
+		if (tileset == null) {
+			var parentTileset = _findTileset();
+			if (parentTileset == null) return tempRectangle;
+			result = _getRect(id, tempRectangle);
+			if (result == null) return tempRectangle;
+			
+			tileset = parentTileset;
+		} else {
+			result = _getRect(id, tempRectangle);
+		}
+
+		// TODO: How is this possible?!?!?!?! getRect return null? id out of bounds!?!?
+		if (result == null) return tempRectangle;
+
+		result.x = 0;
+		result.y = 0;
+
+		if (tempMatrix1 == null) tempMatrix1 = new Matrix();
+		tempMatrix1.identity();
+
+		var matrix = tempMatrix1;
+		
+		if (targetCoordinateSpace != null) {
+			matrix.copyFrom(_getWorldTransform());
+			
+			if (tempMatrix2 == null) tempMatrix2 = new Matrix();
+			tempMatrix2.identity();
+
+			var targetMatrix = tempMatrix2;
+			
+			targetMatrix.copyFrom(targetCoordinateSpace._getWorldTransform());
+			targetMatrix.invert();
+			
+			matrix.concat(targetMatrix);
+			
+		} else {
+			matrix.copyFrom(_getWorldTransform());
+		}
+		
+		#if flash
+		inline function __transform(rect:openfl.geom.Rectangle, m:Matrix):Void {
+			var tx0 = m.a * rect.x + m.c * rect.y;
+			var tx1 = tx0;
+			var ty0 = m.b * rect.x + m.d * rect.y;
+			var ty1 = ty0;
+			
+			var tx = m.a * (rect.x + rect.width) + m.c * rect.y;
+			var ty = m.b * (rect.x + rect.width) + m.d * rect.y;
+			
+			if (tx < tx0) tx0 = tx;
+			if (ty < ty0) ty0 = ty;
+			if (tx > tx1) tx1 = tx;
+			if (ty > ty1) ty1 = ty;
+			
+			tx = m.a * (rect.x + rect.width) + m.c * (rect.y + rect.height);
+			ty = m.b * (rect.x + rect.width) + m.d * (rect.y + rect.height);
+			
+			if (tx < tx0) tx0 = tx;
+			if (ty < ty0) ty0 = ty;
+			if (tx > tx1) tx1 = tx;
+			if (ty > ty1) ty1 = ty;
+			
+			tx = m.a * rect.x + m.c * (rect.y + rect.height);
+			ty = m.b * rect.x + m.d * (rect.y + rect.height);
+			
+			if (tx < tx0) tx0 = tx;
+			if (ty < ty0) ty0 = ty;
+			if (tx > tx1) tx1 = tx;
+			if (ty > ty1) ty1 = ty;
+			
+			rect.setTo(tx0 + m.tx, ty0 + m.ty, tx1 - tx0, ty1 - ty0);
+		}
+
+		__transform(result, matrix);
+		#else
+		@:privateAccess result.__transform(result, matrix);
+		#end
+	
+		return result;
+	}
+
+    public function _findTileset(?tile:openfl.display.Tile) {
+		if (tile == null) tile = this;
+        return if (tile.tileset != null) {
+			tile.tileset;
+		} else if (tile.parent != null) {
+			var tileset = _findTileset(tile.parent);
+			tile.tileset = tileset;
+			tileset;
+		} else {
+			null;
+		}
+	}
 
     inline function getTileset() {
         return if (this.tileset != null) {
             this.tileset;
         } else if (this.parent != null) {
-            @:privateAccess var tileset = this.parent.__findTileset();
+            @:privateAccess var tileset = _findTileset(this.parent);
             this.tileset = tileset;
             tileset;
         } else {
@@ -339,7 +565,7 @@ abstract DisplayBitmap(EngineBitmap) from EngineBitmap to EngineBitmap {
 
     public inline function color(r:Int, g:Int, b:Int) {
         #if (openfl >= "6.0.0")
-        this.colorTransform = new openfl.geom.ColorTransform(r / 255.0, g / 255.0, b / 255.0, this.alpha);
+        //this.colorTransform = new openfl.geom.ColorTransform(r / 255.0, g / 255.0, b / 255.0, this.alpha);
         #end
     }
 }
@@ -369,7 +595,7 @@ abstract DisplaySprite(BaseSprite) from BaseSprite to BaseSprite {
 
     public inline function color(r:Float, g:Float, b:Float, rAdd:Float, gAdd:Float, bAdd:Float) {
         #if (openfl >= "6.0.0")
-        this.colorTransform = new openfl.geom.ColorTransform(r / 255.0, g / 255.0, b / 255.0, this.alpha, rAdd, gAdd, bAdd, 0.0);
+        //this.colorTransform = new openfl.geom.ColorTransform(r / 255.0, g / 255.0, b / 255.0, this.alpha, rAdd, gAdd, bAdd, 0.0);
         #end
     }
 

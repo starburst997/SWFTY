@@ -224,7 +224,7 @@ class BaseText extends FinalSprite {
                 var char = textDefinition.font.get(code);
                 var w = char.advance * scale;
 
-                var tile = _layer.createBitmap(char.bitmap.id, true);
+                var tile = _layer.createBitmap(char.bitmap.id, this, true);
                 tile.color(r, g, b);
                 tile.x = x + char.tx * scale;
                 tile.y = y + char.ty * scale;
@@ -248,7 +248,7 @@ class BaseText extends FinalSprite {
                         for (j in 0...3) {
                             code = DOT;
                             char = textDefinition.font.get(code);
-                            tile = _layer.createBitmap(char.bitmap.id, true);
+                            tile = _layer.createBitmap(char.bitmap.id, this, true);
                             tile.color(r, g, b);
                             tile.x = x + char.tx * scale;
                             tile.y = y + char.ty * scale;
