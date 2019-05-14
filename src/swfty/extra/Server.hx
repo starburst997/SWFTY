@@ -5,13 +5,16 @@ import haxe.macro.Compiler;
 import haxe.ds.IntMap;
 import haxe.io.Bytes;
 
+#if !neko
 import hx.concurrent.executor.*;
+#end
 
 class Server {
 
     // TODO: No way to "stop" it right now, I guess we could keep it in static var
     //       Also was done in a hurry (not super well done...), but hey it works!
     public static function run(manager:Manager) {
+        #if !neko
         var retry = false;
         
         // This should be in your DEV code only
@@ -187,5 +190,6 @@ class Server {
                 }
             }
         });
+        #end
     }
 }
