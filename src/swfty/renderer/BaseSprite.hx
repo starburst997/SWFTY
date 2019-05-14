@@ -779,7 +779,7 @@ class BaseSprite extends EngineSprite {
                 if (updateAlpha) sprite.alpha = child.alpha;
 
                 for (shape in child.shapes) {
-                    var tile = _layer.createBitmap(shape.bitmap.id, finalSprite, true);
+                    var tile = _layer.createBitmap(shape.bitmap.id, sprite.finalSprite, true);
                     tile.transform(shape.a, shape.b, shape.c, shape.d, shape.tx, shape.ty, shape.bitmap.originalWidth > 0 && shape.bitmap.width > 0 ? shape.bitmap.width / shape.bitmap.originalWidth : scale, shape.bitmap.originalHeight > 0 && shape.bitmap.height > 0 ? shape.bitmap.height / shape.bitmap.originalHeight : scale);
                     sprite.addBitmap(tile);
                 }
