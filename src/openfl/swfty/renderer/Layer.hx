@@ -37,6 +37,14 @@ class FinalLayer extends BaseLayer {
         super.update(dt);
     }
 
+    /*override function __renderGL(renderer:openfl.display.OpenGLRenderer):Void
+	{
+        // TODO: Create my own implementation creating the buffer on the swfty loop directly
+        //       This is a copy / paste of GLTilemap from 8.4.0 because Context3D stuff is MEGA SLOW
+        openfl.opengl.GLTilemap.render(this, renderer);
+		__renderEvent(renderer);
+	}*/
+
     override function set__mask(value:Rectangle) {
         if (value == null) return null;
 
@@ -288,6 +296,12 @@ class FinalLayer extends BaseLayer {
 
     override function loadTexture(bytes:Bytes, swfty:SWFTYType, ?onComplete:Void->Void, ?onError:Dynamic->Void) {
         function complete(bmpd:BitmapData) {
+
+            if (bmpd == null) {
+                if (onError != null) onError('Null bitmapData');
+                return;
+            }
+
             swfty.addAll(bmpd.width, bmpd.height);
 
             // Create tileset
