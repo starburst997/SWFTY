@@ -144,6 +144,9 @@ class Exporter {
         if (config.useJPEG == null) config.useJPEG = false;
         if (config.jpegQuality == null) config.jpegQuality = 90;
 
+        // TODO: Hack, fix that
+        Exporter.BAKE_COLOR = config.bakeColor;
+
         return config;
     }
 
@@ -600,8 +603,8 @@ class Exporter {
 
         // TODO: Could it be more efficient to only use one channel?
         alpha.copyChannel(bmpd, bmpd.rect, new Point(0, 0), BitmapDataChannel.ALPHA, BitmapDataChannel.RED);
-        alpha.copyChannel(bmpd, bmpd.rect, new Point(0, 0), BitmapDataChannel.ALPHA, BitmapDataChannel.GREEN);
-        alpha.copyChannel(bmpd, bmpd.rect, new Point(0, 0), BitmapDataChannel.ALPHA, BitmapDataChannel.BLUE);
+        //alpha.copyChannel(bmpd, bmpd.rect, new Point(0, 0), BitmapDataChannel.ALPHA, BitmapDataChannel.GREEN);
+        //alpha.copyChannel(bmpd, bmpd.rect, new Point(0, 0), BitmapDataChannel.ALPHA, BitmapDataChannel.BLUE);
 
         var jpg = bmpd.encode(bmpd.rect, new JPEGEncoderOptions(config.jpegQuality));
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
     
-    <meta title="SWFTY" package="jd.boivin.swfty" version="0.1.0" company="Jean-Denis Boivin" />
+    <meta title="SWFTY" package="jd.boivin.swfty" version="0.2.0" company="Jean-Denis Boivin" />
     <app main="Main" path="bin" file="SWFTY" />
     <window background="#666666" allowHighDPI="false" fps="9999" />
     <window hidden="true" />

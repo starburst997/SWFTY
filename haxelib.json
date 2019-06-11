@@ -4,7 +4,7 @@
   "tags": ["swf", "atlas", "spritesheet", "bitmap-font", "openfl", "heaps", "adobe-animate", "flash"],
   "license" : "MIT",
   "description" : "Convert a SWF to an Atlas Spritesheet Tilemap Bitmap Font single zipped file",
-  "version" : "0.1.0",
+  "version" : "0.2.0",
   "classPath": "src/",
   "releasenote" : "Initial Release",
   "contributors" : ["starburst997"],

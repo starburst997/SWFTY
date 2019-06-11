@@ -1,6 +1,6 @@
 {
   "name": "swfty-cli",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "license": "MIT",
   "scripts": {
     "postinstall": "lix download",
