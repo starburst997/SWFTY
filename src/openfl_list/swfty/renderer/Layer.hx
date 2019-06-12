@@ -138,7 +138,7 @@ class FinalLayer extends BaseLayer {
         #if sync
         complete(BitmapData.fromBytes(bytes));
         #else
-        BitmapData.loadFromBytes(bytes).onComplete(complete).onError(onError);
+        BitmapData.loadFromBytes(bytes).onComplete(complete).onError(function(e) if (onError != null) onError(e));
         #end
     }
 
