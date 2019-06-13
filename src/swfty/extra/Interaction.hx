@@ -47,7 +47,7 @@ class Interactions {
                     
                     if (!lastInteraction.sprite.disposed && !lastInteraction.sprite.layer.disposed) {
                         if (lastInteraction.handler != null) lastInteraction.handler();
-                        if (lastInteraction.isClick) @:privateAccess manager.click(lastInteraction.sprite);
+                        if (lastInteraction != null && lastInteraction.isClick) @:privateAccess manager.click(lastInteraction.sprite);
                     }
                 }
 
