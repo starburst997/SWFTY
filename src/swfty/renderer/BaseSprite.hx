@@ -18,7 +18,7 @@ class BaseSprite extends EngineSprite {
 
     static var COUNTER = 0;
 
-    var disposed = false;
+    public var disposed(default, null) = false;
 
     public var type:SpriteType = Unknown;
 

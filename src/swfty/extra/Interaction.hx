@@ -45,8 +45,10 @@ class Interactions {
                         interactions.set(lastInteraction.sprite.layer, []);
                     }
                     
-                    if (lastInteraction.handler != null) lastInteraction.handler();
-                    if (lastInteraction.isClick) @:privateAccess manager.click(lastInteraction.sprite);
+                    if (!lastInteraction.sprite.disposed && !lastInteraction.sprite.layer.disposed) {
+                        if (lastInteraction.handler != null) lastInteraction.handler();
+                        if (lastInteraction.isClick) @:privateAccess manager.click(lastInteraction.sprite);
+                    }
                 }
 
             } else if (nInteractions > 1) {
@@ -78,10 +80,13 @@ class Interactions {
                                 return 0;
                             });
 
-                            var currentInteraction = sprites[0];
+                            var currentInteraction = null;
 
                             for (interaction in sprites) {
                                 var parent = interaction.sprite;
+                                if (parent.disposed) continue;
+                                if (currentInteraction == null) currentInteraction = interaction;
+
                                 while (parent != null) {
                                     if (parent == currentInteraction.sprite) {
                                         currentInteraction = interaction;
@@ -115,6 +120,13 @@ class Interactions {
                 manager.stopPropagation = false;
             }
         });
+    }
+
+    public static inline function clear() {
+        exclusive = null;
+        nInteractions = 0;
+        lastInteraction = null;
+        interactions = new Map();
     }
 
     static inline function chainName(sprite:Sprite) {
