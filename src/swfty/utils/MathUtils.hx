@@ -177,6 +177,18 @@ class Rectangle {
         return this;
     }
 
+    public inline function normalize() {
+        if (this.width < 0) {
+            this.x += this.width;
+            this.width *= -1;
+        }
+        if (this.height < 0) {
+            this.y += this.height;
+            this.height *= -1;
+        }
+        return this;
+    }
+
     public inline function inside(x:Float, y:Float, margin = 0) {
         return (x >= this.x - margin) && 
                (x < this.x + this.width + margin) && 
