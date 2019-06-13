@@ -590,7 +590,7 @@ class Main extends Sprite {
         showMeWhatYouGot('          `======/     ');
         
         Console.log('');
-        Console.log('<b><$color1>SWFTY</></> <i><b>(</></><i>0.2.0</><i><b>)</></> by <b><i>Jean-Denis Boivin</></>');
+        Console.log('<b><$color1>SWFTY</></> <i><b>(</></><i>0.3.0</><i><b>)</></> by <b><i>Jean-Denis Boivin</></>');
         Console.log('');
         Console.log('<u>https://github.com/starburst997/SWFTY</>');
         Console.log('');
