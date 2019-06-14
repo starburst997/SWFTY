@@ -21,11 +21,12 @@
     <haxelib name="tweenxcore" />
 
     <haxeflag name="-dce full" if="final" />
-
+    
     <source path="src" />
 
     <icon path="../../res/icon.png" />
 
+    <haxedef name="nostrip" />
     <haxedef name="gl_stats" unless="final" />
     <!--<haxedef name="sync" unless="html5" />-->
     <!--<haxedef name="trim" if="export" />-->
