@@ -98,6 +98,8 @@ class FinalSprite extends BaseSprite {
             }
         }
 
+        bounds.normalize();
+
         return if (_mask != null || parentMask != null) {
 
             var mask:Rectangle = if (_mask != null) {
@@ -124,6 +126,7 @@ class FinalSprite extends BaseSprite {
                 var pt2 = relative.layerToLocal(mask.x + mask.width, mask.y + mask.height, 2);
 
                 mask = Rectangle.temp.set(pt1.x, pt1.y, pt2.x - pt1.x, pt2.y - pt1.y);
+                mask.normalize();
 
                 if (mask.contains(bounds)) {
                     bounds;
