@@ -98,9 +98,9 @@ class FinalSprite extends BaseSprite {
             }
         }
 
-        bounds.normalize();
+        return bounds.normalize();
 
-        return if (_mask != null || parentMask != null) {
+        /*return if (_mask != null || parentMask != null) {
 
             var mask:Rectangle = if (_mask != null) {
                 getMaskRectangle();
@@ -140,7 +140,7 @@ class FinalSprite extends BaseSprite {
             }
         } else {
             bounds;
-        }
+        }*/
     }
 
     /* These functions needs cleanup, they were taken from openfl class and modified */
