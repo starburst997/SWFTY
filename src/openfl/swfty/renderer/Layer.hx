@@ -29,6 +29,10 @@ class FinalLayer extends BaseLayer {
         // TODO: If null, it should maybe be the stage's dimensions??? Or at least on the "getter"
         super(width == null ? 256 : width, height == null ? 256 : height);
 
+        tileAlphaEnabled = true;
+		tileBlendModeEnabled = false;
+		tileColorTransformEnabled = false;
+
         _width = width;
         _height = height;
     }
