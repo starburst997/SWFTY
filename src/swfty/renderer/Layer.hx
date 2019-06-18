@@ -55,7 +55,9 @@ abstract Layer(BaseLayer) from BaseLayer to BaseLayer {
     }
 
     public static inline function empty(?width:Int, ?height:Int):Layer {
-        return FinalLayer.create(width, height);
+        var layer = FinalLayer.create(width, height);
+        @:privateAccess layer.reserved = new Rectangle(0, 0, width, height);
+        return layer;
     }
 
     public var mouseX(get, never):Float;
