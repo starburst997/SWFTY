@@ -221,6 +221,8 @@ class CLI extends mcli.CommandLine {
 
                 Exporter.addLog('Export: ${path.toString()}');
 
+                var die = false;
+
                 // Save all quality
                 for (quality in exporter.getQualities()) {
 
@@ -253,6 +255,11 @@ class CLI extends mcli.CommandLine {
                     log('Size', '${Math.ceil(zip.length / 1024 / 1024 * 100) / 100} MB', 2);
                     log('Tilemap', '${tilemap.bitmapData.width}x${tilemap.bitmapData.height}', 2);
 
+                    if (tilemap.bitmapData.width < 4 || tilemap.bitmapData.height < 4) {
+                        die = true;
+                        break;
+                    }
+
                     if (first == null) {
                         first = {
                             maxWidth: quality.maxDimension.width,
@@ -269,6 +276,13 @@ class CLI extends mcli.CommandLine {
                     FileSave.writeBytes(zip, output);
 
                     if (quality.scale == 1.0) original = zip;
+                }
+
+                if (die) {
+                    error('Bad file, skipping...');
+                
+                    if (onComplete != null) onComplete();
+                    return;
                 }
 
                 // Save abstract
@@ -420,6 +434,7 @@ class CLI extends mcli.CommandLine {
 
             var bytes = File.of(path).readAsBytes();
             if (bytes == null) throw 'File doesn\'t exists at $path';
+            if (bytes.length < 50) throw 'File is pretty small, skipping at $path';
 
             log('Loaded', '${Math.ceil(bytes.length/1024)} KB', 2);
 
@@ -590,7 +605,7 @@ class Main extends Sprite {
         showMeWhatYouGot('          `======/     ');
         
         Console.log('');
-        Console.log('<b><$color1>SWFTY</></> <i><b>(</></><i>0.3.0</><i><b>)</></> by <b><i>Jean-Denis Boivin</></>');
+        Console.log('<b><$color1>SWFTY</></> <i><b>(</></><i>0.4.0</><i><b>)</></> by <b><i>Jean-Denis Boivin</></>');
         Console.log('');
         Console.log('<u>https://github.com/starburst997/SWFTY</>');
         Console.log('');

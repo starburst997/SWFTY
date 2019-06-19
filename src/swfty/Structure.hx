@@ -155,12 +155,21 @@ typedef InnerQuality = {
     ?outputFolder: String,
 }
 
+typedef Line = {
+    color:Int,
+    alpha:Float,
+    blurX:Float,
+    blurY:Float,
+    strength:Float,
+}
+
 typedef CustomConfig = {
     name: String,
     ?pngquant: Bool,
     ?jpegtran: Bool,
     ?useJPEG: Bool,
     ?jpegQuality: Int,
+    ?line:Line,
     ?quality: Array<InnerQuality>,
     ?maxDimension: Rectangle,
     ?reservedSpace: Rectangle,
@@ -184,6 +193,7 @@ typedef Config = {
     ?fontEnabled: Bool,
     ?bakeColor: Bool,
     ?sharedFonts:Bool,
+    ?line:Line,
     ?maxDimension: Rectangle,
     ?reservedSpace: Rectangle,
     ?files: Array<CustomConfig>,

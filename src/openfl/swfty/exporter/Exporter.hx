@@ -118,6 +118,7 @@ class Exporter {
     var bakedId:StringMap<Int>;
 
     var config:Config = {};
+    var custom:CustomConfig = { name: 'NoName' };
 
     public static function addLog(log:String) {
         logs += '\n$log';
@@ -171,6 +172,18 @@ class Exporter {
         data = swf.data;
 
         this.name = name == null ? 'NoName' : name;
+
+        var custom:CustomConfig = { name: '${name}.swf' };
+        for (file in config.files) {
+            if (file.name == custom.name) {
+                custom = file;
+                break;
+            }
+        }
+
+        if (custom.line == null) custom.line = this.config.line;
+        this.custom = custom;
+
         trace('Exporting', this.name);
 
         movieClipsOrder = [];
@@ -887,7 +900,11 @@ class Exporter {
                                     str += 'DropShadowFilter($distance, $angle, $color, $alpha, $blurX, $blurY, $strength, $quality, $inner, $knockout, $hideObject)';
                                 
                                 case GlowFilter (color, alpha, blurX, blurY, strength, quality, inner, knockout):
-                                    str += 'GlowFilter($color, $alpha, $blurX, $blurY, $strength, $quality, $inner, $knockout)';   
+                                    if (custom.line != null) {
+                                        str += 'GlowFilter(${custom.line.color}, ${custom.line.alpha}, ${custom.line.blurX}, ${custom.line.blurY}, ${custom.line.strength})';//, $quality, $inner, $knockout)';   
+                                    } else {
+                                        str += 'GlowFilter($color, $alpha, $blurX, $blurY, $strength)';//, $quality, $inner, $knockout)';   
+                                    }
                             }
                         }
                         str;
@@ -921,7 +938,11 @@ class Exporter {
                                         
                                         case GlowFilter (color, alpha, blurX, blurY, strength, quality, inner, knockout):
                                             if (inner || knockout) Log.warn('Inner / Knockout is not supported');
-                                            filters.push (new GlowFilter (color, alpha, blurX, blurY, strength, quality, inner, knockout));   
+                                            if (custom.line != null) {
+                                                filters.push (new GlowFilter (custom.line.color, custom.line.alpha, custom.line.blurX, custom.line.blurY, custom.line.strength, quality, inner, knockout));
+                                            } else {
+                                                filters.push (new GlowFilter (color, alpha, blurX, blurY, strength, quality, inner, knockout));
+                                            }   
                                     }
                                 }
                             }
