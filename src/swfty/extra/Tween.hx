@@ -212,6 +212,14 @@ class Tween {
         return sprite;
     }
 
+    public static inline function tweenMaskWidth(sprite:Sprite, ?name:String, width:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?repeat:Int = 0, ?onComplete:Void->Void) {
+        var child = name == null ? sprite : sprite.get(name);
+        setup(child, child.mask.width, width, duration, delay, easing, repeat, onComplete, function(val) {
+            child.mask.width = val;
+        });
+        return sprite;
+    }
+
     public static inline function tweenWidth(sprite:Sprite, ?name:String, width:Float, duration:Float, ?delay:Float = 0.0, ?easing:Easing, ?repeat:Int = 0, ?onComplete:Void->Void) {
         var child = name == null ? sprite : sprite.get(name);
         setup(child, child.width, width, duration, delay, easing, repeat, onComplete, function(val) {
