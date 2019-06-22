@@ -49,6 +49,9 @@ class BaseSprite extends EngineSprite {
     public var g:Float = 1.0;
     public var b:Float = 1.0;
 
+    // Pause render / update
+    public var pause = false;
+
     // TODO: I don't like having this as part of BaseSprite, might remove...
     public var interactive:Bool = false;
 
@@ -528,7 +531,7 @@ class BaseSprite extends EngineSprite {
             _addSprites = [];
         }
 
-        for (i in 0..._sprites.length) {
+        if (!pause) for (i in 0..._sprites.length) {
             var sprite = _sprites[_sprites.length - 1 - i];
             sprite.update(dt, mask);
         }
@@ -539,7 +542,7 @@ class BaseSprite extends EngineSprite {
             }
         }
 
-        if (loaded) for (f in _renders) f(dt);
+        if (loaded && !pause) for (f in _renders) f(dt);
 
         if (_bitmaps.length > 0) {
             if (mask != null) {
