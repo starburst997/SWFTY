@@ -544,7 +544,7 @@ class BaseSprite extends EngineSprite {
 
         if (loaded && !pause) for (f in _renders) f(dt);
 
-        if (_bitmaps.length > 0) {
+        if (_bitmaps != null && _bitmaps.length > 0) {
             if (mask != null) {
                 if (!isMasked) {
                     isMasked = true;
