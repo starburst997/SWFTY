@@ -58,7 +58,7 @@ class Manager {
     var onRemoves:Array<Layer->Void> = [];
     var pruneOnRemoves:Array<Layer->Void> = [];
 
-    var clicks:Array<Sprite->Void> = [];
+    var clicks:Array<Array<Sprite>->Void> = [];
 
     public function new(interaction = true) {
         @:privateAccess if (interaction) Interactions.manage(this);
@@ -161,16 +161,16 @@ class Manager {
         return this;
     }
 
-    function click(sprite:Sprite) {
-        for (f in clicks) f(sprite);
+    function click(sprites:Array<Sprite>) {
+        for (f in clicks) f(sprites);
     }
 
-    public function addClick(f:Sprite->Void) {
+    public function addClick(f:Array<Sprite>->Void) {
         clicks.push(f);
         return this;
     }
 
-    public function removeClick(f:Sprite->Void) {
+    public function removeClick(f:Array<Sprite>->Void) {
         clicks.remove(f);
         return this;
     }

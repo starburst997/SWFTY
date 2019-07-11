@@ -216,7 +216,7 @@ class FinalSprite extends BaseSprite {
             result = union(result, rect);
         }
 
-		for (sprite in _sprites) /*if (tile.visible)*/ {
+		for (sprite in _sprites) if (sprite.visible) {
 			rect = sprite._getBounds(targetCoordinateSpace);
 			result = union(result, rect);
 		}
@@ -454,7 +454,7 @@ class DisplayBitmap extends EngineBitmap {
 		#else
 		@:privateAccess result.__transform(result, matrix);
 		#end
-	
+
 		return result;
 	}
 

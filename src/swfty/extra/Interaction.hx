@@ -16,6 +16,7 @@ class Interactions {
     static var interactions:Map<Layer, Array<Interaction>> = new Map();
     static var nInteractions = 0;
     static var lastInteraction:Interaction = null;
+    static var lastClick:Array<Sprite> = [];
 
     // You need to be carefull here as you need to makes sure to remove it! Put behind private until I figure a safer way
     public static var exclusive:Sprite = null;
@@ -47,7 +48,12 @@ class Interactions {
                     
                     if (!lastInteraction.sprite.disposed && !lastInteraction.sprite.layer.disposed) {
                         if (lastInteraction.handler != null) lastInteraction.handler();
-                        if (lastInteraction != null && lastInteraction.isClick) @:privateAccess manager.click(lastInteraction.sprite);
+                        
+                        if (lastInteraction != null) {
+                            if (lastInteraction.isClick) {
+                                @:privateAccess manager.click(lastClick);
+                            }
+                        }
                     }
                 }
 
@@ -95,7 +101,10 @@ class Interactions {
                                         
                                         if (!oneClick) {
                                             oneClick = true;
-                                            @:privateAccess manager.click(interaction.sprite);
+                                            
+                                            if (interaction.isClick) {
+                                                @:privateAccess manager.click(lastClick);
+                                            }
                                         }
                                         break;
                                     }
@@ -103,6 +112,7 @@ class Interactions {
                                 }
 
                                 if (manager.stopPropagation) {
+                                    lastClick = [];
                                     break;
                                 }
                             }
@@ -115,9 +125,18 @@ class Interactions {
 
             if (nInteractions > 0) {
                 clickID++;
+                
                 nInteractions = 0;
                 lastInteraction = null;
                 manager.stopPropagation = false;
+
+                if (manager.mouse.leftChanged) {
+                    switch(manager.mouse.left) {
+                        case Down : 
+                        case Up   : lastClick = [];
+                        case _    :
+                    }
+                }
             }
         });
     }
@@ -237,7 +256,10 @@ class Interactions {
                     case Down : 
                         if (checkMask(child, x, y) && isVisible(child) && getBounds().inside(x, y)) {
                             wasInside = true;
-                            if (useManager) addInteraction(child);
+                            if (useManager) {
+                                lastClick.push(child);
+                                addInteraction(child);
+                            }
                         }
                     case Up : 
                         if (wasInside && checkMask(child, x, y) && isVisible(child) && getBounds().inside(x, y)) {
@@ -319,6 +341,7 @@ class Interactions {
         }
 
         // Detect left click inside and wait for mouse up inside to trigger handler
+        var wasInside = false;
         child.addRender(RENDER_ID, function render(dt) {
             
             if (child.layer == null) return;
@@ -334,17 +357,18 @@ class Interactions {
 
                 switch(mouse.left) {
                     case Down : 
-                        /*if (useManager) { // Block mouse down on sprite below
-                            if (getBounds().inside(x, y)) addInteraction(child);
-                        }*/
-                    case Up : 
                         if (checkMask(child, x, y) && isVisible(child) && getBounds().inside(x, y)) {
+                            wasInside = true;
+                        }
+                    case Up : 
+                        if (wasInside && checkMask(child, x, y) && isVisible(child) && getBounds().inside(x, y)) {
                             if (useManager) {
                                 addInteraction(child, f);
                             } else {
                                 f();
                             }
                         }
+                        wasInside = false;
                     case _ : 
                 }
             }
