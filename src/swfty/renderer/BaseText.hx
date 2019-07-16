@@ -1,5 +1,7 @@
 package swfty.renderer;
 
+import haxe.Utf8;
+
 import haxe.ds.Option;
 
 import swfty.renderer.Sprite.FinalSprite;
@@ -212,8 +214,11 @@ class BaseText extends FinalSprite {
         // Get the '.' char
         var dot = textDefinition.font.get(DOT);
 
-        for (i in 0...text.length) {
-            var code = text.charCodeAt(i);
+        var skip = false;
+        var i = -1;
+        Utf8.iter(text, function(code){
+            if(skip) return;
+            i++;
 
             if (code == SPACE) {
                 lastSpaceX = x;
@@ -268,7 +273,9 @@ class BaseText extends FinalSprite {
 
                             x += w;
                         }
-                        break;
+
+                        skip = true;
+                        return;
                     }
                 } else if (x + w > _width && hasSpace && multiline) {
                     y += lineHeight;
@@ -312,7 +319,10 @@ class BaseText extends FinalSprite {
 
                     x -= offsetX;
 
-                    if (singleLine) break;
+                    if (singleLine) {
+                        skip = true;
+                        return;
+                    };
                 }
 
                 x += w;
@@ -324,7 +334,11 @@ class BaseText extends FinalSprite {
                         
                         y += lineHeight;
                         x = 0.0;
-                        if (singleLine) break;
+                        
+                        if (singleLine) {
+                            skip = true;
+                            return;
+                        };
 
                         currentLine = {
                             textWidth: 0.0,
@@ -334,7 +348,7 @@ class BaseText extends FinalSprite {
                     case _ : 
                 }
             }
-        }
+        });
 
         currentLine.textWidth = x;
 
