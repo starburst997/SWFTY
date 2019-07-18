@@ -451,8 +451,8 @@ class Exporter {
     function isNumeric(str:String) {
         var n = 0;
         for (i in 0...str.length) {
-            if (CharSet.NUMERIC.indexOf(str.charCodeAt(i)) == -1) return false;
-            if (str.charCodeAt(i) != 45) n++; // But not only "-"
+            if (CharSet.NUMERIC.indexOf(Utf8.charCodeAt(str, i) == -1)) return false;
+            if (Utf8.charCodeAt(str, i) != 45) n++; // But not only "-"
         }
 
         return true && (n > 0);
