@@ -213,11 +213,11 @@ class BaseText extends FinalSprite {
 
         // Get the '.' char
         var dot = textDefinition.font.get(DOT);
-
+#
         var skip = false;
         var i = -1;
         Utf8.iter(text, function(code){
-            if(skip) return;
+            if (skip) return;
             i++;
 
             if (code == SPACE) {
@@ -412,7 +412,8 @@ class BaseText extends FinalSprite {
                 for (line in lines)
                     for (tile in line.tiles)
                         if (tile.tile != null) tile.tile.x += _width / 2 - line.textWidth / 2;
-            case Justify : trace('Justify not supported!!!');
+            case Justify : 
+                trace('Justify not supported!!!');
         }
 
         return text;
