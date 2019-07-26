@@ -213,7 +213,7 @@ class BaseText extends FinalSprite {
 
         // Get the '.' char
         var dot = textDefinition.font.get(DOT);
-#
+
         var skip = false;
         var i = -1;
         Utf8.iter(text, function(code){
