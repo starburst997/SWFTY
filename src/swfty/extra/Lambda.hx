@@ -1,6 +1,7 @@
 package swfty.extra;
 
 using swfty.extra.Lambda;
+using swfty.utils.MathUtils;
 
 // Extra Functional Programming shorthand
 class LambdaSprite {
