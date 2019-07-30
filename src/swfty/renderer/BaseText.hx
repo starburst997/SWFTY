@@ -56,6 +56,8 @@ class BaseText extends FinalSprite {
     public function new(layer:BaseLayer, ?definition:TextType) {
         super(layer);
 
+        _isText = true;
+
         loadText(definition);
     }
 

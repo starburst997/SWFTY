@@ -58,6 +58,9 @@ class BaseSprite extends EngineSprite {
     // For reload if definition didn't exists
     var _linkage:String;
 
+    // Extends as Text
+    var _isText = false;
+
     // Force a certain dimension, usefull for Text
     var forceBounds:Rectangle = null;
 
@@ -70,6 +73,7 @@ class BaseSprite extends EngineSprite {
     var _texts:StringMap<FinalText>;
     var _definition:Null<MovieClipType>;
     var _bounds:Rectangle;
+    var __texts:Array<FinalText>;
 
     var _mask(default, set):Rectangle = null;
     function set__mask(value:Rectangle) {
@@ -172,6 +176,8 @@ class BaseSprite extends EngineSprite {
 
         _added = [];
         _removed = [];
+
+        __texts = [];
 
         _renders = [];
         _rendersMap = new StringMap();
@@ -577,7 +583,14 @@ class BaseSprite extends EngineSprite {
         }
 
         if (_pruneSprites.length > 0) {
-            for (s in _pruneSprites) _sprites.remove(s);
+            for (s in _pruneSprites) {
+                _sprites.remove(s);
+
+                if (s._isText) {
+                    __texts.remove(cast s);
+                }
+            }
+
             _pruneSprites = [];
         }
 
@@ -699,6 +712,7 @@ class BaseSprite extends EngineSprite {
                     text;
                 } else {
                     var text = FinalText.create(layer);
+                    __texts.push(text);
                     
                     adjustTransform(text);
                     text.loadText(child.text);
@@ -948,7 +962,11 @@ class BaseSprite extends EngineSprite {
 
         _addSprites.remove(sprite);
 
-        if (sprite._name != null) _names.remove(sprite._name);
+        if (sprite._name != null) {
+            _names.remove(sprite._name);
+            _texts.remove(sprite._name);
+        }
+
         _pruneSprites.push(sprite); // TODO: This might screw the "getIndex"
         sprite._parent = null;
     }
@@ -1023,6 +1041,7 @@ class BaseSprite extends EngineSprite {
 
             text._name = name;
             _texts.set(name, text);
+            __texts.push(text);
 
             addSpriteNow(text, false);
             
@@ -1065,6 +1084,8 @@ class BaseSprite extends EngineSprite {
 
                 _names = new StringMap();
                 _texts = new StringMap();
+
+                __texts = [];
 
                 _added = [];
                 _removed = [];

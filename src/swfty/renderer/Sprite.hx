@@ -68,7 +68,7 @@ abstract Sprite(FinalSprite) from FinalSprite to FinalSprite {
 
     public var texts(get, never):Array<Text>;
     inline function get_texts():Array<Text> {
-        @:privateAccess return this._texts.array();
+        @:privateAccess return this.__texts;
     }
 
     public var numChildren(get, never):Int;
