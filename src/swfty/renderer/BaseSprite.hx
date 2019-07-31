@@ -964,7 +964,9 @@ class BaseSprite extends EngineSprite {
 
         if (sprite._name != null) {
             _names.remove(sprite._name);
-            _texts.remove(sprite._name);
+            
+            // TODO: Investigate why we get errors here
+            //if (sprite._isText) _texts.remove(sprite._name);
         }
 
         _pruneSprites.push(sprite); // TODO: This might screw the "getIndex"
