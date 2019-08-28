@@ -451,8 +451,8 @@ class Exporter {
     function isNumeric(str:String) {
         var n = 0;
         for (i in 0...str.length) {
-            if (CharSet.NUMERIC.indexOf(Utf8.charCodeAt(str, i) == -1)) return false;
-            if (Utf8.charCodeAt(str, i) != 45) n++; // But not only "-"
+            if (CharSet.NUMERIC.indexOf(haxe.Utf8.charCodeAt(str, i)) == -1) return false;
+            if (haxe.Utf8.charCodeAt(str, i) != 45) n++; // But not only "-"
         }
 
         return true && (n > 0);
@@ -1213,13 +1213,31 @@ class Exporter {
                             if (i < rects.length) {
                                 var bmpd = bitmapDatas.get(bitmapID);
                                 
+                                var padding = 1.0;
                                 var scaleX = MathUtils.scaleX(matrix.a, matrix.b, matrix.c, matrix.d);
                                 var scaleY = MathUtils.scaleY(matrix.a, matrix.b, matrix.c, matrix.d);
-                                var bmpdWidth = Math.abs(Std.int(bmpd.width * scaleX)) - 1;
-                                var bmpdHeight = Math.abs(Std.int(bmpd.height * scaleY)) - 1;
+                                var bmpdWidth:Float = Math.abs(Std.int(bmpd.width * scaleX)) - 1;
+                                var bmpdHeight:Float = Math.abs(Std.int(bmpd.height * scaleY)) - 1;
+
+                                // Add padding on dimension (1 pixel on each side)
+                                // Fix scale based on new width
+                                // Recreate Matrix with new scale
+                                // Position should overlap each part
+                                // Based on col / row adjust scale to fit perfectly
 
                                 var col = Std.int(Math.max(rect.width / bmpdWidth, 1));
                                 var row = Std.int(Math.max(rect.height / bmpdHeight, 1));
+
+                                bmpdWidth = rect.width / col;
+                                bmpdHeight = rect.height / row;
+
+                                var oldScaleX = scaleX;
+                                var oldScaleY = scaleY;
+                                scaleX = (bmpdWidth + padding * 2) / bmpd.width;
+                                scaleY = (bmpdHeight + padding * 2) / bmpd.height;
+
+                                // Adjust with new scale
+                                matrix.scale(oldScaleX / scaleX, oldScaleY / scaleY);
 
                                 if (rect.width / bmpdWidth - col > 0.25) col++;
                                 if (rect.height / bmpdHeight - row > 0.25) row++;
@@ -1233,8 +1251,8 @@ class Exporter {
                                             b: matrix.b,
                                             c: matrix.c,
                                             d: matrix.d,
-                                            tx: rect.x + (scaleX > 0 ? x : x + 1) * bmpdWidth,
-                                            ty: rect.y + (scaleY > 0 ? y : y + 1) * bmpdHeight
+                                            tx: rect.x + (scaleX > 0 ? x : x + 1) * bmpdWidth - (x == 0 ? 0 : padding),
+                                            ty: rect.y + (scaleY > 0 ? y : y + 1) * bmpdHeight - (y == 0 ? 0 : padding)
                                         }
 
                                         shapes.push(definition);

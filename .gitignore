@@ -9,3 +9,4 @@ node_modules
 ref/fonts/*.eot
 ref/fonts/*.svg
 ref/fonts/*.woff
+res/test/**/*

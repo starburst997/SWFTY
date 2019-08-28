@@ -15,6 +15,7 @@
     <haxelib name="haxe-ws" />
     <haxelib name="haxe-concurrent" />
     <haxelib name="tweenxcore" />
+    <haxelib name="bin-packing" />
     
     <haxelib name="haxe-file-save" if="export" />
     <haxelib name="haxe-file-load" if="export" />
