@@ -10,6 +10,7 @@
   "contributors" : ["starburst997"],
   "dependencies" : { 
     "zip": "gh:starburst997/haxe-zip#81143dd39fbd7b5bd53227e1dcaeb70cad71da05",
-    "hxbit": "gh:starburst997/hxbit#e0aebdbdfb590c9cef8dda3cd428acf7c794ca61"
+    "hxbit": "gh:starburst997/hxbit#e0aebdbdfb590c9cef8dda3cd428acf7c794ca61",
+    "bin-packing": "gh:Tw1ddle/Rectangle-Bin-Packing#f620f83ede51bfa59575a3c52265791028f259ac"
   }
 }

@@ -1214,8 +1214,11 @@ class Exporter {
                                 var bmpd = bitmapDatas.get(bitmapID);
                                 
                                 var padding = 1.0;
+                                
                                 var scaleX = MathUtils.scaleX(matrix.a, matrix.b, matrix.c, matrix.d);
                                 var scaleY = MathUtils.scaleY(matrix.a, matrix.b, matrix.c, matrix.d);
+                                var rotation = MathUtils.rotation(matrix.a, matrix.b, matrix.c, matrix.d);
+
                                 var bmpdWidth:Float = Math.abs(Std.int(bmpd.width * scaleX)) - 1;
                                 var bmpdHeight:Float = Math.abs(Std.int(bmpd.height * scaleY)) - 1;
 
@@ -1237,10 +1240,10 @@ class Exporter {
                                 scaleY = (bmpdHeight + padding * 2) / bmpd.height;
 
                                 // Adjust with new scale
-                                matrix.scale(oldScaleX / scaleX, oldScaleY / scaleY);
-
-                                if (rect.width / bmpdWidth - col > 0.25) col++;
-                                if (rect.height / bmpdHeight - row > 0.25) row++;
+                                matrix.scale(scaleX, scaleY);
+                                
+                                scaleX *= oldScaleX < 0 ? -1 : 1;
+                                scaleY *= oldScaleY < 0 ? -1 : 1;
 
                                 for (x in 0...col) {
                                     for (y in 0...row) {
