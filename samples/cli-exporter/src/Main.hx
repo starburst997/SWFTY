@@ -390,35 +390,38 @@ class CLI extends mcli.CommandLine {
                 }
             }
 
-            // Watch folder, processing any SWF
-            var ex = Executor.create();
-            var fw = new PollingFileWatcher(ex, 100);
+            if (recreate) {
+                Sys.exit(0);
+            } else {
+                // Watch folder, processing any SWF
+                var ex = Executor.create();
+                var fw = new PollingFileWatcher(ex, 100);
 
-            var timer:haxe.Timer = null;
-            fw.subscribe(function (event) {
-                switch(event) {
-                    case FILE_MODIFIED(file, _) | FILE_CREATED(file) if (file.path.filenameExt.toLowerCase() == 'swf'): 
+                var timer:haxe.Timer = null;
+                fw.subscribe(function (event) {
+                    switch(event) {
+                        case FILE_MODIFIED(file, _) | FILE_CREATED(file) if (file.path.filenameExt.toLowerCase() == 'swf'): 
 
-                        // Skip if too small
-                        if (file.size() < 0x100) return;
-                        
-                        // Introduce a slight delay (sometimes multiple event can be fired quickly when publishing SWF)
-                        if (timer != null) timer.stop();
-                        timer = haxe.Timer.delay(() -> {
-                            log('File modified', file.path.toString(), 0);
+                            // Skip if too small
+                            if (file.size() < 0x100) return;
                             
-                            timer.stop();
-                            timer = null;
+                            // Introduce a slight delay (sometimes multiple event can be fired quickly when publishing SWF)
+                            if (timer != null) timer.stop();
+                            timer = haxe.Timer.delay(() -> {
+                                log('File modified', file.path.toString(), 0);
+                                
+                                timer.stop();
+                                timer = null;
 
-                            convertSWF(file.path);
-                        }, 100);
-                    case _ : 
-                }
-            });
+                                convertSWF(file.path);
+                            }, 100);
+                        case _ : 
+                    }
+                });
 
-            log('Watching', getDir(config.watchFolder), 0);
-            fw.watch(getDir(config.watchFolder));
-
+                log('Watching', getDir(config.watchFolder), 0);
+                fw.watch(getDir(config.watchFolder));
+            }
         } else {
             // Process entire folder conveerting all SWF
             var swfs = listFiles(Dir.of(getDir(config.watchFolder)));
