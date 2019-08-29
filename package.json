@@ -6,9 +6,9 @@
     "preinstall": "mkdir -p ~/haxe",
     "postinstall": "mkdir -p haxe_libraries; lix download;",
     "haxelib": "./scripts/haxelib.sh",
-    "test": "cd samples/cli-exporter && openfl build mac -Dsync -final -v && ./bin/macos/bin/SWFTY.app/Contents/MacOS/SWFTY -r $PWD",
-    "mac": "cd samples/cli-exporter && openfl build mac -Dsync -final -v",
-    "windows": "cd samples/cli-exporter && openfl build windows -Dsync -final -v"
+    "test": "cd samples/cli-exporter && yarn lix run openfl build mac -Dsync -final -v && ./bin/macos/bin/SWFTY.app/Contents/MacOS/SWFTY -r $PWD",
+    "mac": "cd samples/cli-exporter && yarn lix run openfl build mac -Dsync -final -v",
+    "windows": "cd samples/cli-exporter && yarn lix run openfl build windows -Dsync -final -v"
   },
   "dependencies": {
     "imagemin-cli": "^4.0.0",

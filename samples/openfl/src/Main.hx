@@ -61,7 +61,7 @@ class Main extends Sprite {
             // TODO: Get rid of message if it been over X sec
 
             var stop = false;
-            var ws = WebSocket.create("ws://192.168.0.192:49463/", [], false);
+            var ws = WebSocket.create("ws://192.168.0.193:49463/", [], false);
             ws.onopen = function() {
                 trace('open!');
 
@@ -241,7 +241,7 @@ class Main extends Sprite {
         processSWF('res/Popup.swf', function(layer) {
         #else
         //swfty.Yokat.load(stage.stageWidth, stage.stageHeight, function(layer:swfty.Yokat) {
-        loadSWFTY('res/swfty/mid/Yokat.swfty', function(layer:Layer) {
+        loadSWFTY('res/test/low/Catalogue.swfty', function(layer:Layer) {
         #end
             layers.push(layer);
 
@@ -251,9 +251,9 @@ class Main extends Sprite {
 
             addChildAt(layer, 0);
 
-            //var sprite = layer.create('UI');
-            //layer.add(sprite);
-            //sprite.fit();
+            var sprite = layer.create('PopupCatalgoue');
+            layer.add(sprite);
+            sprite.fit();
 
         }, function(e) trace('ERROR: $e'));
         #end
@@ -300,7 +300,7 @@ class Main extends Sprite {
 
             addChild(sprite);
 
-            #else
+            #elseif false
             for (layer in layers) {
                 var names = layer.getAllNames();
                 for (i in 0...1) {

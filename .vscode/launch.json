@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "chrome",
+            "request": "attach",
+            "port": 9222,
+            "name": "Attach Chrome",
+            "url": "http://127.0.0.1:61434/",
+            "webRoot": "${workspaceFolder}/samples/openfl/bin/html5/bin/"
+        }
+    ]
+}

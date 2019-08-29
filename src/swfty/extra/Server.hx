@@ -38,7 +38,7 @@ class Server {
             var ip = if (Compiler.getDefine('server_ip') != null) {
                 Compiler.getDefine('server_ip');
             } else {
-                '192.168.0.192';
+                '192.168.0.193';
             }
 
             var stop = false;

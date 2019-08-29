@@ -13,6 +13,7 @@
         ["hxml/html5-exporter.hxml"],
         ["hxml/cli-exporter.hxml"]
     ],
+    "terminal.integrated.shell.osx": "/bin/zsh",
     "haxe.enableCompilationServer": true,
     "haxe.buildCompletionCache": true,
     "haxe.displayPort": 6001,

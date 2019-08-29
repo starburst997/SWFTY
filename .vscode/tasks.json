@@ -5,11 +5,11 @@
     "showOutput": "always",
     "tasks": [
         {
-            "command": "openfl",
+            "command": "yarn",
             "taskName": "build html5",
             "isBuildCommand": true,
             "args": [
-                "build", "./project.xml", "html5", "-v"
+                "lix", "run", "openfl", "build", "./project.xml", "html5", "-v"
             ],
             "options": {
                 "cwd": "${workspaceFolder}/samples/openfl"
@@ -22,11 +22,11 @@
             }
         },
         {
-            "command": "openfl",
+            "command": "yarn",
             "taskName": "build html5 display list",
             "isBuildCommand": true,
             "args": [
-                "build", "./project.xml", "html5", "-Dlist", "-v"
+                "lix", "run", "openfl", "build", "./project.xml", "html5", "-Dlist", "-v"
             ],
             "options": {
                 "cwd": "${workspaceFolder}/samples/openfl"
@@ -39,11 +39,11 @@
             }
         },
         {
-            "command": "openfl",
+            "command": "yarn",
             "taskName": "build export",
             "isBuildCommand": true,
             "args": [
-                "build", "./project.xml", "html5", "-debug", "-Dexport", "-v"
+                "lix", "run", "openfl", "build", "./project.xml", "html5", "-debug", "-Dexport", "-v"
             ],
             "options": {
                 "cwd": "${workspaceFolder}/samples/openfl"
@@ -56,11 +56,11 @@
             }
         },
         {
-            "command": "openfl",
+            "command": "yarn",
             "taskName": "build html5 exporter",
             "isBuildCommand": true,
             "args": [
-                "build", "./project.xml", "html5", "-debug", "-Dexport", "-v"
+                "lix", "run", "openfl", "build", "./project.xml", "html5", "-debug", "-Dexport", "-v"
             ],
             "options": {
                 "cwd": "${workspaceFolder}/samples/html5-exporter"
@@ -107,11 +107,11 @@
             }
         },
         {
-            "command": "haxe",
+            "command": "yarn",
             "taskName": "build js",
             "isBuildCommand": true,
             "args": [
-                "hxml/html5.hxml", "-D", "test"
+                "haxe", "hxml/html5.hxml", "-D", "test"
             ],
             "options": {
                 "cwd": "${workspaceFolder}/samples/heaps"
