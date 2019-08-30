@@ -1240,10 +1240,11 @@ class Exporter {
                                 scaleY = (bmpdHeight + padding * 2) / bmpd.height;
 
                                 // Adjust with new scale
-                                matrix.scale(scaleX, scaleY);
+                                matrix.scale(1 / oldScaleX, 1 / oldScaleY);
                                 
                                 scaleX *= oldScaleX < 0 ? -1 : 1;
                                 scaleY *= oldScaleY < 0 ? -1 : 1;
+                                matrix.scale(scaleX, scaleY);
 
                                 for (x in 0...col) {
                                     for (y in 0...row) {
