@@ -367,7 +367,8 @@ class CLI extends mcli.CommandLine {
 
             var total = 0;
             var todo = 0;
-            for (swf in swfs) {
+
+            /*for (swf in swfs) {
                 // Check quality SWFTY missing
                 var qualityExists = true;
                 for (q in config.quality) {
@@ -380,6 +381,7 @@ class CLI extends mcli.CommandLine {
                 if (!qualityExists || !swftys.exists(swf.path.filenameStem) || !swftys.get(swf.path.filenameStem)) {
                     // Convert SWF
                     todo++;
+
                     convertSWF(swf.path, () -> {
                         if (++total == todo) {
                             // Save report
@@ -390,10 +392,43 @@ class CLI extends mcli.CommandLine {
                     });
                     swftys.set(swf.path.filenameStem, true);
                 }
-            }
+            }*/
 
             if (recreate) {
-                Sys.exit(0);
+                function process() {
+                    if (swfs.length == 0) {
+                        // Save report
+                        var reportPath = Path.of(getDir('.')).join('swfty-report.log').toString();
+                        log('Saving log', '$reportPath', 2);
+                        FileSave.writeBytes(Bytes.ofString(Exporter.logs), reportPath);
+                        
+                        Sys.exit(0);
+                        return;                            
+                    }
+
+                    var swf = swfs.shift();
+
+                    // Check quality SWFTY missing
+                    var qualityExists = true;
+                    for (q in config.quality) {
+                        if (!swftys.exists(swf.path.filenameStem) || !swftys.get(swf.path.filenameStem)) {
+                            qualityExists = false;
+                            break;
+                        }
+                    }
+
+                    if (!qualityExists || !swftys.exists(swf.path.filenameStem) || !swftys.get(swf.path.filenameStem)) {
+                        // Convert SWF
+                        todo++;
+
+                        convertSWF(swf.path, () -> {
+                            process();
+                        });
+                        swftys.set(swf.path.filenameStem, true);
+                    }
+                }
+
+                process();
             } else {
                 // Watch folder, processing any SWF
                 var ex = Executor.create();
