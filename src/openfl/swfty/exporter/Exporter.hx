@@ -586,7 +586,7 @@ class Exporter {
             if (!FileSystem.exists(config.tempFolder)) FileSystem.createDirectory(config.tempFolder);
             File.saveBytes(temp1, png);
 
-            Sys.command('imagemin --plugin=pngquant $temp1 > $temp2');
+            Sys.command('imagemin --plugin=pngquant "$temp1" > "$temp2"');
 
             if (FileSystem.exists(temp2)) {
                 png = File.getBytes(temp2);
@@ -629,7 +629,7 @@ class Exporter {
             if (!FileSystem.exists(config.tempFolder)) FileSystem.createDirectory(config.tempFolder);
             File.saveBytes(temp1, jpg);
 
-            Sys.command('imagemin --plugin=jpegtran $temp1 > $temp2');
+            Sys.command('imagemin --plugin=jpegtran "$temp1" > "$temp2"');
 
             if (FileSystem.exists(temp2)) {
                 jpg = File.getBytes(temp2);

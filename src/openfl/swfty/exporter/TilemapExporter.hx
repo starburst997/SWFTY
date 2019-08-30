@@ -73,7 +73,7 @@ class TilemapExporter {
                 FileUtils.createDirectory('$temp/scaled', true);
                 for (i in 0...original.length) {
                     if (FileUtils.exists('$temp/original/$i.png')) {
-                        Sys.command('convert $temp/original/$i.png -resize ${Std.int(scale * 100)}% $temp/scaled/$i.png');
+                        Sys.command('convert "$temp/original/$i.png" -resize ${Std.int(scale * 100)}% "$temp/scaled/$i.png"');
                         
                         var bmpdBytes = sys.io.File.getBytes('$temp/scaled/$i.png');
                         var bmpd = BitmapData.fromBytes(bmpdBytes);
