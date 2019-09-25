@@ -49,17 +49,24 @@ class TilemapExporter {
         var original = bmpds;
 
         #if sys
+
+        #if windows
+        var slash = "\\";
+        #else
+        var slash = '/';
+        #end
+
         // Save all bitmaps to temp folder and use ImageMagick to resize
-        var temp = Exporter.tempFolder + '/' + Std.int(Math.random() * 0xFFFFFF);
+        var temp = Exporter.tempFolder + /*'/' +*/ Std.int(Math.random() * 0xFFFFFF);
         FileUtils.createDirectory(temp, true);
-        FileUtils.createDirectory('$temp/original', true);
+        FileUtils.createDirectory('${temp}${slash}original', true);
 
         for (i in 0...bmpds.length) {
             var bmpd = bmpds[i];
             if (bmpd.rect.width > 0 && bmpd.rect.height > 0) {
                 var png = bmpd.encode(bmpd.rect, new PNGEncoderOptions());
                 if (png.length > 0) {
-                    FileUtils.createFile('$temp/original/$i.png', png);
+                    FileUtils.createFile('${temp}${slash}original${slash}${i}.png', png);
                 }
             }
         }
@@ -70,12 +77,24 @@ class TilemapExporter {
             if (scale != 1.0) {
                 #if sys
                 bmpds = [];
-                FileUtils.createDirectory('$temp/scaled', true);
+                
+                var scaleInt = Math.floor(scale * 100);
+
+                #if windows
+                Sys.command('rmdir "${temp}${slash}scaled" /s /q');
+                Sys.command('xcopy /E /I /Q /Y "${temp}${slash}original" "${temp}${slash}scaled"');
+
+                var newPath = temp.replace('C:\\', '/mnt/c/').replace("\\", '/');
+                Sys.command('wsl imgp -m -x ${scaleInt} -w "${newPath}/scaled"'); // TODO: There must be a much efficient way to resize a folder of images in windows... Still very very fast tho...
+                #else
+                Sys.command('rm -Rf "${temp}${slash}scaled"');
+                Sys.command('cp -r "${temp}${slash}original" "${temp}${slash}scaled"');
+                Sys.command('imgp -m -x ${scaleInt} -w "${temp}${slash}scaled"');
+                #end
+
                 for (i in 0...original.length) {
-                    if (FileUtils.exists('$temp/original/$i.png')) {
-                        Sys.command('convert "$temp/original/$i.png" -resize ${Std.int(scale * 100)}% "$temp/scaled/$i.png"');
-                        
-                        var bmpdBytes = sys.io.File.getBytes('$temp/scaled/$i.png');
+                    if (FileUtils.exists('${temp}${slash}original${slash}${i}.png')) {       
+                        var bmpdBytes = sys.io.File.getBytes('${temp}${slash}scaled${slash}${i}.png');
                         var bmpd = BitmapData.fromBytes(bmpdBytes);
                         bmpds.push(bmpd);
                     } else {
@@ -97,7 +116,13 @@ class TilemapExporter {
         }
 
         #if sys
-        FileUtils.deleteDirectory(temp);
+        #if windows
+        Sys.command('rmdir "${temp}" /s /q');
+        #else
+        Sys.command('rm -Rf "${temp}"');
+        #end
+
+        //FileUtils.deleteDirectory(temp);
         #end
 
         return tilemap;
