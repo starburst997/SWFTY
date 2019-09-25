@@ -86,10 +86,12 @@ class TilemapExporter {
 
                 var newPath = temp.replace('C:\\', '/mnt/c/').replace("\\", '/');
                 Sys.command('wsl imgp -m -x ${scaleInt} -w "${newPath}/scaled"'); // TODO: There must be a much efficient way to resize a folder of images in windows... Still very very fast tho...
+                //Sys.command('mogrify -path "${temp}${slash}scaled" -resize ${Std.int(scale * 100)}% "${temp}${slash}original${slash}*.png"');
                 #else
                 Sys.command('rm -Rf "${temp}${slash}scaled"');
                 Sys.command('cp -r "${temp}${slash}original" "${temp}${slash}scaled"');
                 Sys.command('imgp -m -x ${scaleInt} -w "${temp}${slash}scaled"');
+                //Sys.command('mogrify -path "${temp}${slash}scaled" -resize ${Std.int(scale * 100)}% "${temp}${slash}original${slash}*.png"');
                 #end
 
                 for (i in 0...original.length) {
