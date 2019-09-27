@@ -385,7 +385,10 @@ class Exporter {
             '';
         }
         
-        var hash = '${font}-${BAKE_COLOR ? text.color : 0xFFFFFF}-${filterHash}';
+        var bakeColor = filterHash != '' || BAKE_COLOR;
+
+        var hash = '${font}-${bakeColor ? text.color : 0xFFFFFF}-${filterHash}';
+        var txtColor = bakeColor ? text.color : 0xFFFFFF;
 
         // Create first cache
         if (!fontCache.exists(text.font)) {
@@ -394,7 +397,7 @@ class Exporter {
                 font: font,
                 hash: hash,
                 isNumeric: isNumeric(text.text),
-                color: text.color,
+                color: txtColor,
                 filters: []
             };
 
@@ -410,7 +413,7 @@ class Exporter {
                 font: font,
                 hash: hash,
                 isNumeric: isNumeric(text.text),
-                color: text.color,
+                color: txtColor,
                 filters: []
             };
 
@@ -425,7 +428,7 @@ class Exporter {
                     id: id,
                     name: font.name,
                     cleanName: font.cleanName,
-                    color: font.color,
+                    color: txtColor,
                     size: font.size,
                     bold: font.bold,
                     italic: font.italic,

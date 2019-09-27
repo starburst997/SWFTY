@@ -657,6 +657,42 @@ class Main extends Sprite {
         #end
 
         #if sys
+
+        // Check if imgp is install
+        if( Sys.command('imgp -h >/dev/null') != 0 ) {
+            error('imgp cannot be found, please install! <u>https://github.com/jarun/imgp</>');
+            log('brew install jarun/imgp/imgp');
+            log('You might see that brew asks for XCode 10.2.1 to be installed, you can install it alongside another XCode version');
+            log('For Windows you need to install imgp inside WSL!');
+            Console.log('');
+
+            openfl.swfty.exporter.TilemapExporter.hasIMGP = false;
+
+            if( Sys.command('mogrify -version >/dev/null') != 0 ) {
+                error('imagemagick cannot be found, please install! <u>https://imagemagick.org/index.php</>');
+                log('brew install imagemagick');
+                log('Windows can use the standard installer');
+                Console.log('');
+            } else {
+                error('imagemagick found! But is much slower than imgp!');
+                Console.log('');
+            }
+        } else {
+            log('imgp found!');
+            Console.log('');
+        }
+
+        if( Sys.command('imagemin --help >/dev/null') != 0 ) {
+            error('imagemin cannot be found, please install! <u>https://github.com/imagemin/imagemin</>');
+            log('yarn global add imagemin-cli');
+            log('yarn global add imagemin-pngquant');
+            log('yarn global add imagemin-jpegtran');
+            Console.log('');
+        } else {
+            log('imagemin found! (makes sure that pngquant and jpegtran are also installed!)');
+            Console.log('');
+        }
+
         // Start server
         // TODO: Instead of sending the bytes throught the socket, only tell the client, then load using a file server or something
         //       Still work pretty well from my test with iphone and fast enough, so not a priority... I don't want to add too much extra dependencies

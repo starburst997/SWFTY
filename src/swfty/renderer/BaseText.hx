@@ -42,7 +42,8 @@ class BaseText extends FinalSprite {
     public var fitVertically = true;
     public var singleLine = false;
 
-    public var _color(default, set):Null<UInt> = null;
+    public var _color(default, set):Null<Int> = null;
+    private var _hasColor = false;
     public var align(get, set):Align;
 
     public var scaleFont = 1.0;
@@ -120,7 +121,6 @@ class BaseText extends FinalSprite {
         if (text == null && definition != null) {
             text = definition.text;
         } else if (this.text != null) {
-            // Force refresh
             var text = this.text == originalText ? originalText = definition.text : this.text;
             set_text('');
             set_text(text);
@@ -138,13 +138,13 @@ class BaseText extends FinalSprite {
         }
     }
 
-    function set__color(color:Null<UInt>) {
+    function set__color(color:Null<Int>) {
         if (color != this._color) {
+            _hasColor = true;
             this._color = color;
-            
-            // Force refresh
+            var txt = text;
             set_text('');
-            set_text(text);
+            set_text(txt);
         }
 
         return color;
@@ -184,7 +184,12 @@ class BaseText extends FinalSprite {
         var x = 0.0;
         var y = 0.0;
 
-        var c = _color == null ? textDefinition.color : _color;
+        // TODO: Hack to fix UInt issue on mobile device
+        @:privateAccess var txtColor = Std.int(textDefinition.color.toFloat() - 4278190080.0);
+
+        var c:Int = _color == null || !_hasColor ? txtColor : _color;
+        
+        // TODO: Do we care about alpha?
         var r = (c & 0xFF0000) >> 16;
         var g = (c & 0xFF00) >> 8;
         var b = c & 0xFF;
@@ -232,7 +237,10 @@ class BaseText extends FinalSprite {
                 var w = char.advance * scale;
 
                 var tile = _layer.createBitmap(char.bitmap.id, this, true);
-                tile.color(r, g, b);
+                if (c != textDefinition.font.color && textDefinition.font.color != -1) {
+                    tile.color(r, g, b);
+                }
+
                 tile.x = x + char.tx * scale;
                 tile.y = y + char.ty * scale;
 
@@ -256,7 +264,11 @@ class BaseText extends FinalSprite {
                             code = DOT;
                             char = textDefinition.font.get(code);
                             tile = _layer.createBitmap(char.bitmap.id, this, true);
-                            tile.color(r, g, b);
+                            
+                            if (c != textDefinition.font.color && textDefinition.font.color != -1) {
+                                tile.color(r, g, b);
+                            }
+                            
                             tile.x = x + char.tx * scale;
                             tile.y = y + char.ty * scale;
 

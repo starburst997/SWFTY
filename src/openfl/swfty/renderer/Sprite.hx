@@ -566,7 +566,7 @@ class DisplayBitmap extends EngineBitmap {
 
     public inline function color(r:Int, g:Int, b:Int) {
         #if (openfl >= "6.0.0")
-        //this.colorTransform = new openfl.geom.ColorTransform(r / 255.0, g / 255.0, b / 255.0, this.alpha);
+        this.colorTransform = new openfl.geom.ColorTransform(r / 255.0, g / 255.0, b / 255.0, this.alpha);
         #end
     }
 }
@@ -596,7 +596,7 @@ abstract DisplaySprite(BaseSprite) from BaseSprite to BaseSprite {
 
     public inline function color(r:Float, g:Float, b:Float, rAdd:Float, gAdd:Float, bAdd:Float) {
         #if (openfl >= "6.0.0")
-        //this.colorTransform = new openfl.geom.ColorTransform(r / 255.0, g / 255.0, b / 255.0, this.alpha, rAdd, gAdd, bAdd, 0.0);
+        this.colorTransform = new openfl.geom.ColorTransform(r / 255.0, g / 255.0, b / 255.0, this.alpha, rAdd, gAdd, bAdd, 0.0);
         #end
     }
 

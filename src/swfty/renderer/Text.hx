@@ -37,7 +37,7 @@ abstract Text(FinalText) from FinalText to FinalText {
         return this._color;
     }
 
-    inline function set_color(scale:Null<UInt>):Null<UInt> {
+    inline function set_color(color:Null<UInt>):Null<UInt> {
         return this._color = color;
     }
 }

@@ -422,6 +422,11 @@ class BaseSprite extends EngineSprite {
                 return if (!maskMap.exists(bitmap)) {
                     var tile = display.tile;
                     var dupe:EngineBitmap = layer.getTempBitmap(Std.int(tile.x), Std.int(tile.y), Std.int(tile.width), Std.int(tile.height));
+                    
+                    #if (openfl >= "6.0.0")
+                    // OpenFL Hack for colorized tile
+                    dupe.colorTransform = display.colorTransform;
+                    #end
 
                     var index = this.getTileIndex(bitmap);
                     this.addTileAt(dupe, index);

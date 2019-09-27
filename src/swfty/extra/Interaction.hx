@@ -305,7 +305,6 @@ class Interactions {
                 
                 var y = mouse.y;
                 var x = mouse.x;
-
                 switch(mouse.left) {
                     case Down : 
                         if (checkMask(child, x, y) && isVisible(child) && getBounds().inside(x, y)) {

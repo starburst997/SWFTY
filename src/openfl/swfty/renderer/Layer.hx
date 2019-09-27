@@ -31,7 +31,7 @@ class FinalLayer extends BaseLayer {
 
         tileAlphaEnabled = true;
 		tileBlendModeEnabled = false;
-		tileColorTransformEnabled = false;
+		tileColorTransformEnabled = true;
 
         _width = width;
         _height = height;
@@ -277,17 +277,17 @@ class FinalLayer extends BaseLayer {
         }
 
         // Clear area
-        #if mobile
-        // Fucking openfl, absolutely everything is a gamble if it will work or not
-        for (x in Std.int(reserved.x)...Std.int(reserved.x + reserved.width)) {
-            for (y in Std.int(reserved.y)...Std.int(reserved.y + reserved.height)) {
-                tileset.bitmapData.setPixel32(x, y, 0x00000000);
-            }
-        }
-        #else
+        // #if mobile
+        // // Fucking openfl, absolutely everything is a gamble if it will work or not
+        // for (x in Std.int(reserved.x)...Std.int(reserved.x + reserved.width)) {
+        //     for (y in Std.int(reserved.y)...Std.int(reserved.y + reserved.height)) {
+        //         tileset.bitmapData.setPixel32(x, y, 0x00000000);
+        //     }
+        // }
+        // #else
         rect.setTo(reserved.x, reserved.y, reserved.width, reserved.height);
         tileset.bitmapData.fillRect(rect, 0x00000000);
-        #end
+        //#end
 
         // Draw into new position
         for (tile in map.keys()) if (bitmapDatas.exists(tile)) {

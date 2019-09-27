@@ -129,6 +129,10 @@ class Rectangle {
     public var left(get, never):Float;
     public var right(get, never):Float;
 
+    public function getSize():Size {
+        return new Size(width, height);
+    }
+
     public function new(?x:Float, ?y:Float, ?width:Float, ?height:Float) {
         this.x = x;
         this.y = y;

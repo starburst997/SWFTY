@@ -32,6 +32,8 @@ typedef TrimBitmap = {
 
 class TilemapExporter {
 
+    public static var hasIMGP = true;
+
     public static function trim(bmpd:BitmapData):TrimBitmap {
         var originalWidth = bmpd.width;
         var originalHeight = bmpd.height;
@@ -85,13 +87,20 @@ class TilemapExporter {
                 Sys.command('xcopy /E /I /Q /Y "${temp}${slash}original" "${temp}${slash}scaled"');
 
                 var newPath = temp.replace('C:\\', '/mnt/c/').replace("\\", '/');
-                Sys.command('wsl imgp -m -x ${scaleInt} -w "${newPath}/scaled"'); // TODO: There must be a much efficient way to resize a folder of images in windows... Still very very fast tho...
-                //Sys.command('mogrify -path "${temp}${slash}scaled" -resize ${Std.int(scale * 100)}% "${temp}${slash}original${slash}*.png"');
+                if (hasIMGP) {
+                    Sys.command('wsl imgp -m -s 1 -x ${scaleInt} -w "${newPath}/scaled"'); // TODO: There must be a much efficient way to resize a folder of images in windows... Still very very fast tho...
+                } else {
+                    Sys.command('mogrify -path "${temp}${slash}scaled" -resize ${Std.int(scale * 100)}% "${temp}${slash}original${slash}*.png"');
+                }
                 #else
                 Sys.command('rm -Rf "${temp}${slash}scaled"');
                 Sys.command('cp -r "${temp}${slash}original" "${temp}${slash}scaled"');
-                Sys.command('imgp -m -x ${scaleInt} -w "${temp}${slash}scaled"');
-                //Sys.command('mogrify -path "${temp}${slash}scaled" -resize ${Std.int(scale * 100)}% "${temp}${slash}original${slash}*.png"');
+                if (hasIMGP) {
+                    trace('imgp -m -x ${scaleInt} -w "${temp}${slash}scaled"');
+                    Sys.command('imgp -m -s 1 -x ${scaleInt} -w "${temp}${slash}scaled"');
+                } else {
+                    Sys.command('mogrify -path "${temp}${slash}scaled" -resize ${Std.int(scale * 100)}% "${temp}${slash}original${slash}*.png"');
+                }
                 #end
 
                 for (i in 0...original.length) {
@@ -107,7 +116,19 @@ class TilemapExporter {
                 // TODO: image.resize(Std.int(image.width * scale), Std.int(image.height * scale));
                 #end
             }
+
+            var total = 0;
+            var maxWidth = 0;
+            var maxHeight = 0;
+            for (bmpd in bmpds) {
+                if (bmpd.width > maxWidth) maxWidth = bmpd.width;
+                if (bmpd.height > maxHeight) maxHeight = bmpd.height;
+
+                total += bmpd.width * bmpd.height;
+            }
             
+            trace('Trying to fit!: ${w}, ${h}, ${bmpds.length}, ${total}, ${maxWidth}, ${maxHeight}, ${trimBitmap}');
+
             if (forceDimension) {
                 tilemap = pack(bmpds, w, h, w, h, scale, trimBitmap);
             } else {
@@ -115,6 +136,11 @@ class TilemapExporter {
             }
             
             scale -= 0.05;
+
+            if (scale <= 0) {
+                trace('ERROR ERROR !!! Cannot fit the tilemap');
+                return null;
+            }
         }
 
         #if sys

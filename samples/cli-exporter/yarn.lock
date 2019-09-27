@@ -2,6 +2,6 @@
 # yarn lockfile v1
 
 
-lix@starburst997/lix.client:
-  version "15.4.1-rc.3"
-  resolved "https://codeload.github.com/starburst997/lix.client/tar.gz/dc5924c2a9e45b5f240e49caac65c76b8bdea0db"
+lix@starburst997/lix.client#develop:
+  version "15.4.0-rc.3"
+  resolved "https://codeload.github.com/starburst997/lix.client/tar.gz/3c358e87db1981ccc88f9c2740cf3b28b385959c"

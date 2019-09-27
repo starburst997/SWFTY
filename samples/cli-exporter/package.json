@@ -15,6 +15,6 @@
     "lime-linux": "cd `haxelib path lime | sed -n 2p`; yarn install; cd tools; haxe run.hxml; haxe tools.hxml; cd ..; neko run rebuild linux;"
   },
   "dependencies": {
-    "lix": "starburst997/lix.client"
+    "lix": "starburst997/lix.client#develop"
   }
 }
