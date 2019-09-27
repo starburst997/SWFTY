@@ -237,7 +237,7 @@ class BaseText extends FinalSprite {
                 var w = char.advance * scale;
 
                 var tile = _layer.createBitmap(char.bitmap.id, this, true);
-                if (c != textDefinition.font.color && textDefinition.font.color != -1) {
+                if (c != textDefinition.font.color && textDefinition.font.color >= 0) {
                     tile.color(r, g, b);
                 }
 
@@ -265,7 +265,7 @@ class BaseText extends FinalSprite {
                             char = textDefinition.font.get(code);
                             tile = _layer.createBitmap(char.bitmap.id, this, true);
                             
-                            if (c != textDefinition.font.color && textDefinition.font.color != -1) {
+                            if (c != textDefinition.font.color && textDefinition.font.color >= 0) {
                                 tile.color(r, g, b);
                             }
                             
